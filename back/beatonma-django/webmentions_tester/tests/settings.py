@@ -1,0 +1,5 @@
+TEMPORARY_WEBMENTION_TIME_TO_LIVE = 10
+
+INSTALLED_APPS = [
+    "mentions",
+]

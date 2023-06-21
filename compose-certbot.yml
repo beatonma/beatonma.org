@@ -1,0 +1,21 @@
+version: '3'
+
+name: certbot_init
+
+volumes:
+  letsencrypt:
+    name: letsencrypt_keys
+
+
+services:
+  certbot:
+    image: certbot/certbot:latest
+    container_name: certbot_init
+    command: sh -c "certbot certonly --standalone -d ${DOMAIN_NAME} --text --agree-tos --email ${DOMAIN_EMAIL} --rsa-key-size 4096 --verbose --keep-until-expiring --preferred-challenges=http"
+    ports:
+      - "80:80"
+    volumes:
+      - "letsencrypt:/etc/letsencrypt:rw"
+    env_file:
+      - .env
+    entrypoint: ""

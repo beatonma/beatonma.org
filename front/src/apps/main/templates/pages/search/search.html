@@ -1,0 +1,14 @@
+{% extends './_search_results.html' %}
+
+{% block title %}Search results{% endblock %}
+{% block description %}Search __env__:siteName{% endblock %}
+
+{% block search_header %}Results for '{{ query }}'{% endblock %}
+
+{% block filters %}
+
+  {% include "./_filters.html"
+    with
+    filters_title="Explore"
+    %}
+{% endblock %}

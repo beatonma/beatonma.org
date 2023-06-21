@@ -1,0 +1,23 @@
+{% extends "pages/base/scaffold.html" %}
+
+{% block title %}Webmentions Testing Tool{% endblock %}
+{% block description %}A tool for testing Webmentions{% endblock %}
+
+{% block main %}
+    <section id="webmentions_testing_tool"></section>
+
+    <section id="webmentions" data-show-when-empty data-empty-message="Nobody has mentioned this page yet :(">
+
+    </section>
+
+    {% comment %}
+        <!--
+         Invisible links included in template to ensure they can be detected by remote webmention validation.
+        -->
+    {% endcomment %}
+    <div>
+        {% for url in active_mentions %}
+            <a href="{{ url }}"></a>
+        {% endfor %}
+    </div>
+{% endblock %}

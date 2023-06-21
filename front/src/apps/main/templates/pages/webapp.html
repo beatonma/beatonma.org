@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{{ webapp.title }}</title>
+  <meta name="description" content="{{ webapp.description }}" />
+  {% include "pages/base/_meta.html" %}
+  <script type="application/javascript" src="{{ webapp.script.url }}" defer></script>
+  <style>
+      body {
+          margin: 0;
+      }
+  </style>
+</head>
+<body>
+{{ webapp.content_html|safe }}
+</body>
+</html>

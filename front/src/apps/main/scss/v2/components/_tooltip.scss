@@ -1,0 +1,68 @@
+@use "v2/core";
+
+.tooltip {
+  $animation-duration: 120ms;
+  $max-width: 180px;
+
+  cursor: default;
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+
+  &:hover::after {
+    @extend %shape-small;
+    @extend %text-small;
+    @extend %text-one-line;
+    @extend %surface-muted;
+    @extend %elevated;
+    @extend %padding-small;
+
+    content: "";
+    animation-name: tooltip;
+    position: absolute;
+    z-index: var(--elevation-tooltip);
+    max-width: $max-width;
+    transform-origin: top center;
+    text-align: center;
+    animation-duration: $animation-duration;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    animation-fill-mode: both;
+    left: 50%;
+    top: 100%;
+    transform: translate(-50%);
+    line-height: 1;
+    font-weight: normal;
+    font-variant: none;
+  }
+
+  &[title]:hover::after {
+    content: attr(title);
+  }
+
+  &[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+  }
+
+
+  @keyframes tooltip {
+    0% {
+      transform: scale(0) translateX(-50%);
+      opacity: 0;
+      left: 0;
+    }
+
+    100% {
+      left: 50%;
+      opacity: 1;
+      transform: scale(1) translateX(-50%);
+    }
+  }
+}
+
+a.tooltip {
+  cursor: pointer;
+}
+
+button.tooltip {
+  overflow: visible;
+}

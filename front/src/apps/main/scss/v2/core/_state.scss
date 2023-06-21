@@ -1,0 +1,39 @@
+@use "./animation";
+@use "./shapes";
+
+/**
+ * Hover, select, focus, etc.
+ */
+%hover {
+  @extend %shape-small;
+  @include animation.transition((background-color));
+
+  &:hover {
+    background-color: var(--hover);
+  }
+}
+
+%clickable {
+  cursor: pointer;
+}
+
+:focus-visible {
+  animation-name: outline-pop;
+  animation-duration: 220ms;
+  animation-fill-mode: both;
+
+  @keyframes outline-pop {
+    0% {
+      outline-offset: 0;
+      outline-width: 0;
+    }
+
+    60% {
+      outline-offset: 4px;
+    }
+
+    100% {
+      outline-offset: 1px;
+    }
+  }
+}

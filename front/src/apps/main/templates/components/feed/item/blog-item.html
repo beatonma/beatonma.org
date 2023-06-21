@@ -1,0 +1,11 @@
+{% load nullable %}
+
+{% include "./_summary-feed-item.html"
+  with
+  image_url=blog.related_files.first|nullable:"file"|nullable:"url"
+  title=blog.title
+  summary=blog.preview_text
+  url=blog.get_absolute_url
+  date=blog.published_at
+  themeable=blog
+%}

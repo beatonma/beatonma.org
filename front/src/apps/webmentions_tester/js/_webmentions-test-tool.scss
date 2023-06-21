@@ -1,0 +1,66 @@
+@use "v2/core";
+
+#webmentions_testing_tool {
+  @extend %readable-text;
+  @extend %center;
+
+  .header-row {
+    @include core.row(
+            $vertical: baseline,
+            $column-gap: 1rem,
+            $row-gap: 0.5rem
+    );
+  }
+
+  .form {
+    @extend %row-spaced;
+    @extend %padding-medium;
+    @extend %center;
+
+    width: fit-content;
+
+    input[type="text"] {
+      @extend %padding-medium-inline;
+
+      font-size: var(--fs-h5);
+    }
+
+    button {
+      font-size: var(--fs-h5);
+    }
+  }
+
+  .active-mentions {
+    .active-mention {
+      @extend %outlined;
+      @extend %shape-small;
+      @extend %padding-medium;
+      @extend %margin-medium-bottom;
+    }
+  }
+
+  .label {
+    @extend %text-label;
+
+    color: var(--text-secondary);
+
+    &.temp {
+      @extend %padding-smallest-block;
+      @extend %shape-small;
+    }
+  }
+
+  .header {
+    @include core.row($horizontal: space-between);
+  }
+
+  table {
+    @extend %stretch-width;
+    @extend %margin-small-block;
+
+
+    code {
+      line-break: anywhere;
+    }
+  }
+}

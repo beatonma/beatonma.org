@@ -1,0 +1,21 @@
+{% load dates %}
+<article id="{{ changelog.version_name }}" class="changelog h-entry">
+  <div class="changelog-header">
+    <div class="title-bar">
+      <h3 class="p-name">{{ changelog.version_name }}</h3>
+      <time class="dt-published" title="{{ changelog.date }}" datetime="{{ changelog.date }}">{{ changelog.date|minimaldate }}</time>
+    </div>
+
+    {% if changelog.tagline %}
+    <div class="tagline p-summary">{{ changelog.tagline }}</div>
+    {% endif %}
+
+    {% include "components/links/related-links.html" with links=changelog.links.all %}
+
+  </div>
+
+  <div class="e-content">
+    {{ changelog.content_html|safe }}
+  </div>
+  {% include 'staff/edit-button.html' with target=changelog %}
+</article>

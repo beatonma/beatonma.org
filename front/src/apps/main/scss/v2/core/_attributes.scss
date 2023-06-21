@@ -1,0 +1,13 @@
+@use "./animation";
+
+[data-meta] {
+  display: none;
+}
+
+[aria-hidden] {
+  pointer-events: none;
+}
+
+[data-animate-in] {
+  @extend %fade-and-slide-in;
+}

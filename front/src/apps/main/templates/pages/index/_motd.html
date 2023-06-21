@@ -1,0 +1,9 @@
+<div id="motd">
+  <div class="motd-content">
+    {% if motd.title %}
+    <h2>{{ motd.title }}</h2>
+    {% endif %}
+
+    {{ motd.content }}
+  </div>
+</div>

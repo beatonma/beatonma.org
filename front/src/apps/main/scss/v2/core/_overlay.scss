@@ -1,0 +1,10 @@
+@use "./shapes";
+@use "./color";
+
+%overlay {
+  @extend %shape-small;
+  @extend %scrim-colors;
+
+  margin: var(--space);
+  padding: var(--space);
+}

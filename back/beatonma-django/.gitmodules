@@ -1,0 +1,9 @@
+[submodule "mentions"]
+	path = mentions
+	url = https://github.com/beatonma/django-wm
+[submodule "bmanotify"]
+	path = bmanotify
+	url = https://github.com/beatonma/bmanotify/
+[submodule "bmanotify-django"]
+	path = bmanotify-django
+	url = https://github.com/beatonma/bmanotify-django/

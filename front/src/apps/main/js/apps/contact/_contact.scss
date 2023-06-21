@@ -1,0 +1,69 @@
+@use "v2/core";
+@use "v2/components/button";
+@use "v2/components/card";
+
+#contact {
+  @extend %center;
+  @extend %readable-text;
+
+  textarea {
+    @extend %stretch-width;
+
+    min-height: 8em;
+  }
+
+
+  button {
+    @extend %padding-large;
+    @extend %surface-vibrant-hover;
+    @include core.transition((padding, max-width, opacity, background-color));
+
+    font-weight: bold;
+    font-size: var(--fs-h5);
+
+    &:disabled,
+    &:disabled:hover {
+      cursor: default;
+      padding: 0;
+      background-color: var(--text-tertiary-invert);
+      border-color: var(--text-tertiary);
+      color: var(--text-tertiary);
+      max-width: 0;
+      opacity: 0
+    }
+  }
+
+  .success, .failure {
+    @extend %card;
+    @extend %card-content;
+    @extend %margin-large-block;
+    @extend %fade-and-slide-in;
+
+    width: fit-content;
+  }
+
+  h2 {
+    font-size: var(--fs-h4);
+  }
+
+  h3 {
+    font-size: var(--fs-h6);
+  }
+
+  .submit {
+    @include core.row($gap: var(--space));
+  }
+
+  @include core.on-medium-width {
+    button, input[type="text"], textarea {
+      @include core.stretch-width;
+
+      min-width: 0;
+    }
+
+    .submit {
+      width: min-content;
+      margin-inline: auto;
+    }
+  }
+}

@@ -1,0 +1,28 @@
+@use "v2/core";
+
+
+article[data-type="note"] {
+  .note-text {
+    @extend %margin-large-block;
+    @extend %padding-large;
+    @extend %center;
+    @extend %surface;
+    @extend %outlined;
+    @extend %shape-medium;
+
+    max-width: 480px;
+
+    .e-content {
+      @extend %text-large;
+
+      p:first-child {
+        margin-block-start: 0;
+      }
+    }
+
+    time {
+      display: block;
+      text-align: end;
+    }
+  }
+}

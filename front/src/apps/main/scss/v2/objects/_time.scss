@@ -1,0 +1,5 @@
+@use "v2/core";
+
+time {
+  @extend %text-small;
+}

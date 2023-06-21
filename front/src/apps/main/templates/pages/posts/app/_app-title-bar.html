@@ -1,0 +1,8 @@
+{% extends "components/title-bar/title-bar.html" %}
+{% load dates %}
+
+{% block title %}<h2 class="p-name">{{ app.title }}</h2>{% include "./_app_type.html" with app_type=app.app_type %}{% endblock %}
+
+{% block trailing %}<time title="{{ app.published_at }}" datetime="{{ app.published_at }}">{{ app.published_at|minimaldate }}</time>{% endblock %}
+
+{% block subtitle %}{% include "components/links/related-links.html" with links=app.links.all %}{% endblock %}

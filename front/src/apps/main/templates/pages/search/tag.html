@@ -1,0 +1,14 @@
+{% extends './_search_results.html' %}
+
+{% block title %}#{{ filter }}: __env__:siteName{% endblock %}
+{% block description %}Items tagged with #{{ filter }}{% endblock %}
+
+{% block search_header %}#{{ filter }}{% endblock %}
+
+{% block filters %}
+  {% include "./_filters.html"
+  with
+  filters_title="More tags"
+  filters_viewname="search-tags"
+  %}
+{% endblock %}

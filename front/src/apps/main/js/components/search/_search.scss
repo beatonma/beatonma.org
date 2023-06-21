@@ -1,0 +1,9 @@
+@use "v2/core";
+@use "v2/components/links";
+
+.search-results {
+  .filters {
+    @extend %links;
+    @extend %margin-large-block;
+  }
+}

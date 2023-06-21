@@ -1,0 +1,16 @@
+# Patterns
+*.gitbundle
+*.sqlite?
+back/**/templates/
+frontend-tests*
+
+# Directories
+.git/
+.idea/
+__pycache__
+env/
+cypress/
+dist/
+install/
+node_modules/
+static/

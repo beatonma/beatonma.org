@@ -1,0 +1,17 @@
+{% load dates %}
+{% load html %}
+<a
+    href="{{ note.get_absolute_url }}"
+    class="h-entry"
+    data-type="note"
+>
+    <article>
+        <div class="e-content p-summary">
+            {{ note.content_html|plaintext|safe }}
+        </div>
+
+        {% include 'components/react/media-container.html' with target=note style='preview' %}
+
+        <time class="dt-published" title="{{ note.published_at }}" datetime="{{ note.published_at }}">{{ note.published_at|minimaldate }}</time>
+    </article>
+</a>

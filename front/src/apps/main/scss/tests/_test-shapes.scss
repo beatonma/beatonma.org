@@ -1,0 +1,24 @@
+@use "v2";
+
+%test-shapes {
+  @extend %round;
+  @extend %outlined;
+
+  %test-shape {
+    @extend %shape-small;
+    @extend %shape-medium;
+    @extend %shape-large;
+
+    %test-top {
+      @extend %shape-small-top;
+      @extend %shape-medium-top;
+      @extend %shape-large-top;
+    }
+
+    %test-bottom {
+      @extend %shape-small-bottom;
+      @extend %shape-medium-bottom;
+      @extend %shape-large-bottom;
+    }
+  }
+}

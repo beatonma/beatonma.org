@@ -1,0 +1,18 @@
+@use "v2/core";
+@use "./button";
+
+a {
+  @include core.transition((color));
+
+  text-decoration: none;
+  color: var(--vibrant);
+  width: fit-content;
+
+  &:hover {
+    color: var(--vibrant-hover);
+  }
+}
+
+a.button {
+  @extend %button;
+}

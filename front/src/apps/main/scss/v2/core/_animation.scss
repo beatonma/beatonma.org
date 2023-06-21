@@ -1,0 +1,72 @@
+@use "sass:list";
+@use "sass:string";
+
+$animation-duration: 300ms;
+
+@mixin transition(
+  $props,
+  $duration: $animation-duration,
+  $easing: cubic-bezier(0.23, 0.88, 0.56, 0.99)
+) {
+  $result: ();
+
+  @each $prop in $props {
+    $result: list.join(
+                    $result,
+                    string.unquote("#{$prop} #{$duration} #{$easing}"),
+            $separator: comma
+    );
+  }
+
+  transition: $result;
+}
+
+%-enter-animation {
+  animation-duration: $animation-duration;
+  animation-fill-mode: both;
+  animation-iteration-count: 1;
+}
+
+%fade-in {
+  @extend %-enter-animation;
+
+  animation-name: fade-in;
+
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+      max-height: 0;
+    }
+
+    1% {
+      max-height: inherit;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+}
+
+%fade-and-slide-in {
+  @extend %-enter-animation;
+
+  animation-name: fade-and-slide-in;
+
+  @keyframes fade-and-slide-in {
+    0% {
+      opacity: 0;
+      transform: translateY(50px);
+      max-height: 0;
+    }
+
+    1% {
+      max-height: inherit;
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

@@ -1,0 +1,8 @@
+# Run every minute
+* * * * * /cron/heartbeat.sh
+
+# Run twice per hour
+26,57 * * * * /cron/frequently.sh
+
+# Run once per day
+11 23 * * * /cron/daily.sh

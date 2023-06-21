@@ -1,0 +1,50 @@
+body {
+  margin-block: 0;
+}
+
+::-webkit-scrollbar {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+input[type="text"],
+textarea {
+  min-width: min(100%, 30ch);
+  max-width: min(95%, 80ch) !important;
+  resize: both !important;
+  font-family: monospace;
+  border: 2px solid;
+  border-radius: 6px;
+}
+
+textarea:not(.charfield) {
+  min-height: 10rem !important;
+  max-height: unset !important;
+}
+
+.checkbox-row {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  padding: 8px;
+
+  .vCheckboxLabel {
+    padding-block: 0;
+  }
+}
+
+.readonly {
+  font-family: monospace;
+  overflow: auto;
+  margin: auto;
+
+  img,
+  video {
+    width: auto;
+    max-height: 25rem;
+  }
+
+  img {
+    object-fit: contain;
+  }
+}

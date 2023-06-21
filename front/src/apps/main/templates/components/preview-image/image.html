@@ -1,0 +1,36 @@
+{% load repetition %}
+{% load strings %}
+
+{% if image_url %}
+    <div
+        class="preview-image {{ imageclass|default:'cover' }}"
+        style="{% include 'components/feed/item/_themeable-style.html' %}"
+    >
+        <img src="{{ image_url }}" alt="" />
+    </div>
+{% elif image_svg %}
+    <div
+        class="preview-image {{ imageclass }}"
+        style="{% include 'components/feed/item/_themeable-style.html' %}"
+    >
+        {% if image_svg|startswith:"icon/" %}
+            {% include image_svg %}
+        {% else %}
+            {{ image_svg|safe }}
+        {% endif %}
+    </div>
+{% else %}
+    <div
+        aria-hidden="true"
+        class="preview-image preview-image__text-wrapper {{ imageclass }}"
+        style="{% include 'components/feed/item/_themeable-style.html' %}"
+    >
+        <div class="preview-image__text">
+            {% if title %}
+                {{ title|repeat_until_length:120|in_rainbows|nbsp|safe }}
+            {% elif description %}
+                {{ description|repeat_until_length:120|in_rainbows|nbsp|safe }}
+            {% endif %}
+        </div>
+    </div>
+{% endif %}

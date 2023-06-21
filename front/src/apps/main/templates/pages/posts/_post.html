@@ -1,0 +1,29 @@
+{% extends 'pages/base/scaffold.html' %}
+{% load dates %}
+{% load classes %}
+
+{% block title %}{{ post.title }}{% endblock %}
+{% block description %}{{ post.tagline }}{% endblock %}
+
+{% block main %}
+{% include 'staff/edit-links.html' with target=post %}
+<article class="h-entry" data-type="{{ post|get_class|lower }}">
+
+    {% block article %}
+    {% block post_header %}{% endblock %}
+
+    {% include "./_post-title-bar.html" %}
+
+    <div class="e-content">
+        {{ post.content_html|safe }}
+    </div>
+    {% endblock %}
+
+    {% include 'components/react/media-container.html' with target=post style="carousel" %}
+</article>
+
+{% include "components/react/webmentions-container.html" %}
+{% endblock %}
+
+
+{% block post_scripts %}{{ post.content_script|default:""|safe }}{% endblock %}

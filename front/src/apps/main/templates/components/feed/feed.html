@@ -1,0 +1,88 @@
+{% load classes %}
+{% load repetition %}
+<section id="feed">
+    {% block first_feed_items %}{% endblock %}
+
+    <div class="feed h-feed">
+
+        {% for item in feed %}
+        {% with cls=item|get_class %}
+
+        {% if cls == "Article" %}
+        {% include "./item/article-item.html" with article=item type=cls %}
+
+        {% elif cls == "Blog" %}
+        {% include "./item/blog-item.html" with blog=item type=cls %}
+
+        {% elif cls == "Changelog" %}
+        {% include "./item/changelog-item.html" with changelog=item type=cls %}
+
+        {% elif cls == "App" %}
+        {% include "./item/app-item.html" with app=item type=cls %}
+
+        {% elif cls == "Note" %}
+        {% include "./item/note-item.html" with note=item type=cls %}
+
+        {% elif cls == "GithubRepository" %}
+        {% include "./item/repository-item.html" with repo=item type=cls %}
+
+        {% elif cls == "FeedMessage" %}
+        {% include "./item/message-item.html" with message=item type=cls %}
+
+        {% else %}
+        <div>TODO {{ cls }} {{ item.title }}</div>
+
+        {% endif %}
+        {% endwith %}
+        {% empty %}
+        <div class="feed-empty">
+            <div class="feed-empty-title">no results</div>
+            <div class="feed-empty-message">{% choose
+                "Sorry about that"
+                "My bad"
+                "Sometimes I make mistakes"
+                "A happy little accident, I'm sure"
+                "oh no"
+                '<span class="oh-no">oh&nbsp;<span class="marquee-wrapper"><span class="marquee">no no
+            no no no no no no no no no no no no no NO</span></span></span>'
+                "I'm sure they were here a minute ago"
+                "Gradients are cool though, right?<br />&hellip;<i>right?</i>"
+                %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        <div class="pagination-group">
+            {% if page_obj.has_previous %}
+
+            <a href="/#content" title="First page" class="tooltip">
+                <span class="icon">first_page</span>
+            </a>
+            {% if page_obj.number > 2 %}
+            <a href="?page={{ page_obj.previous_page_number }}#content" title="Previous page" class="tooltip">
+                <span class="icon">navigate_before</span>
+            </a>
+            {% endif %}
+
+            {% endif %}
+        </div>
+
+        <div class="pagination-group">
+            {% if page_obj.has_next %}
+
+            {% if page_obj.next_page_number != page_obj.paginator.num_pages %}
+            <a href="?page={{ page_obj.next_page_number }}#content" title="Next page" class="tooltip">
+                <span class="icon">navigate_next</span>
+            </a>
+            {% endif %}
+
+            <a href="?page={{ page_obj.paginator.num_pages }}#content" title="Last page" class="tooltip">
+                <span class="icon">last_page</span>
+            </a>
+
+            {% endif %}
+        </div>
+    </div>
+</section>

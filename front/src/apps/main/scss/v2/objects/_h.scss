@@ -1,0 +1,58 @@
+@use "v2/core";
+
+
+h1 {
+  font-size: var(--fs-h1);
+}
+
+h2 {
+  font-size: var(--fs-h2);
+}
+
+h3 {
+  font-size: var(--fs-h3);
+}
+
+h4 {
+  font-size: var(--fs-h4);
+}
+
+h5 {
+  font-size: var(--fs-h5);
+}
+
+h6 {
+  font-size: var(--fs-h6);
+}
+
+
+%-section-header {
+  margin-bottom: var(--space-2x);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @extend %nolinks;
+  @include core.transition((font-size));
+
+  font-weight: normal;
+  margin: 0;
+  width: fit-content;
+
+  &.section {
+    @extend %-section-header;
+  }
+}
+
+section > h1,
+section > h2,
+section > h3,
+section > h4,
+section > h5,
+section > h6 {
+  @extend %-section-header;
+}

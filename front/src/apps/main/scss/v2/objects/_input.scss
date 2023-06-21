@@ -1,0 +1,76 @@
+@use "v2/core";
+
+
+input, textarea {
+  outline: none;
+  border: none;
+}
+
+%-base-input {
+  @extend %shape-small-top;
+  @extend %padding-small;
+
+  font-size: var(--fs-small);
+  color: var(--text-primary);
+  background-color: var(--input-text-background);
+
+  &:focus {
+    border-bottom: 2px solid var(--vibrant);
+  }
+}
+
+%-input-text {
+  @extend %-base-input;
+
+  min-width: 8ch;
+  width: 480px;
+  max-width: 100%;
+
+  &:focus {
+    border-bottom: 2px solid var(--vibrant);
+  }
+
+  @include core.on-small-width {
+    @include core.stretch-width;
+  }
+}
+
+input[type="text"],
+input[type="search"] {
+  @extend %-input-text;
+}
+
+input[type="number"],
+select {
+  @extend %-base-input;
+}
+
+input[type="search"] {
+  &::-webkit-search-cancel-button {
+    filter: brightness(1) saturate(0) grayscale(1) contrast(0);
+  }
+}
+
+textarea {
+  @extend %-input-text;
+
+  resize: both;
+}
+
+form {
+  label {
+    font-size: var(--fs-smallest);
+    margin-block: var(--space);
+  }
+
+  div:has(label), p:has(label) {
+    label, input:not([type="checkbox"], [type="radio"]), textarea {
+      display: block;
+    }
+
+    input[type="checkbox"] + label, input[type="radio"] + label {
+      display: inline;
+      font-size: var(--fs-default);
+    }
+  }
+}

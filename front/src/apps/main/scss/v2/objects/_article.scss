@@ -1,0 +1,16 @@
+@use "v2/core";
+
+
+main > article, main > section > article {
+  @extend %readable-text;
+  @extend %center;
+
+  margin-block: var(--space-4x);
+}
+
+
+article {
+  section {
+    margin-bottom: var(--space-4x);
+  }
+}

@@ -1,0 +1,59 @@
+@use "v2/core";
+@use "v2/components/card";
+
+.feeditem-summary {
+  @extend %card;
+  @extend %stretch-width;
+
+  display: grid;
+  grid-template-columns: var(--preview-image-size) 1fr;
+  gap: var(--space);
+
+  .feeditem-summary-text {
+    @extend %card-content;
+    @extend %stretch-width;
+  }
+
+  .feeditem-summary-headline {
+    @extend %margin-small-bottom;
+
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    align-items: baseline;
+    gap: var(--space);
+
+    .p-name {
+      @include core.max-lines(1);
+
+      font-size: var(--fs-h6);
+      line-height: 1.5;
+      letter-spacing: .1ch;
+    }
+
+    time {
+      display: block;
+      text-align: end;
+    }
+  }
+
+  .p-summary {
+    @include core.max-lines(3);
+  }
+
+  .preview-image {
+    @include core.shape($right: 0);
+  }
+
+  @include core.on-medium-width {
+    grid-template-columns: 1fr;
+    gap: 0;
+
+    .preview-image, .feeditem-summary-headline time {
+      display: none;
+    }
+
+    .p-summary {
+      @include core.max-lines(3);
+    }
+  }
+}

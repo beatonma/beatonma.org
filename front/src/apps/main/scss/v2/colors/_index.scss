@@ -1,0 +1,61 @@
+@use "./dark";
+@use "./light";
+
+:root {
+  --white: #ffffff;
+  --black: #000000;
+  --red: #ee4545;
+  --blue: #0e70b8;
+  --green: #16b06b;
+  --purple: #823dae;
+  --pink: #e13255;
+  --yellow: #fdf472;
+  --orange: #d86900;
+  --grey: #636363;
+
+  --text-light-primary: rgb(255 255 255 / 83%);
+  --text-light-secondary: rgb(255 255 255 / 54%);
+  --text-light-tertiary: rgb(255 255 255 / 25%);
+  --text-dark-primary: rgb(0 0 0 / 83%);
+  --text-dark-secondary: rgb(0 0 0 / 54%);
+  --text-dark-tertiary: rgb(0 0 0 / 25%);
+  --text-light: var(--text-light-primary);
+  --text-dark: var(--text-dark-primary);
+  --on-background: var(--text-primary);
+  --on-surface: var(--text-primary);
+
+  --scrim: rgb(0 0 0 / 65%);
+  --on-scrim: var(--text-light-primary);
+
+  --on-muted: var(--muted-light);
+  --on-muted-hover: var(--muted-light);
+  --on-muted-light: var(--muted-dark);
+  --on-muted-light-hover: var(--muted-dark-hover);
+  --on-muted-dark: var(--muted-light);
+  --on-muted-dark-hover: var(--muted-light-hover);
+
+  --on-vibrant: var(--vibrant-dark);
+  --on-vibrant-hover: var(--vibrant-dark);
+  --on-vibrant-light: var(--vibrant-dark);
+  --on-vibrant-light-hover: var(--vibrant-dark-hover);
+  --on-vibrant-dark: var(--vibrant-light);
+  --on-vibrant-dark-hover: var(--vibrant-light-hover);
+
+  accent-color: var(--vibrant);
+}
+
+html {
+  @include dark.dark;
+
+  @media (prefers-color-scheme: dark) {
+    &.light {
+      @include light.light;
+    }
+  }
+
+  @media (prefers-color-scheme: light) {
+    &:not(.dark) {
+      @include light.light;
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{% load equal %}
+
+<div class="filters">
+  <span class="links-title">{{ filters_title }}:</span>
+  {% for item in filters %}
+    <a
+      href="{% if filters_viewname %}{% url filters_viewname item %}{% else %}{{ item.url }}{% endif %}"
+      data-selected={% equal item filter %}
+    >
+      {{ item.name|default:item }}
+    </a>
+  {% endfor %}
+</div>

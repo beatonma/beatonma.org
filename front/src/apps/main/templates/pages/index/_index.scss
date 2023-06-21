@@ -1,0 +1,101 @@
+@use "v2/core";
+@use "v2/constants";
+@use "v2/components/card";
+@use "v2/components/links";
+
+$github-small-width: 420px;
+$two-column-min-width: constants.$readable-text-width + $github-small-width;
+$three-column-min-width: constants.$readable-text-width * 2 + $github-small-width;
+
+
+.main-index {
+  display: grid;
+  gap: var(--space-2x);
+  grid-template-columns: 1fr;
+  grid-template-areas:
+      "motd"
+      "quick-links"
+      "github"
+      "main-feed";
+
+  .quick-links {
+    @extend %links;
+
+    grid-area: quick-links;
+    justify-content: center;
+  }
+
+  #github_recent {
+    grid-area: github;
+  }
+
+  main {
+    @extend %center;
+    @extend %stretch-width;
+
+    grid-area: main-feed;
+    max-width: constants.$readable-text-width;
+  }
+
+  #motd {
+    @extend %outlined;
+    @extend %shape-medium;
+    @extend %margin-large-block;
+
+    background-color: var(--hover);
+    grid-area: motd;
+    width: fit-content;
+    margin-inline: auto;
+    margin-bottom: 1rem;
+
+    .motd-content {
+      @extend %card-content;
+      @extend %readable-text;
+    }
+  }
+
+
+  @media (min-width: $three-column-min-width) {
+    grid-template-columns: $github-small-width 1fr $github-small-width;
+    grid-template-areas:
+        ". motd ."
+        ". main-feed quick-links"
+        ". main-feed github"
+        ". main-feed .";
+  }
+
+
+  @media (min-width: $two-column-min-width) {
+    .quick-links {
+      justify-content: flex-end;
+    }
+
+    #github_recent {
+      min-width: $github-small-width;
+      overflow-y: visible;
+      max-height: none;
+      position: sticky;
+      top: var(--space-4x);
+    }
+  }
+
+  @media ($two-column-min-width <= width < $three-column-min-width) {
+    &[data-page="1"] {
+      grid-template-columns: 1fr $github-small-width;
+      grid-template-areas:
+        "motd motd"
+        "main-feed quick-links"
+        "main-feed github"
+        "main-feed .";
+    }
+  }
+
+  @media (min-width: $three-column-min-width) {
+    grid-template-columns: $github-small-width 1fr $github-small-width;
+    grid-template-areas:
+        ". motd ."
+        ". main-feed quick-links"
+        ". main-feed github"
+        ". main-feed .";
+  }
+}

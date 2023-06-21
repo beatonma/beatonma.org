@@ -1,0 +1,243 @@
+#!/usr/bin/env bash
+
+FILE_PRODUCTION="compose.production.yml"
+FILE_DEV="./compose.dev.yml"
+FILE_CERTBOT="./compose.certbot.yml"
+FILE_DB_INIT="./compose.db-init.yml"
+FILE_DB_BACKUP="./docker/db-init/backup.db"
+FILE_ENV=".env"
+
+PRODUCTION_MODE=0
+DEV_MODE=0
+NOOP_MODE=0
+
+
+log() {
+  echo "$*" > "$(tty)"
+}
+
+show_help() {
+  log 'compose.sh (dev | production) [options] (init | build | up | down | start| stop | restart | top)'
+  log ''
+  log ' Mode:'
+  log '  dev  Use a simplified environment for development.'
+  log '  production: Production environment.'
+  log ''
+  log ' Options:'
+  log '  -noop: Print commands used but do not execute anything.'
+  log ''
+  log ' Commands:'
+  log '  init'
+  log '    Initiate certbot and import a previous database.'
+  log ''
+  log '  certbot'
+  log '    Initialise or update certbot certificates.'
+  log ''
+  log '  build'
+  log '    Run `docker compose build`.'
+  log ''
+  log '  up'
+  log '    Run `docker compose up`.'
+  log ''
+  log '  down'
+  log '    Run `docker compose down`.'
+  log ''
+  log '  start'
+  log '    Run `docker compose start`.'
+  log ''
+  log '  stop'
+  log '    Run `docker compose stop`.'
+  log ''
+  log '  restart'
+  log '    Run `docker compose restart`.'
+  log ''
+  log '  top'
+  log '    Run `docker compose top`.'
+  log ''
+  log '  update'
+  log '    Pull repository, stop services, build, start services.'
+  log ''
+}
+
+: "
+Startup checks
+"
+
+if [ "$1" = "dev" ]; then
+  DEV_MODE=1
+  shift
+elif [ "$1" = "production" ]; then
+  PRODUCTION_MODE=1
+  shift
+elif [ "$1" = "init" ] || [ "$1" = "certbot" ]; then
+  : "These use their own compose.yml files, not dev/production-reliant"
+else
+  echo "Mode argument required: dev | production"
+  show_help
+  exit 1
+fi
+
+
+
+# Parse command line modifier arguments. These must appear before any other arguments.
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -noop)
+      NOOP_MODE=1
+       shift
+       log "NOOP_MODE enabled! Commands will be displayed but not executed."
+       ;;
+    *)
+      break
+      ;;
+  esac
+done
+log ''
+
+if [ "$#" = 0 ]; then
+  show_help
+  exit
+fi
+
+: "
+Function definitions
+"
+check_file() {
+  if [ ! -f "$1" ]; then
+    log "ERROR: File '$1' not found!"
+    exit 1
+  fi
+}
+
+get_file() {
+  if [ $DEV_MODE = 1 ]; then
+    local file="$FILE_DEV"
+  elif [ $PRODUCTION_MODE = 1 ]; then
+    # Default to production build
+    local file="$FILE_PRODUCTION"
+  fi
+
+  (check_file $file)
+  if [ $? = 1 ]; then
+    exit 1
+  fi
+  echo $file
+}
+
+run_command() {
+  echo "COMMAND: '$1'"
+  if [ $NOOP_MODE = 0 ]; then
+    $@
+  fi
+}
+
+update_certbot() {
+  check_file $FILE_CERTBOT
+  run_command "docker compose -f $FILE_CERTBOT up --build --abort-on-container-exit"
+}
+
+init_db() {
+  # Initialise database volume from backup, and retrieve certbot certificates.
+  check_file $FILE_DB_BACKUP
+  check_file $FILE_DB_INIT
+
+  run_command "docker compose -f $FILE_DB_INIT up --build --abort-on-container-exit"
+  run_command "docker compose -f $FILE_DB_INIT down"
+}
+
+run_docker_command() {
+  file=$(get_file)
+  if [ $? = 1 ]; then
+    exit 1
+  fi
+
+  run_command "docker compose -f $file $*"
+}
+
+docker_build() {
+  run_docker_command build --ssh default --build-arg CACHEBUST=$RANDOM "$@"
+}
+
+docker_up() {
+  run_docker_command up "$@"
+}
+
+docker_down() {
+  run_docker_command down "$@"
+}
+
+docker_start() {
+  run_docker_command start "$@"
+}
+
+docker_stop() {
+  run_docker_command stop "$@"
+}
+
+docker_restart() {
+  run_docker_command restart "$@"
+}
+
+docker_top() {
+  run_docker_command top "$@"
+}
+
+docker_full_update() {
+    git pull
+    docker_down
+    docker_build
+    docker_up "-d"
+}
+
+
+: "
+MAIN SCRIPT
+"
+if [ ! -f $FILE_ENV ]; then
+  echo "ERROR: Environment file '$FILE_ENV' not found!"
+  exit 1
+fi
+
+case $1 in
+  init)
+    init_db
+    update_certbot
+    ;;
+  certbot)
+    update_certbot
+    ;;
+  build)
+    shift
+    docker_build "$@"
+    ;;
+  up)
+    shift
+    docker_up "$@"
+    ;;
+  down)
+    shift
+    docker_down "$@"
+    ;;
+  start)
+    shift
+    docker_start "$@"
+    ;;
+  stop)
+    shift
+    docker_stop "$@"
+    ;;
+  restart)
+    shift
+    docker_restart "$@"
+    ;;
+  top)
+    shift
+    docker_top "$@"
+    ;;
+  update)
+    docker_full_update
+    ;;
+  *)
+    show_help
+    ;;
+esac

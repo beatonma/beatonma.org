@@ -1,0 +1,60 @@
+@use "v2/core";
+
+body {
+  @extend %text-default;
+  @include core.transition((color background-color margin));
+
+  background-color: var(--background);
+  color: var(--on-background);
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+
+  > header {
+    grid-row: 1;
+  }
+
+  > #content_wrapper {
+    grid-row: 2;
+  }
+
+  > footer {
+    grid-row: 3;
+  }
+
+  > header, > footer, > #content_wrapper {
+    @extend %-content_margins;
+  }
+}
+
+
+$-margin-comfy: 32px;
+$-margin-small: 8px;
+$-margin-minimal: 4px;
+%-content_margins {
+  margin-inline: $-margin-comfy;
+
+  @include core.on-medium-width {
+    margin-inline: $-margin-small;
+  }
+
+  @include core.on-small-width {
+    margin-inline: $-margin-minimal;
+  }
+}
+
+
+%full-bleed {
+  // Undoes the effects of %-content-margins for an element.
+  margin-inline: -$-margin-comfy;
+
+  @include core.on-medium-width {
+    margin-inline: -$-margin-small;
+  }
+
+  @include core.on-small-width {
+    margin-inline: -$-margin-minimal;
+  }
+}

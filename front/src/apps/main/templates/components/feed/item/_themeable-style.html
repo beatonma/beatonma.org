@@ -1,0 +1,8 @@
+{% load css %}
+
+{% if themeable %}
+{% style "background-color" themeable.color_muted %}
+{% style "color" themeable.color_vibrant %}
+{% style "fill" themeable.color_vibrant %}
+{% style "stroke" themeable.color_vibrant %}
+{% endif %}

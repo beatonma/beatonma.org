@@ -1,0 +1,129 @@
+@use "v2/core";
+@use "v2/objects";
+@use "sass:math";
+
+
+%-carousel-nav-button {
+  @extend %scrim-colors;
+  @include core.transition((filter));
+
+  margin: var(--space);
+  aspect-ratio: 1;
+  filter: brightness(.85);
+
+  &:focus-visible {
+    outline-color: var(--vibrant);
+  }
+
+  &:hover {
+    background-color: var(--scrim);
+    filter: brightness(1);
+  }
+}
+
+.media-carousel {
+  @extend %full-bleed;
+
+  max-width: 100vw;
+  line-height: 1;
+
+  button {
+    @extend %-carousel-nav-button;
+  }
+
+  &--focussed {
+    @extend %center;
+    @extend %shape-medium-top;
+
+    overflow: clip;
+    max-height: 80vh;
+    aspect-ratio: 1;
+    background-color: var(--background);
+    position: relative;
+
+    @include core.on-medium-width {
+      &[data-item-count="1"] {
+        height: auto;
+      }
+    }
+
+    &[data-item-count="1"] {
+      /*
+       Wrap media size if only one item:
+         no internal navigation -> static content ->  no need to fix the
+         background as any particular size/shape.
+       */
+      height: auto;
+      aspect-ratio: auto;
+    }
+
+    > .media {
+      @extend %fill;
+      @extend %fade-in;
+
+      background-color: var(--muted);
+      object-fit: contain;
+      transition: all 200ms;
+    }
+  }
+
+  &--navigation {
+    @include core.row($horizontal: space-between);
+    @extend %stretch-width;
+
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+
+    button {
+      pointer-events: auto;
+    }
+  }
+
+  &--items {
+    @include core.row($horizontal: flex-start, $gap: var(--space), $wrap: nowrap);
+
+    margin-block: var(--space);
+    margin-inline: auto;
+    max-width: 100%;
+    width: fit-content;
+    overflow-x: auto;
+
+    @media (height <= 200px) {
+      display: none;
+    }
+
+    > .media {
+      @extend %shape-small;
+
+      height: 90px;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 200ms;
+      background-color: var(--muted);
+
+      &[data-selected="true"] {
+        border: 2px solid var(--vibrant);
+        background-color: var(--vibrant);
+      }
+    }
+  }
+}
+
+
+dialog.media-viewer-full {
+  .media-carousel {
+    margin-inline: 0;
+  }
+
+  button.close-dialog {
+    @extend %-carousel-nav-button;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: var(--space);
+  }
+}

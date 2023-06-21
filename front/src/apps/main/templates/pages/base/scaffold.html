@@ -1,0 +1,42 @@
+<!DOCTYPE html>{% comment %}Basic layout for a normal page.{% endcomment %}
+<html lang="en">
+<head>
+    <title>{% block title %}{% endblock %}
+        {% block title_suffix %} - __env__:siteName{% endblock %}</title>
+    <meta name="description" content="{% block description %}Things by Michael Beaton{% endblock %}" />
+    {% include "./_head.html" %}
+    {% block html_head %}{% endblock %}
+</head>
+
+<body>
+<div id="dialog_scrim"></div>
+<div id="dialog_container"></div>
+<header>{% block header %}{% include "./_header.html" %}{% endblock %}</header>
+
+<div id="content_wrapper">
+    <div id="content" class="{% block content_class %}{% endblock %}"{% if page_obj %} data-page="{{ page_obj.number }}"{% endif %}>
+        {% block content %}
+        {% block before %}{% endblock %}
+
+        <main>
+            {% block main %}{% endblock %}
+        </main>
+
+        {% block after %}{% endblock %}
+        {% block post_scripts %}{% endblock %}
+        {% endblock %}
+    </div>
+</div>
+
+<footer>
+    {% block footer %}
+    {% include "./_footer.html" %}
+    {% endblock %}
+
+    {% block hcard %}
+    {% include "components/hcard/hcard-basic.html" %}
+    {% endblock %}
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+@use "v2/core";
+
+section:not(:empty):not(:only-child):not(:last-child) {
+  margin-bottom: 4rem;
+}

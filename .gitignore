@@ -1,0 +1,17 @@
+# Specific files
+.env
+
+# Filetype patterns
+*.db
+*.sqlite
+*.sqlite3
+*.gitbundle
+
+# Directories
+.idea/
+__pycache__/
+dist/
+env/
+lib/
+node_modules/
+static/

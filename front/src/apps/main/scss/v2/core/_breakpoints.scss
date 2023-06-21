@@ -1,0 +1,20 @@
+$breakpoint-small: 400px;
+$breakpoint-medium: 600px;
+
+@mixin display-max-width($width) {
+  @media (max-width: $width) {
+    @content;
+  }
+}
+
+@mixin on-small-width() {
+  @media (width < $breakpoint-small) {
+    @content;
+  }
+}
+
+@mixin on-medium-width() {
+  @media (width < $breakpoint-medium) {
+    @content;
+  }
+}

@@ -1,0 +1,40 @@
+@use "v2/core";
+
+#app {
+  --preview-image-size: 300px;
+
+  .app-image {
+    @extend %center;
+    @extend %margin-large-block;
+    
+    width: min-content;
+  }
+
+  .e-content:not(:empty) {
+    @extend %margin-large-block;
+  }
+}
+
+.app-type {
+  @include core.size(1em);
+  font-size: var(--fs-h6);
+  stroke: currentColor;
+  fill: currentColor;
+
+  > svg {
+    @include core.size(1em);
+  }
+}
+
+article.changelog {
+  @extend %margin-large-block;
+  @extend %padding-medium;
+  @extend %shape-medium;
+  @extend %outlined;
+}
+
+
+section#changelog {
+  @extend %text-container;
+  @extend %center;
+}

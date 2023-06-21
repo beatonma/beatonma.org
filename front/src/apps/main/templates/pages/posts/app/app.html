@@ -1,0 +1,40 @@
+{% extends 'pages/base/scaffold.html' %}
+{% load dates %}
+
+
+{% block title %}{{ app.title }}{% endblock %}
+{% block description %}{{ app.tagline }}{% endblock %}
+
+{% block main %}
+{% include 'staff/edit-links.html' with target=app %}
+<section id="app">
+  <article class="h-entry" data-type="app">
+    <div class="app-image">
+      {% include "components/preview-image/image.html"
+        with image_url=app.resolve_icon_url
+        title=app.title
+        imageclass="contain"
+        themeable=app
+      %}
+    </div>
+
+    {% include "./_app-title-bar.html" %}
+
+    <div class="e-content">{{ app.description|default:"" }}</div>
+
+    {% include "components/react/media-container.html" with target=app style="carousel" %}
+  </article>
+</section>
+
+{% if changelogs %}
+<section id="changelog">
+  <h2>Changelog</h2>
+
+  {% for changelog in changelogs %}
+  {% include "./_changelog.html" %}
+  {% endfor %}
+</section>
+{% endif %}
+
+{% include "components/react/webmentions-container.html" %}
+{% endblock %}

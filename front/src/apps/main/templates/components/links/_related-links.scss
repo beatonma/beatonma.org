@@ -1,0 +1,9 @@
+@use "v2/components";
+
+.related-links {
+  @extend %links;
+
+  .related-link__description {
+    color: var(--vibrant);
+  }
+}

@@ -1,0 +1,31 @@
+@use "v2/core";
+@use "v2/components/card";
+
+.title-bar {
+  .title-bar__primary {
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    align-items: baseline;
+    gap: var(--space);
+  }
+
+  .title-bar__title {
+    line-height: 1.5;
+    letter-spacing: .1ch;
+
+    @include core.row(
+            $horizontal: flex-start,
+            $vertical: baseline,
+            $gap: 1rem,
+            $wrap: nowrap,
+    );
+  }
+
+  .title-bar__trailing {
+    font-size: var(--fs-smallest);
+  }
+
+  .title-bar__secondary {
+
+  }
+}

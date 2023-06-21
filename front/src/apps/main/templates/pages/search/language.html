@@ -1,0 +1,14 @@
+{% extends './_search_results.html' %}
+
+{% block title %}{{ filter }}{% endblock %}
+{% block description %}Apps written with {{ filter }}{% endblock %}
+
+{% block search_header %}{{ filter }} apps{% endblock %}
+
+{% block filters %}
+  {% include "./_filters.html"
+    with
+    filters_title="Languages"
+    filters_viewname="search-languages"
+    %}
+{% endblock %}

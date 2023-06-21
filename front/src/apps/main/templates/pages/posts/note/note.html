@@ -1,0 +1,15 @@
+{% extends 'pages/posts/_post.html' %}
+{% load dates %}
+{% load html %}
+
+{% block title %}{{ post.content|truncatechars:24 }}{% endblock %}
+{% block description %}{% endblock %}
+
+{% block article %}
+<div class="note-text">
+    <div class="e-content">
+        {{ post.content_html|safe }}
+    </div>
+    <time class="dt-published" title="{{ post.published_at }}" datetime="{{ post.published_at }}">{{ post.published_at|minimaldate }}</time>
+</div>
+{% endblock %}

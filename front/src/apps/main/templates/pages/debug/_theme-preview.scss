@@ -1,0 +1,62 @@
+@use "v2/core";
+@use "v2/components/card";
+
+%-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+#theme_preview {
+  @extend %center;
+
+  max-width: 80ch;
+
+  & > * {
+    margin-block: var(--space-4x);
+  }
+
+  &_headers > * {
+    margin-block: var(--space);
+  }
+
+  .row {
+    @include core.row($gap: var(--space-2x));
+
+    margin-block: var(--space-2x);
+  }
+
+  .outlined {
+    @extend %shape-medium;
+    @extend %outlined;
+  }
+
+  #surfaces {
+    @extend %-grid;
+
+    gap: var(--space-2x);
+  }
+
+  #placeholders {
+    @extend %shape-medium;
+    @extend %-grid;
+
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
+    > div {
+      @extend %card-content;
+
+      cursor: default;
+      font-weight: bold;
+    }
+  }
+
+  form#inputs {
+    @extend %-grid;
+
+    gap: var(--space-2x);
+
+    > * {
+      overflow: clip;
+    }
+  }
+}

@@ -1,0 +1,8 @@
+@forward "./app";
+@forward "./article";
+@forward "./note";
+
+article .e-content {
+  overflow-x: clip;
+  text-overflow: ellipsis;
+}

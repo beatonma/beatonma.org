@@ -1,0 +1,93 @@
+upstream django {
+    server django:8000;
+}
+
+# Rate limiting 'zone' definition (~cache)
+limit_req_zone $request_uri zone=by_uri:10m rate=15r/s;
+
+
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name ${DOMAIN_NAME};
+
+    if ($host !~* ^${DOMAIN_NAME}$) {
+        return 444;
+    }
+
+    include templates/includes/ignore-file-ext.inc;
+    include templates/includes/healthcheck.inc;
+
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/certbot/;
+    }
+
+    location / {
+        return 301 https://${DOMAIN_NAME}$request_uri;
+    }
+}
+
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+
+    server_name ${DOMAIN_NAME};
+
+    if ($host !~* ^${DOMAIN_NAME}$) {
+        return 444;
+    }
+
+    client_max_body_size 8M;
+
+    include templates/includes/ignore-file-ext.inc;
+    include templates/includes/healthcheck.inc;
+    include templates/includes/resources.inc;
+
+    location / {
+        proxy_pass http://django;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_redirect off;
+        limit_req zone=by_uri burst=20 nodelay;
+    }
+
+    ssl_certificate /etc/letsencrypt/live/$host/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$host/privkey.pem;
+    ssl_ciphers EECDH+CHACHA20:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5;
+}
+
+
+
+# HTTP-accessible from localhost
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name localhost nginx-server-tests;
+
+    if ($host !~* ^(localhost|nginx-server-tests)$) {
+        return 444;
+    }
+
+    client_max_body_size 8M;
+    client_body_timeout 5s;
+    client_header_timeout 5s;
+
+    include templates/includes/ignore-file-ext.inc;
+    include templates/includes/healthcheck.inc;
+    include templates/includes/resources.inc;
+
+    location / {
+        proxy_pass http://django;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_redirect off;
+        limit_req zone=by_uri burst=20 nodelay;
+    }
+}

@@ -1,0 +1,93 @@
+@use "animation";
+
+$-color-names: [ "muted", "vibrant" ];
+$-contrast-levels: [
+  "light",
+  "dark",
+  "low-contrast", // Either light or dark depending on theme.
+  "high-contrast", // Either light or dark depending on theme.
+];
+
+@mixin -foreground-color($-name) {
+  color: var(--on-#{$-name});
+  fill: var(--on-#{$-name});
+  stroke: var(--on-#{$-name});
+}
+
+@mixin -hover($-color) {
+  &-hover {
+    @include -foreground-color($-color);
+    @include animation.transition((background-color color));
+
+    background-color: var(--#{$-color});
+
+    &:hover {
+      @include -foreground-color(#{ $-color }-hover);
+
+      background-color: var(--#{$-color}-hover);
+    }
+  }
+}
+
+@mixin surface($-color-name: "surface") {
+  @include -foreground-color($-color-name);
+
+  background-color: var(--#{$-color-name});
+}
+
+%surface {
+  @include surface;
+
+  @each $-color in $-color-names {
+    &-#{$-color} {
+      @include -foreground-color($-color);
+      @include -hover($-color);
+
+      background-color: var(--#{$-color});
+
+      @each $-contrast in $-contrast-levels {
+        &-#{$-contrast} {
+          $-full-name: #{$-color}-#{$-contrast};
+
+          @include -foreground-color($-full-name);
+          @include -hover($-full-name);
+
+          background-color: var(--#{$-full-name});
+        }
+      }
+    }
+  }
+}
+
+%foreground {
+  @each $-color in $-color-names {
+    &-#{$-color} {
+      @include -foreground-color($-color);
+
+      @each $-contrast in $-contrast-levels {
+        &-#{$-contrast} {
+          @include -foreground-color(#{$-color}-#{$-contrast});
+        }
+      }
+    }
+  }
+}
+
+%on {
+  @each $-color in $-color-names {
+    &-#{$-color} {
+      @include -foreground-color(#{$-color});
+
+      @each $-contrast in $-contrast-levels {
+        &-#{$-contrast} {
+          @include -foreground-color(#{$-color}-#{$-contrast});
+        }
+      }
+    }
+  }
+}
+
+
+%scrim-colors {
+  @include surface(scrim);
+}

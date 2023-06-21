@@ -1,0 +1,66 @@
+@use "sass:map";
+@use "./breakpoints";
+
+$-spacing: (
+        "zero": 0,
+        "smallest": var(--space-half),
+        "small": var(--space),
+        "medium": var(--space-2x),
+        "large": var(--space-3x),
+        "auto": auto,
+);
+
+@mixin -spacing($base) {
+  --space-half: calc(#{$base} / 2);
+  --space: #{$base};
+  --space-2x: calc(#{$base} * 2);
+  --space-3x: calc(#{$base} * 3);
+  --space-4x: calc(#{$base} * 4);
+}
+
+
+:root {
+  @include -spacing(8px);
+}
+
+@mixin spacing($property) {
+  $-sides: ("top", "bottom", "left", "right");
+
+  @each $name, $size in $-spacing {
+    // e.g. padding-small, padding-medium...
+    &-#{$name} {
+      #{$property}: $size;
+    }
+
+    // e.g. padding-small-left, padding-small-right...
+    @each $side in $-sides {
+      &-#{$name}-#{$side} {
+        #{$property}-#{$side}: $size;
+      }
+    }
+
+    // e.g. padding-small-block
+    &-#{$name}-block {
+      #{$property}-top: $size;
+      #{$property}-bottom: $size;
+    }
+
+    // e.g. padding-small-inline
+    &-#{$name}-inline {
+      #{$property}-left: $size;
+      #{$property}-right: $size;
+    }
+  }
+}
+
+%padding {
+  @include spacing("padding");
+}
+
+%margin {
+  @include spacing("margin");
+}
+
+%center {
+  margin-inline: auto;
+}

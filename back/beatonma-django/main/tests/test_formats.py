@@ -1,0 +1,82 @@
+from basetest.testcase import LocalTestCase
+from main.models.posts import formats
+from main.views import reverse
+
+
+class FormatsTests(LocalTestCase):
+    def test_linkify_hashtags(self):
+        plain_text = formats._linkify_hashtags("#one #two #three")
+        self.assert_html_links_to(plain_text, reverse.tag("one"), displaytext="#one")
+        self.assert_html_links_to(plain_text, reverse.tag("two"), displaytext="#two")
+        self.assert_html_links_to(
+            plain_text, reverse.tag("three"), displaytext="#three"
+        )
+
+        html = formats._linkify_hashtags(r"<p>#one #two #three</p>")
+        self.assert_html_links_to(html, reverse.tag("one"), displaytext="#one")
+        self.assert_html_links_to(html, reverse.tag("two"), displaytext="#two")
+        self.assert_html_links_to(html, reverse.tag("three"), displaytext="#three")
+
+    def test_replacements(self):
+        html = (
+            "<p>"
+            '<a class="keep-this" href="https://github.com/beatonma">https://github.com/beatonma</a> '
+            '<a href="https://pypi.org/project/django-wm" id="keep_this_too">https://pypi.org/project/django-wm</a> '
+            '<a href="https://reddit.com/r/space">https://reddit.com/r/space</a> '
+            '<a href="https://reddit.com/u/fallofmath/">https://reddit.com/u/fallofmath/</a> '
+            '<a href="https://www.thingiverse.com/thing:4828770">https://www.thingiverse.com/thing:4828770</a> '
+            '<a href="https://youtube.com/@fallofmath">https://youtube.com/@fallofmath</a> '
+            '<a href="https://youtube.com/watch?v=blah">https://youtube.com/watch?v=blah</a> '
+            "</p>"
+        )
+
+        formatted = formats._friendly_common_links(html)
+        self.assert_html_links_to(
+            formatted,
+            "https://reddit.com/u/fallofmath/",
+            displaytext="/u/fallofmath",
+        )
+        self.assert_html_links_to(
+            formatted,
+            "https://reddit.com/r/space",
+            displaytext="/r/space",
+        )
+        self.assert_html_links_to(
+            formatted,
+            "https://youtube.com/@fallofmath",
+            displaytext="youtube/@fallofmath",
+        )
+        self.assert_html_links_to(
+            formatted,
+            "https://youtube.com/watch?v=blah",
+            displaytext="youtube/v=blah",
+        )
+        self.assert_html_links_to(
+            formatted,
+            "https://github.com/beatonma",
+            displaytext="github/beatonma",
+        )
+        self.assert_html_links_to(
+            formatted,
+            "https://www.thingiverse.com/thing:4828770",
+            displaytext="thingiverse/4828770",
+        )
+        self.assert_html_links_to(
+            formatted,
+            "https://pypi.org/project/django-wm",
+            displaytext="pypi/django-wm",
+        )
+
+        self.assertInHTML(
+            '<a class="keep-this" href="https://github.com/beatonma">github/beatonma</a>',
+            formatted,
+        )
+        self.assertInHTML(
+            '<a href="https://pypi.org/project/django-wm" id="keep_this_too">pypi/django-wm</a>',
+            formatted,
+        )
+
+    def test_ligatures(self):
+        self.assertEqual(
+            formats._apply_ligatures("if this(c) -> that..."), "if this© → that…"
+        )

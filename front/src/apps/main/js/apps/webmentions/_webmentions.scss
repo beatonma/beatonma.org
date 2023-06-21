@@ -1,0 +1,81 @@
+@use "v2/core";
+
+$-webmention-min-width: 18ch;
+
+#webmentions {
+  @extend %text-container;
+  @extend %center;
+
+  h3 {
+    @extend %margin-medium-bottom;
+  }
+
+  .grouped-mentions {
+    @extend %grid;
+
+    grid-template-columns: 1fr $-webmention-min-width;
+
+    &:has(> :only-child) {
+      grid-template-columns: 1fr;
+    }
+
+    @media (width < 700px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .mentions {
+    @extend %grid;
+
+    &[data-quoted="false"] {
+      @include core.grid-columns($-webmention-min-width, auto-fill);
+    }
+  }
+
+  a.mention {
+    @extend %padding-small;
+    @extend %shape-adaptive-small;
+    @extend %surface-muted-hover;
+    @extend %stretch-width;
+
+    display: block;
+
+    .mention-hcard {
+      @include core.row($gap: 1ch, $wrap: nowrap);
+
+      line-height: 1.75;
+
+      .hcard-name {
+        @extend %text-one-line;
+      }
+    }
+
+    %-mention-avatar {
+      @include core.size(1.75rem);
+      @extend %shape-small;
+
+      object-fit: cover;
+    }
+
+    .mention-avatar {
+      @extend %-mention-avatar;
+
+      &-null {
+        @extend %-mention-avatar;
+        @extend %surface-vibrant;
+
+        text-transform: uppercase;
+        text-align: center;
+      }
+    }
+
+    .mention-quote {
+      @extend %margin-small-top;
+      @extend %padding-small;
+      @extend %shape-small;
+      @extend %text-small;
+
+      background-color: var(--hover);
+    }
+  }
+}

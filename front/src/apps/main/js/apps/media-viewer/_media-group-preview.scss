@@ -1,0 +1,111 @@
+@use "v2/core";
+@use "sass:math";
+
+.media-group-preview {
+  @extend %shape-medium;
+
+  min-height: 300px;
+  max-height: 432px;
+  display: grid;
+  align-items: stretch;
+  overflow: clip;
+  margin-block: var(--space);
+
+  .media {
+    display: block;
+  }
+
+  > .media-griditem > .media {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+
+  .media-griditem {
+    width: 100%;
+    height: 100%;
+  }
+
+  &[data-item-count] {
+    /*
+    item-count > 4.
+    Display only the first 4 items with a hint of additional items.
+    */
+    position: relative;
+
+    &::after {
+      @extend %overlay;
+
+      content: "...";
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-areas:
+            "a b"
+            "a b"
+            "a d"
+            "c d";
+
+    :first-child {
+      grid-area: a;
+      background-color: var(--vibrant-light);
+    }
+
+    :nth-child(2) {
+      grid-area: b;
+      background-color: var(--muted-dark);
+    }
+
+    :nth-child(3) {
+      grid-area: c;
+      background-color: var(--vibrant-dark);
+    }
+
+    :nth-child(4) {
+      grid-area: d;
+      background-color: var(--muted-light);
+    }
+
+    :nth-child(n+5) {
+      display: none;
+    }
+  }
+
+  &[data-item-count="1"], &[data-item-count="2"], &[data-item-count="3"], &[data-item-count="4"] {
+    &::after {
+      content: none;
+    }
+  }
+
+  &[data-item-count="0"] {
+    display: none;
+  }
+
+  &[data-item-count="1"] {
+    grid-template-columns: 1fr;
+    grid-template-areas: "a";
+  }
+
+  &[data-item-count="2"] {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-areas: "a b";
+  }
+
+  &[data-item-count="3"] {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-areas:
+            "a b"
+            "a c";
+  }
+
+  &[data-item-count="4"] {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-areas:
+            "a b"
+            "a d"
+            "c d";
+  }
+}

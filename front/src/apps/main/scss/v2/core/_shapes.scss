@@ -1,0 +1,73 @@
+@use "./breakpoints";
+
+$-corners: (
+        "small": 6px,
+        "medium": 12px,
+        "large": 16px,
+);
+
+@mixin -corners {
+  @each $name, $size in $-corners {
+    &-#{$name} {
+      border-radius: $size;
+      @content;
+    }
+
+    &-#{$name}-top {
+      border-top-left-radius: $size;
+      border-top-right-radius: $size;
+      @content;
+    }
+
+    &-#{$name}-bottom {
+      border-bottom-left-radius: $size;
+      border-bottom-right-radius: $size;
+      @content;
+    }
+  }
+}
+
+%round {
+  border-radius: 50%;
+}
+
+%shape {
+  @include -corners;
+}
+
+/*
+ * Revert to square corners on narrow devices.
+ */
+%shape-adaptive {
+  @include -corners {
+    @include breakpoints.on-small-width {
+      border-radius: 0;
+    }
+  }
+}
+
+@mixin shape($top: null, $bottom: null, $left: null, $right: null) {
+  @if $top {
+    border-top-left-radius: $top;
+    border-top-right-radius: $top;
+  }
+
+  @if $bottom {
+    border-bottom-left-radius: $bottom;
+    border-bottom-right-radius: $bottom;
+  }
+
+  @if $left {
+    border-top-left-radius: $left;
+    border-bottom-left-radius: $left;
+  }
+
+  @if $right {
+    border-top-right-radius: $right;
+    border-bottom-right-radius: $right;
+  }
+}
+
+%outlined {
+  border: 2px solid var(--text-tertiary);
+}

@@ -1,0 +1,59 @@
+@use "v2/core";
+
+:root {
+  --preview-image-size: 9rem;
+
+
+  @include core.on-medium-width {
+    --preview-image-size: 6rem;
+  }
+}
+
+.preview-image {
+  @include core.size(var(--preview-image-size));
+  @extend %shape-medium;
+
+  overflow: clip;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  > svg {
+    @extend %stretch;
+    @extend %padding-small;
+  }
+
+  &.cover > img {
+    object-fit: cover;
+  }
+
+  &.contain > img {
+    @extend %stretch;
+    @extend %padding-small;
+
+    object-fit: contain;
+  }
+
+  &.preview-image__text-wrapper {
+    user-select: none;
+
+    > .preview-image__text {
+      // No actual image available, use some artsy text.
+      @include core.size(calc(var(--preview-image-size) * 1.414));
+
+      position: relative;
+      top: -25%;
+      left: -25%;
+      font-family: monospace;
+      letter-spacing: 2px;
+      font-size: calc(var(--preview-image-size) / 5);
+      font-weight: bold;
+      text-align: start;
+      text-transform: uppercase;
+      transform: rotate(45deg);
+      transform-origin: center;
+      line-height: 1.3;
+      line-break: anywhere;
+      overflow: clip;
+    }
+  }
+}

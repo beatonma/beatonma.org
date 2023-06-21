@@ -1,0 +1,14 @@
+@use "v2/core";
+@use "button";
+
+%links {
+  @extend %buttons-row;
+
+  .links-title {
+    font-weight: bold;
+  }
+
+  a {
+    line-height: 1;
+  }
+}

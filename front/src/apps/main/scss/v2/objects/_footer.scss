@@ -1,0 +1,8 @@
+@use "v2/core";
+
+footer {
+  @include core.row($horizontal: center, $gap: 1ch);
+  @extend %padding-large;
+
+  font-size: var(--fs-small);
+}

@@ -1,0 +1,22 @@
+@use "v2/core";
+
+table {
+  @extend %surface;
+  @extend %shape-medium;
+
+  border-collapse: collapse;
+  overflow: clip;
+
+
+  thead {
+    @extend %surface-muted;
+  }
+
+  tr {
+    @extend %hover;
+  }
+
+  td, th {
+    @extend %padding-medium;
+  }
+}

@@ -1,0 +1,65 @@
+{% extends 'pages/base/scaffold.html' %}
+{% load static %}
+
+{% block title %}__env__:siteName - Contact{% endblock %}
+
+{% block main %}
+    <div id="contact">
+        <h2>Contact me</h2>
+
+        <form id="contact_form" name="contact_form" method="POST" onsubmit="onSubmitContact(event)">
+            {% csrf_token %}
+            <p>
+                <label for="contact_name">What should I call you?</label>
+                <input
+                    autocomplete="name"
+                    id="contact_name"
+                    type="text"
+                    name="name"
+                    autofocus
+                    required
+                    placeholder="Your name"
+                />
+            </p>
+
+            <p>
+                <label for="contact_method">How can I contact you?</label>
+                <input
+                    autocomplete="email"
+                    id="contact_method"
+                    type="text"
+                    name="contact_method"
+                    required
+                    placeholder="Your email address, IM service &amp; username, whatever."
+                />
+            </p>
+
+            <p>
+                <label for="contact_message">What would you like to say?</label>
+                <textarea
+                    autocomplete="off"
+                    id="contact_message"
+                    name="message"
+                    required
+                    placeholder="Your message"
+                ></textarea>
+            </p>
+
+            <div class="submit">
+                <div
+                    class="g-recaptcha"
+                    data-callback="onContactCaptchaPassed"
+                    data-expired-callback="onContactCaptchaExpired"
+                    data-sitekey="__env__:googleRecaptchaToken"
+                ></div>
+                <button id="contact_submit" disabled>Send</button>
+            </div>
+        </form>
+
+        <div id="error_response"></div>
+    </div>
+{% endblock %}
+
+{% block post_scripts %}
+    <script class="onPageChange" src="https://recaptcha.net/recaptcha/api.js" async defer></script>
+{% endblock %}

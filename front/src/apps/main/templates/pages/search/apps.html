@@ -1,0 +1,18 @@
+{% extends './_search_results.html' %}
+
+{% block title %}Apps{% endblock %}
+{% block description %}Apps by Michael Beaton{% endblock %}
+
+{% if not filter %}
+{% block html_head %}
+{% comment %}Allow robots on all apps page, not on filtered pages{% endcomment %}
+{% endblock %}
+{% endif %}
+
+{% block filters %}
+{% include "./_filters.html"
+  with
+  filters_title="Types"
+  filters_viewname="apps-by-type"
+  %}
+{% endblock %}

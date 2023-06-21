@@ -1,0 +1,24 @@
+<h2>Placeholders</h2>
+
+<div id="placeholders">
+{% with "
+    surface
+    surface-muted-light
+    surface-muted
+    surface-muted-dark
+    surface-vibrant-light
+    surface-vibrant
+    surface-vibrant-dark
+    surface-muted-light-hover
+    surface-muted-hover
+    surface-muted-dark-hover
+    surface-vibrant-light-hover
+    surface-vibrant-hover
+    surface-vibrant-dark-hover
+  " as list %}
+
+{% for x in list.split %}
+    <div class="test-{{ x }}">%{{ x }}</div>
+{% endfor %}
+{% endwith %}
+</div>

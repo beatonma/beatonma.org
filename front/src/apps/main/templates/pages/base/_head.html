@@ -1,0 +1,16 @@
+{% load static %}
+
+{% include "./_meta.html" %}
+
+{% block style %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+{% if user.is_staff %}<link rel="stylesheet" href="{% static 'css/staff.min.css' %}" />{% endif %}
+<link rel="stylesheet" href="{% static 'css/bma.min.css' %}" />
+<style id="local_style">
+    {{ local_style|default:""|safe }}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static '/js/app.min.js' %}" defer type="application/javascript" ></script>
+{% endblock %}

@@ -1,0 +1,40 @@
+@use "v2/core";
+
+.feed > [data-type="note"] {
+  @extend %margin-large-block;
+  @extend %surface-muted;
+  @extend %outlined;
+  @extend %shape-adaptive-medium;
+
+  max-width: 480px;
+
+  > article {
+    @extend %padding-large;
+
+    > .e-content {
+      @extend %text-large;
+    }
+
+    > time {
+      margin-top: var(--space);
+      display: block;
+      text-align: end;
+    }
+
+    @include core.on-medium-width {
+      padding-inline: var(--space);
+    }
+  }
+
+  @include core.on-small-width {
+    border-width: 0;
+  }
+
+  &:nth-child(3n+1) {
+    margin-inline: 0 auto;
+  }
+
+  &:nth-child(3n+2) {
+    margin-inline: auto 0;
+  }
+}

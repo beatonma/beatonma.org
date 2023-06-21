@@ -1,0 +1,9 @@
+{% if message.url %}
+<a class="feed-message" href="{{ message.url }}">
+  {{ message.message }}
+</a>
+{% else %}
+<div class="feed-message">
+  {{ message.message }}
+</div>
+{% endif %}

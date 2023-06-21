@@ -1,0 +1,52 @@
+from random import choice, random
+
+from django import template
+from django.template.defaultfilters import stringfilter
+
+register = template.Library()
+
+
+@register.filter(name="startswith")
+@stringfilter
+def startswith(self, query: str) -> bool:
+    if self is None:
+        return False
+
+    try:
+        return self.startswith(query)
+    except AttributeError:
+        return str(self).startswith(query)
+
+
+@register.filter(name="remove")
+@stringfilter
+def remove(self, substring: str) -> str:
+    if self is None:
+        return ""
+
+    return self.replace(substring, "")
+
+
+@register.filter(name="in_rainbows")
+@stringfilter
+def in_rainbows(self):
+    def _maybe(options: str) -> str:
+        if random() > 0.9:
+            return choice(options)
+        return ""
+
+    words = self.split(" ")
+    for index, word in enumerate(words):
+        if len(word) < 4:
+            words[index] = f"{_maybe('_/')}{word}{_maybe('_/')}"
+            continue
+
+        words[index] = "".join([f"{x}{_maybe(' _/')}" for x in word])
+
+    return " ".join(words)
+
+
+@register.filter("nbsp")
+@stringfilter
+def nbsp(self):
+    return self.replace(" ", "&nbsp;")

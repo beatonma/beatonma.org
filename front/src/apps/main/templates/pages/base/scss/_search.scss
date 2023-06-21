@@ -1,0 +1,148 @@
+@use "v2/core";
+@use "v2/components/card";
+@use "v2/components/links";
+
+$show-search-max-width: 700px; // On narrow devices, hide the search icon and always show search input.
+$search-full-width: 580px; // On narrow devices, make the search input fill the available width.
+$search-input-width: 32ch;
+
+#search_form {
+  position: relative;
+
+  #search_bar {
+    @include core.row(flex-end, $wrap: nowrap);
+  }
+
+  #search_icon {
+    @extend %clickable;
+    @extend %hover;
+    @extend %icon-medium;
+    @extend %padding-small;
+
+    display: inline-block;
+  }
+
+  #search_wrapper {
+    @include core.transition((opacity, max-width));
+
+    max-width: 0;
+    overflow-x: hidden;
+    opacity: 0;
+  }
+
+  #search {
+    @extend %text-default;
+    @include core.transition((max-width));
+
+    position: relative;
+    max-width: $search-input-width;
+    margin: 0 0 0 4px;
+    background-color: var(--input-text-background);
+  }
+
+  #search_results {
+    @extend %card;
+    @extend %shape-medium;
+    @extend %padding-small;
+    @extend %padding-medium-bottom;
+    @include core.transition((height, opacity));
+
+    position: absolute;
+    right: 0;
+    max-width: 0;
+    max-height: 0;
+    height: 0;
+    opacity: 0;
+    overflow: clip;
+    box-sizing: border-box;
+
+    .search-result {
+      @extend %shape-small;
+      @extend %padding-small;
+      @extend %margin-small-bottom;
+      @extend %surface-muted-hover;
+      @extend %stretch-width;
+
+      display: inline-block;
+
+      &--name {
+        font-weight: bold;
+        line-height: 1.2;
+      }
+
+      &--description {
+        @include core.max-lines(2);
+        @extend %text-small;
+      }
+
+      > time {
+        @extend %margin-small-top;
+
+        display: block;
+        text-align: end;
+      }
+    }
+
+    .search-suggestions {
+      @extend %links;
+
+      justify-content: flex-end;
+
+      .links-title {
+        flex: 0 0 100%;
+        text-align: end;
+      }
+    }
+  }
+
+
+  &:focus-within, &[data-debug] {
+    z-index: var(--elevation-search-results);
+
+    #search_wrapper {
+      max-width: 100%;
+      opacity: 1;
+    }
+
+    #search_results {
+      max-width: min(100%, #{$search-input-width});
+      height: auto;
+      max-height: unset;
+      opacity: 1;
+      pointer-events: all;
+    }
+  }
+
+  @include core.display-max-width($search-full-width) {
+    @include core.stretch-width;
+
+    #search_wrapper,
+    input[type="search"] {
+      @include core.stretch-width;
+    }
+
+    #search {
+      max-width: 100%;
+    }
+  }
+
+  @include core.display-max-width($show-search-max-width) {
+    #search_icon {
+      @include core.size(0);
+
+      opacity: 0;
+      overflow: clip;
+      padding: 0;
+    }
+
+    #search {
+      margin-left: 0;
+    }
+
+    #search_wrapper {
+      margin-block: var(--space-2x);
+      max-width: 100%;
+      opacity: 1;
+    }
+  }
+}

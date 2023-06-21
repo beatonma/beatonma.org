@@ -1,0 +1,33 @@
+#theme_preview {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .row {
+        column-gap: 1rem;
+    }
+}
+
+#color_palette {
+    margin: 32px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+
+    .color-family {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+
+        > div {
+            width: 100px;
+            aspect-ratio: 1;
+        }
+    }
+}
+
+#theme_preview_components {
+    > div {
+        margin-bottom: 16px;
+    }
+}
