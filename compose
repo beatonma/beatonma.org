@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-FILE_PRODUCTION="compose.production.yml"
-FILE_DEV="./compose.dev.yml"
+FILE_PRODUCTION="production.yml"
+FILE_DEV="./dev.yml"
 FILE_CERTBOT="./compose.certbot.yml"
 FILE_DB_INIT="./compose.db-init.yml"
 FILE_DB_BACKUP="./docker/db-init/backup.db"

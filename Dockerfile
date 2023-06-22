@@ -1,21 +1,23 @@
+ARG GIT_HASH
+
 ################################################################################
 FROM node:20-alpine AS gulp
 
 LABEL description="Generate frontend webapp and template files."
 
-RUN apk add \
-    git
-
+ENV GIT_HASH=$GIT_HASH
 WORKDIR /app
-COPY ./front /app
+COPY beatonma-gulp /app
 RUN npm install && npm cache clean --force
 RUN npm run build
 RUN npm run jest
 
 ENTRYPOINT ["/bin/ash"]
 
+
 ################################################################################
 FROM python:3.11-alpine as python
+
 
 ################################################################################
 FROM python AS app_core
@@ -38,12 +40,14 @@ RUN --mount=type=ssh pip install git+ssh://git@github.com/beatonma/bmanotify-dja
 ARG REQUIREMENTS_CACHEBUST=0
 RUN echo "REQUIREMENTS_CACHEBUST: $REQUIREMENTS_CACHEBUST"
 
-COPY ./back/beatonma-django/requirements.txt /tmp/
+COPY ./beatonma-django/requirements.txt /tmp/
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r /tmp/requirements.txt
 
 # Pass a random CACHEBUST value to ensure data is updated and not taken from cache.
 ARG CACHEBUST=0
 RUN echo "CACHEBUST: $CACHEBUST"
+
+ENV GIT_HASH=$GIT_HASH
 
 WORKDIR /buildcontext/
 COPY . /buildcontext/
@@ -52,7 +56,7 @@ WORKDIR /var/log/beatonma/
 WORKDIR /django
 
 # Django project files.
-COPY ./back/beatonma-django /django
+COPY ./beatonma-django /django
 
 # Generated template and static files from gulp build.
 COPY --from=gulp /app/dist /django

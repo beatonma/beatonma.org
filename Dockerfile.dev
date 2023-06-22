@@ -5,10 +5,8 @@ RUN apk add \
     git \
     curl
 
-ENV GIT_HASH=dev
-
 WORKDIR /app
-COPY ./front/package.json /app
+COPY beatonma-gulp/package.json /app
 RUN npm install
 EXPOSE 3000
 
@@ -30,20 +28,17 @@ RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 RUN --mount=type=ssh pip install git+ssh://git@github.com/beatonma/bmanotify.git
 RUN --mount=type=ssh pip install git+ssh://git@github.com/beatonma/bmanotify-django.git
 
-WORKDIR /var/log/beatonma/
+WORKDIR /var/log/beatonma
 WORKDIR /django
 
 ARG REQUIREMENTS_CACHEBUST=0
-RUN echo "[requirements]$REQUIREMENTS_CACHEBUST"
+RUN echo "$REQUIREMENTS_CACHEBUST"
 
-COPY ./back/beatonma-django/requirements.txt /django/
+COPY ./beatonma-django/requirements.txt /django/
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
 
 ARG CACHEBUST=0
 RUN echo "$CACHEBUST"
-
-ENV GIT_HASH="$(shell git rev-parse --short HEAD)"
-RUN echo "git hash: '$GIT_HASH'"
 
 COPY ./docker/django/entrypoint.dev.sh /
 EXPOSE 8000

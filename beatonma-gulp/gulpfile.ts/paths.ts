@@ -4,7 +4,7 @@ export const ANY_FILE = "**";
 /* Paths */
 const SRC_PATH = "src/";
 const DIST_PATH = "dist/";
-// export const LOCAL_PATH = "../back/beatonma-django/";
+// export const LOCAL_PATH = "../beatonma-django/";
 const LOCAL_PATH = process.env.TEMPLATE_ROOT
 
 export const srcPath = (path?: string) => joinPath(SRC_PATH, path);
