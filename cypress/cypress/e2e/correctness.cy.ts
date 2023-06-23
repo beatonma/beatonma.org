@@ -1,4 +1,3 @@
-import { formatDateISO } from "../../src/apps/main/js/util/datetime";
 import { RepresentativeUrls, toFilename } from "./config.cy";
 
 describe("Visit a sample page for each type of content", () => {
@@ -10,8 +9,7 @@ describe("Visit a sample page for each type of content", () => {
     });
 
     it("Record a screenshot of each page", () => {
-        const date = new Date();
-        const dirname = formatDateISO(date);
+        const dirname = new Date().toISOString().slice(0, 10);
         RepresentativeUrls.forEach(url => {
             const targetFilename = `${dirname}/${toFilename(url)}`;
             cy.visit(url);

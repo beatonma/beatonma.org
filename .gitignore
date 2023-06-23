@@ -1,5 +1,6 @@
 # Specific files
 .env
+.env.*
 
 # Filetype patterns
 *.db

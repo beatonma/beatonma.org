@@ -1,7 +1,5 @@
-import { serverUrl } from "./config.cy";
-
 describe("About page displays correctly", () => {
-    const url = serverUrl("/about/");
+    const url = "/about/";
     it("Renders correctly", () => {
         cy.visit(url);
         cy.title().should("contain", "About");

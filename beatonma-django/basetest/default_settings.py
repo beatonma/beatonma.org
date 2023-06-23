@@ -14,7 +14,7 @@ ROOT_URLCONF = "beatonma.urls"
 
 SECRET_KEY = "some-test-key"
 
-DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": "temp.db"}}
+DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": "test.sqlite3"}}
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATIC_URL = "/static/"
@@ -59,7 +59,7 @@ LOGGING = {
     },
     "loggers": {
         app: {
-            "level": logging.WARNING,
+            "level": logging.INFO,
             "handlers": ["console"],
         }
         for app in [

@@ -1,6 +1,6 @@
 import del from "del";
 import { ANY_FILE, distPath } from "./paths";
-import {buildEnv, Env} from "./env";
+import { Env} from "./env";
 
 enum BuildMode {
     Development = "development",
@@ -21,14 +21,24 @@ const clean = async () => del.sync([distPath(ANY_FILE)]);
 
 const init = async (_buildType: BuildMode) => {
     buildMode = _buildType;
-    const gitHash = process.env.GIT_HASH;
-    environment = buildEnv(gitHash);
+    environment = {
+        gitHash: process.env.GIT_HASH,
+        contactEmail: process.env.WEBMAIL_CONTACT_EMAIL,
+        googleRecaptchaToken: process.env.GOOGLE_RECAPTCHA_TOKEN,
+        siteName: process.env.SITE_NAME,
+    };
     await clean()
 }
 export const initDev = async () =>  init(BuildMode.Development);
 export const initProduction = async () => init(BuildMode.Production);
 
 export const checkConfiguration = async () => {
+    Object.entries(environment).forEach(([, value]) => {
+        if (!value) {
+            throw `Invalid environment: ${JSON.stringify(environment)} | ${JSON.stringify(process.env)}`;
+        }
+    })
+
     if (!buildMode) {
         throw `gulpfile task configuration error
             buildType must be set before calling 'build' task!

@@ -1,6 +1,4 @@
-import { serverUrl } from "./config.cy";
-
-const url = serverUrl("/contact/");
+const url = "/contact/";
 const contactNameID = "#contact_name";
 const contactMethodID = "#contact_method";
 const contactMessageID = "#contact_message";

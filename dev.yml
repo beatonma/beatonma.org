@@ -6,8 +6,8 @@ volumes:
   generated:
 
 x-common: &common
-  env_file: ".env"
-  restart: "no"
+  env_file: ".env.dev"
+  restart: "unless-stopped"
   tty: true
 
 x-health: &health
@@ -32,30 +32,25 @@ services:
       dockerfile: Dockerfile.dev
       target: gulp_watch
     env_file:
-      - ".env"
+      - ".env.dev"
     ports:
       - "3000:3000"
       - "3001:3001"
     healthcheck:
       test: curl --fail http://localhost:3001 || exit 1
-      interval: 5s
-      start_period: 30s
-      timeout: 3s
-      retries: 5
+      <<: *health
+      start_period: 120s
     volumes:
       - generated:/generated
       - ./beatonma-django:/django:ro
       - ./beatonma-gulp:/app
-    environment:
-      - GOOGLE_RECAPTCHA_TOKEN=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
-      - TEMPLATE_ROOT=/generated/
-      - GIT_HASH=dev
+
 
   django:
     <<: *common
     build:
       dockerfile: Dockerfile.dev
-      target: app_dev
+      target: django
     depends_on:
       db:
         condition: service_healthy
@@ -68,8 +63,37 @@ services:
       - ./beatonma-django:/django:ro
       - /var/www/static:/var/www/static
       - /var/www/media:/var/www/media
+
+  # Integration tests
+  cypress.django:
+    <<: *common
+    profiles: ["test"]
+    build:
+      dockerfile: Dockerfile.dev
+      target: cypress_django
+    healthcheck:
+      test: curl http://localhost:8000/ping/
+      <<: *health
+    ports:
+      - "8123:8000"
+    restart: "no"
+    volumes:
+      - generated:/generated:ro
+      - ./beatonma-django:/django:ro
+      - /var/www/static:/var/www/static:ro
+
+  cypress:
+    <<: *common
+    profiles: ["test"]
+    build:
+      dockerfile: Dockerfile.dev
+      target: cypress
+    depends_on:
+      cypress.django:
+        condition: service_healthy
+    restart: "no"
     environment:
-      - DEBUG=True
-      - TEMPLATE_ROOT=/generated/
-      - DJANGO_SUPERUSER_PASSWORD=testpass
-      - GIT_HASH=dev
+      - CYPRESS_baseUrl=http://cypress.django:8000
+    volumes:
+      - ./cypress:/cypress
+    working_dir: /cypress

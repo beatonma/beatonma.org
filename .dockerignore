@@ -1,16 +1,15 @@
 # Patterns
 *.gitbundle
-*.sqlite?
-back/**/templates/
 frontend-tests*
 
 # Directories
-.git/
+.github/
 .idea/
-__pycache__
-env/
 cypress/
-dist/
 install/
-node_modules/
-static/
+
+**/__pycache__/
+**/dist/
+**/env/
+**/node_modules/
+**/.git

@@ -1,9 +1,11 @@
 from .default_settings import *  # noqa
+from beatonma.settings import STATICFILES_DIRS  # noqa
+from beatonma.settings.environment import GIT_HASH  # noqa
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "frontend-tests.sqlite3",
+        "NAME": "/tmp/cypress.sqlite3",
     }
 }
 
@@ -12,15 +14,13 @@ GOOGLE_RECAPTCHA_SECRET = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
 
 DEBUG = True
 CELERY_DISABLED = True
+ALLOWED_HOSTS = [
+    "*"
+]
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:8123",
+    "http://localhost:8000",
+    "http://cypress_django:8123",
 ]
 
 STATIC_ROOT = "/tmp/bma-tests/static/"
 STATIC_URL = "/static/"
-
-STATICFILES_DIRS = (
-    BASE_DIR / "main/static/main/",
-    BASE_DIR / "dashboard/static/dashboard/",
-    BASE_DIR / "webapp/static/",
-)

@@ -1,7 +1,5 @@
-import { serverUrl } from "./config.cy";
-
 describe("Index page displays correctly", () => {
-    const indexUrl = serverUrl("/");
+    const indexUrl = "/";
 
     it("Opens the main page", () => {
         cy.visit(indexUrl);

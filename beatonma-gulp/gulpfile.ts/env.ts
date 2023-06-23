@@ -9,13 +9,6 @@ export interface Env {
     siteName: string;
 }
 
-export const buildEnv = (gitHash?: string): Env =>
-    ({
-        gitHash: gitHash,
-        contactEmail: process.env.WEBMAIL_CONTACT_EMAIL,
-        googleRecaptchaToken: process.env.GOOGLE_RECAPTCHA_TOKEN,
-        siteName: process.env.SITE_NAME,
-    })
 
 /**
  * Inject __env__:key with value of env[key].

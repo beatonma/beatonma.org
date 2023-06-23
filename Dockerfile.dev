@@ -2,19 +2,17 @@
 FROM node:20-alpine AS gulp_watch
 
 RUN apk add \
-    git \
     curl
 
+COPY ./docker/gulp/entrypoint.dev.sh /
 WORKDIR /app
-COPY beatonma-gulp/package.json /app
-RUN npm install
 EXPOSE 3000
 
-ENTRYPOINT ["npm", "run", "watch"]
+ENTRYPOINT /entrypoint.dev.sh
 
 
 ################################################################################
-FROM python:3.11-alpine AS app_dev
+FROM python:3.11-alpine AS django_core
 ENV PYTHONBUFFERED 1
 
 RUN apk add \
@@ -31,16 +29,33 @@ RUN --mount=type=ssh pip install git+ssh://git@github.com/beatonma/bmanotify-dja
 WORKDIR /var/log/beatonma
 WORKDIR /django
 
-ARG REQUIREMENTS_CACHEBUST=0
-RUN echo "$REQUIREMENTS_CACHEBUST"
-
 COPY ./beatonma-django/requirements.txt /django/
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
 
-ARG CACHEBUST=0
-RUN echo "$CACHEBUST"
+
+################################################################################
+FROM django_core as django
 
 COPY ./docker/django/entrypoint.dev.sh /
-EXPOSE 8000
 
+EXPOSE 8000
+ENTRYPOINT ["/entrypoint.dev.sh"]
+
+
+################################################################################
+FROM django_core as cypress_django
+
+COPY docker/cypress/entrypoint-django.dev.sh /entrypoint.dev.sh
+
+EXPOSE 8000
+ENTRYPOINT ["/entrypoint.dev.sh"]
+
+
+################################################################################
+FROM cypress/included as cypress
+
+WORKDIR /cypress
+COPY docker/cypress/entrypoint-cypress.dev.sh /entrypoint.dev.sh
+
+EXPOSE 8000
 ENTRYPOINT ["/entrypoint.dev.sh"]
