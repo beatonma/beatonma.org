@@ -1,0 +1,151 @@
+#!/usr/bin/env bash
+
+FILE_PRODUCTION="./production.yml"
+FILE_DEV="./dev.yml"
+FILE_ENV="./.env"
+
+CONTEXT_DEV="dev"
+CONTEXT_PRODUCTION="production"
+CONTEXT_INIT="init"
+CONTEXT_CERTBOT="certbot"
+
+COMPOSE_FILE=""
+CONTEXT="$1"
+shift
+
+log() {
+  echo "$*" > "$(tty)"
+}
+
+show_help() {
+  log 'bma (dev | production | init | certbot)'
+  log ''
+  log 'dev [test]'
+  log 'production'
+  log 'certbot (init|renew)'
+}
+
+run_command() {
+  log "COMMAND: '$*'"
+  $@
+}
+
+update_certbot() {
+  log "TODO update_certbot"
+}
+
+docker_compose() {
+  run_command "docker compose -f $COMPOSE_FILE $*"
+}
+
+docker_compose_build() {
+  docker_compose build --progress=plain --ssh=default "$@"
+}
+
+production_build() {
+  # Run `docker compose build` with required values from .env file.
+  source "$FILE_ENV"
+  docker_compose_build \
+    --build-arg GIT_HASH="$(git rev-parse --short HEAD)" \
+    --build-arg WEBMAIL_CONTACT_EMAIL="$WEBMAIL_CONTACT_EMAIL" \
+    --build-arg GOOGLE_RECAPTCHA_TOKEN="$GOOGLE_RECAPTCHA_TOKEN" \
+    --build-arg SITE_NAME="$SITE_NAME"
+}
+
+production() {
+  if [ $# -eq 0 ]; then
+    production_build
+    exit 0
+  fi
+
+  case "$1" in
+    "up" | "down" | "build")
+      docker_compose "$@"
+      exit 0
+      ;;
+    *)
+      log "Unhandled arguments '$*'"
+      exit 1
+      ;;
+  esac
+}
+
+dev() {
+  if [ "$1" = "down" ]; then
+    shift
+    docker_compose down "$@"
+    exit 0
+  fi
+
+  docker_compose_build
+  if [ "$1" = "test" ]; then
+    shift
+    docker_compose up --profile test "$@"
+
+  else
+    docker_compose up "$@"
+  fi
+
+  exit 0
+}
+
+certbot_init() {
+  # Run this before first run of production server.
+  docker run --rm \
+    --name certbot_init \
+    --volume letsencrypt_keys:/etc/letsencrypt:rw \
+    --volume letsencrypt_webroot:/var/www/letsencrypt:rw \
+    --env-file "$FILE_ENV" \
+    --entrypoint "" \
+    -p 80:80 \
+    certbot/certbot:latest \
+    sh -c "certbot certonly --standalone $*"
+}
+
+certbot_renew() {
+  # Run this periodically to update while production server is running.
+  docker run --rm \
+    --name certbot_renew \
+    --volume letsencrypt_keys:/etc/letsencrypt:rw \
+    --volume letsencrypt_webroot:/var/www/letsencrypt:rw \
+    --env-file "$FILE_ENV" \
+    --entrypoint "" \
+    certbot/certbot:latest \
+    sh -c "certbot certonly --webroot -w /var/www/letsencrypt $*"
+}
+
+certbot() {
+  source "$FILE_ENV"
+  common_args="-d ${DOMAIN_NAME} -d www.${DOMAIN_NAME} --email ${DOMAIN_EMAIL} --rsa-key-size 4096 --keep-until-expiring --agree-tos --non-interactive"
+
+  if [ "$1" = "init" ]; then
+    shift
+    certbot_init "$common_args"
+
+  elif [ "$1" = "renew" ]; then
+    shift
+    certbot_renew "$common_args"
+  fi
+
+  exit 0
+}
+
+
+log "CONTEXT=$CONTEXT"
+case $CONTEXT in
+  "$CONTEXT_PRODUCTION")
+    COMPOSE_FILE=$FILE_PRODUCTION
+    production "$@"
+    ;;
+  "$CONTEXT_DEV")
+    COMPOSE_FILE=$FILE_DEV
+    dev "$@"
+    ;;
+  "$CONTEXT_CERTBOT")
+    certbot "$@"
+    ;;
+  *)
+    log "Unhandled context '$CONTEXT'"
+    exit 1
+    ;;
+esac

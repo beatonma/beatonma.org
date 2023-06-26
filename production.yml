@@ -7,6 +7,11 @@ volumes:
     name: letsencrypt_keys
     external: true
 
+  letsencrypt_webroot:
+    # Created via `bma certbot`.
+    name: letsencrypt_webroot
+    external: true
+
   postgres:
     # Created via compose.db-init.yml
     name: postgres_beatonma
@@ -16,7 +21,7 @@ volumes:
 # Common settings for all services
 x-common: &common-defaults
   env_file:
-    - ".env"
+    - "./.env"
   restart: unless-stopped
   tty: true
 
@@ -71,7 +76,9 @@ services:
       test: curl --fail http://localhost/health-check/ || exit 1
       <<: *health
     volumes:
-      - letsencrypt:/etc/letsencrypt
+      - /var/log/nginx:/var/log/nginx  # Make logs accessible for fail2ban
+      - letsencrypt:/etc/letsencrypt  # letsencrypt certificates
+      - letsencrypt_webroot:/var/www/letsencrypt:ro  # letsencrypt renewal webroot
       - /var/www/static:/var/www/static:ro
       - /var/www/media:/var/www/media:ro
     ports:

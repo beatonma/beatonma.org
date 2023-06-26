@@ -10,17 +10,13 @@ server {
     listen 80;
     listen [::]:80;
 
-    server_name ${DOMAIN_NAME};
-
-    if ($host !~* ^${DOMAIN_NAME}$) {
-        return 444;
-    }
+    server_name ${DOMAIN_NAME} *.${DOMAIN_NAME};
 
     include templates/includes/ignore-file-ext.inc;
     include templates/includes/healthcheck.inc;
 
     location ^~ /.well-known/acme-challenge/ {
-        root /var/www/certbot/;
+        root /var/www/letsencrypt;
     }
 
     location / {
@@ -34,7 +30,7 @@ server {
     listen [::]:443 ssl;
     http2 on;
 
-    server_name ${DOMAIN_NAME};
+    server_name ${DOMAIN_NAME} www.${DOMAIN_NAME};
 
     if ($host !~* ^${DOMAIN_NAME}$) {
         return 444;
@@ -63,7 +59,7 @@ server {
 
 
 
-# HTTP-accessible from localhost
+# HTTP-accessible from localhost for docker startup checks.
 server {
     listen 80;
     listen [::]:80;
