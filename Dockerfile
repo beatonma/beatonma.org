@@ -1,11 +1,18 @@
-ARG GIT_HASH
-
 ################################################################################
 FROM node:20-alpine AS gulp
 
 LABEL description="Generate frontend webapp and template files."
 
+ARG GIT_HASH
+ARG WEBMAIL_CONTACT_EMAIL
+ARG GOOGLE_RECAPTCHA_TOKEN
+ARG SITE_NAME
+
 ENV GIT_HASH=$GIT_HASH
+ENV WEBMAIL_CONTACT_EMAIL=$WEBMAIL_CONTACT_EMAIL
+ENV GOOGLE_RECAPTCHA_TOKEN=$GOOGLE_RECAPTCHA_TOKEN
+ENV SITE_NAME=$SITE_NAME
+
 WORKDIR /app
 COPY beatonma-gulp /app
 RUN npm install && npm cache clean --force
@@ -36,21 +43,11 @@ RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 RUN --mount=type=ssh pip install git+ssh://git@github.com/beatonma/bmanotify.git
 RUN --mount=type=ssh pip install git+ssh://git@github.com/beatonma/bmanotify-django.git
 
-# Pass a random REQUIREMENTS_CACHEBUST value to update requirements.txt
-ARG REQUIREMENTS_CACHEBUST=0
-RUN echo "REQUIREMENTS_CACHEBUST: $REQUIREMENTS_CACHEBUST"
-
 COPY ./beatonma-django/requirements.txt /tmp/
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r /tmp/requirements.txt
 
-# Pass a random CACHEBUST value to ensure data is updated and not taken from cache.
-ARG CACHEBUST=0
-RUN echo "CACHEBUST: $CACHEBUST"
-
+ARG GIT_HASH
 ENV GIT_HASH=$GIT_HASH
-
-WORKDIR /buildcontext/
-COPY . /buildcontext/
 
 WORKDIR /var/log/beatonma/
 WORKDIR /django
@@ -88,10 +85,6 @@ RUN crontab /tmp/cron-schedule
 ################################################################################
 FROM nginx AS server
 
-# Pass a random CACHEBUST value to ensure data is updated and not taken from cache.
-ARG CACHEBUST=0
-RUN echo "CACHEBUST: $CACHEBUST"
-
 COPY ./docker/nginx/nginx.conf /etc/nginx/
 COPY ./docker/nginx/templates/ /etc/nginx/templates/
 COPY ./docker/nginx/entrypoint.sh /docker-entrypoint.d/40-letsencrypt-perms.sh
@@ -105,10 +98,6 @@ EXPOSE 443
 FROM python as server_checks
 
 RUN --mount=type=cache,target=/root/.cache/pip pip install requests
-
-# Pass a random CACHEBUST value to ensure data is updated and not taken from cache.
-ARG CACHEBUST=0
-RUN echo "CACHEBUST: $CACHEBUST"
 
 COPY ./docker/config_tests/ /tmp/config_tests/
 ENTRYPOINT ["python", "/tmp/config_tests/runtests.py"]
