@@ -27,7 +27,7 @@ show_help() {
 
 run_command() {
   log "COMMAND: '$*'"
-  $@
+  "$@"
 }
 
 update_certbot() {
@@ -35,7 +35,7 @@ update_certbot() {
 }
 
 docker_compose() {
-  run_command "docker compose -f $COMPOSE_FILE $*"
+  run_command docker compose -f $COMPOSE_FILE "$@"
 }
 
 docker_compose_build() {
@@ -91,7 +91,7 @@ dev() {
 
 certbot_init() {
   # Run this before first run of production server.
-  docker run --rm \
+  run_command docker run --rm \
     --name certbot_init \
     --volume letsencrypt_keys:/etc/letsencrypt:rw \
     --volume letsencrypt_webroot:/var/www/letsencrypt:rw \
@@ -104,7 +104,7 @@ certbot_init() {
 
 certbot_renew() {
   # Run this periodically to update while production server is running.
-  docker run --rm \
+  run_command docker run --rm \
     --name certbot_renew \
     --volume letsencrypt_keys:/etc/letsencrypt:rw \
     --volume letsencrypt_webroot:/var/www/letsencrypt:rw \
@@ -116,7 +116,16 @@ certbot_renew() {
 
 certbot() {
   source "$FILE_ENV"
-  common_args="-d ${DOMAIN_NAME} -d www.${DOMAIN_NAME} --email ${DOMAIN_EMAIL} --rsa-key-size 4096 --keep-until-expiring --agree-tos --non-interactive"
+  common_args=(
+    "-d ${DOMAIN_NAME}"
+    "-d www.${DOMAIN_NAME}"
+    "--email ${DOMAIN_EMAIL}"
+    "--rsa-key-size 4096"
+    "--keep-until-expiring"
+    "--agree-tos"
+    "--non-interactive"
+  )
+  common_args=$(printf "%s " "${common_args[@]}")
 
   if [ "$1" = "init" ]; then
     shift
@@ -131,7 +140,6 @@ certbot() {
 }
 
 
-log "CONTEXT=$CONTEXT"
 case $CONTEXT in
   "$CONTEXT_PRODUCTION")
     COMPOSE_FILE=$FILE_PRODUCTION
