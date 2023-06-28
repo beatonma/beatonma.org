@@ -7,7 +7,7 @@
    ```
 
 2. ```bash
-    git clone https://github.com/beatonma/beatonmadotorg-django beatonma.org/
+    git clone https://github.com/beatonma/beatonma.org beatonma.org/
     git remote rename origin github
     ```
 3. [Configure SSH for private Github repositories](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
@@ -16,15 +16,8 @@
 
 5. Update DNS records for target URL.
 
-6. Run `bash ./install/01-install-docker.sh`
+6. Run `bash ./install/install.sh`
 
-7. Restart the system then run `bash ./install/02-install.sh`
-    - Creates `/var/www/` asset directories.
-    - Installs and configures `samba`.
-    - Adds useful commands to `~/.bashrc`.
-    - Configures rootless docker.
-    - Initialises certbot certificates.
-    - Initialises database volume from backup.
-    - Creates `cron` schedule to update certbot certificates periodically.
-    - Configures fail2ban.
-    - Builds and runs the server.
+7. Restart the system then run `bash ./install/install.sh` again.
+
+8. Once done, the server should be up and running!

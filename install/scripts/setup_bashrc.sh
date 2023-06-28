@@ -1,20 +1,14 @@
 #!/usr/bin/env bash
 
 
-setup_bashrc() {
-  [ -n "$BASHRC_FILE" ] || {
-    error "BASHRC_FILE $BASHRC_FILE is not set"
-    exit 1
-  }
+HOME_DIR="/home/$USERNAME"
+SCRIPT_FILE=$(rootpath "$HOME_DIR/.bashrc.bma")
 
-  log "Updating .bashrc ($BASHRC_FILE)"
+setup_bashrc() {
+  log "Updating .bashrc"
   {
-    echo ''
-    echo '### beatonma.org start ###'
-    echo ''
     echo 'alias upd="sudo apt update && apt list --upgradeable"'
     echo 'alias upg="sudo apt upgrade"'
-    echo 'alias bashrc="nano ~/.bashrc"'
     echo ''
     echo '# Enter a shell session for the specified container'
     echo 'dockershell() {'
@@ -32,9 +26,14 @@ setup_bashrc() {
     echo 'export DOCKER_BUILDKIT=1'
     echo 'export COMPOSE_DOCKER_CLI_BUILD=1'
     echo ''
-  } >> "$BASHRC_FILE"
+  } >> "$SCRIPT_FILE"
 
-  log "[OK] Updated $BASHRC_FILE"
+  {
+    echo "source $SCRIPT_FILE"
+    echo ''
+  } >> "$(rootpath "$HOME_DIR/.bashrc")"
+
+  log "[OK] Updated .bashrc"
 }
 
 setup_bashrc

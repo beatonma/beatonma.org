@@ -4,13 +4,10 @@
 Configure system-level cron schedule for certbot certificate renewal.
 "
 setup_cron() {
-  local command=""
-  local schedule=""
-
-  command="/home/$USERNAME/beatonma.org/compose.sh certbot"
 
   # minute hour dayofmonth month dayofweek
-  schedule="39 4 5,19 * *" # 4:39 on the 5th and 19th of every month
+  local schedule="39 4 * * *" # 04:39 each day
+  local command="$HOME/beatonma.org/bma certbot renew"
 
   run_command "(crontab -l ; echo '$schedule $command') | crontab -"
 }

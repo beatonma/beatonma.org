@@ -2,18 +2,9 @@
 
 
 setup_samba() {
-  :"
-  Create asset directories.
-  "
-  run_command "sudo mkdir /var/www/ || true"
-  run_command "sudo chown '$USERNAME':'$USERNAME' $(rootpath "/var/www/")"
-  run_command "mkdir $(rootpath "/var/www/static/") || true"
-  run_command "mkdir $(rootpath "/var/www/media/") || true"
-
   : "
   Configure samba.
   "
-  local samba_conf_file
   samba_conf_file=$(rootpath "/etc/samba/smb.conf")
 
   log "Installing samba..."
@@ -48,7 +39,7 @@ setup_samba() {
     echo '   writeable=no'
     echo ''
     echo '[home]'
-    echo '   path=/home/ubuntu'
+    echo "   path=$HOME"
     echo '   browseable=yes'
     echo '   writeable=yes'
     echo '   create mask=0644'

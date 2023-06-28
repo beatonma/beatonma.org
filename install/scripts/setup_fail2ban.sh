@@ -3,10 +3,7 @@
 setup_fail2ban() {
   apt_install fail2ban
 
-  local fail2ban_conf_file
   fail2ban_conf_file=$(rootpath "/etc/fail2ban/jail.local")
-
-  local fail2ban_4xx_filter_file
   fail2ban_4xx_filter_file=$(rootpath "/etc/fail2ban/filter.d/nginx-4xx.conf")
 
   (

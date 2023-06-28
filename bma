@@ -49,7 +49,8 @@ production_build() {
     --build-arg GIT_HASH="$(git rev-parse --short HEAD)" \
     --build-arg WEBMAIL_CONTACT_EMAIL="$WEBMAIL_CONTACT_EMAIL" \
     --build-arg GOOGLE_RECAPTCHA_TOKEN="$GOOGLE_RECAPTCHA_TOKEN" \
-    --build-arg SITE_NAME="$SITE_NAME"
+    --build-arg SITE_NAME="$SITE_NAME" \
+    "$@"
 }
 
 production() {
@@ -59,7 +60,12 @@ production() {
   fi
 
   case "$1" in
-    "up" | "down" | "build")
+    "build")
+      shift
+      production_build "$@"
+      exit 0
+      ;;
+    "up" | "down")
       docker_compose "$@"
       exit 0
       ;;

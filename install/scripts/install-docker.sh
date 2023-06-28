@@ -15,6 +15,3 @@ echo \
 # Install
 sudo apt update
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
-
-
-echo "Please restart the system now, then run '02-install.sh'"

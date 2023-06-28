@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-export USERNAME="ubuntu"
-export NOOP_MODE=0
-export NOOP_PATH="/tmp/no-op"
+NOOP_MODE=0
+NOOP_PATH="/tmp/no-op"
 
 
 log() {
@@ -56,33 +55,13 @@ apt_install() {
   run_command "sudo apt install -y $*"
 }
 
-check_checkpoint() {
-  [ "$1" != "_" ] || { echo "No checkpoint"; return; }
-
-  if [ "${!1:-0}" -ne 0 ]; then
-    log "Skipping checkpoint $1 (${!1})"
-    exit 1
-  fi
-}
-
-remember_checkpoint() {
-  if [ "$!" != "_" ]; then
-    echo "$1=1" >> "$BASHRC_FILE"
-  fi
-}
-
 subscript() {
-  checkpoint_name="$1"
-  (check_checkpoint "$checkpoint_name") || { log "Skip $checkpoint_name"; return; }
-  shift
-
   log "SCRIPT: $*"
   if ! bash "$@"; then
     error "SCRIPT ERROR"
     exit 1
   fi
   read -n 1 -p "Continue?"
-  remember_checkpoint "$checkpoint_name"
   log ''
 }
 
@@ -96,6 +75,3 @@ export -f log
 export -f rootpath
 export -f run_command
 export -f subscript
-
-BASHRC_FILE=$(rootpath "/home/$USERNAME/.bashrc")
-export BASHRC_FILE

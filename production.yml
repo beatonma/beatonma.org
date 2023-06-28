@@ -15,7 +15,7 @@ volumes:
   postgres:
     # Created via compose.db-init.yml
     name: postgres_beatonma
-    external: true
+    external: false
 
 
 # Common settings for all services
@@ -35,7 +35,10 @@ x-health: &health
 services:
   db:
     <<: *common-defaults
-    image: postgres:15-alpine
+#    image: postgres:15-alpine
+    build:
+      context: ./docker/postgres
+      target: database
     container_name: postgres
     volumes:
       - postgres:/var/lib/postgresql/data
@@ -85,43 +88,43 @@ services:
       - "80:80"
       - "443:443"
 
-#  celery:
-#    <<: *common-defaults
-#    build:
-#      context: .
-#      target: celery
-#    container_name: celery
-#    depends_on:
-#      rabbitmq:
-#        condition: service_healthy
-#
-#  crontab:
-#    <<: *common-defaults
-#    build:
-#      context: .
-#      target: crontab
-#    container_name: crontab
-#    depends_on:
-#      - django
-#    command: crond -f
-#
-#  rabbitmq:
-#    <<: *common-defaults
-#    image: rabbitmq:3-alpine
-#    container_name: rabbitmq
-#    healthcheck:
-#      test: rabbitmq-diagnostics -q ping
-#      <<: *health
-#    ports:
-#      - "5672"
-#
-#  server_startup_checks:
-#    build:
-#      context: .
-#      target: server_checks
-#    links:
-#      - "nginx:nginx-server-tests"
-#    container_name: server_startup_checks
-#    depends_on:
-#      - nginx
-#    restart: "no"
+  celery:
+    <<: *common-defaults
+    build:
+      context: .
+      target: celery
+    container_name: celery
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  crontab:
+    <<: *common-defaults
+    build:
+      context: .
+      target: crontab
+    container_name: crontab
+    depends_on:
+      - django
+    command: crond -f
+
+  rabbitmq:
+    <<: *common-defaults
+    image: rabbitmq:3-alpine
+    container_name: rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      <<: *health
+    ports:
+      - "5672"
+
+  server_startup_checks:
+    build:
+      context: .
+      target: server_checks
+    links:
+      - "nginx:nginx-server-tests"
+    container_name: server_startup_checks
+    depends_on:
+      - nginx
+    restart: "no"
