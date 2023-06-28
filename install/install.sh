@@ -24,10 +24,6 @@ export PROJECT_DIR
 export NGINX_LOG_DIR="/var/log/nginx"
 export USERNAME="ubuntu"
 
-: "
-Make sure database backup file is in place.
-"
-subscript "$SCRIPTS_DIR/check_db.sh"
 
 : "
 Install system requirements.
@@ -41,8 +37,8 @@ run_command "sudo mkdir /var/www/ || true"
 run_command "sudo chown '$USERNAME':'$USERNAME' $(rootpath "/var/www/")"
 run_command "mkdir $(rootpath "/var/www/static/") || true"
 run_command "mkdir $(rootpath "/var/www/media/") || true"
-run_command "mkdir $(rootpath "$NGINX_LOG_DIR") || true"
-run_command "sudo chown $USERNAME:$USERNAME $(rootpath "$NGINX_LOG_DIR")"
+run_command "sudo mkdir $(rootpath "$NGINX_LOG_DIR") || true"
+run_command "sudo chown -R $USERNAME:$USERNAME $(rootpath "$NGINX_LOG_DIR")"
 
 
 git config --global credential.helper 'cache --timeout=86400'
@@ -55,12 +51,16 @@ subscript "$SCRIPTS_DIR/setup_cron.sh"
 subscript "$SCRIPTS_DIR/setup_fail2ban.sh"
 subscript "$SCRIPTS_DIR/setup_samba.sh"
 
+: "
+Make sure database backup file is in place.
+"
+subscript "$SCRIPTS_DIR/check_db.sh"
 
 : "
 Install and run project.
 "
 run_command "cd '/home/$USERNAME/beatonma.org' || exit"
-subscript ./production certbot init
+subscript ./bma certbot init
 subscript ./bma production build
 subscript ./bma production up -d
 

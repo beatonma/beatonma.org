@@ -17,7 +17,7 @@ setup_rootless_docker() {
   # Allow privileged ports
   # Use `slirp4netns` so that client IP addresses can be seen by containers for logging.
   #  - see https://docs.docker.com/engine/security/rootless/#networking-errors
-  override_dir=$("$HOME/.config/systemd/user/docker.service.d")
+  override_dir="$HOME/.config/systemd/user/docker.service.d"
   run_command "mkdir ${override_dir}"
   run_command "echo [Service]\nEnvironment=\"DOCKERD_ROOTLESS_ROOTLESSKIT_PORT_DRIVER=slirp4netns\" > \"${override_dir}/override.conf\""
   unset override_dir
