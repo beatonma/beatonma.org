@@ -65,6 +65,7 @@ FROM app_core AS app
 EXPOSE 8000
 
 COPY "./docker/django/entrypoint.sh" /
+RUN chmod u+x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 
