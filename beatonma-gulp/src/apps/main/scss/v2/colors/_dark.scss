@@ -126,7 +126,14 @@
 
     .ge {
       /* Generic.Emph */
-      font-style: italic;
+    }
+
+    .gr {
+      /* Generic.Error */
+    }
+
+    .gh {
+      /* Generic.Heading */
     }
 
     .gi {
@@ -134,14 +141,25 @@
       color: #a6e22e;
     }
 
+    .go {
+      /* Generic.Output */
+    }
+
+    .gp {
+      /* Generic.Prompt */
+    }
+
     .gs {
       /* Generic.Strong */
-      font-weight: bold;
     }
 
     .gu {
       /* Generic.Subheading */
       color: #75715e;
+    }
+
+    .gt {
+      /* Generic.Traceback */
     }
 
     .kc {
