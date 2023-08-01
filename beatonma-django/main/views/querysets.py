@@ -135,7 +135,7 @@ class FeedMessage:
 def _build_feed(
     query: Callable[[Type], QuerySet],
 ):
-    _models = implementations_of(PublishedMixin)
+    _models = filter(lambda x: x.search_enabled, implementations_of(PublishedMixin))
 
     results = list(chain(*[query(M) for M in _models]))
     return _sorted_feed(results)
