@@ -1,5 +1,6 @@
 import re
 from re import Match
+from typing import List
 
 import markdown2
 from common.util import regex
@@ -20,19 +21,23 @@ _FRIENDLY_URL_REPLACEMENTS = {
     r"https://(www\.)?youtube\.com/watch\?v=(?P<name>[-\w]+)/?": "youtube/v={name}",
 }
 
+"""Keys will be replaced with their corresponding value.
+
+Beware: Order matters! If one key is a substring of another it should be defined
+later in the dictionary."""
 _LIGATURES = {
-    "->": "→",
-    "-->": "⟶",
-    "<-": "←",
-    "<--": "⟵",
     "<->": "↔",
     "<-->": "⟷",
-    "=>": "⇨",
-    "==>": "⟹",
-    "<=": "⇦",
-    "<==": "⟸",
     "<=>": "⇔",
     "<==>": "⟺",
+    "-->": "⟶",
+    "->": "→",
+    "<--": "⟵",
+    "<-": "←",
+    "==>": "⟹",
+    "=>": "⇨",
+    "<==": "⟸",
+    "<=": "⇦",
     "...": "…",
     "(c)": "©",
     "(r)": "®",
@@ -99,9 +104,26 @@ def _friendly_common_links(html: str) -> str:
 
 
 def _apply_ligatures(text: str) -> str:
+    marker = "__canonical_code_block__"
+    canonical_blocks: List[str] = []
+
+    def remember_canonical(match: Match):
+        canonical_blocks.append(match.group())
+        return marker
+
+    editable_text = re.sub(
+        "(```.*?```|`[^`].*?`)",
+        remember_canonical,
+        text,
+        flags=re.DOTALL,
+    )
+
     for pattern, repl in _LIGATURES.items():
-        text = text.replace(pattern, repl)
-    return text
+        editable_text = editable_text.replace(pattern, repl)
+
+    editable_text = re.sub(marker, lambda match: canonical_blocks.pop(0), editable_text)
+
+    return editable_text
 
 
 def _markdown_to_html(content) -> str:

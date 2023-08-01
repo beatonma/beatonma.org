@@ -76,7 +76,63 @@ class FormatsTests(LocalTestCase):
             formatted,
         )
 
-    def test_ligatures(self):
+
+class LigatureTests(LocalTestCase):
+    def test_simple_text_ligatures(self):
         self.assertEqual(
-            formats._apply_ligatures("if this(c) -> that..."), "if this© → that…"
+            formats._apply_ligatures("if this(c) -> that..."),
+            "if this© → that…",
         )
+
+    def test_code_blocks_unchanged(self):
+        code_blocks = [
+            "```foo() -> bar```",
+            "`foo() -> bar`",
+            "`foo() -> bar` and `foo() -> bar`",
+            "```foo() -> bar```",
+            """```python
+def func(*args) -> str:
+    return "ok"
+```
+""",
+        ]
+        for block in code_blocks:
+            self.assertEqual(formats._apply_ligatures(block), block)
+
+    def test_ligatures_in_mixed_content(self):
+        mixed_content = """
+Here's some text with -> and (c) ligatures.
+This is a code block:
+```
+def foo():
+    return x -> y
+```
+Another code ==> `block...`:
+```python
+x = 10
+y = 20
+z = x (c) y
+```
+"""
+
+        self.assertEqual(
+            formats._apply_ligatures(mixed_content),
+            """
+Here's some text with → and © ligatures.
+This is a code block:
+```
+def foo():
+    return x -> y
+```
+Another code ⟹ `block...`:
+```python
+x = 10
+y = 20
+z = x (c) y
+```
+""",
+        )
+
+    def test_individual_ligatures(self):
+        for key, value in formats._LIGATURES.items():
+            self.assertEqual(formats._apply_ligatures(key), value)
