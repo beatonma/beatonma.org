@@ -5,7 +5,8 @@ frontend-tests*
 # Directories
 .github/
 .idea/
-cypress/
+cypress/screenshots/
+cypress/videos/
 install/
 
 **/__pycache__/

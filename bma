@@ -2,12 +2,13 @@
 
 FILE_PRODUCTION="./production.yml"
 FILE_DEV="./dev.yml"
+FILE_TEST="./test.yml"
 FILE_ENV="./.env"
 
+CONTEXT_CERTBOT="certbot"
 CONTEXT_DEV="dev"
 CONTEXT_PRODUCTION="production"
-CONTEXT_INIT="init"
-CONTEXT_CERTBOT="certbot"
+CONTEXT_TEST="test"
 
 COMPOSE_FILE=""
 CONTEXT="$1"
@@ -18,20 +19,17 @@ log() {
 }
 
 show_help() {
-  log 'bma (dev | production | init | certbot)'
+  log 'bma (dev | production | test | certbot)'
   log ''
-  log 'dev [test]'
+  log 'dev'
   log 'production'
+  log 'test'
   log 'certbot (init|renew)'
 }
 
 run_command() {
   log "COMMAND: '$*'"
   "$@"
-}
-
-update_certbot() {
-  log "TODO update_certbot"
 }
 
 docker_compose() {
@@ -84,15 +82,13 @@ dev() {
   fi
 
   docker_compose_build
-  if [ "$1" = "test" ]; then
-    shift
-    docker_compose up --profile test "$@"
-
-  else
-    docker_compose up "$@"
-  fi
+  docker_compose up "$@"
 
   exit 0
+}
+
+runtests() {
+  docker_compose up --abort-on-container-exit
 }
 
 certbot_init() {
@@ -154,6 +150,10 @@ case $CONTEXT in
   "$CONTEXT_DEV")
     COMPOSE_FILE=$FILE_DEV
     dev "$@"
+    ;;
+  "$CONTEXT_TEST")
+    COMPOSE_FILE=$FILE_TEST
+    runtests "$@"
     ;;
   "$CONTEXT_CERTBOT")
     certbot "$@"

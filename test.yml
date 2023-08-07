@@ -1,0 +1,39 @@
+version: "3.9"
+name: bma_test
+
+
+x-common: &common
+  restart: "no"
+  tty: true
+
+
+services:
+  cypress.django:
+    <<: *common
+    build:
+      dockerfile: Dockerfile.test
+      target: cypress_django
+    environment:
+      - GIT_HASH=dockertest
+      - STATICFILES_ROOT=/django/
+      - TEMPLATE_ROOT=/django/
+    healthcheck:
+      test: curl http://localhost:8000/ping/
+      interval: 5s
+      timeout: 2s
+      start_period: 20s
+    ports:
+      - "8123:8000"
+
+  cypress:
+    <<: *common
+    build:
+      dockerfile: Dockerfile.test
+      target: cypress
+    depends_on:
+      cypress.django:
+        condition: service_healthy
+    environment:
+      - CYPRESS_baseUrl=http://cypress.django:8000
+    volumes:
+      - ./cypress:/cypress

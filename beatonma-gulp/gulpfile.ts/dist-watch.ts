@@ -4,9 +4,7 @@ import del from "del";
 import gulp, { parallel } from "gulp";
 import { completeBuild } from "./build";
 import { buildJs } from "./build-js";
-import { ANY_FILE, distPath,
-    localPath,
-    srcPath } from "./paths";
+import { ANY_FILE, distPath, djangoPath, localPath, srcPath } from "./paths";
 
 const { src, dest, series } = gulp;
 
@@ -15,13 +13,14 @@ const browserSync = browserSyncCreate();
 const initBrowser = async () =>
     browserSync.init({
         proxy: "django:8000",
-        open: false
+        open: false,
     });
 
 const refreshBrowser = async () => {
     await (() => {
         // Encourage the dev server to update for any altered template files.
-        shellExec(`touch ${localPath("beatonma/__init__.py")}`);
+        // This path depends on docker compose volume configuration!
+        shellExec(`touch ${djangoPath("beatonma/__init__.py")}`);
     })();
     browserSync.reload();
 };
@@ -29,10 +28,10 @@ const refreshBrowser = async () => {
 /**
  * Copy constructed files to our local Django project directory.
  */
-const localDist = () => src(distPath(ANY_FILE)).pipe(dest(localPath()))
+const localDist = () => src(distPath(ANY_FILE)).pipe(dest(localPath()));
 
 const cleanLocalTemplates = async () => {
-    del.sync(localPath(), {force: true})
+    del.sync(localPath(), { force: true });
 };
 
 const localBuild = series(

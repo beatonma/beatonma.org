@@ -1,0 +1,60 @@
+################################################################################
+FROM node:20-alpine AS gulp
+
+LABEL description="Generate frontend webapp and template files."
+
+WORKDIR /app
+COPY ./beatonma-gulp /app
+RUN npm install && npm cache clean --force
+
+ENV GIT_HASH=dockertest
+ENV SITE_NAME=dockertest
+ENV WEBMAIL_CONTACT_EMAIL=test@beatonma.org
+ENV GOOGLE_RECAPTCHA_TOKEN=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
+
+RUN npm run jest
+RUN npm run build
+
+
+################################################################################
+FROM python:3.11-alpine AS cypress_django
+ENV PYTHONBUFFERED 1
+
+RUN apk add \
+    curl \
+    openssh-client \
+    git \
+    build-base
+
+
+# Install private libraries from github.
+RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+RUN --mount=type=ssh pip install git+ssh://git@github.com/beatonma/bmanotify.git
+RUN --mount=type=ssh pip install git+ssh://git@github.com/beatonma/bmanotify-django.git
+
+COPY ./beatonma-django/requirements.txt /tmp/
+RUN --mount=type=cache,target=/root/.cache/pip pip install -r /tmp/requirements.txt
+
+WORKDIR /var/log/beatonma/
+WORKDIR /django
+
+# Django project files.
+COPY ./beatonma-django /django
+
+# Generated template and static files from gulp build.
+COPY --from=gulp /app/dist /django
+
+COPY ./docker/cypress/entrypoint-django.dev.sh /entrypoint.dev.sh
+
+EXPOSE 8000
+ENTRYPOINT ["/entrypoint.dev.sh"]
+
+
+################################################################################
+FROM cypress/included as cypress
+
+WORKDIR /cypress
+COPY ./docker/cypress/entrypoint-cypress.dev.sh /entrypoint.dev.sh
+
+EXPOSE 8000
+ENTRYPOINT ["/entrypoint.dev.sh"]

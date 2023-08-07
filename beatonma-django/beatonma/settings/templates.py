@@ -3,8 +3,7 @@ from pathlib import Path
 
 from . import environment
 
-
-# Include additional templates from environment.TEMPLATE_ROOT, if available.
+# Include additional templates from environment.TEMPLATE_ROOT, if defined.
 external_template_root = environment.TEMPLATE_ROOT
 _generated_dirs = []
 if external_template_root is not None and os.path.exists(external_template_root):
