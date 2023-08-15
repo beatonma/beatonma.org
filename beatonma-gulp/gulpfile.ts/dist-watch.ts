@@ -30,12 +30,12 @@ const refreshBrowser = async () => {
  */
 const localDist = () => src(distPath(ANY_FILE)).pipe(dest(localPath()));
 
-const cleanLocalTemplates = async () => {
+const clean = async () => {
     del.sync(localPath(), { force: true });
 };
 
 const localBuild = series(
-    parallel(completeBuild, cleanLocalTemplates),
+    parallel(completeBuild, clean),
     localDist,
     refreshBrowser
 );

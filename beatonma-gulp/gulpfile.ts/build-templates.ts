@@ -4,21 +4,24 @@ import gulpRename from "gulp-rename";
 import gulpReplace from "gulp-replace";
 import Vinyl from "vinyl";
 import { unwrap } from "./build";
-import {ANY_HTML, distPath, srcPath} from "./paths";
+import { ANY_HTML, distPath, srcPath } from "./paths";
 import { getGitHash } from "./setup";
 
 const isFlatPage = (file: Vinyl): boolean => {
     const path = file.history[0];
-    return /.*templates\/.*\/flatpages\/.*/.test(path);
+    return /.*flatpages\/.*/.test(path);
 };
 
+/**
+ * Move flatpages to root templates/flatpages/ directory.
+ */
 const collectFlatpages = () =>
     gulpIf(
         isFlatPage,
         gulpRename(path => {
             path.dirname = path.dirname.replace(
                 /(.*\/templates\/).*/,
-                "$1/flatpages/"
+                "templates/flatpages/"
             );
         })
     );

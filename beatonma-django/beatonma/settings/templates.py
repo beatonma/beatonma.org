@@ -1,26 +1,49 @@
 import os
 from pathlib import Path
+from typing import List, Optional
+
+from django.template.loader import engines as template_engines
 
 from . import environment
 
-# Include additional templates from environment.TEMPLATE_ROOT, if defined.
-external_template_root = environment.TEMPLATE_ROOT
-_generated_dirs = []
-if external_template_root is not None and os.path.exists(external_template_root):
-    external_template_root = Path(external_template_root)
+
+def _get_external_templates() -> List[str]:
+    # Include additional templates from environment.TEMPLATE_ROOT, if defined.
+    external_template_root: Optional[str] = environment.TEMPLATE_ROOT
+    if external_template_root is None or not os.path.exists(external_template_root):
+        return []
+
+    external_template_root: Path = Path(external_template_root)
+    external_dirs = []
     for name in os.listdir(external_template_root):
-        dirpath = external_template_root / name / "templates"
-        if os.path.exists(dirpath):
-            _generated_dirs.append(str(dirpath))
+        if name == "templates":
+            dirpath = external_template_root / name
+        else:
+            dirpath = external_template_root / name / "templates"
+
+        if dirpath.exists():
+            external_dirs.append(str(dirpath))
+
+    return external_dirs
+
+
+def get_flatpage_templates() -> List[str]:
+    dirs = []
+    for engine in template_engines.all():
+        flatpage_dirs = [os.path.join(x, "flatpages") for x in engine.template_dirs]
+        dirs.extend(x for x in flatpage_dirs if os.path.exists(x))
+    files = []
+    for d in dirs:
+        files.extend(x for x in Path(d).glob("**/*.html") if x)
+    return files
 
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
+            *_get_external_templates(),
             "templates",
-            "templates/flatpages",
-            *_generated_dirs,
         ],
         "APP_DIRS": True,
         "OPTIONS": {
