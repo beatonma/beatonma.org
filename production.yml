@@ -3,19 +3,17 @@ name: bma
 
 volumes:
   letsencrypt:
-    # Created via compose.certbot.yml
+    # Created via `bma certbot init`.
     name: letsencrypt_keys
     external: true
 
   letsencrypt_webroot:
-    # Created via `bma certbot`.
+    # Created via `bma certbot init`.
     name: letsencrypt_webroot
     external: true
 
   postgres:
-    # Created via compose.db-init.yml
     name: postgres_beatonma
-    external: false
 
 
 # Common settings for all services
@@ -35,7 +33,6 @@ x-health: &health
 services:
   db:
     <<: *common-defaults
-#    image: postgres:15-alpine
     build:
       context: ./docker/postgres
       target: database
