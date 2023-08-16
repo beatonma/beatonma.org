@@ -1,17 +1,17 @@
 @use "animation";
 
-$-color-names: [ "muted", "vibrant" ];
-$-contrast-levels: [
-  "light",
-  "dark",
-  "low-contrast", // Either light or dark depending on theme.
-  "high-contrast", // Either light or dark depending on theme.
-];
+$-color-names: [ "muted", "vibrant"];
+
+/**
+ * low/high variants choose light or dark based on theme.
+ */
+$-contrast-levels: [ "light", "dark", "low-contrast", "high-contrast", ];
 
 @mixin -foreground-color($-name) {
-  color: var(--on-#{$-name});
-  fill: var(--on-#{$-name});
-  stroke: var(--on-#{$-name});
+  --fg-color: var(--on-#{$-name});
+  color: var(--fg-color);
+  fill: var(--fg-color);
+  stroke: var(--fg-color);
 }
 
 @mixin -hover($-color) {
@@ -22,37 +22,34 @@ $-contrast-levels: [
     background-color: var(--#{$-color});
 
     &:hover {
-      @include -foreground-color(#{ $-color }-hover);
+      @include -foreground-color(#{$-color}-hover);
 
       background-color: var(--#{$-color}-hover);
     }
   }
 }
 
-@mixin surface($-color-name: "surface") {
+@mixin -surface($-color-name: "surface") {
   @include -foreground-color($-color-name);
 
-  background-color: var(--#{$-color-name});
+  --bg-color: var(--#{$-color-name});
+  background-color: var(--bg-color);
 }
 
 %surface {
-  @include surface;
+  @include -surface;
 
   @each $-color in $-color-names {
     &-#{$-color} {
-      @include -foreground-color($-color);
+      @include -surface($-color);
       @include -hover($-color);
-
-      background-color: var(--#{$-color});
 
       @each $-contrast in $-contrast-levels {
         &-#{$-contrast} {
           $-full-name: #{$-color}-#{$-contrast};
 
-          @include -foreground-color($-full-name);
+          @include -surface($-full-name);
           @include -hover($-full-name);
-
-          background-color: var(--#{$-full-name});
         }
       }
     }
@@ -87,7 +84,6 @@ $-contrast-levels: [
   }
 }
 
-
 %scrim-colors {
-  @include surface(scrim);
+  @include -surface(scrim);
 }
