@@ -27,7 +27,7 @@
 
       font-size: var(--fs-h6);
       line-height: 1.5;
-      letter-spacing: .1ch;
+      letter-spacing: 0.1ch;
     }
 
     time {
@@ -41,14 +41,16 @@
   }
 
   .preview-image {
-    @include core.shape($right: 0);
+    // Image will be clipped to shape by %card.
+    border-radius: 0;
   }
 
   @include core.on-medium-width {
     grid-template-columns: 1fr;
     gap: 0;
 
-    .preview-image, .feeditem-summary-headline time {
+    .preview-image,
+    .feeditem-summary-headline time {
       display: none;
     }
 
