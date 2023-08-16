@@ -1,3 +1,13 @@
+@use "v2/core";
+
 blockquote {
-  margin: 0;
+  @extend %outlined;
+
+  margin-inline: 0;
+  padding-inline: 2ch;
+  border-left: 2px solid var(--accent-color);
+
+  &:not(:has(p)) {
+    padding-block: 1em;
+  }
 }
