@@ -8,13 +8,14 @@ code {
   @extend .codehilite;
   @extend %surface-muted-low-contrast;
 
-  padding-block: var(--space-half);
+  padding-block: 2px;
   padding-inline: var(--space);
 }
 
 pre {
   @extend %padding-medium;
   @extend %surface;
+  @extend %shape-adaptive-medium;
 
   overflow-x: scroll;
   margin: 0;

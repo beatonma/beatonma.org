@@ -2,11 +2,10 @@
 
 table {
   @extend %surface;
-  @extend %shape-medium;
+  @extend %shape-adaptive-medium;
 
   border-collapse: collapse;
   overflow: clip;
-
 
   thead {
     @extend %surface-muted;
@@ -16,7 +15,8 @@ table {
     @extend %hover;
   }
 
-  td, th {
+  td,
+  th {
     @extend %padding-medium;
   }
 }
