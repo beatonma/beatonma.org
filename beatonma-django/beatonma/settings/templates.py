@@ -32,9 +32,12 @@ def get_flatpage_templates() -> List[str]:
     for engine in template_engines.all():
         flatpage_dirs = [os.path.join(x, "flatpages") for x in engine.template_dirs]
         dirs.extend(x for x in flatpage_dirs if os.path.exists(x))
+
     files = []
     for d in dirs:
-        files.extend(x for x in Path(d).glob("**/*.html") if x)
+        files.extend(
+            f"flatpages/{os.path.basename(x)}" for x in Path(d).glob("*.html") if x
+        )
     return files
 
 
