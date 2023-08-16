@@ -1,5 +1,21 @@
 #!/usr/bin/env bash
 
+log() {
+  echo "$*" > "$(tty)"
+}
+
+run_command() {
+  log "COMMAND: '$*'"
+  "$@"
+}
+
+case $1 in
+  "pull")
+    run_command git pull --recurse-submodules
+    exit 0
+    ;;
+esac
+
 FILE_PRODUCTION="./production.yml"
 FILE_DEV="./dev.yml"
 FILE_TEST="./test.yml"
@@ -18,18 +34,19 @@ log() {
   echo "$*" > "$(tty)"
 }
 
+run_command() {
+  log "COMMAND: '$*'"
+  "$@"
+}
+
 show_help() {
-  log 'bma (dev | production | test | certbot)'
+  log 'bma (dev | production | test | certbot | pull)'
   log ''
   log 'dev'
   log 'production'
   log 'test'
   log 'certbot (init|renew)'
-}
-
-run_command() {
-  log "COMMAND: '$*'"
-  "$@"
+  log 'pull'
 }
 
 docker_compose() {
