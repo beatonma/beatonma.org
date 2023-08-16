@@ -1,9 +1,9 @@
 @use "./breakpoints";
 
 $-corners: (
-        "small": 6px,
-        "medium": 12px,
-        "large": 16px,
+  "small": 6px,
+  "medium": 12px,
+  "large": 16px,
 );
 
 @mixin -corners {
@@ -70,4 +70,9 @@ $-corners: (
 
 %outlined {
   border: 2px solid var(--text-tertiary);
+
+  @include breakpoints.on-small-width {
+    border-block: 2px solid var(--text-tertiary);
+    border-inline: none;
+  }
 }
