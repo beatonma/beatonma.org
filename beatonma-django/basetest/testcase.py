@@ -49,13 +49,19 @@ class BaseTestCase(TestCase):
     ) -> Union[Model, QuerySet[Model]]:
         """Assert that the expected number of model instances exist and return it/them."""
 
-        qs = model_class.objects.filter(**query)
+        qs: QuerySet[Model]
+        if query:
+            qs = model_class.objects.filter(**query)
+        else:
+            qs = model_class.objects.all()
+
         qs_count = qs.count()
         self.assertEqual(
             count,
             qs_count,
             msg=f"Expected {count} instance(s) of {model_class.__name__}, found {qs_count}.",
         )
+
         if count == 1:
             return qs.first()
         return qs
