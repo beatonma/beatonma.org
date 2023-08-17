@@ -37,7 +37,7 @@ class BasePost(
     links = GenericRelation(Link)
 
     def save(self, *args, **kwargs):
-        if not self.id:
+        if not self.slug:
             self.slug = self.build_slug()
 
         self.save_text()
