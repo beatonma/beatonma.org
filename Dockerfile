@@ -81,7 +81,7 @@ FROM app_core as crontab
 WORKDIR /cron/
 COPY ./docker/cron/cron-schedule /tmp/
 COPY ./docker/cron/crontab/*.sh /cron/
-RUN chmox +x /cron/*.sh
+RUN chmod +x /cron/*.sh
 RUN crontab /tmp/cron-schedule
 
 ################################################################################
