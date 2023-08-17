@@ -65,7 +65,7 @@ FROM app_core AS app
 EXPOSE 8000
 
 COPY "./docker/django/entrypoint.sh" /
-RUN chmod u+x /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 
@@ -81,6 +81,7 @@ FROM app_core as crontab
 WORKDIR /cron/
 COPY ./docker/cron/cron-schedule /tmp/
 COPY ./docker/cron/crontab/*.sh /cron/
+RUN chmox +x /cron/*.sh
 RUN crontab /tmp/cron-schedule
 
 ################################################################################
