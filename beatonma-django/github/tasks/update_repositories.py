@@ -109,7 +109,6 @@ def _update_repository(obj: dict):
     created: bool
     repo, created = GithubRepository.objects.update_or_create(
         id=data.id,
-        dangerous_all=True,
         defaults=dict(
             owner=owner,
             license=_license,

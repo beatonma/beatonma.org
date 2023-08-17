@@ -504,7 +504,7 @@ def create_repository(
     global _sample_repo_id
 
     try:
-        repo = GithubRepository.objects.get(id=_sample_repo_id, dangerous_all=True)
+        repo = GithubRepository.objects.get(id=_sample_repo_id)
     except GithubRepository.DoesNotExist:
         repo = GithubRepository.objects.create(
             id=_sample_repo_id,

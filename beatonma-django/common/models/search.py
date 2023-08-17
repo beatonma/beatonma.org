@@ -29,7 +29,7 @@ class SearchQuerySet(QuerySet):
         else:
             self._distinct = distinct
 
-    def search(self, query: str):
+    def search(self, query: str) -> QuerySet:
         if not self._search_enabled or not self._search_fields:
             return self.none()
 
@@ -42,7 +42,7 @@ class SearchQuerySet(QuerySet):
 
         return self.search_anything(words)
 
-    def _build_filter(
+    def build_search_filter(
         self,
         words: List[str],
         fields: List[str],
@@ -63,11 +63,11 @@ class SearchQuerySet(QuerySet):
 
         return self._apply_distinct(self.filter(q_filter))
 
-    def search_words(self, words: List[str]):
+    def search_words(self, words: List[str]) -> QuerySet:
         """Filter for any fields that match all the words in the query.
 
         A match is a whole word: 'sample' will not match 'samples'."""
-        return self._build_filter(
+        return self.build_search_filter(
             [f"{_WORD_BOUNDARY_REGEX}{word}{_WORD_BOUNDARY_REGEX}" for word in words],
             self._search_fields,
             "__iregex",
@@ -75,22 +75,22 @@ class SearchQuerySet(QuerySet):
             operator.or_,
         )
 
-    def search_fragments(self, words: List[str]):
+    def search_fragments(self, words: List[str]) -> QuerySet:
         """Filter for any fields that contain all the word fragments in query.
 
         This is more lenient than _search_words: 'sample' will match 'samples'."""
 
-        return self._build_filter(
+        return self.build_search_filter(
             words, self._search_fields, "__icontains", operator.and_, operator.or_
         )
 
-    def search_anything(self, words: List[str]):
+    def search_anything(self, words: List[str]) -> QuerySet:
         """Filter for any word matching any field."""
-        return self._build_filter(
+        return self.build_search_filter(
             words, self._search_fields, "__icontains", operator.or_, operator.or_
         )
 
-    def _apply_distinct(self, qs: QuerySet):
+    def _apply_distinct(self, qs: QuerySet) -> QuerySet:
         if self._distinct:
             return qs.distinct()
         return qs
