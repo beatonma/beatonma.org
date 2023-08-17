@@ -62,6 +62,9 @@ class GithubRepository(PublishedMixin, ApiModel, TaggableMixin, BaseModel):
     name = models.CharField(max_length=256, editable=False)
     full_name = models.CharField(max_length=256, editable=False)
     description = models.TextField(null=True, editable=False)
+
+    # Represents the privacy status of this repository on Github.
+    # This is separate from and not necessarily opposite to `is_published` field from PublishedMixin.
     is_private = models.BooleanField(editable=False)
     size_kb = models.PositiveIntegerField(editable=False)
     primary_language = models.ForeignKey(
