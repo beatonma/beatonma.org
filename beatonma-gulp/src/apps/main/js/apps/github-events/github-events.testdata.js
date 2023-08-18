@@ -40,22 +40,10 @@ export const SampleEvents = [
         ],
     },
     {
-        type: "CreateEvent",
-    },
-    {
-        type: "CreateEvent",
-    },
-    {
-        type: "PushEvent",
-    },
-    {
-        type: "PushEvent",
-    },
-    {
-        type: "PushEvent",
-    },
-    {
-        type: "PushEvent",
+        type: "PrivateEventSummary",
+        event_count: 6,
+        repository_count: 2,
+        change_count: 3,
     },
     {
         id: "20979984751",
