@@ -23,11 +23,18 @@ class GithubAdmin(BaseAdmin):
 
 @admin.register(GithubRepository)
 class RepoAdmin(GithubAdmin):
+    search_fields = [
+        "name",
+    ]
     list_display = [
         "name",
         "is_published",
         "_size",
         "license",
+        "published_at",
+    ]
+    ordering = [
+        "-published_at",
     ]
 
     actions = [
@@ -37,6 +44,3 @@ class RepoAdmin(GithubAdmin):
 
     def _size(self, obj: GithubRepository) -> str:
         return f"{obj.size_kb}kb"
-
-
-register_models_to_default_admin("github", GithubAdmin)
