@@ -9,7 +9,6 @@ def parse_datetime(text: str) -> Optional[timezone.datetime]:
         return None
 
     try:
-        # return _parse_datetime(text)
         dt = dateparser.parse(text)
         if timezone.is_naive(dt):
             dt = timezone.make_aware(dt)

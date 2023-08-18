@@ -185,7 +185,6 @@ def create_payload(
         func = _create_create_payload
 
     elif event_type == events.WIKI_EVENT:
-        """Wiki event"""
         payload = WikiEvent(**data)
         func = _create_wiki_payload
 

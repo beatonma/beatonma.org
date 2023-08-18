@@ -2,15 +2,15 @@ from common.models import ApiModel, BaseModel
 from django.conf import settings
 from django.db import models
 from django.db.models import QuerySet
-from github import events
+from github import events as github_events
 from github.models.repository import GithubRepository, GithubUser
 
 
 def _get_event_types():
-    return getattr(settings, "GITHUB_EVENTS", events.all_events())
+    return getattr(settings, "GITHUB_EVENTS", github_events.all_events())
 
 
-class GithubEventUpdateCycle(ApiModel, BaseModel):
+class GithubEventUpdateCycle(BaseModel):
     """Parent object for every GithubUserEvent retrieved during an update cycle.
 
     Deleting an instance will delete (via cascade) all the data associated with
@@ -19,14 +19,6 @@ class GithubEventUpdateCycle(ApiModel, BaseModel):
 
     def __str__(self):
         return f"{self.created_at}: {self.events.count()} events"
-
-    def to_json(self):
-        wanted_types = _get_event_types()
-        return [
-            e
-            for e in [x.to_json() for x in self.events.all() if x.type in wanted_types]
-            if e
-        ]
 
 
 class GithubUserEvent(ApiModel, BaseModel):
@@ -55,24 +47,26 @@ class GithubUserEvent(ApiModel, BaseModel):
         related_name="+",
     )
 
-    @property
+    def publicly_visible(self) -> bool:
+        return self.is_public and self.repository.is_published
+
     def payload(self):
-        if self.type == events.CREATE_EVENT:
+        if self.type == github_events.CREATE_EVENT:
             return self.create_event_data
 
-        elif self.type == events.PUSH_EVENT:
+        elif self.type == github_events.PUSH_EVENT:
             return self.commits.all()
 
-        elif self.type == events.ISSUES_EVENT:
+        elif self.type == github_events.ISSUES_EVENT:
             return self.issue_closed_data
 
-        elif self.type == events.RELEASE_EVENT:
+        elif self.type == github_events.RELEASE_EVENT:
             return self.release_data
 
-        elif self.type == events.WIKI_EVENT:
+        elif self.type == github_events.WIKI_EVENT:
             return self.wiki_changes.all()
 
-        elif self.type == events.PULL_REQUEST_EVENT:
+        elif self.type == github_events.PULL_REQUEST_EVENT:
             return self.pull_merged_data
 
         else:
@@ -80,35 +74,37 @@ class GithubUserEvent(ApiModel, BaseModel):
                 f"GithubUserEvent.payload: Unsupported event type: {self.type}"
             )
 
-    def to_json(self):
-        if not self.repository.is_published:
-            return None
+    def payload_changes(self):
+        payload = self.payload()
+        if isinstance(payload, QuerySet):
+            return payload.count()
+        return 0
 
-        if self.is_public:
-            payload = self.payload
-
-            if payload is None:
-                payload_json = None
-
-            elif isinstance(payload, QuerySet):
-                payload_json = [x.to_json() for x in payload.all()]
-
-            else:
-                payload_json = payload.to_json()
-
+    def to_json(self) -> dict:
+        if not self.repository.is_published or not self.is_public:
             return dict(
-                created_at=str(self.created_at),
-                id=self.github_id,
+                created_at=self.created_at.isoformat(),
                 type=self.type,
-                repository=self.repository.to_json(),
-                payload=payload_json,
             )
+
+        payload = self.payload()
+
+        if payload is None:
+            payload_json = None
+
+        elif isinstance(payload, QuerySet):
+            payload_json = [x.to_json() for x in payload.all()]
 
         else:
-            return dict(
-                created_at=str(self.created_at),
-                type=self.type,
-            )
+            payload_json = payload.to_json()
+
+        return dict(
+            created_at=self.created_at.isoformat(),
+            id=self.github_id,
+            type=self.type,
+            repository=self.repository.to_json(),
+            payload=payload_json,
+        )
 
     def __str__(self):
         return f"{self.type}: {self.repository}"
@@ -185,7 +181,7 @@ class GithubIssuesPayload(GithubEventPayload):
         return dict(
             number=self.number,
             url=self.url,
-            closed_at=str(self.closed_at),
+            closed_at=self.closed_at.isoformat(),
         )
 
     def __str__(self):

@@ -1,7 +1,7 @@
 import React from "react";
 import { Time } from "../../components/datetime";
 import { AppIcon, TextWithIcon } from "../../components/icons";
-import { pluralize } from "./plurals";
+import { pluralize, PluralKey } from "./plurals";
 import {
     Commits,
     CreateEvents,
@@ -9,22 +9,13 @@ import {
     MergedPullRequests,
 } from "./events";
 import { WikiEvents } from "./events/wiki";
-import {
-    Group,
-    isPrivateGroup,
-    isPublicGroup,
-    PrivateGroup,
-    PublicGroup,
-} from "./types";
+import { isPrivateEvent, PrivateEventSummary, PublicGroup } from "./types";
 
-export const EventGroup = (group: Group) => {
-    if (isPublicGroup(group)) {
-        return <PublicEventGroup {...group} />;
-    } else if (isPrivateGroup(group)) {
-        return <PrivateEventGroup {...group} />;
-    } else {
-        throw `Unexpected group type: ${group}`;
+export const EventGroup = (group: PublicGroup | PrivateEventSummary) => {
+    if (isPrivateEvent(group)) {
+        return <PrivateSummary {...group} />;
     }
+    return <PublicEventGroup {...group} />;
 };
 
 const PublicEventGroup = (group: PublicGroup) => {
@@ -51,18 +42,31 @@ const PublicEventGroup = (group: PublicGroup) => {
     );
 };
 
-const PrivateEventGroup = (group: PrivateGroup) => {
-    const count = group.events.length;
+const PrivateSummary = (summary: PrivateEventSummary) => {
+    const { event_count, repository_count, change_count } = summary;
+
+    const buildString = (key: PluralKey, count: number, join: string = " ") =>
+        `${count}${join}${pluralize(key, count)}`;
+
+    const eventText = buildString("event", event_count);
+    const repositoryText = buildString(
+        "repository",
+        repository_count,
+        " private "
+    );
+    const commitText = buildString("commit", change_count);
+
+    let text: string;
+    if (change_count === 0) {
+        text = `${eventText} in ${repositoryText}.`;
+    } else {
+        text = `${eventText}/${commitText} in ${repositoryText}.`;
+    }
+
     return (
         <div className="github-group">
             <div className="private">
-                <TextWithIcon
-                    icon={AppIcon.Private}
-                    text={`${count} ${pluralize(
-                        "event",
-                        count
-                    )} in private repositories.`}
-                />
+                <TextWithIcon icon={AppIcon.Private} text={text} />
             </div>
         </div>
     );

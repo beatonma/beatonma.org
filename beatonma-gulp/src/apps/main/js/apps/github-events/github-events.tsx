@@ -6,15 +6,15 @@ import { EventGroup } from "./group";
 import {
     Event,
     PublicEvent,
-    Group,
     isPrivateEvent,
     Events,
     IssueEventPayload,
     PullRequestPayload,
     ReleasePayload,
     CreateEventPayload,
-    PrivateEvent,
+    PrivateEventSummary,
     isPublicEvent,
+    PublicGroup,
 } from "./types";
 import { Repository } from "./types/common";
 import { PushPayload, WikiPayload } from "./types/payload";
@@ -36,6 +36,7 @@ export const GithubEventsApp = async (dom: Document | Element) => {
     }
 };
 
+type Group = PublicGroup | PrivateEventSummary;
 const GithubEvents = () => {
     const [groups, setGroups] = useState<Group[] | null>();
 
@@ -79,9 +80,6 @@ export const filterEvents = (events: Event[]): Group[] => {
     let previousEvent: Event = null;
     let previousTimestamp: Date = null;
 
-    // Private events only
-    let privateEvents: PrivateEvent[] = [];
-
     // Public events only
     let previousRepo: Repository = null;
     let createEvents: CreateEventPayload[] = [];
@@ -112,22 +110,10 @@ export const filterEvents = (events: Event[]): Group[] => {
         previousTimestamp = null;
     };
 
-    const savePrivateGroup = () => {
-        groups.push({
-            timestamp: previousTimestamp,
-            events: privateEvents,
-        });
-        privateEvents = [];
-        previousTimestamp = null;
-    };
-
     const handlePublicEvent = (event: PublicEvent) => {
-        if (isPrivateEvent(previousEvent)) {
-            // Save previous, start new group.
-            savePrivateGroup();
-        } else if (
+        if (
             isPublicEvent(previousEvent) &&
-            previousRepo?.id != event.repository?.id
+            previousRepo?.id !== event.repository?.id
         ) {
             savePublicGroup();
         }
@@ -145,9 +131,13 @@ export const filterEvents = (events: Event[]): Group[] => {
             case Events.Release:
                 releaseEvents.push(event.payload as ReleasePayload);
                 break;
+            case Events.Wiki:
+                wikiEditEvents = wikiEditEvents.concat(
+                    event.payload as WikiPayload
+                );
+                break;
 
             case Events.Push:
-                // pushEvents = pushEvents.concat(event.payload as PushPayload);
                 pushEvents = pushEvents.concat(
                     (event.payload as PushPayload).map(push => {
                         let msg = push.message
@@ -175,22 +165,20 @@ export const filterEvents = (events: Event[]): Group[] => {
                 );
 
                 break;
-            case Events.Wiki:
-                wikiEditEvents = wikiEditEvents.concat(
-                    event.payload as WikiPayload
-                );
-                break;
+
+            default:
+                throw `Unhandled event type: ${event.type}`;
         }
 
         previousRepo = event.repository;
     };
 
-    const handlePrivateEvent = (event: PrivateEvent) => {
+    const handlePrivateEvent = (event: PrivateEventSummary) => {
         if (isPublicEvent(previousEvent)) {
             savePublicGroup();
         }
 
-        privateEvents.push(event);
+        groups.push(event);
         previousRepo = null;
     };
 
@@ -203,18 +191,12 @@ export const filterEvents = (events: Event[]): Group[] => {
             throw "Unexpected event appears to be neither PublicEvent nor PrivateEvent";
         }
 
-        const timestamp = new Date(event.created_at);
-        if (previousTimestamp == null || timestamp > previousTimestamp) {
-            previousTimestamp = timestamp;
-        }
-
+        previousTimestamp = new Date(event.created_at);
         previousEvent = event;
     });
 
     if (isPublicEvent(previousEvent)) {
         savePublicGroup();
-    } else {
-        savePrivateGroup();
     }
 
     return groups;
