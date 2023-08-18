@@ -1,25 +1,15 @@
 from typing import List, Type
 
+from beatonma.settings import environment
 from django.apps import apps
 from django.contrib import admin
 from django.db import models
 from django.forms import Textarea
 
-from beatonma.settings import environment
-
 
 class BaseAdmin(admin.ModelAdmin):
-    """Base implementation of ModelAdmin for all admin pages in the project.
+    """Base implementation of ModelAdmin for all admin pages in the project."""
 
-    Attributes:
-        admin_app_priority  Weighting applied when ordering apps for display on
-                            root Admin page. Lower values come first.
-        admin_priority      Weighting applied when ordering models for display
-                            on admin pages. Lower values come first.
-    """
-
-    admin_app_priority = 20
-    admin_priority = 20
     save_on_top = True
 
     formfield_overrides = {
@@ -60,35 +50,38 @@ def register_models_to_default_admin(
             pass
 
 
-def _get_app_list(self, request):
-    app_dict = self._build_app_dict(request)
-    from django.contrib.admin.sites import site
+def _get_app_list(self, request, app_label=None):
+    """
+    Return a sorted list of all the installed apps that have been
+    registered in this site.
 
-    app_ordering = {key: 1000 for key in app_dict.keys()}
+    This implementation moves the apps in 'priority_apps' to the top for easy access.
+    """
+    app_dict = self._build_app_dict(request, app_label)
 
-    for app_name, app in app_dict.items():
-        for model in app["models"]:
-            app_ordering[app_name] = min(
-                app_ordering[app_name],
-                getattr(
-                    site._registry[apps.get_model(app_name, model["object_name"])],
-                    "admin_app_priority",
-                    1000,
-                ),
-            )
+    priority_apps = [
+        "contact",
+        "main",
+        "flatpages",
+        "github",
+        "bma_app",
+        "bma_dev",
+    ]
 
-    for app_name in sorted(app_ordering.keys(), key=lambda x: app_ordering[x]):
-        app = app_dict[app_name]
-        model_priority = {
-            model["object_name"]: getattr(
-                site._registry[apps.get_model(app_name, model["object_name"])],
-                "admin_priority",
-                20,
-            )
-            for model in app["models"]
-        }
-        app["models"].sort(key=lambda x: model_priority[x["object_name"]])
-        yield app
+    # Sort the apps alphabetically.
+    app_list = sorted(
+        [x for x in app_dict.values() if x["app_label"] in priority_apps],
+        key=lambda x: priority_apps.index(x["app_label"]),
+    ) + sorted(
+        [x for x in app_dict.values() if x["app_label"] not in priority_apps],
+        key=lambda x: x["name"].lower(),
+    )
+
+    # Sort the models alphabetically within each app.
+    for app in app_list:
+        app["models"].sort(key=lambda x: x["name"])
+
+    return app_list
 
 
 admin.AdminSite.get_app_list = _get_app_list

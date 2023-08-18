@@ -1,14 +1,10 @@
-from django.contrib import admin
-
 from common.admin import BaseAdmin
+from django.contrib import admin
 from main.models.posts import About
 
 
 @admin.register(About)
 class AboutAdmin(BaseAdmin):
-    admin_app_priority = 1
-    admin_priority = 1
-
     list_display = [
         "description",
         "created_at",

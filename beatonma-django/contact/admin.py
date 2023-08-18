@@ -15,8 +15,6 @@ def action_mark_as_unread(modeladmin, request, queryset):
 
 @admin.register(WebmailMessage)
 class WebmailMessageAdmin(BaseAdmin):
-    admin_app_priority = 0
-
     def truncated_message_body(self, message: WebmailMessage) -> str:
         return message.message_body[:140]
 
