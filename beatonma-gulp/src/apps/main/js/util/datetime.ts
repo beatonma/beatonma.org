@@ -18,7 +18,8 @@ export const formatDate = (
 
     if (
         _date.getMonth() === now.getMonth() &&
-        _date.getDate() === now.getDate()
+        _date.getDate() === now.getDate() &&
+        _date.getFullYear() === now.getFullYear()
     ) {
         return "Today";
     }
@@ -26,7 +27,8 @@ export const formatDate = (
     now.setDate(now.getDate() - 1);
     if (
         _date.getMonth() === now.getMonth() &&
-        _date.getDate() === now.getDate()
+        _date.getDate() === now.getDate() &&
+        _date.getFullYear() === now.getFullYear()
     ) {
         return "Yesterday";
     }
