@@ -1,6 +1,6 @@
 import del from "del";
 import { ANY_FILE, distPath } from "./paths";
-import { Env} from "./env";
+import { Env } from "./env";
 
 enum BuildMode {
     Development = "development",
@@ -16,28 +16,30 @@ export const isProductionBuild = () => buildMode === BuildMode.Development;
 export const getEnvironment = () => environment;
 export const getGitHash = () => environment.gitHash;
 
-
 const clean = async () => del.sync([distPath(ANY_FILE)]);
 
 const init = async (_buildType: BuildMode) => {
     buildMode = _buildType;
     environment = {
-        gitHash: process.env.GIT_HASH,
-        contactEmail: process.env.WEBMAIL_CONTACT_EMAIL,
-        googleRecaptchaToken: process.env.GOOGLE_RECAPTCHA_TOKEN,
-        siteName: process.env.SITE_NAME,
+        gitHash: process.env.GIT_HASH ?? "__no_env__",
+        contactEmail: process.env.WEBMAIL_CONTACT_EMAIL ?? "__no_env__",
+        googleRecaptchaToken:
+            process.env.GOOGLE_RECAPTCHA_TOKEN ?? "__no_env__",
+        siteName: process.env.SITE_NAME ?? "__no_env__",
     };
-    await clean()
-}
-export const initDev = async () =>  init(BuildMode.Development);
+    await clean();
+};
+export const initDev = async () => init(BuildMode.Development);
 export const initProduction = async () => init(BuildMode.Production);
 
 export const checkConfiguration = async () => {
     Object.entries(environment).forEach(([, value]) => {
         if (!value) {
-            throw `Invalid environment: ${JSON.stringify(environment)} | ${JSON.stringify(process.env)}`;
+            throw `Invalid environment: ${JSON.stringify(
+                environment
+            )} | ${JSON.stringify(process.env)}`;
         }
-    })
+    });
 
     if (!buildMode) {
         throw `gulpfile task configuration error
@@ -45,6 +47,8 @@ export const checkConfiguration = async () => {
             Expected (${BuildMode.Development} | ${BuildMode.Production}),
             found '${buildMode}'\n`;
     } else {
-        console.log(`Build configuration: ${buildMode} | ${JSON.stringify(environment)}`);
+        console.log(
+            `Build configuration: ${buildMode} | ${JSON.stringify(environment)}`
+        );
     }
 };
