@@ -5,18 +5,18 @@
 
 $github-small-width: 420px;
 $two-column-min-width: constants.$readable-text-width + $github-small-width;
-$three-column-min-width: constants.$readable-text-width * 2 + $github-small-width;
-
+$three-column-min-width: constants.$readable-text-width * 2 +
+  $github-small-width;
 
 .main-index {
   display: grid;
   gap: var(--space-2x);
   grid-template-columns: 1fr;
   grid-template-areas:
-      "motd"
-      "quick-links"
-      "github"
-      "main-feed";
+    "motd"
+    "quick-links"
+    "github"
+    "main-feed";
 
   .quick-links {
     @extend %links;
@@ -54,22 +54,17 @@ $three-column-min-width: constants.$readable-text-width * 2 + $github-small-widt
     }
   }
 
-
   @media (min-width: $three-column-min-width) {
     grid-template-columns: $github-small-width 1fr $github-small-width;
     grid-template-areas:
-        ". motd ."
-        ". main-feed quick-links"
-        ". main-feed github"
-        ". main-feed .";
+      ". motd ."
+      "quick-links quick-links quick-links"
+      ". main-feed github"
+      ". main-feed ."
+      ". main-feed .";
   }
 
-
   @media (min-width: $two-column-min-width) {
-    .quick-links {
-      justify-content: flex-end;
-    }
-
     #github_recent {
       min-width: $github-small-width;
       overflow-y: visible;
@@ -84,8 +79,9 @@ $three-column-min-width: constants.$readable-text-width * 2 + $github-small-widt
       grid-template-columns: 1fr $github-small-width;
       grid-template-areas:
         "motd motd"
-        "main-feed quick-links"
+        "quick-links quick-links"
         "main-feed github"
+        "main-feed ."
         "main-feed .";
     }
   }
@@ -93,9 +89,10 @@ $three-column-min-width: constants.$readable-text-width * 2 + $github-small-widt
   @media (min-width: $three-column-min-width) {
     grid-template-columns: $github-small-width 1fr $github-small-width;
     grid-template-areas:
-        ". motd ."
-        ". main-feed quick-links"
-        ". main-feed github"
-        ". main-feed .";
+      ". motd ."
+      "quick-links quick-links quick-links"
+      ". main-feed github"
+      ". main-feed ."
+      ". main-feed .";
   }
 }
