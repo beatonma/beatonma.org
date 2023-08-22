@@ -38,11 +38,11 @@ $three-column-min-width: constants.$readable-text-width * 2 + $github-small-widt
   }
 
   #motd {
-    @extend %outlined;
-    @extend %shape-medium;
+    @extend %card;
+    @extend %shape-adaptive-medium;
+    @extend %surface-vibrant;
     @extend %margin-large-block;
 
-    background-color: var(--hover);
     grid-area: motd;
     width: fit-content;
     margin-inline: auto;
