@@ -1,8 +1,16 @@
 @use "v2/core";
-@use "button";
+@use "v2/objects/button";
 
 %links {
-  @extend %buttons-row;
+  @extend %nolinks;
+  @extend %row-spaced;
+
+  font-variant: all-small-caps;
+
+  a,
+  a:visited {
+    @extend %button;
+  }
 
   .links-title {
     font-weight: bold;

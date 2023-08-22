@@ -1,5 +1,4 @@
 @use "v2/core";
-@use "v2/components/button";
 @use "v2/components/card";
 
 #contact {
@@ -11,7 +10,6 @@
 
     min-height: 8em;
   }
-
 
   button {
     @extend %padding-large;
@@ -29,11 +27,12 @@
       border-color: var(--text-tertiary);
       color: var(--text-tertiary);
       max-width: 0;
-      opacity: 0
+      opacity: 0;
     }
   }
 
-  .success, .failure {
+  .success,
+  .failure {
     @extend %card;
     @extend %card-content;
     @extend %margin-large-block;
@@ -55,7 +54,9 @@
   }
 
   @include core.on-medium-width {
-    button, input[type="text"], textarea {
+    button,
+    input[type="text"],
+    textarea {
       @include core.stretch-width;
 
       min-width: 0;
