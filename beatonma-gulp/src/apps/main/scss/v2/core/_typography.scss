@@ -16,7 +16,7 @@
 
   @include breakpoints.on-medium-width {
     --fs-default: 16px;
-    --fs-smal: 14px;
+    --fs-small: 14px;
     --fs-smallest: 12px;
     --fs-label: 10px;
 
@@ -45,14 +45,13 @@
   line-break: anywhere;
 }
 
-
 %text-funky {
   background: rgb(2 0 36);
   background: linear-gradient(
-                  211deg,
-                  var(--vibrant),
-                  rgb(129 52 163),
-                  var(--muted)
+    211deg,
+    var(--vibrant),
+    rgb(129 52 163),
+    var(--muted)
   );
   background-size: 300% 300%;
   animation-name: gradient-rotation;
@@ -81,7 +80,6 @@
   }
 }
 
-
 %text-default {
   font-family: sans-serif;
   font-size: var(--fs-default);
@@ -107,7 +105,7 @@
 %text-large {
   font-size: var(--fs-h6);
   line-height: 1.5;
-  letter-spacing: .1ch;
+  letter-spacing: 0.1ch;
 }
 
 %text-container {
@@ -120,21 +118,19 @@
   line-height: 1.5;
 }
 
-
 @mixin force-color($color: var(--text-primary)) {
-  a, button {
+  a,
+  button {
     &,
     &:active,
     &:hover,
     &:link,
     &:visited,
-    &:visited:hover,
-    {
+    &:visited:hover {
       color: $color;
     }
   }
 }
-
 
 %nolinks {
   @include force-color;
