@@ -22,7 +22,7 @@ class AsyncCommand(BaseCommand):
         Any arguments for the func should be in func_kwargs, not command_options.
         """
         if func_kwargs is None:
-            func_kwargs = dict()
+            func_kwargs = {}
 
         assert hasattr(func, "delay"), (
             "AsyncCommand.handle_async received a function that is not registered"

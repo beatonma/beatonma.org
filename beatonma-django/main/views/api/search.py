@@ -10,7 +10,11 @@ class SearchSuggestionsView(ApiView):
         results = get_suggestions()
 
         return JsonResponse(
-            dict(suggestions=[dataclasses.asdict(x) for x in results[:MAX_SUGGESTIONS]])
+            {
+                "suggestions": [
+                    dataclasses.asdict(x) for x in results[:MAX_SUGGESTIONS]
+                ],
+            }
         )
 
 

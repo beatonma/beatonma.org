@@ -16,7 +16,6 @@ log = logging.getLogger(__name__)
 class ArticleView(MentionableView, LoggedView):
     def get(self, request, slug: str):
         article = get_object_or_404(Article, slug=slug)
-
         apps = article.apps.all()
         links = chain(*[x.links.all() for x in apps])
         links = chain(links, article.links.all())
@@ -29,28 +28,13 @@ class ArticleView(MentionableView, LoggedView):
         return render(
             request,
             "pages/posts/article/article.html",
-            dict(
-                post=article,
-                apps=apps,
-                links=links,
+            {
+                "post": article,
+                "apps": apps,
+                "links": links,
                 **get_theme_context(article, apps.first()),
-            ),
+            },
         )
-
-
-class ChangelogView(MentionableView, LoggedView):
-    def get(self, request, slug: str):
-        """Redirect to app#changelog_id."""
-        changelog = get_object_or_404(Changelog, slug=slug)
-
-        url = reverse(
-            view_names.APP,
-            kwargs=dict(
-                app_id=changelog.app.app_id,
-            ),
-        )
-        url += "#" + changelog.slug
-        return redirect(url)
 
 
 class BlogView(MentionableView, LoggedView):
@@ -60,10 +44,10 @@ class BlogView(MentionableView, LoggedView):
         return render(
             request,
             "pages/posts/blog.html",
-            dict(
-                post=blog,
+            {
+                "post": blog,
                 **get_theme_context(blog),
-            ),
+            },
         )
 
 
@@ -74,7 +58,22 @@ class NoteView(MentionableView, LoggedView):
         return render(
             request,
             "pages/posts/note/note.html",
-            dict(
-                post=note,
-            ),
+            {
+                "post": note,
+            },
         )
+
+
+class ChangelogView(MentionableView, LoggedView):
+    def get(self, request, slug: str):
+        """Redirect to app#changelog_id."""
+        changelog = get_object_or_404(Changelog, slug=slug)
+
+        url = reverse(
+            view_names.APP,
+            kwargs={
+                "app_id": changelog.app.app_id,
+            },
+        )
+        url += "#" + changelog.slug
+        return redirect(url)

@@ -123,9 +123,7 @@ class App(
                     url=self.repository.url,
                     content_type=ContentType.objects.get_for_model(self),
                     object_id=self.pk,
-                    defaults=dict(
-                        description="source",
-                    ),
+                    defaults={"description": "source"},
                 )
 
         else:

@@ -29,10 +29,10 @@ class NoteWithMedia(ApiModel):
             self.media = self.note.related_files.first()
 
     def to_json(self) -> dict:
-        return dict(
-            note=self.note.to_json(),
-            media=self.media.to_json() if self.media else None,
-        )
+        return {
+            "note": self.note.to_json(),
+            "media": self.media.to_json() if self.media else None,
+        }
 
 
 def get_notes_with_media(**filter_kwargs) -> List[NoteWithMedia]:

@@ -42,7 +42,7 @@ URL = "https://api.not-github.com/my-fake-url/"
 
 class _MockResponse:
     def __init__(self, req: requests.PreparedRequest):
-        self.headers = dict(**SAMPLE_RESPONSE_HEADERS)
+        self.headers = {**SAMPLE_RESPONSE_HEADERS}
 
         if req.headers.get("If-None-Match") == ETAG:
             self.status_code = 304

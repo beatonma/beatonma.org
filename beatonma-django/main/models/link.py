@@ -1,10 +1,9 @@
 from urllib.parse import urlparse
 
-from django.db import models
-from django.db.models import UniqueConstraint
-
 from common.models import BaseModel
 from common.models.generic import GenericFkMixin
+from django.db import models
+from django.db.models import UniqueConstraint
 from main.models.mixins import StyleableSvgMixin
 
 DESCRIPTION_CHOICES = (
@@ -48,7 +47,7 @@ class Link(GenericFkMixin, BaseModel):
             if netloc:
                 host, _ = Host.objects.get_or_create(
                     domain=netloc,
-                    defaults=dict(name=netloc),
+                    defaults={"name": netloc},
                 )
                 self.host = host
 

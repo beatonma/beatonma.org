@@ -30,11 +30,11 @@ def create_changelog_from_githubreleasepayload(
         _, created = Changelog.objects.get_or_create(
             app=app,
             version_name=instance.name,
-            defaults=dict(
-                format=Formats.MARKDOWN,
-                published_at=instance.published_at,
-                content=instance.description,
-            ),
+            defaults={
+                "format": Formats.MARKDOWN,
+                "published_at": instance.published_at,
+                "content": instance.description,
+            },
         )
         if created:
             log.info(

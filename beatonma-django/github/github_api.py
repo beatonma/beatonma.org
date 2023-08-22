@@ -38,10 +38,10 @@ def get_if_changed(url, params=None, headers=None) -> Optional[requests.Response
     """If data has not changed since the last time we asked, return None."""
 
     if params is None:
-        params = dict()
+        params = {}
 
     if headers is None:
-        headers = dict()
+        headers = {}
 
     headers.update(
         {
@@ -121,10 +121,10 @@ def _get_existing_etag(url: str) -> Optional[GithubETag]:
 def _remember(url: str, headers: GithubResponseHeaders):
     GithubETag.objects.update_or_create(
         url=url,
-        defaults=dict(
-            etag=headers.etag,
-            timestamp=headers.timestamp,
-        ),
+        defaults={
+            "etag": headers.etag,
+            "timestamp": headers.timestamp,
+        },
     )
 
 

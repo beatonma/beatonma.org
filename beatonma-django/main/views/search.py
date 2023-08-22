@@ -80,11 +80,11 @@ class TagView(LoggedView):
         return render(
             request,
             "pages/search/tag.html",
-            dict(
-                filters=filters[:MAX_SUGGESTIONS],
-                filter=tag,
-                feed=results,
-            ),
+            {
+                "filters": filters[:MAX_SUGGESTIONS],
+                "filter": tag,
+                "feed": results,
+            },
         )
 
 
@@ -121,11 +121,11 @@ class LanguageView(LoggedView):
         return render(
             request,
             "pages/search/language.html",
-            dict(
-                filters=filters,
-                filter=language,
-                feed=results,
-            ),
+            {
+                "filters": filters,
+                "filter": language,
+                "feed": results,
+            },
         )
 
 
@@ -137,10 +137,10 @@ class AllAppsView(LoggedView):
         return render(
             request,
             "pages/search/apps.html",
-            dict(
-                filters=app_types,
-                feed=apps,
-            ),
+            {
+                "filters": app_types,
+                "feed": apps,
+            },
         )
 
 
@@ -152,9 +152,9 @@ class FilteredAppsView(LoggedView):
         return render(
             request,
             "pages/search/apps.html",
-            dict(
-                filters=app_types,
-                filter=app_type,
-                feed=apps,
-            ),
+            {
+                "filters": app_types,
+                "filter": app_type,
+                "feed": apps,
+            },
         )

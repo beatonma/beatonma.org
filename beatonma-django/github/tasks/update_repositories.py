@@ -19,9 +19,9 @@ log = get_task_logger(__name__)
 @shared_task
 def update_github_repository_cache():
     url = "https://api.github.com/user/repos"
-    params = dict(
-        sort="updated",
-    )
+    params = {
+        "sort": "updated",
+    }
 
     github_api.for_each(
         url,
@@ -109,20 +109,20 @@ def _update_repository(obj: dict):
     created: bool
     repo, created = GithubRepository.objects.update_or_create(
         id=data.id,
-        defaults=dict(
-            owner=owner,
-            license=_license,
-            url=data.html_url,
-            is_private=data.private,
-            created_at=data.created_at,
-            updated_at=data.updated_at,
-            published_at=data.created_at,
-            name=data.name,
-            full_name=data.full_name,
-            description=data.description,
-            size_kb=data.size_kb,
-            primary_language=primary_language,
-        ),
+        defaults={
+            "owner": owner,
+            "license": _license,
+            "url": data.html_url,
+            "is_private": data.private,
+            "created_at": data.created_at,
+            "updated_at": data.updated_at,
+            "published_at": data.created_at,
+            "name": data.name,
+            "full_name": data.full_name,
+            "description": data.description,
+            "size_kb": data.size_kb,
+            "primary_language": primary_language,
+        },
     )
 
     if created:
@@ -155,9 +155,9 @@ def _update_languages(repo: GithubRepository):
         GithubLanguageUsage.objects.update_or_create(
             language=language,
             repository=repo,
-            defaults=dict(
-                size_bytes=byte_count,
-            ),
+            defaults={
+                "size_bytes": byte_count,
+            },
         )
 
 
@@ -166,11 +166,11 @@ def _update_owner(obj: dict) -> GithubUser:
 
     owner, _ = GithubUser.objects.update_or_create(
         id=data.id,
-        defaults=dict(
-            username=data.username,
-            url=data.profile_url,
-            avatar_url=data.avatar_url,
-        ),
+        defaults={
+            "username": data.username,
+            "url": data.profile_url,
+            "avatar_url": data.avatar_url,
+        },
     )
     return owner
 
@@ -183,10 +183,10 @@ def _update_license(obj: dict) -> Optional[GithubLicense]:
 
     _license, _ = GithubLicense.objects.update_or_create(
         key=data.key,
-        defaults=dict(
-            name=data.name,
-            url=data.url,
-        ),
+        defaults={
+            "name": data.name,
+            "url": data.url,
+        },
     )
 
     return _license

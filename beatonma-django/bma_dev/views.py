@@ -23,10 +23,10 @@ class DevThemeView(LoggedView):
         return render(
             request,
             "pages/debug/theme-preview.html",
-            dict(
-                app_types=AppType.objects.all(),
+            {
+                "app_types": AppType.objects.all(),
                 **get_theme_context(DevThemePreview.objects.first()),
-            ),
+            },
         )
 
 

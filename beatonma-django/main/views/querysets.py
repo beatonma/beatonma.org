@@ -27,10 +27,10 @@ def get_main_feed() -> List[PublishedMixin]:
 
 def get_search_results(query: str, to_json: bool = False) -> dict:
     if not query:
-        return dict(
-            query=query,
-            feed=[],
-        )
+        return {
+            "query": query,
+            "feed": [],
+        }
 
     feed = _build_feed(lambda m: m.objects.search(query))
 

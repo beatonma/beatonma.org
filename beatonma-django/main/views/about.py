@@ -10,7 +10,7 @@ class AboutView(LoggedView):
         return render(
             request,
             "pages/about.html",
-            dict(
-                about=about,
-            ),
+            {
+                "about": about,
+            },
         )

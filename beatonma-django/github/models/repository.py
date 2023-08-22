@@ -94,18 +94,18 @@ class GithubRepository(PublishedMixin, ApiModel, TaggableMixin, BaseModel):
             return None
 
         if self.is_private:
-            return dict(
-                name=self.name,
-            )
+            return {
+                "name": self.name,
+            }
 
         else:
-            return dict(
-                id=self.id,
-                name=self.full_name,
-                url=self.url,
-                description=self.description,
-                license=self.license.key if self.license else None,
-            )
+            return {
+                "id": self.id,
+                "name": self.full_name,
+                "url": self.url,
+                "description": self.description,
+                "license": self.license.key if self.license else None,
+            }
 
     def to_search_result(self) -> SearchResult:
         return SearchResult(
@@ -141,10 +141,10 @@ class GithubLanguageUsage(ApiModel, BaseModel):
         return math.ceil(self.size_bytes / 1024.0)
 
     def to_json(self) -> dict:
-        return dict(
-            name=self.language.name,
-            bytes=self.size_bytes,
-        )
+        return {
+            "name": self.language.name,
+            "bytes": self.size_bytes,
+        }
 
     def __str__(self):
         return f"{self.repository} | {self.language} {self.size_kb}kb"

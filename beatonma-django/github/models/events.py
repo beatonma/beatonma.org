@@ -82,10 +82,10 @@ class GithubUserEvent(ApiModel, BaseModel):
 
     def to_json(self) -> dict:
         if not self.repository.is_published or not self.is_public:
-            return dict(
-                created_at=self.created_at.isoformat(),
-                type=self.type,
-            )
+            return {
+                "created_at": self.created_at.isoformat(),
+                "type": self.type,
+            }
 
         payload = self.payload()
 
@@ -98,13 +98,13 @@ class GithubUserEvent(ApiModel, BaseModel):
         else:
             payload_json = payload.to_json()
 
-        return dict(
-            created_at=self.created_at.isoformat(),
-            id=self.github_id,
-            type=self.type,
-            repository=self.repository.to_json(),
-            payload=payload_json,
-        )
+        return {
+            "created_at": self.created_at.isoformat(),
+            "id": self.github_id,
+            "type": self.type,
+            "repository": self.repository.to_json(),
+            "payload": payload_json,
+        }
 
     def __str__(self):
         return f"{self.type}: {self.repository}"
@@ -130,11 +130,11 @@ class GithubCommit(GithubEventPayload):
     )
 
     def to_json(self) -> dict:
-        return dict(
-            sha=self.sha,
-            message=self.message,
-            url=self.url,
-        )
+        return {
+            "sha": self.sha,
+            "message": self.message,
+            "url": self.url,
+        }
 
     def __str__(self):
         return f"{self.sha[:6]}: {self.message[:128]}"
@@ -154,10 +154,10 @@ class GithubCreatePayload(GithubEventPayload):
     )
 
     def to_json(self) -> dict:
-        return dict(
-            type=self.ref_type,
-            ref=self.ref,
-        )
+        return {
+            "type": self.ref_type,
+            "ref": self.ref,
+        }
 
     def __str__(self):
         return f"Create {self.ref_type}: {self.ref}"
@@ -178,11 +178,11 @@ class GithubIssuesPayload(GithubEventPayload):
     )
 
     def to_json(self) -> dict:
-        return dict(
-            number=self.number,
-            url=self.url,
-            closed_at=self.closed_at.isoformat(),
-        )
+        return {
+            "number": self.number,
+            "url": self.url,
+            "closed_at": self.closed_at.isoformat(),
+        }
 
     def __str__(self):
         return f"Closed #{self.number}: {self.closed_at}"
@@ -206,14 +206,14 @@ class GithubPullRequestPayload(GithubEventPayload):
     )
 
     def to_json(self) -> dict:
-        return dict(
-            number=self.number,
-            url=self.url,
-            merged_at=str(self.merged_at),
-            addition_count=self.additions_count,
-            deletions_count=self.deletions_count,
-            changed_files_count=self.changed_files_count,
-        )
+        return {
+            "number": self.number,
+            "url": self.url,
+            "merged_at": str(self.merged_at),
+            "addition_count": self.additions_count,
+            "deletions_count": self.deletions_count,
+            "changed_files_count": self.changed_files_count,
+        }
 
     def __str__(self):
         return f"Merged #{self.number}: {self.merged_at}"
@@ -235,12 +235,12 @@ class GithubReleasePayload(GithubEventPayload):
     )
 
     def to_json(self) -> dict:
-        return dict(
-            name=self.name,
-            url=self.url,
-            description=self.description,
-            published_at=str(self.published_at),
-        )
+        return {
+            "name": self.name,
+            "url": self.url,
+            "description": self.description,
+            "published_at": str(self.published_at),
+        }
 
     def __str__(self):
         return f"Release {self.name}: {self.published_at}"
@@ -261,11 +261,11 @@ class GithubWikiPayload(GithubEventPayload):
     )
 
     def to_json(self) -> dict:
-        return dict(
-            name=self.name,
-            url=self.url,
-            action=self.action,
-        )
+        return {
+            "name": self.name,
+            "url": self.url,
+            "action": self.action,
+        }
 
     def __str__(self):
         return f"{self.action} {self.name}"
