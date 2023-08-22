@@ -1,6 +1,5 @@
 @use "v2/core";
 
-
 h1 {
   font-size: var(--fs-h1);
 }
@@ -25,7 +24,6 @@ h6 {
   font-size: var(--fs-h6);
 }
 
-
 %-section-header {
   margin-bottom: var(--space-2x);
 }
@@ -41,7 +39,6 @@ h6 {
 
   font-weight: normal;
   margin: 0;
-  width: fit-content;
 
   &.section {
     @extend %-section-header;
