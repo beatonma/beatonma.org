@@ -70,9 +70,4 @@ $-corners: (
 
 %outlined {
   border: 2px solid var(--text-tertiary);
-
-  @include breakpoints.on-small-width {
-    border-block: 2px solid var(--text-tertiary);
-    border-inline: none;
-  }
 }

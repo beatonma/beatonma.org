@@ -13,6 +13,27 @@
   }
 }
 
+%hover-underline {
+  position: relative;
+
+  &::after {
+    content: "";
+    display: block;
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    background-color: var(--vibrant);
+    transition: transform 200ms;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  &:hover::after {
+    content: "";
+    transform: scaleX(100%);
+  }
+}
+
 %clickable {
   cursor: pointer;
 }
@@ -21,6 +42,7 @@
   animation-name: outline-pop;
   animation-duration: 220ms;
   animation-fill-mode: both;
+  animation-timing-function: ease-in-out;
 
   @keyframes outline-pop {
     0% {

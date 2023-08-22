@@ -4,7 +4,7 @@
   @extend %row-spaced;
 
   a {
-    @extend %text-small;
+    @extend %text-smallest;
 
     &::before {
       content: "#";

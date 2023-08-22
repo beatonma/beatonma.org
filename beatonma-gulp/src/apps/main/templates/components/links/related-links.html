@@ -2,19 +2,23 @@
     <div class="related-links">
         <span class="links-title">Links:</span>
         {% for app in apps %}
-            <a class="related-app" href="{% url 'app' app.app_id %}">
-                <span class="related-link__description">App</span>: {{ app.title }}
-            </a>
+          <a href="{% url 'app' app.app_id %}">
+            <span class="related">
+              <span class="related__description">App</span>: {{ app.title }}
+            </span>
+          </a>
         {% endfor %}
 
         {% for link in links %}
-            <a class="related-link" href="{{ link.url }}">
-                {% if link.description %}
-                    <span class="related-link__description">{{ link.description|capfirst }}</span>: {{ link.host.name }}
-                {% else %}
-                    {{ link.host.name }}
-                {% endif %}
-            </a>
+          <a href="{{ link.url }}">
+            <span class="related">
+              {% if link.description %}
+                <span class="related__description">{{ link.description|capfirst }}</span>: {{ link.host.name }}
+              {% else %}
+                {{ link.host.name }}
+              {% endif %}
+            </span>
+          </a>
         {% endfor %}
     </div>
 {% endif %}

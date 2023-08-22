@@ -1,9 +1,26 @@
 @use "v2/components";
 
 .related-links {
-  @extend %links;
+  @extend %row-spaced;
+  @extend %nolinks;
+  @extend %margin-small-block;
 
-  .related-link__description {
+  font-variant: all-small-caps;
+
+  .links-title {
+    font-weight: bold;
+  }
+
+  .related {
+    @extend %padding-small-inline;
+  }
+
+  a {
+    @extend %hover;
+    @extend %hover-underline;
+  }
+
+  .related__description {
     color: var(--vibrant);
   }
 }
