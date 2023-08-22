@@ -32,15 +32,12 @@ server {
 
     server_name ${DOMAIN_NAME} www.${DOMAIN_NAME};
 
-    if ($host !~* ^${DOMAIN_NAME}$) {
-        return 444;
-    }
-
     client_max_body_size 8M;
 
     include templates/includes/ignore-file-ext.inc;
     include templates/includes/healthcheck.inc;
     include templates/includes/resources.inc;
+    include templates/includes/errors.inc;
 
     location / {
         proxy_pass http://django;

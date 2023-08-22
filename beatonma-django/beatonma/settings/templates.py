@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from django.template.loader import engines as template_engines
 
-from . import environment
+from . import BASE_DIR, environment
 
 
 def _get_external_templates() -> List[str]:
@@ -46,7 +46,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
             *_get_external_templates(),
-            "templates",
+            BASE_DIR / "templates",
         ],
         "APP_DIRS": True,
         "OPTIONS": {

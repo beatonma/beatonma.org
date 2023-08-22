@@ -1,0 +1,10 @@
+{% extends '_http-error.html' %}
+{% load repetition %}
+
+{% block title %}400{% endblock %}
+
+{% block error_name %}400 Bad Request{% endblock %}
+{% block error_message %}{% choose
+    "Please check your arguments."
+    "What are you up to? 🧐"
+    %}{% endblock %}

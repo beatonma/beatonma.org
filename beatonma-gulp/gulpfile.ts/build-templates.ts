@@ -7,22 +7,28 @@ import { unwrap } from "./build";
 import { ANY_HTML, distPath, srcPath } from "./paths";
 import { getGitHash } from "./setup";
 
-const isFlatPage = (file: Vinyl): boolean => {
+const isRootTemplate = (file: Vinyl): boolean => {
     const path = file.history[0];
-    return /.*flatpages\/.*/.test(path);
+    return /.*root\/.*/.test(path);
 };
 
 /**
- * Move flatpages to root templates/flatpages/ directory.
+ * Copy error templates
  */
-const collectFlatpages = () =>
+const collectRootPages = () =>
     gulpIf(
-        isFlatPage,
+        isRootTemplate,
         gulpRename(path => {
-            path.dirname = path.dirname.replace(
-                /(.*\/templates\/).*/,
-                "templates/flatpages/"
-            );
+            if (path.dirname.endsWith("flatpages")) {
+                path.dirname = "templates/flatpages";
+            } else if (path.dirname.endsWith("http_errors")) {
+                path.dirname = "templates/";
+            } else {
+                path.dirname = path.dirname.replace(
+                    /.*pages\/root/,
+                    "templates/"
+                );
+            }
         })
     );
 
@@ -53,6 +59,6 @@ export const buildTemplates = () =>
         .pipe(removeNewlinesInHtmlTags())
         .pipe(removeWhitespaceAtLineStart())
         .pipe(removeLinebreaks())
-        .pipe(collectFlatpages())
+        .pipe(collectRootPages())
         .pipe(unwrap())
         .pipe(dest(distPath()));

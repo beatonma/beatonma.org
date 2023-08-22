@@ -1,0 +1,10 @@
+{% extends 'pages/base/scaffold.html' %}
+
+
+{% block main %}
+  <div class="http-error">
+    <h1>{% block error_name %}{% endblock %}</h1>
+    <p class="error-message">{% block error_message %}{% endblock %}</p>
+    <p>If this is unexpected, please <a href="/contact/">let me know</a>.</p>
+  </div>
+{% endblock %}

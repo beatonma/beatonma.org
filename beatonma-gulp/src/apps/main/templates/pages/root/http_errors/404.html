@@ -1,0 +1,10 @@
+{% extends '_http-error.html' %}
+{% load repetition %}
+
+{% block title %}404{% endblock %}
+
+{% block error_name %}404 Not Found{% endblock %}
+{% block error_message %}{% choose
+    "Sorry, that page does not exist."
+    "Pls chek yuor speling."
+    %}{% endblock %}

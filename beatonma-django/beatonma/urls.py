@@ -1,9 +1,21 @@
 """beatonma URL Configuration."""
+from typing import Any
+
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.template.response import TemplateResponse
 from django.urls import include, path
 from django.views.generic import RedirectView
+
+
+def _redirect(url: str):
+    return RedirectView.as_view(url=url, permanent=True)
+
+
+def _root_template(name: Any):
+    return lambda request, *args, **kwargs: TemplateResponse(request, f"{name}.html")
+
 
 local_urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
@@ -14,35 +26,41 @@ local_urlpatterns = [
 redirects = [
     path(
         "github/",
-        RedirectView.as_view(url="https://github.com/beatonma", permanent=True),
+        _redirect("https://github.com/beatonma"),
     ),
     path(
         "music/",
-        RedirectView.as_view(
-            url="https://www.last.fm/user/schadenfreude87",
-            permanent=True,
+        _redirect(
+            "https://www.last.fm/user/schadenfreude87",
         ),
     ),
     path(
         "playstore/",
-        RedirectView.as_view(
-            url="https://play.google.com/store/apps/developer?id=Michael+Beaton",
-            permanent=True,
+        _redirect(
+            "https://play.google.com/store/apps/developer?id=Michael+Beaton",
         ),
     ),
     path(
         "starcraft/",
-        RedirectView.as_view(
-            url="https://starcraft2.com/en-gb/profile/2/1/2784180",
-            permanent=True,
-        ),
+        _redirect("https://starcraft2.com/en-gb/profile/2/1/2784180"),
+    ),
+    path(
+        "youtube/",
+        _redirect("https://www.youtube.com/@fallofmath"),
     ),
 ]
 
+
+errors = [
+    path("400/", _root_template(400)),
+    path("403/", _root_template(403)),
+    path("404/", _root_template(404)),
+    path("500/", _root_template(500)),
+]
+
+
 urlpatterns = (
-    local_urlpatterns
-    + redirects
-    + [
+    [
         path("", include("main.urls")),
         path("api/", include("bma_app.urls")),
         path("webmention/", include("mentions.urls")),
@@ -51,5 +69,8 @@ urlpatterns = (
         path("wurdle/", include("webapp.wurdle.urls")),
         path("", include("bma_dev.urls")),
     ]
+    + redirects
+    + errors
+    + local_urlpatterns
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 )
