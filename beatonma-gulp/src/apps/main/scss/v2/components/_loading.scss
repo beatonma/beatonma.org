@@ -6,17 +6,18 @@
   height: 4px;
   width: 500px;
   max-width: 100%;
-  background-color: transparent;
-  transition: background-color core.$animation-duration,
-  width 200ms cubic-bezier(0.4, 0, 0.2, 1),
-  left 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: var(--vibrant);
+  opacity: 0;
+  transition: opacity core.$animation-duration,
+    width 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    left 200ms cubic-bezier(0.4, 0, 0.2, 1);
 
   &[data-active="true"] {
     animation-name: loading-bar;
     animation-duration: 1200ms;
     animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     animation-iteration-count: infinite;
-    background-color: var(--vibrant) !important;
+    opacity: 1;
   }
 
   @keyframes loading-bar {
@@ -42,7 +43,6 @@
   }
 }
 
-
 .loading--spinner {
   display: flex;
   align-items: center;
@@ -56,8 +56,8 @@
     display: grid;
     grid-template-rows: auto;
     grid-template-areas:
-            "top top"
-            "bottomleft bottomright";
+      "top top"
+      "bottomleft bottomright";
     justify-content: center;
     justify-items: center;
     animation-name: loading-spinner;
@@ -100,14 +100,15 @@
     }
 
     @keyframes loading-item {
-      $translation: .25;
+      $translation: 0.25;
 
       25% {
         transform: translateX(calc(#{$size} * #{$translation}));
       }
 
       50% {
-        transform: translateX(calc(#{$size} * -#{$translation})) translateY(calc(#{$size} * #{$translation})) rotate(-270deg);
+        transform: translateX(calc(#{$size} * -#{$translation}))
+          translateY(calc(#{$size} * #{$translation})) rotate(-270deg);
       }
 
       75% {
