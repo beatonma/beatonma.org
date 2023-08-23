@@ -69,7 +69,7 @@ const SearchApp = () => {
 };
 
 const Search = () => {
-    const [query, setQuery] = useState(undefined);
+    const [query, setQuery] = useState("");
     const [results, setResults] = useState<SearchSuggestion[]>();
 
     useTextEventListener(inputID, setQuery, "keyup");
@@ -85,22 +85,30 @@ const Search = () => {
 
     return (
         <>
-            <SearchResults results={results} />
+            <SearchResults query={query} results={results} />
             <SearchSuggestions />
         </>
     );
 };
 
 interface SearchQueryProps {
+    query: string;
     results: SearchSuggestion[];
 }
 const SearchResults = (props: SearchQueryProps) => {
-    const { results } = props;
+    const { query, results } = props;
 
     if (!results) return null;
 
+    if (query && results.length === 0)
+        return (
+            <div className="search-results">
+                <span className="search-result">No results</span>
+            </div>
+        );
+
     return (
-        <>
+        <div className="search-results">
             {results.map(item => (
                 <a className="search-result" href={item.url} key={item.url}>
                     <div className="search-result--name">{item.name}</div>
@@ -110,7 +118,7 @@ const SearchResults = (props: SearchQueryProps) => {
                     <Time dateTime={item.timestamp} />
                 </a>
             ))}
-        </>
+        </div>
     );
 };
 
