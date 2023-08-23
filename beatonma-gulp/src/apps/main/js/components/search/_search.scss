@@ -2,6 +2,8 @@
 @use "v2/components/links";
 
 .search-results {
+  @extend %margin-large-block;
+
   .filters {
     @extend %link-buttons;
     @extend %margin-large-block;
