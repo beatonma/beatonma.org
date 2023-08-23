@@ -2,6 +2,7 @@
 @use "v2/constants";
 @use "v2/components/card";
 @use "v2/components/links";
+@use "v2/objects/button";
 
 $github-small-width: 420px;
 $two-column-min-width: constants.$readable-text-width + $github-small-width;
@@ -23,6 +24,11 @@ $three-column-min-width: constants.$readable-text-width * 2 +
 
     grid-area: quick-links;
     justify-content: center;
+
+    a,
+    a:visited {
+      @extend %button-outline;
+    }
   }
 
   #github_recent {

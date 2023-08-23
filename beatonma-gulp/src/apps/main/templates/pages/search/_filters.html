@@ -6,8 +6,7 @@
     <a
       href="{% if filters_viewname %}{% url filters_viewname item %}{% else %}{{ item.url }}{% endif %}"
       data-selected={% equal item filter %}
-    >
-      {{ item.name|default:item }}
-    </a>
+      {% if filters_item_class %} class="{{ filters_item_class }}"{% endif %}
+    >{{ item.name|default:item }}</a>
   {% endfor %}
 </div>

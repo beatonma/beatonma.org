@@ -1,24 +1,29 @@
-{% if links or apps %}
-    <div class="related-links">
-        <span class="links-title">Links:</span>
-        {% for app in apps %}
-          <a href="{% url 'app' app.app_id %}">
-            <span class="related">
+{% load urls %}
+{% if links or apps or tags %}
+  <div class="related">
+    {% if links or apps %}
+          <span class="links-title">Links:</span>
+          {% for app in apps %}
+            <a href="{% url 'app' app.app_id %}">
               <span class="related__description">App</span>: {{ app.title }}
-            </span>
-          </a>
-        {% endfor %}
+            </a>
+          {% endfor %}
 
-        {% for link in links %}
-          <a href="{{ link.url }}">
-            <span class="related">
+          {% for link in links %}
+            <a href="{{ link.url }}">
               {% if link.description %}
                 <span class="related__description">{{ link.description|capfirst }}</span>: {{ link.host.name }}
               {% else %}
                 {{ link.host.name }}
               {% endif %}
-            </span>
-          </a>
-        {% endfor %}
-    </div>
+            </a>
+          {% endfor %}
+    {% endif %}
+
+    {% if tags %}
+      {% for tag in tags %}
+          <a href="{{ tag|tag_url }}" class="tag">{{ tag.name }}</a>
+      {% endfor %}
+    {% endif %}
+  </div>
 {% endif %}

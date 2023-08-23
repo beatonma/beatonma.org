@@ -84,7 +84,7 @@ $search-input-width: 32ch;
     }
 
     .search-suggestions {
-      @extend %links;
+      @extend %link-buttons;
 
       justify-content: flex-end;
 
@@ -95,8 +95,8 @@ $search-input-width: 32ch;
     }
   }
 
-
-  &:focus-within, &[data-debug] {
+  &:focus-within,
+  &[data-debug] {
     z-index: var(--elevation-search-results);
 
     #search_wrapper {
@@ -104,10 +104,18 @@ $search-input-width: 32ch;
       opacity: 1;
     }
 
+    #search_icon {
+      // Icon should still be visible over the scrim.
+      color: var(--text-light-primary);
+    }
+
     #search_results {
+      @extend %margin-medium-bottom;
+
       max-width: min(100%, #{$search-input-width});
       height: auto;
-      max-height: unset;
+      max-height: 60svh;
+      overflow-y: auto;
       opacity: 1;
       pointer-events: all;
     }

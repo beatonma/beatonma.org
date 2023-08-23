@@ -3,7 +3,7 @@
 
 .search-results {
   .filters {
-    @extend %links;
+    @extend %link-buttons;
     @extend %margin-large-block;
   }
 }

@@ -14,22 +14,15 @@
 }
 
 %hover-underline {
-  position: relative;
+  @extend %underline;
 
   &::after {
-    content: "";
-    display: block;
-    position: absolute;
-    height: 2px;
-    width: 100%;
-    background-color: var(--vibrant);
     transition: transform 200ms;
     transform: scaleX(0);
     transform-origin: left;
   }
 
   &:hover::after {
-    content: "";
     transform: scaleX(100%);
   }
 }
@@ -57,5 +50,20 @@
     100% {
       outline-offset: 1px;
     }
+  }
+}
+
+%underline {
+  position: relative;
+
+  &::after {
+    content: "";
+    display: block;
+    position: absolute;
+    margin-top: 2px;
+    height: 2px;
+    width: 100%;
+    left: 0;
+    background-color: var(--vibrant);
   }
 }

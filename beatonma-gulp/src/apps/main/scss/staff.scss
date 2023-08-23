@@ -1,7 +1,6 @@
 @use "v2/core";
 @use "v2/objects/button";
 
-
 .staff {
   @include core.row($horizontal: flex-end, $gap: var(--space));
 
@@ -16,8 +15,7 @@
     align-items: center;
 
     > * {
-      @extend %button;
-      @extend %surface-vibrant;
+      @extend %button-transparent;
 
       border: none;
     }

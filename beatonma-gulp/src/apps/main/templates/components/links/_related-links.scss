@@ -1,24 +1,7 @@
 @use "v2/components";
 
-.related-links {
-  @extend %row-spaced;
-  @extend %nolinks;
-  @extend %margin-small-block;
-
-  font-variant: all-small-caps;
-
-  .links-title {
-    font-weight: bold;
-  }
-
-  .related {
-    @extend %padding-small-inline;
-  }
-
-  a {
-    @extend %hover;
-    @extend %hover-underline;
-  }
+.related {
+  @extend %link-buttons;
 
   .related__description {
     color: var(--vibrant);

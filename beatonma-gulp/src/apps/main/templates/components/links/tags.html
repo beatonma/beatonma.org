@@ -1,6 +1,0 @@
-{% load urls %}
-<div class="related-tags">
-{% for tag in tags %}
-    <a href="{{ tag|tag_url }}" class="tag">{{ tag.name }}</a>
-{% endfor %}
-</div>

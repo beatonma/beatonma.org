@@ -3,22 +3,41 @@
 %button {
   @extend %clickable;
   @extend %shape-small;
-  @extend %outlined;
   @extend %text-one-line;
   @include core.transition((color, border-color, background-color));
 
   padding: 4px 8px;
-  font-size: var(--fs-default);
   font-variant: all-small-caps;
+}
+
+%button-transparent {
+  @extend %button;
+  @extend %hover;
+
+  background: none;
+  color: var(--text-primary);
+}
+
+%button-solid {
+  @extend %button;
+  @extend %elevated;
+  @extend %surface-muted-hover;
+}
+
+%button-outline {
+  @extend %button;
+  @extend %outlined;
+
   background-color: transparent;
   color: var(--text-primary);
 
-  &:hover, &[data-selected="true"] {
+  &:hover,
+  &[data-selected="true"] {
     color: var(--vibrant-high-contrast);
     border-color: var(--vibrant-high-contrast);
   }
 }
 
 button {
-  @extend %button;
+  @extend %button-outline;
 }

@@ -1,16 +1,37 @@
 @use "v2/core";
 
 %links {
-  @extend %nolinks;
   @extend %row-spaced;
-
-  font-variant: all-small-caps;
 
   .links-title {
     font-weight: bold;
+
+    &::after {
+      content: "";
+      background-color: var(--vibrant);
+      width: 2px;
+      height: 1em;
+    }
   }
 
+  @include core.touchscreen {
+    a {
+      padding: var(--space-half) var(--space);
+      border: 2px solid var(--text-tertiary);
+    }
+  }
+}
+
+%link-buttons {
+  @extend %links;
+  @extend %nolinks;
+  @extend %margin-small-block;
+
+  font-variant: all-small-caps;
+
   a {
-    line-height: 1;
+    @extend %hover;
+    @extend %hover-underline;
+    @extend %padding-small-inline;
   }
 }

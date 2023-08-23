@@ -1,4 +1,5 @@
 @use "./animation";
+@use "./state";
 
 [data-meta] {
   display: none;
@@ -10,4 +11,12 @@
 
 [data-animate-in] {
   @extend %fade-and-slide-in;
+}
+
+[data-selected="true"] {
+  @extend %underline;
+
+  &::after {
+    transform: none !important;
+  }
 }

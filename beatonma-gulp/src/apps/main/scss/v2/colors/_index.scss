@@ -13,12 +13,16 @@
   --orange: #d86900;
   --grey: #636363;
 
-  --text-light-primary: rgb(255 255 255 / 83%);
-  --text-light-secondary: rgb(255 255 255 / 54%);
-  --text-light-tertiary: rgb(255 255 255 / 25%);
-  --text-dark-primary: rgb(0 0 0 / 83%);
-  --text-dark-secondary: rgb(0 0 0 / 54%);
-  --text-dark-tertiary: rgb(0 0 0 / 25%);
+  --opacity-primary: 83%;
+  --opacity-secondary: 54%;
+  --opacity-tertiary: 25%;
+
+  --text-light-primary: rgb(255 255 255 / var(--opacity-primary));
+  --text-light-secondary: rgb(255 255 255 / var(--opacity-secondary));
+  --text-light-tertiary: rgb(255 255 255 / var(--opacity-tertiary));
+  --text-dark-primary: rgb(0 0 0 / var(--opacity-primary));
+  --text-dark-secondary: rgb(0 0 0 / var(--opacity-secondary));
+  --text-dark-tertiary: rgb(0 0 0 / var(--opacity-tertiary));
   --text-light: var(--text-light-primary);
   --text-dark: var(--text-dark-primary);
   --on-background: var(--text-primary);
