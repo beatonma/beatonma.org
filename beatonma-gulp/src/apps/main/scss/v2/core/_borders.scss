@@ -1,0 +1,11 @@
+@use "./layout";
+
+$-border-style: 2px solid;
+
+%outlined {
+  border: $-border-style var(--text-tertiary);
+}
+
+%border {
+  @include layout.directional(border, $-border-style);
+}
