@@ -102,13 +102,13 @@ const SearchResults = (props: SearchQueryProps) => {
 
     if (query && results.length === 0)
         return (
-            <div className="search-results">
+            <div className="search--results">
                 <span className="search-result">No results</span>
             </div>
         );
 
     return (
-        <div className="search-results">
+        <div className="search--results">
             {results.map(item => (
                 <a className="search-result" href={item.url} key={item.url}>
                     <div className="search-result--name">{item.name}</div>
@@ -138,7 +138,7 @@ const SearchSuggestions = () => {
     if (suggestions === null) return null;
 
     return (
-        <div className="search-suggestions">
+        <div className="search--suggestions">
             <div className="links-title">Explore</div>
             {suggestions.map(suggestion => (
                 <Suggestion key={suggestion.url} {...suggestion} />

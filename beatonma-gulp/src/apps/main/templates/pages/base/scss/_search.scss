@@ -83,7 +83,7 @@ $search-input-width: 32ch;
       }
     }
 
-    .search-suggestions {
+    .search--suggestions {
       @extend %link-buttons;
 
       justify-content: flex-end;
@@ -111,6 +111,7 @@ $search-input-width: 32ch;
 
     #search_results {
       @extend %margin-medium-bottom;
+      @extend %scroll-block;
 
       max-width: min(100%, #{$search-input-width});
       height: auto;
