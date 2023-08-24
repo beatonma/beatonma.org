@@ -45,9 +45,12 @@ $three-column-min-width: constants.$readable-text-width * 2 +
 
   #motd {
     @extend %card;
+    @extend %card-content;
+    @extend %center;
     @extend %shape-adaptive-medium;
     @extend %surface-vibrant;
     @extend %margin-large-block;
+    @extend %readable-text;
 
     grid-area: motd;
     width: fit-content;
