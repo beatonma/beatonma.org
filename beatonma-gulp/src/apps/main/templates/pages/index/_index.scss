@@ -53,14 +53,6 @@ $three-column-min-width: constants.$readable-text-width * 2 +
     @extend %readable-text;
 
     grid-area: motd;
-    width: fit-content;
-    margin-inline: auto;
-    margin-bottom: 1rem;
-
-    .motd-content {
-      @extend %card-content;
-      @extend %readable-text;
-    }
   }
 
   @media (min-width: $three-column-min-width) {
