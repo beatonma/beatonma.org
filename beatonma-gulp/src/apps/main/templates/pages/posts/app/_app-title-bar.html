@@ -5,4 +5,4 @@
 
 {% block trailing %}<time title="{{ app.published_at }}" datetime="{{ app.published_at }}">{{ app.published_at|minimaldate }}</time>{% endblock %}
 
-{% block subtitle %}{% include "components/links/related-links.html" with links=app.links.all %}{% endblock %}
+{% block subtitle %}{% include "../_related-links.html" with links=app.links.all %}{% endblock %}

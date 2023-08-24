@@ -7,5 +7,5 @@
 
 {% block subtitle %}
 <div class="tagline p-summary">{{ post.tagline|default:'' }}</div>
-{% include "components/links/related-links.html" with links=post.links.all tags=post.tags.all %}
+{% include "./_related-links.html" with links=post.links.all tags=post.tags.all %}
 {% endblock %}

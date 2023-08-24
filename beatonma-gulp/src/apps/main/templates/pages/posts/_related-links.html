@@ -1,8 +1,8 @@
 {% load urls %}
 {% if links or apps or tags %}
   <div class="related">
+    <span class="links-title">Related:</span>
     {% if links or apps %}
-          <span class="links-title">Links:</span>
           {% for app in apps %}
             <a href="{% url 'app' app.app_id %}">
               <span class="related__description">App</span>: {{ app.title }}
