@@ -1,17 +1,22 @@
 @use "v2/core";
 
-%links {
+%link-buttons {
   @extend %row-spaced;
+  @extend %nolinks;
+  @extend %margin-small-block;
+
+  font-variant: all-small-caps;
 
   .links-title {
     font-weight: bold;
+  }
 
-    &::after {
-      content: "";
-      background-color: var(--vibrant);
-      width: 2px;
-      height: 1em;
-    }
+  a {
+    @extend %hover;
+    @extend %hover-underline;
+    @extend %padding-small-inline;
+
+    white-space: nowrap;
   }
 
   @include core.touchscreen {
@@ -19,19 +24,5 @@
       padding: var(--space-half) var(--space);
       border: 2px solid var(--text-tertiary);
     }
-  }
-}
-
-%link-buttons {
-  @extend %links;
-  @extend %nolinks;
-  @extend %margin-small-block;
-
-  font-variant: all-small-caps;
-
-  a {
-    @extend %hover;
-    @extend %hover-underline;
-    @extend %padding-small-inline;
   }
 }

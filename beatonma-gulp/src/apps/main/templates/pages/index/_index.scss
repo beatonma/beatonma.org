@@ -20,15 +20,11 @@ $three-column-min-width: constants.$readable-text-width * 2 +
     "main-feed";
 
   .quick-links {
-    @extend %links;
+    @extend %link-buttons;
+    @extend %scroll-inline;
 
+    flex-wrap: nowrap;
     grid-area: quick-links;
-    justify-content: center;
-
-    a,
-    a:visited {
-      @extend %button-outline;
-    }
   }
 
   #github_recent {
@@ -53,6 +49,12 @@ $three-column-min-width: constants.$readable-text-width * 2 +
     @extend %readable-text;
 
     grid-area: motd;
+  }
+
+  @media (min-width: constants.$readable-text-width) {
+    .quick-links {
+      justify-content: center;
+    }
   }
 
   @media (min-width: $three-column-min-width) {
