@@ -2,10 +2,10 @@
 @use "v2/components/card";
 @use "v2/constants";
 
-
 #github_recent {
   @extend %card;
   @extend %stretch-width;
+  @extend %scroll-block;
 
   margin-inline: auto;
   max-width: constants.$readable-text-width;
@@ -17,7 +17,6 @@
   }
 }
 
-
 .feed {
   @extend %center;
 
@@ -28,14 +27,12 @@
   gap: var(--space-2x);
   max-width: constants.$readable-text-width;
 
-
   > .h-entry {
     @extend %stretch-width;
 
     max-width: constants.$readable-text-width;
   }
 }
-
 
 .feed-empty {
   @extend %card;

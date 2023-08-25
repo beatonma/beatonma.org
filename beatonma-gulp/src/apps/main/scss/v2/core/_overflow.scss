@@ -1,0 +1,32 @@
+@use "./breakpoints";
+
+$scrollbar-thickness: 10px;
+$-scrollbar-thickness-nested: 6px;
+
+@mixin scrollbar-size($size: $scrollbar-thickness) {
+  &::-webkit-scrollbar {
+    width: $size;
+    height: $size;
+  }
+}
+
+%scroll-inline {
+  @include scrollbar-size($-scrollbar-thickness-nested);
+
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  padding-bottom: 8px;
+
+  @include breakpoints.touchscreen {
+    @include scrollbar-size(0);
+
+    padding-right: 25%; // Extra space to show end of scrollable content.
+  }
+}
+
+/**
+ * Nested vertical scroll container.
+ */
+%scroll-block {
+  @include scrollbar-size($-scrollbar-thickness-nested);
+}
