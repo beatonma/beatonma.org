@@ -1,4 +1,5 @@
 @use "v2/components";
+@use "v2/core";
 
 @forward "./app";
 @forward "./article";
@@ -11,6 +12,7 @@ article .e-content {
 
 .related {
   @extend %link-buttons;
+  @extend %indented;
 
   .related__description {
     color: var(--vibrant);

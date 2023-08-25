@@ -2,10 +2,10 @@
 
 blockquote {
   @extend %outlined;
+  @extend %indented;
 
   margin-inline: 0;
-  padding-inline: 2ch;
-  border-left: 2px solid var(--accent-color);
+  padding-inline: 1em;
 
   &:not(:has(p)) {
     padding-block: 1em;

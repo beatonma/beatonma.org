@@ -1,6 +1,7 @@
 @use "./layout";
 
-$-border-style: 2px solid;
+$-border-width: 2px;
+$-border-style: $-border-width solid;
 
 %outlined {
   border: $-border-style var(--text-tertiary);
@@ -8,4 +9,12 @@ $-border-style: 2px solid;
 
 %border {
   @include layout.directional(border, $-border-style);
+}
+
+/**
+ * Adds a left border and indents content to compensate.
+ */
+%indented {
+  border-left: $-border-style var(--accent-color);
+  padding-inline: $-border-width * 2;
 }
