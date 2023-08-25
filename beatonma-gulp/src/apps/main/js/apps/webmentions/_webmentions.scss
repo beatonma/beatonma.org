@@ -2,6 +2,12 @@
 
 $-webmention-min-width: 18ch;
 
+%-grid {
+  display: grid;
+  gap: var(--space);
+  align-items: start;
+}
+
 #webmentions {
   @extend %text-container;
   @extend %center;
@@ -11,7 +17,7 @@ $-webmention-min-width: 18ch;
   }
 
   .grouped-mentions {
-    @extend %grid;
+    @extend %-grid;
 
     grid-template-columns: 1fr $-webmention-min-width;
 
@@ -25,10 +31,13 @@ $-webmention-min-width: 18ch;
   }
 
   .mentions {
-    @extend %grid;
+    @extend %-grid;
 
     &[data-quoted="false"] {
-      @include core.grid-columns($-webmention-min-width, auto-fill);
+      grid-template-columns: repeat(
+        auto-fill,
+        minmax($-webmention-min-width, 1fr)
+      );
     }
   }
 
