@@ -4,20 +4,15 @@
 @use "v2/components/links";
 @use "v2/objects/button";
 
-$github-small-width: 420px;
-$two-column-min-width: constants.$readable-text-width + $github-small-width;
-$three-column-min-width: constants.$readable-text-width * 2 +
-  $github-small-width;
-
 .main-index {
-  display: grid;
-  gap: var(--space-2x);
-  grid-template-columns: 1fr;
-  grid-template-areas:
-    "motd"
-    "quick-links"
-    "github"
-    "main-feed";
+  @include core.grid {
+    gap: var(--space-2x);
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "motd"
+      "quick-links"
+      "main-feed";
+  }
 
   .quick-links {
     @extend %link-buttons;
@@ -33,17 +28,14 @@ $three-column-min-width: constants.$readable-text-width * 2 +
 
   main {
     @extend %center;
-    @extend %stretch-width;
 
     grid-area: main-feed;
-    max-width: constants.$readable-text-width;
   }
 
   #motd {
     @extend %card;
     @extend %card-content;
     @extend %center;
-    @extend %shape-adaptive-medium;
     @extend %surface-vibrant;
     @extend %margin-large-block;
     @extend %readable-text;
@@ -57,45 +49,36 @@ $three-column-min-width: constants.$readable-text-width * 2 +
     }
   }
 
-  @media (min-width: $three-column-min-width) {
-    grid-template-columns: $github-small-width 1fr $github-small-width;
+  &[data-page="1"] {
     grid-template-areas:
-      ". motd ."
-      "quick-links quick-links quick-links"
-      ". main-feed github"
-      ". main-feed ."
-      ". main-feed .";
-  }
+      "motd"
+      "quick-links"
+      "github"
+      "main-feed";
 
-  @media (min-width: $two-column-min-width) {
-    #github_recent {
-      min-width: $github-small-width;
-      overflow-y: visible;
-      max-height: none;
-      position: sticky;
-      top: var(--space-4x);
-    }
-  }
-
-  @media ($two-column-min-width <= width < $three-column-min-width) {
-    &[data-page="1"] {
-      grid-template-columns: 1fr $github-small-width;
+    @include core.grid-columns-2 {
       grid-template-areas:
         "motd motd"
         "quick-links quick-links"
         "main-feed github"
         "main-feed ."
         "main-feed .";
-    }
-  }
 
-  @media (min-width: $three-column-min-width) {
-    grid-template-columns: $github-small-width 1fr $github-small-width;
-    grid-template-areas:
-      ". motd ."
-      "quick-links quick-links quick-links"
-      ". main-feed github"
-      ". main-feed ."
-      ". main-feed .";
+      #github_recent {
+        overflow-y: visible;
+        max-height: none;
+        position: sticky;
+        top: var(--space-4x);
+      }
+    }
+
+    @include core.grid-columns-3 {
+      grid-template-areas:
+        ". motd ."
+        "quick-links quick-links quick-links"
+        ". main-feed github"
+        ". main-feed ."
+        ". main-feed .";
+    }
   }
 }

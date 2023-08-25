@@ -1,9 +1,9 @@
-$directions: ("top", "bottom", "left", "right", "inline", "block");
+$-directions: ("top", "bottom", "left", "right", "inline", "block");
 
 @mixin directional($property, $value) {
   #{$property}: $value;
 
-  @each $dir in $directions {
+  @each $dir in $-directions {
     &-#{$dir} {
       #{$property}-#{$dir}: $value;
     }

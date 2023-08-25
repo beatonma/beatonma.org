@@ -1,0 +1,29 @@
+@use "v2/constants";
+
+$-sidebar-width: 420px;
+$-two-column-min-width: constants.$readable-text-width + $-sidebar-width;
+$-three-column-min-width: constants.$readable-text-width * 2 + $-sidebar-width;
+
+@mixin grid-columns-3 {
+  @media (min-width: $-three-column-min-width) {
+    grid-template-columns: $-sidebar-width 1fr $-sidebar-width;
+    @content;
+  }
+}
+
+@mixin grid-columns-2 {
+  @media (min-width: $-two-column-min-width) {
+    grid-template-columns: 1fr $-sidebar-width;
+    @content;
+  }
+}
+
+@mixin grid-columns-1 {
+  grid-template-columns: 1fr;
+  @content;
+}
+
+@mixin grid {
+  display: grid;
+  @content;
+}
