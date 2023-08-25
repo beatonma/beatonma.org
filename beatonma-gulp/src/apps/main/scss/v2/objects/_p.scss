@@ -1,3 +1,5 @@
+@use "v2/core";
+
 p {
-  line-height: 1.5;
+  @extend %readable-text;
 }
