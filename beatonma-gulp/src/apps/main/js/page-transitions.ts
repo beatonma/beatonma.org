@@ -133,6 +133,10 @@ export const changePage = (url: string, pushToHistory: boolean = true) => {
 
     Scaffold.showLoading(true);
 
+    // Remove focus from the current element, allowing  any overlays that
+    // use `focus-within` (e.g. search UI) to get out of the way.
+    (document.activeElement as HTMLElement).blur();
+
     loadPage(url)
         .then(responseText => {
             const wrapper = document.createElement("div");
@@ -201,6 +205,11 @@ const executeContentScripts = (element: HTMLElement) => {
 const animateContentEnter = (parent: HTMLElement) => {
     let delay = 0;
 
+    const elementIn = (element: HTMLElement, delayMillis: number) => {
+        element.style.animationDelay = `${delayMillis}ms`;
+        element.dataset.animateIn = "true";
+    };
+
     try {
         parent.querySelectorAll(AnimatedElementSelector).forEach(el => {
             elementIn(el as HTMLElement, delay);
@@ -208,11 +217,6 @@ const animateContentEnter = (parent: HTMLElement) => {
             delay += ItemAnimationDelay;
         });
     } catch (e) {}
-};
-
-const elementIn = (element: HTMLElement, delay: number) => {
-    element.style.animationDelay = `${delay}ms`;
-    element.dataset.animateIn = "true";
 };
 
 const scrollToId = (id: string) =>
