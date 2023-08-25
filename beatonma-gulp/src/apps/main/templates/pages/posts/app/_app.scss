@@ -1,4 +1,5 @@
 @use "v2/core";
+@use "v2/components/card";
 
 #app {
   --preview-image-size: 300px;
@@ -6,7 +7,7 @@
   .app-image {
     @extend %center;
     @extend %margin-large-block;
-    
+
     width: min-content;
   }
 
@@ -28,11 +29,10 @@
 
 article.changelog {
   @extend %margin-large-block;
-  @extend %padding-medium;
-  @extend %shape-medium;
-  @extend %outlined;
+  @extend %shape-adaptive-small;
+  @extend %outlined-adaptive;
+  @extend %card-content;
 }
-
 
 section#changelog {
   @extend %text-container;

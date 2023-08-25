@@ -1,10 +1,21 @@
 @use "./layout";
+@use "./breakpoints";
 
 $-border-width: 2px;
 $-border-style: $-border-width solid;
 
 %outlined {
-  border: $-border-style var(--text-tertiary);
+  $-style: $-border-style var(--text-tertiary);
+  border: $-style;
+
+  &-adaptive {
+    @extend %outlined;
+
+    @include breakpoints.on-small-width {
+      border-block: $-style;
+      border-inline: none;
+    }
+  }
 }
 
 %border {

@@ -1,4 +1,5 @@
 @use "./breakpoints";
+@use "./animation";
 
 $-corners: (
   "small": 6px,
@@ -33,15 +34,15 @@ $-corners: (
 
 %shape {
   @include -corners;
-}
 
-/*
- * Revert to square corners on narrow devices.
- */
-%shape-adaptive {
-  @include -corners {
-    @include breakpoints.on-small-width {
-      border-radius: 0;
+  &-adaptive {
+    /*
+     * Revert to square corners on narrow devices.
+     */
+    @include -corners {
+      @include breakpoints.on-small-width {
+        border-radius: 0;
+      }
     }
   }
 }
