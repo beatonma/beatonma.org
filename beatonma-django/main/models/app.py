@@ -72,6 +72,7 @@ class App(
     app_type = models.ForeignKey(
         "AppType",
         on_delete=models.CASCADE,
+        related_name="apps",
         blank=True,
         null=True,
     )
@@ -107,7 +108,7 @@ class App(
         return slugify(self.app_id.replace(".", "-"))
 
     def save(self, *args, **kwargs):
-        if not self.id:
+        if not self.slug:
             self.slug = self.build_slug()
 
         self.get_default_theme_from(self.app_type)
