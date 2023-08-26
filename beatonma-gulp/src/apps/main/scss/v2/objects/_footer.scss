@@ -1,8 +1,9 @@
 @use "v2/core";
+@use "v2/components/links";
 
 footer {
-  @include core.row($horizontal: center, $gap: 1ch);
+  @extend %link-buttons;
   @extend %padding-large;
 
-  font-size: var(--fs-small);
+  justify-content: center;
 }
