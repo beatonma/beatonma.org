@@ -13,6 +13,7 @@ class Changelog(RichWebPost):
         App,
         null=True,
         on_delete=models.CASCADE,
+        related_name="changelogs",
     )
     version_name = models.CharField(max_length=30, help_text="")
 
