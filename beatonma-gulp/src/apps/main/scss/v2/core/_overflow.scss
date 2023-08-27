@@ -30,3 +30,8 @@ $-scrollbar-thickness-nested: 6px;
 %scroll-block {
   @include scrollbar-size($-scrollbar-thickness-nested);
 }
+
+@mixin sticky($-top: var(--space-4x)) {
+  position: sticky;
+  top: $-top;
+}

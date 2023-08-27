@@ -1,8 +1,19 @@
 {% extends "components/title-bar/title-bar.html" %}
 {% load dates %}
 
-{% block title %}<h2 class="p-name">{{ app.title }}</h2>{% include "./_app_type.html" with app_type=app.app_type %}{% endblock %}
+{% block title %}
+  <h2 class="p-name">{{ app.title }}</h2>
+  <div class="status-badge">{{ app.status }}</div>
+  {% include "./_app_type.html" with app_type=app.app_type %}
+{% endblock %}
 
-{% block trailing %}<time title="{{ app.published_at }}" datetime="{{ app.published_at }}">{{ app.published_at|minimaldate }}</time>{% endblock %}
+{% block trailing %}
+  <time title="{{ app.published_at }}" datetime="{{ app.published_at }}">
+    {{ app.published_at|minimaldate }}
+  </time>
+{% endblock %}
 
-{% block subtitle %}{% include "../_related-links.html" with links=app.links.all %}{% endblock %}
+{% block subtitle %}
+  <div class="tagline p-summary">{{ app.tagline|default:'' }}</div>
+  {% include "../_related-links.html" with links=app.links.all tags=app.tags.all %}
+{% endblock %}

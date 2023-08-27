@@ -5,24 +5,29 @@
 {% block title %}{{ post.title }}{% endblock %}
 {% block description %}{{ post.tagline }}{% endblock %}
 
+{% block content_class %}webpost{% endblock %}
+
 {% block main %}
-{% include 'staff/edit-links.html' with target=post %}
-<article class="h-entry" data-type="{{ post|get_class|lower }}">
+  <section>
+    <article class="h-entry webpost" data-type="{{ post|get_class|lower }}">
+        {% block article %}
+          {% include 'staff/edit-links.html' with target=post %}
+          {% block post_header %}{% endblock %}
 
-    {% block article %}
-    {% block post_header %}{% endblock %}
+          {% block titlebar %}{% include "./_post-title-bar.html" %}{% endblock %}
 
-    {% include "./_post-title-bar.html" %}
+          <div class="e-content">
+              {% block post_content %}{{ post.content_html|safe }}{% endblock %}
+          </div>
+        {% endblock %}
 
-    <div class="e-content">
-        {{ post.content_html|safe }}
-    </div>
-    {% endblock %}
+        {% include 'components/react/media-container.html' with target=post style="carousel" %}
+    </article>
+  </section>
 
-    {% include 'components/react/media-container.html' with target=post style="carousel" %}
-</article>
+  {% block additional_content %}{% endblock %}
 
-{% include "components/react/webmentions-container.html" %}
+  {% include "components/react/webmentions-container.html" %}
 {% endblock %}
 
 

@@ -109,7 +109,7 @@
 }
 
 %text-container {
-  max-width: #{constants.$readable-text-width};
+  max-width: min(var(--main-content-width), #{constants.$readable-text-width});
 }
 
 %readable-text {

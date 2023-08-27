@@ -1,2 +1,7 @@
-$readable-text-width: 800px;
 $animation-duration: 300ms;
+
+// Layout
+$readable-text-width: 800px;
+$sidebar-width: 420px;
+$two-column-min-width: $readable-text-width + $sidebar-width;
+$three-column-min-width: $readable-text-width + (2 * $sidebar-width);

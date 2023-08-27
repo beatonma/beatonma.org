@@ -24,27 +24,30 @@ body {
     grid-row: 3;
   }
 
-  > header, > footer, > #content_wrapper {
+  > header,
+  > footer,
+  > #content_wrapper {
     @extend %-content_margins;
   }
 }
-
 
 $-margin-comfy: 32px;
 $-margin-small: 8px;
 $-margin-minimal: 4px;
 %-content_margins {
   margin-inline: $-margin-comfy;
+  --main-content-width: calc(100svw - (2 * #{$-margin-comfy}));
 
   @include core.on-medium-width {
     margin-inline: $-margin-small;
+    --main-content-width: calc(100svw - (2 * #{$-margin-small}));
   }
 
   @include core.on-small-width {
     margin-inline: $-margin-minimal;
+    --main-content-width: calc(100svw - (2 * #{$-margin-minimal}));
   }
 }
-
 
 %full-bleed {
   // Undoes the effects of %-content-margins for an element.

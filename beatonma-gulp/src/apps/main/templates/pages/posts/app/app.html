@@ -1,40 +1,81 @@
-{% extends 'pages/base/scaffold.html' %}
+{% extends 'pages/posts/_post.html' %}
 {% load dates %}
 
+{% with app=post %}
+  {% block titlebar %}
+    {% include "./_app-title-bar.html" with app=post %}
+  {% endblock %}
 
-{% block title %}{{ app.title }}{% endblock %}
-{% block description %}{{ app.tagline }}{% endblock %}
+  {% block post_content %}
+    {{ post.description|default:"" }}
+  {% endblock %}
 
-{% block main %}
-{% include 'staff/edit-links.html' with target=app %}
-<section id="app">
-  <article class="h-entry" data-type="app">
-    <div class="app-image">
-      {% include "components/preview-image/image.html"
-        with image_url=app.resolve_icon_url
-        title=app.title
-        imageclass="contain"
-        themeable=app
-      %}
-    </div>
+  {% if changelogs %}
+    {% block additional_content %}
+      <section>
+        <h3>Changelogs</h3>
 
-    {% include "./_app-title-bar.html" %}
+        <div class="changelogs-nav-wrapper">
+          <div class="nav-card">
+            <nav class="changelog-versions">
+              <h1>Versions</h1>
+              <ul>
+              {% for changelog in changelogs %}
+                <li><a href="#{{ changelog.version_name }}">{{ changelog.version_name }}</a></li>
+              {% endfor %}
+              </ul>
+            </nav>
+          </div>
+        </div>
 
-    <div class="e-content">{{ app.description|default:"" }}</div>
+        {% for changelog in changelogs %}
+          {% include "./_changelog.html" %}
+        {% endfor %}
+      </section>
+    {% endblock %}
+  {% endif %}
+{% endwith %}
 
-    {% include "components/react/media-container.html" with target=app style="carousel" %}
-  </article>
-</section>
 
-{% if changelogs %}
-<section id="changelog">
-  <h2 data-animate-in="true">Changelog</h2>
-
-  {% for changelog in changelogs %}
-  {% include "./_changelog.html" %}
-  {% endfor %}
-</section>
-{% endif %}
-
-{% include "components/react/webmentions-container.html" %}
-{% endblock %}
+{#{% block main %}#}
+{#  <section id="app">#}
+{#    <article class="h-entry" data-type="app">#}
+{#      <div class="app-image">#}
+{#        {% include "components/preview-image/image.html"#}
+{#          with image_url=app.resolve_icon_url#}
+{#          title=app.title#}
+{#          imageclass="contain"#}
+{#          themeable=app#}
+{#        %}#}
+{#      </div>#}
+{#  #}
+{#      {% include "./_app-title-bar.html" %}#}
+{#  #}
+{#      <div class="e-content">{{ app.description|default:"" }}</div>#}
+{#  #}
+{#      {% include "components/react/media-container.html" with target=app style="carousel" %}#}
+{#    </article>#}
+{#  </section>#}
+{#  #}
+{#  {% if changelogs %}#}
+{#    <section>#}
+{#      <nav>#}
+{#        <ul>#}
+{#        {% for changelog in changelogs %}#}
+{#          <li><a href="#{{ changelog.version_name }}">{{ changelog.version_name }}</a></li>#}
+{#        {% endfor %}#}
+{#        </ul>#}
+{#      </nav>#}
+{#    </section>#}
+{#  #}
+{#  <section id="changelog">#}
+{#    <h2 data-animate-in="true">Changelog</h2>#}
+{#  #}
+{#    {% for changelog in changelogs %}#}
+{#    {% include "./_changelog.html" %}#}
+{#    {% endfor %}#}
+{#  </section>#}
+{#  {% endif %}#}
+{#  #}
+{#  {% include "components/react/webmentions-container.html" %}#}
+{#{% endblock %}#}

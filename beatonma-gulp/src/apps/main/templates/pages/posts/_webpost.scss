@@ -1,0 +1,64 @@
+@use "v2/components";
+@use "v2/core";
+
+#content.webpost {
+  @extend %readable-text;
+  @extend %center;
+
+  nav {
+    h1 {
+      @extend %text-large;
+    }
+
+    ul {
+      list-style-position: inside;
+      padding-inline-start: 0;
+    }
+  }
+}
+
+article.webpost {
+  .title-bar {
+    @extend %margin-large-block;
+  }
+
+  .status-badge {
+    @extend %badge;
+  }
+
+  .related {
+    @extend %link-buttons;
+    @extend %indented;
+
+    .related__description {
+      color: var(--vibrant);
+    }
+  }
+
+  .e-content {
+    overflow-x: clip;
+    text-overflow: ellipsis;
+  }
+}
+
+.changelogs-nav-wrapper {
+  @include core.sticky;
+
+  .nav-card {
+    @extend %card;
+    @extend %fade-in;
+
+    display: none;
+    position: absolute;
+    left: calc(-24ch - var(--space-4x));
+    width: 24ch;
+
+    @include core.sidebars-visible {
+      display: block;
+    }
+
+    nav {
+      @extend %card-content;
+    }
+  }
+}

@@ -1,20 +1,4 @@
-@use "v2/components";
-@use "v2/core";
-
 @forward "./app";
 @forward "./article";
 @forward "./note";
-
-article .e-content {
-  overflow-x: clip;
-  text-overflow: ellipsis;
-}
-
-.related {
-  @extend %link-buttons;
-  @extend %indented;
-
-  .related__description {
-    color: var(--vibrant);
-  }
-}
+@forward "./webpost";

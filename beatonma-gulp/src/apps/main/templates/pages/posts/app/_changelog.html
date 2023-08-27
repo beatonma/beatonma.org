@@ -1,18 +1,6 @@
 {% load dates %}
-<article id="{{ changelog.version_name }}" class="changelog h-entry">
-  <div class="changelog-header">
-    <div class="title-bar">
-      <h3 class="p-name">{{ changelog.version_name }}</h3>
-      <time class="dt-published" title="{{ changelog.date }}" datetime="{{ changelog.date }}">{{ changelog.date|minimaldate }}</time>
-    </div>
-
-    {% if changelog.tagline %}
-    <div class="tagline p-summary">{{ changelog.tagline }}</div>
-    {% endif %}
-
-    {% include "../_related-links.html" with links=changelog.links.all %}
-
-  </div>
+<article id="{{ changelog.version_name }}" class="webpost changelog h-entry">
+  {% include "./_changelog-title-bar.html" %}
 
   <div class="e-content">
     {{ changelog.content_html|safe }}

@@ -65,10 +65,10 @@
         "main-feed .";
 
       #github_recent {
+        @include core.sticky;
+
         overflow-y: visible;
         max-height: none;
-        position: sticky;
-        top: var(--space-4x);
       }
     }
 

@@ -1,0 +1,13 @@
+@use "./card";
+
+%badge {
+  @extend %card;
+  @extend %surface-muted;
+  @extend %padding-small-inline;
+
+  font-variant: all-small-caps;
+}
+
+.badge {
+  @extend %badge;
+}

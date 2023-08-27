@@ -26,15 +26,3 @@
     @include core.size(1em);
   }
 }
-
-article.changelog {
-  @extend %margin-large-block;
-  @extend %shape-adaptive-small;
-  @extend %outlined-adaptive;
-  @extend %card-content;
-}
-
-section#changelog {
-  @extend %text-container;
-  @extend %center;
-}

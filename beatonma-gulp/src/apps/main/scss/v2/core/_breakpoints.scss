@@ -1,8 +1,10 @@
+@use "v2/constants";
+
 $breakpoint-small: 400px;
 $breakpoint-medium: 600px;
 
 @mixin display-max-width($width) {
-  @media (max-width: $width) {
+  @media (width < $width) {
     @content;
   }
 }
@@ -21,6 +23,12 @@ $breakpoint-medium: 600px;
 
 @mixin touchscreen {
   @media (pointer: coarse) {
+    @content;
+  }
+}
+
+@mixin sidebars-visible {
+  @media (width > constants.$three-column-min-width) {
     @content;
   }
 }
