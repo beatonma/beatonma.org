@@ -17,6 +17,9 @@ class Changelog(RichWebPost):
     )
     version_name = models.CharField(max_length=30, help_text="")
 
+    class Meta:
+        ordering = ["-published_at"]
+
     def preview_title(self):
         return f"Changelog: {self.app.title} {self.version_name}"
 
