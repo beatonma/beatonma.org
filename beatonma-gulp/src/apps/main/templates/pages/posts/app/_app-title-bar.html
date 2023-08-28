@@ -3,7 +3,6 @@
 
 {% block title %}
   <h2 class="p-name">{{ app.title }}</h2>
-  <div class="status-badge">{{ app.status }}</div>
   {% include "./_app_type.html" with app_type=app.app_type %}
 {% endblock %}
 
