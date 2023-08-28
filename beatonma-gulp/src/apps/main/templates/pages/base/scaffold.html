@@ -9,9 +9,11 @@
 </head>
 
 <body>
-<div id="dialog_scrim"></div>
-<div id="dialog_container"></div>
-<header>{% block header %}{% include "./_header.html" %}{% endblock %}</header>
+  <div id="dialog_scrim"></div>
+  <div id="dialog_container"></div>
+
+  <div id="scaffold">
+    <header>{% block header %}{% include "./_header.html" %}{% endblock %}</header>
 
     <div id="content_wrapper">
         <div id="content" class="{% block content_class %}{% endblock %}"{% if page_obj %} data-page="{{ page_obj.number }}"{% endif %}>
