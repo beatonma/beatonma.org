@@ -13,30 +13,30 @@
 <div id="dialog_container"></div>
 <header>{% block header %}{% include "./_header.html" %}{% endblock %}</header>
 
-<div id="content_wrapper">
-    <div id="content" class="{% block content_class %}{% endblock %}"{% if page_obj %} data-page="{{ page_obj.number }}"{% endif %}>
-        {% block content %}
-        {% block before %}{% endblock %}
+    <div id="content_wrapper">
+        <div id="content" class="{% block content_class %}{% endblock %}"{% if page_obj %} data-page="{{ page_obj.number }}"{% endif %}>
+            {% block content %}
+            {% block before_main %}{% endblock %}
 
-        <main>
-            {% block main %}{% endblock %}
-        </main>
+            <main>
+                {% block main %}{% endblock %}
+            </main>
 
-        {% block after %}{% endblock %}
-        {% block post_scripts %}{% endblock %}
-        {% endblock %}
+            {% block after_main %}{% endblock %}
+            {% block post_scripts %}{% endblock %}
+            {% endblock %}
+        </div>
     </div>
-</div>
 
-<footer>
-    {% block footer %}
-    {% include "./_footer.html" %}
-    {% endblock %}
+    <footer>
+        {% block footer %}
+        {% include "./_footer.html" %}
+        {% endblock %}
 
-    {% block hcard %}
-    {% include "components/hcard/hcard-basic.html" %}
-    {% endblock %}
-</footer>
-
+        {% block hcard %}
+        {% include "components/hcard/hcard-basic.html" %}
+        {% endblock %}
+    </footer>
+  </div>
 </body>
 </html>

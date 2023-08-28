@@ -1,0 +1,67 @@
+@use "./breakpoints";
+@use "./typography";
+@use "./space";
+
+$-margin-comfy: 32px;
+$-margin-small: 8px;
+$-margin-minimal: 4px;
+
+#scaffold {
+  display: grid;
+  grid-template-areas:
+    "header"
+    "content"
+    "footer";
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 100%;
+  max-width: 100%;
+  min-height: 100svh;
+
+  > header {
+    grid-area: header;
+  }
+
+  > #content_wrapper {
+    grid-area: content;
+  }
+
+  > footer {
+    grid-area: footer;
+  }
+
+  > header,
+  > footer,
+  > #content_wrapper {
+    @extend %-content_margins;
+  }
+}
+
+%-content_margins {
+  padding-inline: $-margin-comfy;
+
+  @include breakpoints.on-medium-width {
+    padding-inline: $-margin-small;
+  }
+
+  @include breakpoints.on-small-width {
+    padding-inline: $-margin-minimal;
+  }
+}
+
+%full-bleed {
+  // Undoes the effects of %-content-margins for an element.
+  margin-inline: -$-margin-comfy;
+
+  @include breakpoints.on-medium-width {
+    margin-inline: -$-margin-small;
+  }
+
+  @include breakpoints.on-small-width {
+    margin-inline: -$-margin-minimal;
+  }
+}
+
+%center-column {
+  @extend %readable-text;
+  @extend %center;
+}
