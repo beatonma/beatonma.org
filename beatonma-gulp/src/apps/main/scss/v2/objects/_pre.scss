@@ -1,11 +1,7 @@
 @use "v2/core";
 
-.codehilite {
-  @extend %shape-small;
-}
-
 code {
-  @extend .codehilite;
+  @extend %shape-small;
   @extend %surface-muted-low-contrast;
 
   padding-block: 2px;
@@ -21,8 +17,6 @@ pre {
   margin: 0;
 
   code {
-    @extend %surface;
-
     background-color: transparent;
     padding: 0;
     margin: 0;
