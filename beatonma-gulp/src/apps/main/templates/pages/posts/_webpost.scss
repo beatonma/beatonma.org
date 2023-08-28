@@ -22,6 +22,12 @@ article.webpost {
     @extend %margin-large-block;
   }
 
+  &[data-type="app"] {
+    .title-bar__title {
+      align-items: center;
+    }
+  }
+
   .status-badge {
     @extend %badge;
   }
@@ -53,7 +59,7 @@ article.webpost {
     left: calc(-24ch - var(--space-4x));
     width: 24ch;
 
-    @include core.sidebars-visible {
+    @include core.on-three-column {
       display: block;
     }
 

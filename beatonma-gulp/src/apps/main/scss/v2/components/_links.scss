@@ -19,7 +19,7 @@
     white-space: nowrap;
   }
 
-  @include core.touchscreen {
+  @include core.on-touchscreen {
     a {
       padding: var(--space-half) var(--space);
       border: 2px solid var(--text-tertiary);

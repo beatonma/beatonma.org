@@ -122,7 +122,7 @@ $search-input-width: 32ch;
     }
   }
 
-  @include core.display-max-width($search-full-width) {
+  @media (width < $search-full-width) {
     @include core.stretch-width;
 
     #search_wrapper,
@@ -135,7 +135,7 @@ $search-input-width: 32ch;
     }
   }
 
-  @include core.display-max-width($show-search-max-width) {
+  @media (width < $show-search-max-width) {
     #search_icon {
       @include core.size(0);
 
