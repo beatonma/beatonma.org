@@ -5,8 +5,8 @@
 <div class="staff">
     <div class="staff-links">
         <span class="github-hash icon" title="__env__:gitHash">tag</span>
-        <a href="/webmention/get?url={{ request.path }}" title="Webmentions API"><span class="icon">alternate_email</span></a>
-        <a href="{{ target|admin_edit_url }}" title="Edit"><span class="icon">edit</span></a>
+        <a class="noanim" href="/webmention/get?url={{ request.path }}" title="Webmentions API"><span class="icon">alternate_email</span></a>
+        <a class="noanim" href="{{ target|admin_edit_url }}" title="Edit"><span class="icon">edit</span></a>
         <button
             title="Remove staff UI"
             onclick="(e => e.parentNode.parentNode.remove())(this)"

@@ -8,9 +8,9 @@
   max-width: 100%;
   background-color: var(--vibrant);
   opacity: 0;
-  transition: opacity constants.$animation-duration,
-    width 200ms cubic-bezier(0.4, 0, 0.2, 1),
-    left 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color constants.$animation-duration,
+    width constants.$animation-duration cubic-bezier(0.4, 0, 0.2, 1),
+    left constants.$animation-duration cubic-bezier(0.4, 0, 0.2, 1);
 
   &[data-active="true"] {
     animation-name: loading-bar;
@@ -28,16 +28,10 @@
 
     50% {
       left: 25%;
-      width: 75%;
+      width: 50%;
     }
-
-    75% {
-      left: 100%;
-      width: 0;
-    }
-
     100% {
-      left: 0;
+      left: 100%;
       width: 0;
     }
   }

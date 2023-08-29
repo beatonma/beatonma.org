@@ -23,7 +23,12 @@ const NoAnimationPathsRegex = /(webapp)\/.*/;
 const OnPageChangeClass = ".onPageChange";
 const OnPageUnloadClass = ".onPageUnload";
 
-const AnimatedElementSelector = ".h-entry, .card";
+const AnimatedElementSelector = [
+    ".h-entry",
+    ".card",
+    "article",
+    "section",
+].join(",");
 
 export const animatedItemProps = (index: number) => {
     return {
@@ -71,7 +76,7 @@ const shouldAnimateTransition = (
         return false;
     }
 
-    // Links annotated with 'noanim' class should be treated as external (no content transition animations)
+    // Links annotated with NoAnimationClass should be treated as external (no content transition animations)
     if (
         anchor instanceof HTMLAnchorElement &&
         anchor.className.includes(NoAnimationClass)
@@ -86,46 +91,6 @@ const shouldScrollTo = (anchor: HTMLAnchorElement | URL | Location): boolean =>
     anchor.pathname === window.location.pathname &&
     anchor.search === window.location.search;
 
-const setup = () => {
-    // Intercept all click events
-    document.addEventListener("click", e => {
-        let el: HTMLElement | ParentNode = e.target as HTMLElement;
-
-        // Go up in the nodelist until we find a node with .href (HTMLAnchorElement)
-        while (el && !(el instanceof HTMLAnchorElement)) {
-            el = el.parentNode;
-        }
-
-        if (!el) return;
-        const anchor = el as HTMLAnchorElement;
-
-        if (!shouldAnimateTransition(anchor)) return;
-
-        if (anchor.hash && shouldScrollTo(anchor)) {
-            // Handle links to element #id
-            e.preventDefault();
-            history.pushState(null, null, anchor.href);
-            scrollToId(anchor.hash);
-            return;
-        }
-
-        // Otherwise fetch content from the target and insert it
-        // into the current page
-        e.preventDefault();
-        changePage(anchor.href);
-    });
-
-    window.addEventListener("popstate", () =>
-        // Intercept 'back' events
-        changePage(window.location.href, false)
-    );
-
-    window.addEventListener("load", () => {
-        void onContentChanged(document);
-        window.removeEventListener("load", this);
-    });
-};
-
 export const changePage = (url: string, pushToHistory: boolean = true) => {
     if (pushToHistory) {
         history.pushState(null, null, url);
@@ -138,20 +103,7 @@ export const changePage = (url: string, pushToHistory: boolean = true) => {
     (document.activeElement as HTMLElement).blur();
 
     loadPage(url)
-        .then(responseText => {
-            const wrapper = document.createElement("div");
-            wrapper.innerHTML = responseText;
-
-            document.title = wrapper.querySelector("title").textContent;
-            getMetaDescription(document).content =
-                getMetaDescription(wrapper).content;
-            Scaffold.importLocalStyle(wrapper);
-
-            const oldContent = Scaffold.getContent(document);
-            const newContent = Scaffold.getContent(wrapper);
-
-            animatePageChange(oldContent, newContent);
-        })
+        .then(swapPageContent)
         .catch(err => {
             console.error(err);
             window.location.href = url;
@@ -159,19 +111,27 @@ export const changePage = (url: string, pushToHistory: boolean = true) => {
         });
 };
 
-const getMetaDescription = (from: HTMLElement | Document) =>
+const getMetaDescription = (from: HTMLElement | Document): HTMLMetaElement =>
     from.querySelector("meta[name=description]") as HTMLMetaElement;
 
-const animatePageChange = (
-    oldContent: HTMLElement,
-    newContent: HTMLElement
-) => {
+const swapPageContent = (newHtml: string) => {
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = newHtml;
+
+    const oldContent = Scaffold.getContent(document);
+    const newContent = Scaffold.getContent(wrapper);
+
     const fadeOut = oldContent.animate(
         [{ opacity: 1 }, { opacity: 0 }],
         PageAnimationDuration
     );
 
     fadeOut.onfinish = () => {
+        document.title = wrapper.querySelector("title").textContent;
+        getMetaDescription(document).content =
+            getMetaDescription(wrapper).content;
+        Scaffold.importLocalStyle(wrapper);
+
         const contentWrapper = Scaffold.getContentWrapper();
         contentWrapper.removeChild(oldContent);
         contentWrapper.appendChild(newContent);
@@ -222,4 +182,50 @@ const animateContentEnter = (parent: HTMLElement) => {
 const scrollToId = (id: string) =>
     document.getElementById(id.replace("#", "")).scrollIntoView();
 
-setup();
+namespace PageTransitionEvents {
+    const onClick = (e: MouseEvent) => {
+        let el: HTMLElement | ParentNode = e.target as HTMLElement;
+
+        // Go up in the nodelist until we find a node with .href (HTMLAnchorElement)
+        while (el && !(el instanceof HTMLAnchorElement)) {
+            el = el.parentNode;
+        }
+
+        if (!el) return;
+        const anchor = el as HTMLAnchorElement;
+
+        if (!shouldAnimateTransition(anchor)) {
+            return;
+        }
+
+        if (anchor.hash && shouldScrollTo(anchor)) {
+            // Handle links to element #id
+            e.preventDefault();
+            history.pushState(null, null, anchor.href);
+            scrollToId(anchor.hash);
+            return;
+        }
+
+        // Otherwise fetch content from the target and insert it
+        // into the current page
+        e.preventDefault();
+        changePage(anchor.href);
+    };
+
+    const onNavigateBack = () => {
+        changePage(window.location.href, false);
+    };
+
+    function onLoad() {
+        void onContentChanged(document);
+        window.removeEventListener("load", this);
+    }
+
+    export const setup = () => {
+        document.addEventListener("click", onClick);
+        window.addEventListener("popstate", onNavigateBack);
+        window.addEventListener("load", onLoad);
+    };
+}
+
+PageTransitionEvents.setup();
