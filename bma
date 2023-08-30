@@ -105,7 +105,20 @@ dev() {
 }
 
 runtests() {
-  docker_compose up --abort-on-container-exit "$@"
+  case "$1" in
+    "dev")
+      shift
+      docker_compose up "$@"
+      ;;
+    "cypress")
+      docker_compose up cypress
+      ;;
+    *)
+      docker_compose up --abort-on-container-exit "$@"
+      ;;
+  esac
+
+  exit 0
 }
 
 certbot_init() {
