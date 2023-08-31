@@ -1,0 +1,14 @@
+{
+  "name": "cypress",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "cypress run"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^13.0.0",
+    "typescript": "^5.0.4"
+  }
+}
