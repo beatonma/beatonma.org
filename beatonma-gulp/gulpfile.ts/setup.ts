@@ -10,8 +10,8 @@ let buildMode: BuildMode = null;
 let environment: Env = null;
 
 export const getBuildMode = () => buildMode;
-export const isDevBuild = () => buildMode === BuildMode.Production;
-export const isProductionBuild = () => buildMode === BuildMode.Development;
+export const isDevBuild = () => buildMode === BuildMode.Development;
+export const isProductionBuild = () => buildMode === BuildMode.Production;
 
 export const getEnvironment = () => environment;
 export const getGitHash = () => environment.gitHash;
