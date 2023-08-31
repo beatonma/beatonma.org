@@ -1,6 +1,6 @@
 @use "v2/core";
 
-p {
+.e-content {
   @extend %readable-text;
   @extend %textbox;
 }

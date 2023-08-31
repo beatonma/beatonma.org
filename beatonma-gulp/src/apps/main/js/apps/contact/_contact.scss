@@ -2,8 +2,7 @@
 @use "v2/components/card";
 
 #contact {
-  @extend %center;
-  @extend %readable-text;
+  @extend %center-column;
 
   textarea {
     @extend %stretch-width;

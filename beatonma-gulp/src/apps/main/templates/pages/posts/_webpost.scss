@@ -2,8 +2,7 @@
 @use "v2/core";
 
 #content.webpost {
-  @extend %readable-text;
-  @extend %center;
+  @extend %center-column;
 
   nav {
     h1 {
@@ -28,10 +27,6 @@ article.webpost {
     }
   }
 
-  .status-badge {
-    @extend %badge;
-  }
-
   .related {
     @extend %link-buttons;
     @extend %indented;
@@ -42,8 +37,13 @@ article.webpost {
   }
 
   .e-content {
-    overflow-x: clip;
-    text-overflow: ellipsis;
+    @extend %margin-large-block;
+    :first-child {
+      margin-top: 0;
+    }
+    :last-child {
+      margin-bottom: 0;
+    }
   }
 }
 

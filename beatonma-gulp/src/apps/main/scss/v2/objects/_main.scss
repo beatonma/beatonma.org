@@ -5,7 +5,6 @@ main {
   @extend %bottom-gap;
 
   > article {
-    @extend %readable-text;
-    @extend %center;
+    @extend %center-column;
   }
 }

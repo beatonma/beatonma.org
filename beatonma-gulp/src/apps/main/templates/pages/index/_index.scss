@@ -35,10 +35,9 @@
   #motd {
     @extend %card;
     @extend %card-content;
-    @extend %center;
+    @extend %center-column;
     @extend %surface-vibrant;
     @extend %margin-large-block;
-    @extend %readable-text;
 
     grid-area: motd;
   }
