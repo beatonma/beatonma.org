@@ -4,8 +4,10 @@ FROM node:20-alpine AS gulp
 LABEL description="Generate frontend webapp and template files."
 
 WORKDIR /app
-COPY ./beatonma-gulp /app
+COPY ./beatonma-gulp/package.json /app
 RUN npm install && npm cache clean --force
+
+COPY ./beatonma-gulp /app
 
 ENV GIT_HASH=dockertest
 ENV SITE_NAME=dockertest

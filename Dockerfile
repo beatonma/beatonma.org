@@ -14,8 +14,10 @@ ENV GOOGLE_RECAPTCHA_TOKEN=$GOOGLE_RECAPTCHA_TOKEN
 ENV SITE_NAME=$SITE_NAME
 
 WORKDIR /app
-COPY beatonma-gulp /app
+COPY beatonma-gulp/package.json /app
 RUN npm install && npm cache clean --force
+
+COPY beatonma-gulp /app
 RUN npm run build
 RUN npm run jest
 
