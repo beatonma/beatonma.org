@@ -29,10 +29,25 @@ article.webpost {
 
   .related {
     @extend %link-buttons;
-    @extend %indented;
 
     .related__description {
       color: var(--vibrant);
+    }
+
+    &::before {
+      content: "";
+      width: 2px;
+      height: 1em;
+      background-color: var(--accent-color);
+      margin-right: var(--space-half);
+
+      transition: transform 200ms;
+      transform: scaleY(1);
+      transform-origin: bottom;
+    }
+
+    &:has(a:hover)::before {
+      transform: scaleY(0);
     }
   }
 
