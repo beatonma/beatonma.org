@@ -10,6 +10,8 @@
     <div class="e-content">
         {{ post.content_html|safe }}
     </div>
-    <time class="dt-published" title="{{ post.published_at }}" datetime="{{ post.published_at }}">{{ post.published_at|minimaldate }}</time>
+    <time class="dt-published" title="{{ post.published_at }}" datetime="{{ post.published_at }}">
+      {{ post.published_at|minimaldate }}
+    </time>
 </div>
 {% endblock %}

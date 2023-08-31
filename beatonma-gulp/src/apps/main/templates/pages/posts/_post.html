@@ -9,9 +9,9 @@
 
 {% block main %}
   <section>
+    {% include 'staff/edit-links.html' with target=post %}
     <article class="h-entry webpost" data-type="{{ post|get_class|lower }}">
         {% block article %}
-          {% include 'staff/edit-links.html' with target=post %}
           {% block post_header %}{% endblock %}
 
           {% block titlebar %}{% include "./_post-title-bar.html" %}{% endblock %}
