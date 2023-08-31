@@ -11,8 +11,8 @@ import { APPS } from "./apps";
 import { Scaffold } from "./dom";
 import { loadPage } from "./util/requests";
 
-const ItemAnimationDelay = 40;
-const PageAnimationDuration = 200;
+const ItemAnimationDelay = 30;
+const PageFadeOutDuration = 200;
 
 // Links with this class opt out of hot-swapping content.
 const NoAnimationClass = "noanim";
@@ -24,10 +24,11 @@ const OnPageChangeClass = ".onPageChange";
 const OnPageUnloadClass = ".onPageUnload";
 
 const AnimatedElementSelector = [
-    ".h-entry",
     ".card",
-    "article",
-    "section",
+    ".h-card",
+    ".h-entry",
+    "article > section",
+    "main > article",
 ].join(",");
 
 export const animatedItemProps = (index: number) => {
@@ -123,7 +124,7 @@ const swapPageContent = (newHtml: string) => {
 
     const fadeOut = oldContent.animate(
         [{ opacity: 1 }, { opacity: 0 }],
-        PageAnimationDuration
+        PageFadeOutDuration
     );
 
     fadeOut.onfinish = () => {
@@ -165,18 +166,17 @@ const executeContentScripts = (element: HTMLElement) => {
 const animateContentEnter = (parent: HTMLElement) => {
     let delay = 0;
 
-    const elementIn = (element: HTMLElement, delayMillis: number) => {
-        element.style.animationDelay = `${delayMillis}ms`;
-        element.dataset.animateIn = "true";
-    };
-
     try {
         parent.querySelectorAll(AnimatedElementSelector).forEach(el => {
-            elementIn(el as HTMLElement, delay);
+            const element = el as HTMLElement;
+            element.style.animationDelay = `${delay}ms`;
+            element.dataset.animateIn = "true";
 
             delay += ItemAnimationDelay;
         });
-    } catch (e) {}
+    } catch (e) {
+        console.warn(`Animation error: ${e}`);
+    }
 };
 
 const scrollToId = (id: string) =>
