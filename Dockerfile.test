@@ -14,7 +14,7 @@ ENV SITE_NAME=dockertest
 ENV WEBMAIL_CONTACT_EMAIL=test@beatonma.org
 ENV GOOGLE_RECAPTCHA_TOKEN=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
 
-RUN npm run build
+RUN npm run buildTest
 RUN npm run jest
 
 

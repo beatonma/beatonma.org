@@ -1,7 +1,4 @@
-import { PrivateContentTag } from "./config";
-
-const nextPageButtonQuery = "[title='Next page']";
-const lastPageButtonQuery = "[title='Last page']";
+import { CyAttr, PrivateContentTag } from "./config";
 
 describe("Index page displays correctly", () => {
   const indexUrl = "/";
@@ -11,18 +8,18 @@ describe("Index page displays correctly", () => {
   });
 
   it("Displays main widgets", () => {
-    cy.get("[title='Home']");
-    cy.get("#search");
-    cy.get("#github_recent");
-    cy.get("#feed");
+    cy.get(CyAttr.SiteName);
+    cy.get(CyAttr.Search);
+    cy.get(CyAttr.Github);
+    cy.get(CyAttr.Feed);
   });
 
   it("Feed pagination works", () => {
-    cy.get(nextPageButtonQuery).click();
+    cy.get(CyAttr.PageNext).click();
     cy.url().should("include", "?page=2");
 
     // Github should only be on the first page.
-    traversePagination(() => cy.get("#github_recent").should("not.exist"));
+    traversePagination(() => cy.get(CyAttr.Github).should("not.exist"));
   });
 
   it("No unpublished content is displayed", () => {
@@ -36,8 +33,8 @@ describe("Index page displays correctly", () => {
   });
 
   it("Search UI works", () => {
-    cy.get("#search_icon").click();
-    cy.get("#search").type("test{enter}");
+    cy.get(CyAttr.SearchIcon).click();
+    cy.get(CyAttr.Search).type("test{enter}");
     cy.url().should("include", "/search/?query=test");
   });
 
@@ -51,15 +48,17 @@ const traversePagination = (onPageChange: () => void) => {
 
   Cypress.on("fail", (error, runnable) => {
     if (
-      error.message.includes(nextPageButtonQuery) ||
-      error.message.includes(lastPageButtonQuery) ||
+      error.message.includes(CyAttr.PageNext) ||
+      error.message.includes(CyAttr.PageLast) ||
       "@button"
     ) {
       // Catch error when next/last page button is not available.
-    } else throw error;
+    } else {
+      throw error;
+    }
   });
 
-  cy.get(`${nextPageButtonQuery}, ${lastPageButtonQuery}`)
+  cy.get(`${CyAttr.PageNext}, ${CyAttr.PageLast}`)
     .as("button")
     .then(($button) => {
       if ($button.length !== 0) {

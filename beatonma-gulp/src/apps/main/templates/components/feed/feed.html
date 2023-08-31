@@ -1,6 +1,6 @@
 {% load classes %}
 {% load repetition %}
-<section id="feed">
+<section id="feed" data-cy="feed">
     {% block first_feed_items %}{% endblock %}
 
     <div class="feed h-feed">
@@ -73,12 +73,12 @@
             {% if page_obj.has_next %}
 
             {% if page_obj.next_page_number != page_obj.paginator.num_pages %}
-            <a href="?page={{ page_obj.next_page_number }}#content" title="Next page" class="tooltip">
+            <a href="?page={{ page_obj.next_page_number }}#content" title="Next page" data-cy="next_page" class="tooltip">
                 <span class="icon">navigate_next</span>
             </a>
             {% endif %}
 
-            <a href="?page={{ page_obj.paginator.num_pages }}#content" title="Last page" class="tooltip">
+            <a href="?page={{ page_obj.paginator.num_pages }}#content" title="Last page" data-cy="last_page" class="tooltip">
                 <span class="icon">last_page</span>
             </a>
 

@@ -1,3 +1,5 @@
+import { CyAttr } from "./config";
+
 describe("About page displays correctly", () => {
   const url = "/about/";
 
@@ -5,7 +7,7 @@ describe("About page displays correctly", () => {
 
   it("Renders correctly", () => {
     cy.title().should("contain", "About");
-    cy.get("article").should("be.visible");
+    cy.get(CyAttr.AboutMe).should("be.visible");
   });
 
   it("Displays hcard", () => {

@@ -93,7 +93,7 @@ const renderError = (message: string, status?: number) => {
 
 const ContactSuccessful = () => {
     return (
-        <div className="success">
+        <div className="success" data-cy="contact_success">
             <h2>Thank you!</h2>
             <p>
                 Your message has been submitted successfully - I will get back
@@ -128,7 +128,7 @@ const ContactError = (props: ContactErrorProps) => {
     console.error(`Message submission failed: ${errorMessage}`);
 
     return (
-        <div className="failure">
+        <div className="failure" data-cy="contact_error">
             {status ? <h3>[{status}] Submission failed.</h3> : <></>}
             <p>It looks like something went wrong. Sorry about that!</p>
             <p>

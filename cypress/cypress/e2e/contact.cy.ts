@@ -1,3 +1,5 @@
+import { CyAttr } from "./config";
+
 const getInvalidInputs = () => cy.get("input:invalid, textarea:invalid");
 
 const clickRecaptcha = () => {
@@ -9,42 +11,43 @@ const clickRecaptcha = () => {
 
 describe("Contact page is correct", () => {
   const url = "/contact/";
-  const contactNameID = "#contact_name";
-  const contactMethodID = "#contact_method";
-  const contactMessageID = "#contact_message";
-  const contactSubmitID = "#contact_submit";
+  const contactName = CyAttr.ContactName;
+  const contactMethod = CyAttr.ContactMethod;
+  const contactMessage = CyAttr.ContactMessage;
+  const contactSubmit = CyAttr.ContactSubmit;
 
   beforeEach(() => cy.visit(url));
 
   it("Renders correctly", () => {
-    cy.get(contactNameID).should("be.visible");
-    cy.get(contactMethodID).should("be.visible");
-    cy.get(contactMessageID).should("be.visible");
+    cy.get(contactName).should("be.visible");
+    cy.get(contactMethod).should("be.visible");
+    cy.get(contactMessage).should("be.visible");
 
-    cy.get(contactSubmitID).should("not.be.visible");
+    cy.get(contactSubmit).should("not.be.visible");
 
     clickRecaptcha();
 
-    cy.get(contactSubmitID).should("be.visible");
+    cy.get(contactSubmit).should("be.visible");
   });
 
   it("Validates correctly", () => {
     clickRecaptcha();
 
-    cy.get(contactSubmitID).click();
+    cy.get(contactSubmit).click();
     getInvalidInputs().should("have.length", 3);
 
-    cy.get(contactMessageID).type("Sample message");
-    cy.get(contactSubmitID).click();
+    cy.get(contactMessage).type("Sample message");
+    cy.get(contactSubmit).click();
     getInvalidInputs().should("have.length", 2);
 
     cy.contains("Thank you").should("not.exist");
 
-    cy.get(contactNameID).type("Sample name");
-    cy.get(contactMethodID).type("sample@beatonma.org");
-    cy.get(contactSubmitID).click();
+    cy.get(contactName).type("Sample name");
+    cy.get(contactMethod).type("sample@beatonma.org");
+    cy.get(contactSubmit).click();
     getInvalidInputs().should("have.length", 0);
 
+    cy.get(CyAttr.ContactSuccess).should("be.visible");
     cy.contains("Thank you");
   });
 });

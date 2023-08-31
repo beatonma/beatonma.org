@@ -5,6 +5,7 @@
   "description": "beatonma.org",
   "scripts": {
     "build": "gulp production",
+    "buildTest": "gulp test",
     "watch": "gulp dev",
     "jest": "jest"
   },

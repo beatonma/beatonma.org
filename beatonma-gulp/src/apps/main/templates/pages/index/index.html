@@ -13,7 +13,11 @@
 {% include "./_quick-links.html" %}
 
 {% if is_first_page %}
-<div id="github_recent"></div>
+<div id="github_recent" data-cy="github">
+  <noscript>
+    <a href="https://github.com/beatonma"><h2>github/beatonma</h2></a>
+  </noscript>
+</div>
 {% endif %}
 
 <main>

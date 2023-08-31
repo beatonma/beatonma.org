@@ -6,6 +6,7 @@
                 <div id="search_bar">
                     <label
                         id="search_icon"
+                        data-cy="search_icon"
                         class="icon search"
                         for="search"
                         tabindex="0"
@@ -16,6 +17,7 @@
                         <input
                             type="search"
                             id="search"
+                            data-cy="search"
                             name="query"
                             placeholder="Search __env__:siteName"
                             aria-label="Search __env__:siteName"
@@ -30,7 +32,7 @@
         </div>
 
         <div class="left">
-            <a href="/" title="Home"><h1>__env__:siteName</h1></a>
+            <a href="/" title="Home" data-cy="site_name"><h1>__env__:siteName</h1></a>
         </div>
     </div>
 

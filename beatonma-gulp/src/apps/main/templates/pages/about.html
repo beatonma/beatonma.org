@@ -5,7 +5,7 @@
 
 {% block main %}
 {% include 'staff/edit-links.html' with target=about %}
-<article id="about">
+<article id="about" data-cy="about_me">
   {% include "components/hcard/hcard.html" %}
 
   {{ about.content_html|safe }}
@@ -14,6 +14,6 @@
 
 {% block hcard %}
 {% comment %}
-Replace basic hcard included in scaffold.html
+Remove basic hcard from scaffold.html
 {% endcomment %}
 {% endblock %}

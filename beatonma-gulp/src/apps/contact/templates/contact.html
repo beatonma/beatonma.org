@@ -14,6 +14,7 @@
                 <input
                     autocomplete="name"
                     id="contact_name"
+                    data-cy="contact_name"
                     type="text"
                     name="name"
                     autofocus
@@ -27,6 +28,7 @@
                 <input
                     autocomplete="email"
                     id="contact_method"
+                    data-cy="contact_method"
                     type="text"
                     name="contact_method"
                     required
@@ -39,6 +41,7 @@
                 <textarea
                     autocomplete="off"
                     id="contact_message"
+                    data-cy="contact_message"
                     name="message"
                     required
                     placeholder="Your message"
@@ -52,7 +55,7 @@
                     data-expired-callback="onContactCaptchaExpired"
                     data-sitekey="__env__:googleRecaptchaToken"
                 ></div>
-                <button id="contact_submit" disabled>Send</button>
+                <button id="contact_submit" data-cy="contact_submit" disabled>Send</button>
             </div>
         </form>
 
