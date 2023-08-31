@@ -40,22 +40,3 @@ COPY ./docker/django/entrypoint.dev.sh /
 
 EXPOSE 8000
 ENTRYPOINT ["/entrypoint.dev.sh"]
-
-
-################################################################################
-FROM django_core as cypress_django
-
-COPY docker/cypress/entrypoint-django.dev.sh /entrypoint.dev.sh
-
-EXPOSE 8000
-ENTRYPOINT ["/entrypoint.dev.sh"]
-
-
-################################################################################
-FROM cypress/included as cypress
-
-WORKDIR /cypress
-COPY docker/cypress/entrypoint-cypress.dev.sh /entrypoint.dev.sh
-
-EXPOSE 8000
-ENTRYPOINT ["/entrypoint.dev.sh"]
