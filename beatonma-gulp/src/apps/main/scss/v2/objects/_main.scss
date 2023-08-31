@@ -1,3 +1,6 @@
+@use "v2/core";
+
 main {
   margin-bottom: 4rem;
+  @extend %bottom-gap;
 }
