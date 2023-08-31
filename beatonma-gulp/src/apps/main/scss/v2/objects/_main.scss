@@ -1,6 +1,11 @@
 @use "v2/core";
 
 main {
-  margin-bottom: 4rem;
+  @extend %stretch-width;
   @extend %bottom-gap;
+
+  > article {
+    @extend %readable-text;
+    @extend %center;
+  }
 }
