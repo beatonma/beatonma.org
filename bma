@@ -50,7 +50,7 @@ show_help() {
 }
 
 docker_compose() {
-  run_command docker compose -f $COMPOSE_FILE "$@"
+  run_command docker compose -f "$COMPOSE_FILE" "$@"
 }
 
 docker_compose_build() {
@@ -80,7 +80,7 @@ production() {
       production_build "$@"
       exit 0
       ;;
-    "up" | "down")
+    "up"|"down"|"--")
       docker_compose "$@"
       exit 0
       ;;
@@ -92,14 +92,15 @@ production() {
 }
 
 dev() {
-  if [ "$1" = "down" ]; then
-    shift
-    docker_compose down "$@"
-    exit 0
-  fi
-
-  docker_compose_build
-  docker_compose up "$@"
+  case "$1" in
+    "up"|"down"|"--")
+      docker_compose "$@"
+      ;;
+    *)
+      docker_compose_build
+      docker_compose up "$@"
+      ;;
+  esac
 
   exit 0
 }
@@ -112,6 +113,10 @@ runtests() {
       ;;
     "cypress")
       docker_compose up cypress
+      ;;
+    "--")
+      shift
+      docker_compose "$@"
       ;;
     *)
       docker_compose up --abort-on-container-exit "$@"
