@@ -4,12 +4,9 @@
   "version": "1.0.0",
   "description": "beatonma.org",
   "scripts": {
-    "build": "gulp build",
-    "dev": "gulp local",
-    "watch": "gulp",
-    "jest": "jest",
-    "cypress": "cypress open",
-    "test": "cypress open & jest --watch"
+    "build": "gulp production",
+    "watch": "gulp dev",
+    "jest": "jest"
   },
   "typings": "./types",
   "keywords": [

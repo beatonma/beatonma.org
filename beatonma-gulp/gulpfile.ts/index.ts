@@ -1,30 +1,10 @@
 import { series } from "gulp";
-import { completeBuild } from "./build";
-import { watch, watchWebapp } from "./dist-watch";
-import {
-    getBuildMode as _getBuildType,
-    initDev,
-    initProduction,
-    isProductionBuild as _isProductionBuild,
-} from "./setup";
+import { initDev, initProduction, initTest } from "./setup";
+import { watch } from "./watch";
+import { build } from "./build";
 
-/**
- * Reduced local build with no minification, watched locally.
- */
-export default series(initDev, watch);
+export const dev = series(initDev, watch);
+export const test = series(initTest, build);
+export const production = series(initProduction, build);
 
-/**
- * Complete build, nothing more.
- */
-export const build = series(initProduction, completeBuild);
-
-/**
- * Complete build with minification, watched locally.
- */
-export const local = series(initProduction, watch);
-
-
-export const getBuildType = _getBuildType;
-export const isProductionBuild = _isProductionBuild;
-
-export const webapp = series(initDev, watchWebapp);
+export default dev;

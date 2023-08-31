@@ -7,6 +7,10 @@ import { buildTemplates } from "./build-templates";
 import { includeEnv } from "./env";
 import { ANY_FILE, distPath } from "./paths";
 import { checkConfiguration } from "./setup";
+const applyGlobalTransformations = () =>
+    src(distPath(ANY_FILE))
+        .pipe(includeEnv())
+        .pipe(dest(distPath()));
 
 /**
  * Remove the `apps/` parent directory.
@@ -16,17 +20,7 @@ export const unwrap = () =>
         path.dirname = path.dirname.replace(/^apps\//, "");
     });
 
-const injectEnvironmentVariables = () =>
-    src(distPath(ANY_FILE)).pipe(includeEnv()).pipe(dest(distPath()));
-
-export const rebuild = series(
-    parallel(
-        buildJs,
-        buildCss,
-        buildStatic,
-        buildTemplates,
-    ),
-    injectEnvironmentVariables
+export const build = series(
+    parallel(buildJs, buildCss, buildStatic, buildTemplates),
+    applyGlobalTransformations
 );
-
-export const completeBuild = series(checkConfiguration, rebuild);
