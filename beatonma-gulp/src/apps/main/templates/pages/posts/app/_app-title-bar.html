@@ -3,6 +3,9 @@
 
 {% block title %}
   <h2 class="p-name">{{ app.title }}</h2>
+{% endblock %}
+
+{% block labels %}
   {% include "./_app_type.html" with app_type=app.app_type %}
 {% endblock %}
 
