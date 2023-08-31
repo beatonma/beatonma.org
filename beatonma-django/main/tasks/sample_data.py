@@ -10,7 +10,7 @@ from common.models.util import implementations_of
 from django.db.models import QuerySet
 from django.utils.text import slugify
 from github.management.commands.sample_github_data import create_language
-from main.models import App, AppType, Article, Blog, Changelog, Note
+from main.models import App, AppType, Article, Blog, Changelog, MessageOfTheDay, Note
 from main.models.posts import About
 from main.tasks import samples
 from main.tasks.samples.tags import SAMPLE_TAGS
@@ -260,6 +260,23 @@ def create_about_page(
         content=content or sample.content,
     )
     return about
+
+
+def create_motd(
+    title: Optional[str] = None,
+    content: Optional[str] = None,
+    is_published: bool = True,
+) -> MessageOfTheDay:
+    sample = samples.any_motd()
+
+    motd, _ = MessageOfTheDay.objects.get_or_create(
+        title=title or sample.title,
+        content=content or sample.content,
+        defaults={
+            "is_published": is_published,
+        },
+    )
+    return motd
 
 
 def generate_posts():

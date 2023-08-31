@@ -14,7 +14,8 @@ log = logging.getLogger(__name__)
 class EphemeralQuerySet(PublishedQuerySet):
     def get_for_datetime(self, time: datetime) -> Optional["EphemeralMixin"]:
         return (
-            self.filter(Q(public_from__isnull=True) | Q(public_from__lte=time))
+            self.published()
+            .filter(Q(public_from__isnull=True) | Q(public_from__lte=time))
             .filter(Q(public_until__isnull=True) | Q(public_until__gt=time))
             .order_by("-created_at")
             .first()
