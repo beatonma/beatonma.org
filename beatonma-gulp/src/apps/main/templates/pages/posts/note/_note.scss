@@ -1,14 +1,13 @@
 @use "v2/core";
 
-
 article[data-type="note"] {
   .note-text {
     @extend %margin-large-block;
     @extend %padding-large;
     @extend %center;
     @extend %surface;
-    @extend %outlined;
-    @extend %shape-medium;
+    @extend %outlined-adaptive;
+    @extend %shape-adaptive-medium;
 
     max-width: 480px;
 
