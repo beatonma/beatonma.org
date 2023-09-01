@@ -90,7 +90,13 @@ $search-input-width: 32ch;
 
       .links-title {
         flex: 0 0 100%;
+        justify-content: end;
         text-align: end;
+
+        &::after {
+          // Disable animated border from %link-buttons.
+          display: none !important;
+        }
       }
     }
   }

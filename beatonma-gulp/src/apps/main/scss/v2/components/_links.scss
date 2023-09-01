@@ -1,15 +1,21 @@
 @use "v2/core";
+@use "v2/core/scaffold";
+@use "v2/constants";
 
 %link-buttons {
-  @extend %row-spaced;
+  @extend %row;
   @extend %nolinks;
   @extend %margin-small-block;
 
   font-variant: all-small-caps;
+  gap: var(--space) 0;
 
   .links-title {
+    display: flex;
+    align-items: center;
     font-weight: bold;
     white-space: nowrap;
+    gap: var(--space);
   }
 
   a {
@@ -17,6 +23,7 @@
     @extend %hover-underline;
     @extend %padding-small-inline;
 
+    display: inline-block;
     white-space: nowrap;
   }
 
@@ -26,6 +33,28 @@
       border: 2px solid var(--text-tertiary);
     }
   }
+
+  &:has(.links-title) {
+    .links-title::after {
+      @extend %-animated-indent;
+      margin-inline: var(--space-half);
+    }
+
+    &:has(a:hover) .links-title::after {
+      @extend %-animated-indent--hide;
+    }
+  }
+
+  &:not(:has(.links-title)) {
+    &::before {
+      @extend %-animated-indent;
+      margin-right: var(--space-half);
+    }
+
+    &:has(a:hover)::before {
+      @extend %-animated-indent--hide;
+    }
+  }
 }
 
 %link-buttons-row {
@@ -33,4 +62,31 @@
   @extend %scroll-inline;
 
   flex-wrap: nowrap;
+}
+
+/**
+ * A collection of links that appear near the top of a page.
+ */
+%quick-links {
+  @extend %link-buttons-row;
+
+  @media (width > #{constants.$readable-text-width + (2 * scaffold.$margin-comfy)}) {
+    justify-content: center;
+  }
+}
+
+%-animated-indent {
+  @include core.transition-fast((transform));
+
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background-color: var(--accent-color);
+  transform: scaleY(1);
+  transform-origin: bottom;
+}
+
+%-animated-indent--hide {
+  transform: scaleY(0);
 }

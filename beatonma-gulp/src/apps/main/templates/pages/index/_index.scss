@@ -15,7 +15,7 @@
   }
 
   .quick-links {
-    @extend %link-buttons-row;
+    @extend %quick-links;
 
     grid-area: quick-links;
   }
@@ -38,12 +38,6 @@
     @extend %margin-large-block;
 
     grid-area: motd;
-  }
-
-  @media (min-width: constants.$readable-text-width) {
-    .quick-links {
-      justify-content: center;
-    }
   }
 
   &[data-page="1"] {

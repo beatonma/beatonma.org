@@ -17,7 +17,8 @@
   @extend %underline;
 
   &::after {
-    transition: transform 200ms;
+    @include animation.transition-fast((transform));
+
     transform: scaleX(0);
     transform-origin: left;
   }

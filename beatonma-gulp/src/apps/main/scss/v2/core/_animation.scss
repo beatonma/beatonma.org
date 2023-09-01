@@ -20,6 +20,10 @@
   transition: $result;
 }
 
+@mixin transition-fast($props) {
+  @include transition($props, constants.$animation-duration-fast);
+}
+
 %-enter-animation {
   animation-duration: constants.$animation-duration;
   animation-fill-mode: both;
