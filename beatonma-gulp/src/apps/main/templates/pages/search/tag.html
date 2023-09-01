@@ -3,7 +3,8 @@
 {% block title %}#{{ filter }}: __env__:siteName{% endblock %}
 {% block description %}Items tagged with #{{ filter }}{% endblock %}
 
-{% block search_header %}#{{ filter }}{% endblock %}
+{% block search_header_class %}tag{% endblock %}
+{% block search_header %}{{ filter }}{% endblock %}
 
 {% block filters %}
   {% include "./_filters.html"

@@ -5,7 +5,7 @@
 
 {% block main %}
 <div class="search-results">
-    <h2>{% block search_header %}{% endblock %}</h2>
+    <h2 class="{% block search_header_class %}{% endblock %}">{% block search_header %}{% endblock %}</h2>
 
     {% block filters %}{% endblock %}
 

@@ -152,9 +152,16 @@ interface SuggestionProps {
     name: string;
 }
 const Suggestion = (props: SuggestionProps) => {
-    const { url, name } = props;
+    let { url, name } = props;
+    const classNames = ["search-suggestion"];
+
+    if (name.startsWith("#")) {
+        name = name.slice(1);
+        classNames.push("tag");
+    }
+
     return (
-        <a href={url} className="search-suggestion">
+        <a href={url} className={classNames.join(" ")}>
             {name}
         </a>
     );
