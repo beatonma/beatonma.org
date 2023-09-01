@@ -9,6 +9,7 @@
 
   .links-title {
     font-weight: bold;
+    white-space: nowrap;
   }
 
   a {
@@ -25,4 +26,11 @@
       border: 2px solid var(--text-tertiary);
     }
   }
+}
+
+%link-buttons-row {
+  @extend %link-buttons;
+  @extend %scroll-inline;
+
+  flex-wrap: nowrap;
 }

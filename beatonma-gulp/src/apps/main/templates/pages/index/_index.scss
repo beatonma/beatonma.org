@@ -15,10 +15,8 @@
   }
 
   .quick-links {
-    @extend %link-buttons;
-    @extend %scroll-inline;
+    @extend %link-buttons-row;
 
-    flex-wrap: nowrap;
     grid-area: quick-links;
   }
 

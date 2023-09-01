@@ -28,7 +28,7 @@ article.webpost {
   }
 
   .related {
-    @extend %link-buttons;
+    @extend %link-buttons-row;
 
     .related__description {
       color: var(--vibrant);

@@ -5,7 +5,7 @@
   @extend %margin-large-block;
 
   .filters {
-    @extend %link-buttons;
+    @extend %link-buttons-row;
     @extend %margin-large-block;
   }
 }
