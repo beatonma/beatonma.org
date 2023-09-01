@@ -7,7 +7,6 @@
 
   display: grid;
   grid-template-columns: var(--preview-image-size) 1fr;
-  gap: var(--space);
 
   .feeditem-summary-text {
     @extend %card-content;
@@ -23,7 +22,7 @@
     gap: var(--space);
 
     .p-name {
-      @include core.max-lines(1);
+      @extend %text-one-line;
 
       font-size: var(--fs-h6);
       line-height: 1.5;
@@ -37,7 +36,7 @@
   }
 
   .p-summary {
-    @include core.max-lines(3);
+    @include core.max-lines(2);
   }
 
   .preview-image {

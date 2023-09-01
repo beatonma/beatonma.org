@@ -31,14 +31,17 @@
 
 %textbox {
   overflow-x: hidden;
+  overflow-y: visible;
   text-overflow: ellipsis;
 }
 
 %text-default {
-  font-family: sans-serif;
-  font-size: var(--fs-default);
   color: var(--text-primary);
-  line-height: 1;
+  font-size: var(--fs-default);
+  font-family: sans-serif;
+  font-weight: normal;
+  line-height: normal;
+  letter-spacing: normal;
 }
 
 %readable-text {
@@ -67,13 +70,16 @@
   letter-spacing: 0.1ch;
 }
 
-@mixin max-lines($max-lines: 2) {
-  overflow-x: hidden;
+@mixin max-lines($max-lines, $line-height: 1.5) {
+  max-height: #{$line-height * $max-lines}em;
+
+  overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: $max-lines;
   -webkit-box-orient: vertical;
   word-break: break-word;
+  line-height: $line-height;
 }
 
 %text-one-line {
