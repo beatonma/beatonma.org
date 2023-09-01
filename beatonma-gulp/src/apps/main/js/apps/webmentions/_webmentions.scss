@@ -9,7 +9,6 @@ $-webmention-min-width: 18ch;
 }
 
 #webmentions {
-  @extend %text-container;
   @extend %center;
 
   h3 {
