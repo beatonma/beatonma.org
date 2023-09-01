@@ -2,6 +2,11 @@
 @use "v2/components/card";
 @use "v2/components/links";
 
+/**
+ * This file defines styles for the search widget that can be found in the site header.
+ * Styles for the full-page search results can be found in `pages/search`.
+ */
+
 $show-search-max-width: 700px; // On narrow devices, hide the search icon and always show search input.
 $search-full-width: 580px; // On narrow devices, make the search input fill the available width.
 $search-input-width: 32ch;
