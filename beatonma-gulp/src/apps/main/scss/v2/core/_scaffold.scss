@@ -2,9 +2,9 @@
 @use "./typography";
 @use "./space";
 
-$-margin-comfy: 32px;
-$-margin-small: 8px;
-$-margin-minimal: 4px;
+$margin-comfy: 32px;
+$margin-small: 8px;
+$margin-minimal: 4px;
 
 #scaffold {
   display: grid;
@@ -37,28 +37,21 @@ $-margin-minimal: 4px;
 }
 
 %-content_margins {
-  padding-inline: $-margin-comfy;
+  --content-margin: #{$margin-comfy};
+  padding-inline: var(--content-margin);
 
   @include breakpoints.on-medium-width {
-    padding-inline: $-margin-small;
+    --content-margin: #{$margin-small};
   }
 
   @include breakpoints.on-small-width {
-    padding-inline: $-margin-minimal;
+    --content-margin: #{$margin-minimal};
   }
 }
 
 %full-bleed {
   // Undoes the effects of %-content-margins for an element.
-  margin-inline: -$-margin-comfy;
-
-  @include breakpoints.on-medium-width {
-    margin-inline: -$-margin-small;
-  }
-
-  @include breakpoints.on-small-width {
-    margin-inline: -$-margin-minimal;
-  }
+  margin-inline: calc(-1 * var(--content-margin));
 }
 
 %center-column {
