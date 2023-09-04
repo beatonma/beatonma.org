@@ -1,5 +1,4 @@
 {% extends 'pages/posts/_post.html' %}
-{% load dates %}
 {% load html %}
 
 {% block title %}{{ post.content|truncatechars:24 }}{% endblock %}
@@ -10,8 +9,7 @@
     <div class="e-content">
         {{ post.content_html|safe }}
     </div>
-    <time class="dt-published" title="{{ post.published_at }}" datetime="{{ post.published_at }}">
-      {{ post.published_at|minimaldate }}
-    </time>
+
+    {% include "components/date.html" with date=post.published_at %}
 </div>
 {% endblock %}

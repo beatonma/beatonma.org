@@ -1,9 +1,11 @@
 {% extends "components/title-bar/title-bar.html" %}
-{% load dates %}
+
 
 {% block title %}<h2 class="p-name">{{ post.title }}</h2>{% endblock %}
 
-{% block trailing %}<time title="{{ post.published_at }}" datetime="{{ post.published_at }}">{{ post.published_at|minimaldate }}</time>{% endblock %}
+{% block trailing %}
+  {% include "components/date.html" with date=post.published_at %}
+{% endblock %}
 
 {% block subtitle %}
 <div class="tagline p-summary">{{ post.tagline|default:'' }}</div>
