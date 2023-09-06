@@ -72,7 +72,7 @@ class FormatMixin(models.Model):
 
 
 def _url_tag(href: str, displayname: str):
-    return f'<a class="noanim" href="{href}">{displayname}</a>'
+    return f'<a href="{href}">{displayname}</a>'
 
 
 def _postprocess_html(html: str) -> str:
