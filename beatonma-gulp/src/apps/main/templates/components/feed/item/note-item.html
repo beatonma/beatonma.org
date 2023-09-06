@@ -1,15 +1,15 @@
 {% load html %}
-<a
-    href="{{ note.get_absolute_url }}"
+<div
     class="h-entry"
     data-type="note"
 >
   <article>
     <div class="e-content p-summary">
-      {{ note.content_html|plaintext|safe }}
+      <a title="View this note" class="canonical-url icon" href="{{ note.get_absolute_url }}">open_in_full</a>
+      {{ note.content_html|notetext|safe }}
     </div>
 
     {% include 'components/react/media-container.html' with target=note style='preview' %}
     {% include "components/date.html" with date=note.published_at %}
   </article>
-</a>
+</div>

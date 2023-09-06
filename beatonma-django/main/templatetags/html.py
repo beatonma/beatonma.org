@@ -12,3 +12,11 @@ html_tag_pattern = re.compile(r"<.*?/?>")
 @stringfilter
 def plaintext(html: str) -> str:
     return re.sub(html_tag_pattern, "", html)
+
+
+@register.filter("notetext")
+@stringfilter
+def notetext(html: str) -> str:
+    """Strip HTML tags, except <a>links</a>."""
+    pattern = re.compile(r"<(?!/?a\s*[^>]*>)[^>]*>")
+    return re.sub(pattern, "", html)

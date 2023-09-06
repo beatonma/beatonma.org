@@ -15,6 +15,14 @@
       @extend %text-large;
     }
 
+    a.canonical-url {
+      @extend %padding-small-left;
+      @extend %padding-small-bottom;
+
+      float: right;
+      font-size: var(--fs-small);
+    }
+
     > time {
       margin-top: var(--space);
       display: block;
@@ -30,11 +38,11 @@
     border-width: 0;
   }
 
-  &:nth-child(3n+1) {
+  &:nth-child(3n + 1) {
     margin-inline: 0 auto;
   }
 
-  &:nth-child(3n+2) {
+  &:nth-child(3n + 2) {
     margin-inline: auto 0;
   }
 }
