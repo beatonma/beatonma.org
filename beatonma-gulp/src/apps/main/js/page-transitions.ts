@@ -11,86 +11,41 @@ import { APPS } from "./apps";
 import { Scaffold } from "./dom";
 import { loadPage } from "./util/requests";
 
-const ItemAnimationDelay = 30;
-const PageFadeOutDuration = 200;
-
+const AnimationMillis = {
+    ItemDelay: 30,
+    PageFadeOutDuration: 200,
+};
 // Links with this class opt out of hot-swapping content.
 const NoAnimationClass = "noanim";
 
 // Disable animations when the URL path matches this pattern.
 const NoAnimationPathsRegex = /(webapp)\/.*/;
 
-const OnPageChangeClass = ".onPageChange";
-const OnPageUnloadClass = ".onPageUnload";
+const DataAttr = {
+    AnimateIn: "data-animate-in",
+    Href: "data-href",
+};
 
-const AnimatedElementSelector = [
-    ".card",
-    ".h-card",
-    ".h-entry",
-    "article > section",
-    "main > article",
-].join(",");
+const Selector = {
+    AnimatedElement: [
+        ".card",
+        ".h-card",
+        ".h-entry",
+        "article > section",
+        "main > article",
+    ].join(","),
+    OnPageChange: ".onPageChange",
+    OnPageUnload: ".onPageUnload",
+};
 
 export const animatedItemProps = (index: number) => {
     return {
-        "data-animate-in": true,
+        [DataAttr.AnimateIn]: true,
         style: {
-            animationDelay: `${ItemAnimationDelay * index}ms`,
+            animationDelay: `${AnimationMillis.ItemDelay * index}ms`,
         },
     };
 };
-
-const onContentChanged = async (dom: Document | HTMLElement) => {
-    APPS.forEach(app => {
-        try {
-            app(dom);
-        } catch (e) {
-            console.error(`App ${app.name} failed: ${e}`);
-        }
-    });
-
-    if (window.location.hash) {
-        scrollToId(window.location.hash);
-    }
-};
-
-const getScript = async (element: HTMLScriptElement) => {
-    const src = element.src;
-    element.parentElement.removeChild(element);
-
-    const script: HTMLScriptElement = document.createElement("script");
-    script.async = true;
-    script.src = src;
-
-    document.body.appendChild(script);
-};
-
-const shouldAnimateTransition = (
-    anchor: HTMLAnchorElement | URL | Location
-): boolean => {
-    if (anchor.host !== location.host) {
-        // If target is on a different domain then handle it the normal way
-        return false;
-    }
-
-    if (NoAnimationPathsRegex.test(anchor.pathname)) {
-        return false;
-    }
-
-    // Links annotated with NoAnimationClass should be treated as external (no content transition animations)
-    if (
-        anchor instanceof HTMLAnchorElement &&
-        anchor.className.includes(NoAnimationClass)
-    ) {
-        return false;
-    }
-
-    return true;
-};
-
-const shouldScrollTo = (anchor: HTMLAnchorElement | URL | Location): boolean =>
-    anchor.pathname === window.location.pathname &&
-    anchor.search === window.location.search;
 
 export const changePage = (url: string, pushToHistory: boolean = true) => {
     if (pushToHistory) {
@@ -112,6 +67,20 @@ export const changePage = (url: string, pushToHistory: boolean = true) => {
         });
 };
 
+const onContentChanged = async (dom: Document | HTMLElement) => {
+    APPS.forEach(app => {
+        try {
+            app(dom);
+        } catch (e) {
+            console.error(`App '${app.name}' failed: ${e}`);
+        }
+    });
+
+    if (window.location.hash) {
+        scrollToId(window.location.hash);
+    }
+};
+
 const getMetaDescription = (from: HTMLElement | Document): HTMLMetaElement =>
     from.querySelector("meta[name=description]") as HTMLMetaElement;
 
@@ -124,7 +93,7 @@ const swapPageContent = (newHtml: string) => {
 
     const fadeOut = oldContent.animate(
         [{ opacity: 1 }, { opacity: 0 }],
-        PageFadeOutDuration
+        AnimationMillis.PageFadeOutDuration
     );
 
     fadeOut.onfinish = () => {
@@ -134,45 +103,59 @@ const swapPageContent = (newHtml: string) => {
         Scaffold.importLocalStyle(wrapper);
 
         const contentWrapper = Scaffold.getContentWrapper();
-        contentWrapper.removeChild(oldContent);
-        contentWrapper.appendChild(newContent);
+        contentWrapper.replaceChild(newContent, oldContent);
         contentWrapper.scrollIntoView(true);
 
         Scaffold.showLoading(false);
-        animateContentEnter(newContent);
 
         newContent
-            .querySelectorAll(OnPageChangeClass)
-            .forEach(executeContentScripts);
+            .querySelectorAll(Selector.OnPageChange)
+            .forEach(ContentScripts.execute);
         oldContent
-            .querySelectorAll(OnPageUnloadClass)
-            .forEach(executeContentScripts);
+            .querySelectorAll(Selector.OnPageUnload)
+            .forEach(ContentScripts.execute);
 
+        animateContentEnter(newContent);
         void onContentChanged(newContent);
     };
 };
 
-const executeContentScripts = (element: HTMLElement) => {
-    const script = element as HTMLScriptElement;
-    if (script.src) {
-        void getScript(script);
-    } else {
-        try {
-            eval(script.innerHTML);
-        } catch (err) {}
-    }
-};
+namespace ContentScripts {
+    export const execute = (element: HTMLElement) => {
+        const script = element as HTMLScriptElement;
+        if (script.src) {
+            void getScript(script);
+        } else {
+            try {
+                eval(script.innerHTML);
+            } catch (err) {
+                console.error(`Page-change script error: ${err}`);
+            }
+        }
+    };
+
+    const getScript = async (element: HTMLScriptElement) => {
+        const src = element.src;
+        element.parentElement.removeChild(element);
+
+        const script: HTMLScriptElement = document.createElement("script");
+        script.async = true;
+        script.src = src;
+
+        document.body.appendChild(script);
+    };
+}
 
 const animateContentEnter = (parent: HTMLElement) => {
     let delay = 0;
 
     try {
-        parent.querySelectorAll(AnimatedElementSelector).forEach(el => {
+        parent.querySelectorAll(Selector.AnimatedElement).forEach(el => {
             const element = el as HTMLElement;
             element.style.animationDelay = `${delay}ms`;
             element.dataset.animateIn = "true";
 
-            delay += ItemAnimationDelay;
+            delay += AnimationMillis.ItemDelay;
         });
     } catch (e) {
         console.warn(`Animation error: ${e}`);
@@ -184,37 +167,26 @@ const scrollToId = (id: string) =>
 
 namespace PageTransitionEvents {
     const onClick = (e: MouseEvent) => {
-        let el: HTMLElement | ParentNode = e.target as HTMLElement;
+        const target = findNavigableTarget(e);
+        if (!target) return;
+        const { url, shouldAnimate } = target;
+        if (!shouldAnimate) return;
 
-        // Go up in the nodelist until we find a node with .href (HTMLAnchorElement)
-        while (el && !(el instanceof HTMLAnchorElement)) {
-            el = el.parentNode;
-        }
-
-        if (!el) return;
-        const anchor = el as HTMLAnchorElement;
-
-        if (!shouldAnimateTransition(anchor)) {
-            return;
-        }
-
-        if (anchor.hash && shouldScrollTo(anchor)) {
+        if (url.hash && shouldScrollTo(url)) {
             // Handle links to element #id
             e.preventDefault();
-            history.pushState(null, null, anchor.href);
-            scrollToId(anchor.hash);
+            history.pushState(null, null, url.href);
+            scrollToId(url.hash);
             return;
         }
 
         // Otherwise fetch content from the target and insert it
         // into the current page
         e.preventDefault();
-        changePage(anchor.href);
+        changePage(url.href);
     };
 
-    const onNavigateBack = () => {
-        changePage(window.location.href, false);
-    };
+    const onNavigateBack = () => changePage(window.location.href, false);
 
     function onLoad() {
         void onContentChanged(document);
@@ -226,6 +198,61 @@ namespace PageTransitionEvents {
         window.addEventListener("popstate", onNavigateBack);
         window.addEventListener("load", onLoad);
     };
+
+    interface Navigable {
+        url: URL;
+        shouldAnimate: boolean;
+    }
+    const findNavigableTarget = (event: Event): Navigable | null => {
+        let el: HTMLElement = event.target as HTMLElement;
+        let url: URL;
+
+        while (el && !(el instanceof HTMLBodyElement)) {
+            if (el instanceof HTMLAnchorElement) {
+                url = new URL(el.href);
+                break;
+            }
+            if ((el as HTMLElement).hasAttribute(DataAttr.Href)) {
+                url = new URL(el.getAttribute(DataAttr.Href));
+                break;
+            }
+            el = el.parentNode as HTMLElement;
+        }
+
+        if (el && url) {
+            return {
+                url: url,
+                shouldAnimate: shouldAnimateTransition(url, el),
+            };
+        }
+
+        return null;
+    };
+
+    const shouldAnimateTransition = (
+        url: URL,
+        element: HTMLElement
+    ): boolean => {
+        if (url.host !== location.host) {
+            // If target is on a different domain then handle it the normal way
+            return false;
+        }
+
+        if (NoAnimationPathsRegex.test(url.pathname)) {
+            return false;
+        }
+
+        // Links annotated with NoAnimationClass should be treated as external (no content transition animations)
+        if (element.className.includes(NoAnimationClass)) {
+            return false;
+        }
+
+        return true;
+    };
+
+    const shouldScrollTo = (anchor: URL): boolean =>
+        anchor.pathname === window.location.pathname &&
+        anchor.search === window.location.search;
 }
 
 PageTransitionEvents.setup();
