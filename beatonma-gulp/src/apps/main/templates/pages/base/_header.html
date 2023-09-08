@@ -1,47 +1,51 @@
 <div id="loading" class="loading--bar"></div>
 <nav>
-    <div class="header-row-primary">
-        <div class="right">
-            <form action="/search/" method="get" id="search_form" role="search">
-                <div id="search_bar">
-                    <label
-                        id="search_icon"
-                        data-cy="search_icon"
-                        class="icon search"
-                        for="search"
-                        tabindex="0"
-                    >
-                        search
-                    </label>
-                    <div id="search_wrapper">
-                        <input
-                            type="search"
-                            id="search"
-                            data-cy="search"
-                            name="query"
-                            placeholder="Search __env__:siteName"
-                            aria-label="Search __env__:siteName"
-                            enterkeyhint="search"
-                            autocomplete="off"
-                        >
-                    </div>
-                </div>
-
-                <div id="search_results"></div>
-            </form>
+  <div class="header-row-primary">
+    <div class="right">
+      <form action="/search/" method="get" id="search_form" role="search">
+        <div id="search_bar">
+          <label
+              id="search_icon"
+              data-cy="search_icon"
+              class="icon search"
+              for="search"
+              tabindex="0"
+          >
+            search
+          </label>
+          <div id="search_wrapper">
+            <input
+                type="search"
+                id="search"
+                data-cy="search"
+                name="query"
+                placeholder="Search __env__:siteName"
+                aria-label="Search __env__:siteName"
+                enterkeyhint="search"
+                autocomplete="off"
+            >
+          </div>
         </div>
+
+        <div id="search_results"></div>
+      </form>
+    </div>
 
         <div class="left">
             <a href="/" title="Home" data-cy="site_name"><h1>__env__:siteName</h1></a>
         </div>
     </div>
-
-    <div class="header-row-secondary">
-        <button id="theme_icon" title="Toggle theme" class="tooltip"><span class="icon">contrast</span></button>
-        <a href="/apps/">Apps</a>
-        <a href="/about/">About</a>
-        <a href="/contact/">Contact</a>
-
-        {% include "./_staff-toolbar.html" %}
+    <div class="left">
+      <a href="/" title="Home" data-cy="site_name"><h1>__env__:siteName</h1></a>
     </div>
+  </div>
+
+  <div class="header-row-secondary">
+    <button id="theme_icon" title="Toggle theme" class="tooltip"><span class="icon">contrast</span></button>
+    <a href="/apps/">Apps</a>
+    <a href="/about/">About</a>
+    <a href="/contact/">Contact</a>
+
+    {% include "./_staff-toolbar.html" %}
+  </div>
 </nav>
