@@ -1,3 +1,4 @@
+@use "./accessibility";
 @use "./animation";
 @use "./shapes";
 
@@ -14,17 +15,30 @@
 }
 
 %hover-underline {
-  @extend %underline;
+  @extend %hover;
+  @extend %-underline;
 
   &::after {
-    @include animation.transition-fast((transform));
+    @include animation.transition-fast((background-color, transform));
 
     transform: scaleX(0);
     transform-origin: left;
   }
 
   &:hover::after {
-    transform: scaleX(100%);
+    transform: scaleX(1);
+  }
+
+  &[data-selected]:not([data-selected="false"]) {
+    &::after {
+      background-color: var(--muted);
+      transform: none;
+    }
+
+    &:hover::after {
+      background-color: var(--vibrant);
+      transform: scaleX(1);
+    }
   }
 }
 
@@ -54,7 +68,7 @@
   }
 }
 
-%underline {
+%-underline {
   position: relative;
 
   &::after {
@@ -66,5 +80,9 @@
     width: 100%;
     left: 0;
     background-color: var(--vibrant);
+
+    @include accessibility.reduced-motion {
+      height: 1px;
+    }
   }
 }
