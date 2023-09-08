@@ -1,6 +1,7 @@
 @use "sass:list";
 @use "sass:string";
 @use "v2/constants";
+@use "./accessibility";
 
 @mixin transition(
   $props,
@@ -18,6 +19,10 @@
   }
 
   transition: $result;
+
+  @include accessibility.reduced-motion {
+    transition: none;
+  }
 }
 
 @mixin transition-fast($props) {
