@@ -1,12 +1,13 @@
 @use "./animation";
 @use "./state";
+@use "./color";
+
+[aria-hidden]:not([aria-hidden="false"]) {
+  pointer-events: none;
+}
 
 [data-meta] {
   display: none;
-}
-
-[aria-hidden] {
-  pointer-events: none;
 }
 
 [data-animate-in] {
