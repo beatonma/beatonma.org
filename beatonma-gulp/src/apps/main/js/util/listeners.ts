@@ -33,13 +33,19 @@ export const useTextEventListener = (
 ) => {
     const element = requireElement(elementId);
 
-    const listener = (event: Event) => {
+    const listener = (event: KeyboardEvent) => {
         const target = event.target;
         if (
             target instanceof HTMLInputElement ||
             target instanceof HTMLTextAreaElement
         ) {
-            onEvent(target.value);
+            switch (event.key) {
+                case "Escape":
+                    target.blur();
+                    break;
+                default:
+                    onEvent(target.value);
+            }
         }
     };
 
