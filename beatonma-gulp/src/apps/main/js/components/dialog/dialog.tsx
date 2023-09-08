@@ -10,12 +10,23 @@ import {
 const getScrim = Scaffold.getScrim;
 
 export namespace Scrim {
+    const noop = (e: Event) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
+
     export const show = () => {
-        getScrim().dataset.visible = "true";
+        const scrim = getScrim();
+        scrim.dataset.visible = "true";
+        scrim.addEventListener("touchmove", noop);
+        scrim.addEventListener("wheel", noop, { passive: false });
     };
 
     export const hide = () => {
-        delete getScrim().dataset.visible;
+        const scrim = getScrim();
+        delete scrim.dataset.visible;
+        scrim.removeEventListener("touchmove", noop);
+        scrim.removeEventListener("wheel", noop);
     };
 }
 

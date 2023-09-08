@@ -1,0 +1,27 @@
+<div id="search_container">
+  <form action="/search/" method="get" id="search_form" role="search">
+    <label
+        id="search_icon"
+        data-cy="search_icon"
+        class="icon search"
+        for="search"
+        tabindex="0"
+    >
+      search
+    </label>
+    <div id="search_wrapper">
+      <input
+          type="search"
+          id="search"
+          data-cy="search"
+          name="query"
+          placeholder="Search __env__:siteName"
+          aria-label="Search __env__:siteName"
+          enterkeyhint="search"
+          autocomplete="off"
+      >
+    </div>
+  </form>
+
+  <div id="search_results"></div>
+</div>

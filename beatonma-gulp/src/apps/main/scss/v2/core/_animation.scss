@@ -6,7 +6,7 @@
 @mixin transition(
   $props,
   $duration: constants.$animation-duration,
-  $easing: cubic-bezier(0.23, 0.88, 0.56, 0.99)
+  $easing: ease-in-out
 ) {
   $result: ();
 

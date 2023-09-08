@@ -2,22 +2,21 @@
 @use "v2/components/card";
 @use "v2/components/links";
 
-/**
- * This file defines styles for the search widget that can be found in the site header.
- * Styles for the full-page search results can be found in `pages/search`.
- */
-
 $show-search-max-width: 700px; // On narrow devices, hide the search icon and always show search input.
-$search-full-width: 580px; // On narrow devices, make the search input fill the available width.
-$search-input-width: 32ch;
+$-preferred-ui-width: 320px;
 
-#search_form {
+#search_container {
+  @include core.stretch-width;
+
+  --search-ui-width: 0;
+  --search-alignment: end;
+
+  font-size: var(--fs-small);
   position: relative;
 
-  #search_bar {
+  #search_form {
     @include core.row(flex-end, $wrap: nowrap);
   }
-
   #search_icon {
     @extend %clickable;
     @extend %hover;
@@ -26,53 +25,95 @@ $search-input-width: 32ch;
 
     display: inline-block;
   }
-
   #search_wrapper {
-    @include core.transition((opacity, max-width));
+    @include core.transition((max-width, opacity));
 
     max-width: 0;
     overflow-x: hidden;
     opacity: 0;
-  }
-
-  #search {
-    @extend %text-default;
-    @include core.transition((max-width));
-
-    position: relative;
-    max-width: $search-input-width;
-    margin: 0 0 0 4px;
-    background-color: var(--input-text-background);
+    width: var(--search-ui-width);
   }
 
   #search_results {
     @extend %card;
-    @extend %shape-medium;
     @extend %padding-small;
-    @extend %padding-medium-bottom;
-    @include core.transition((height, opacity));
+    @include core.transition((opacity));
 
     position: absolute;
     right: 0;
-    max-width: 0;
     max-height: 0;
-    height: 0;
+    overflow: hidden;
     opacity: 0;
-    overflow: clip;
+    max-width: var(--search-ui-width);
     box-sizing: border-box;
+  }
+
+  #search {
+    font-size: var(--fs-small);
+    width: var(--search-ui-width);
+  }
+
+  // Search UI is in use.
+  &:focus-within {
+    --search-ui-width: #{$-preferred-ui-width};
+    z-index: var(--elevation-search-results);
+
+    #search_icon {
+      // Icon should still be visible over the scrim.
+      color: var(--text-light-primary);
+    }
+
+    #search_wrapper {
+      max-width: var(--search-ui-width);
+      opacity: 1;
+    }
+
+    #search_results {
+      opacity: 1;
+      max-height: unset;
+    }
+  }
+
+  // Search bar always visible
+  @media (width < $show-search-max-width) {
+    --search-ui-width: #{$-preferred-ui-width};
+
+    #search_wrapper {
+      max-width: var(--search-ui-width);
+      opacity: 1;
+    }
+
+    #search_icon {
+      display: none;
+    }
+  }
+
+  // Search UI fills display width
+  @include core.on-medium-width {
+    --search-ui-width: 100%;
+    --search-alignment: center;
+
+    &:focus-within {
+      --search-ui-width: 100%;
+    }
+  }
+
+  .search--results {
+    @extend %margin-medium-bottom;
 
     .search-result {
-      @extend %shape-small;
-      @extend %padding-small;
-      @extend %margin-small-bottom;
+      @extend %shape-adaptive-small;
       @extend %surface-muted-hover;
-      @extend %stretch-width;
+      @extend %margin-small-block;
+      @extend %padding-small;
+      @include core.stretch-width;
 
-      display: inline-block;
+      display: block;
 
       &--name {
+        @include core.max-lines(2);
+
         font-weight: bold;
-        line-height: 1.2;
       }
 
       &--description {
@@ -87,82 +128,22 @@ $search-input-width: 32ch;
         text-align: end;
       }
     }
+  }
 
-    .search--suggestions {
-      @extend %link-buttons;
+  .search--suggestions {
+    @extend %link-buttons;
 
-      justify-content: flex-end;
+    justify-content: var(--search-alignment);
 
-      .links-title {
-        flex: 0 0 100%;
-        justify-content: end;
-        text-align: end;
+    .links-title {
+      flex: 0 0 100%;
+      justify-content: var(--search-alignment);
+      text-align: var(--search-alignment);
 
-        &::after {
-          // Disable animated border from %link-buttons.
-          display: none !important;
-        }
+      &::after {
+        // Disable animated border from %link-buttons.
+        display: none !important;
       }
-    }
-  }
-
-  &:focus-within,
-  &[data-debug] {
-    z-index: var(--elevation-search-results);
-
-    #search_wrapper {
-      max-width: 100%;
-      opacity: 1;
-    }
-
-    #search_icon {
-      // Icon should still be visible over the scrim.
-      color: var(--text-light-primary);
-    }
-
-    #search_results {
-      @extend %margin-medium-bottom;
-      @extend %scroll-block;
-
-      max-width: min(100%, #{$search-input-width});
-      height: auto;
-      max-height: 60svh;
-      overflow-y: auto;
-      opacity: 1;
-      pointer-events: all;
-    }
-  }
-
-  @media (width < $search-full-width) {
-    @include core.stretch-width;
-
-    #search_wrapper,
-    input[type="search"] {
-      @include core.stretch-width;
-    }
-
-    #search {
-      max-width: 100%;
-    }
-  }
-
-  @media (width < $show-search-max-width) {
-    #search_icon {
-      @include core.size(0);
-
-      opacity: 0;
-      overflow: clip;
-      padding: 0;
-    }
-
-    #search {
-      margin-left: 0;
-    }
-
-    #search_wrapper {
-      margin-block: var(--space-2x);
-      max-width: 100%;
-      opacity: 1;
     }
   }
 }

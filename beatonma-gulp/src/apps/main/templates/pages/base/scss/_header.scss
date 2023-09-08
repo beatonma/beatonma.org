@@ -1,4 +1,5 @@
 @use "v2/core";
+@use "./search";
 
 %-main-header-row {
   @extend %nolinks;
@@ -7,15 +8,12 @@
 }
 
 .header-row-primary {
-  $show-search-max-width: 700px; // On narrow devices, hide the search icon and always show search input.
-  $search-full-width: 580px; // On narrow devices, make the search input fill the available width.
-
   @extend %-main-header-row;
   @extend %margin-medium-bottom;
   @include core.row(
     $horizontal: space-between,
     $vertical: baseline,
-    $column-gap: var(--space)
+    $gap: var(--space)
   );
 
   .left {
@@ -34,9 +32,7 @@
     margin-top: 8px;
   }
 
-  @media (width < $show-search-max-width) {
-    flex-direction: column;
-
+  @media (width < search.$show-search-max-width) {
     .right {
       @include core.stretch-width;
     }

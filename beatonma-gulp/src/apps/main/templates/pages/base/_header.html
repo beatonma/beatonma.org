@@ -2,33 +2,7 @@
 <nav>
   <div class="header-row-primary">
     <div class="right">
-      <form action="/search/" method="get" id="search_form" role="search">
-        <div id="search_bar">
-          <label
-              id="search_icon"
-              data-cy="search_icon"
-              class="icon search"
-              for="search"
-              tabindex="0"
-          >
-            search
-          </label>
-          <div id="search_wrapper">
-            <input
-                type="search"
-                id="search"
-                data-cy="search"
-                name="query"
-                placeholder="Search __env__:siteName"
-                aria-label="Search __env__:siteName"
-                enterkeyhint="search"
-                autocomplete="off"
-            >
-          </div>
-        </div>
-
-        <div id="search_results"></div>
-      </form>
+      {% include "./_search.html" %}
     </div>
 
         <div class="left">

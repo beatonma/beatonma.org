@@ -1,7 +1,7 @@
 @use "v2/core";
 
-
-input, textarea {
+input,
+textarea {
   outline: none;
   border: none;
 }
@@ -35,8 +35,7 @@ input, textarea {
   }
 }
 
-input[type="text"],
-input[type="search"] {
+input[type="text"] {
   @extend %-input-text;
 }
 
@@ -46,6 +45,8 @@ select {
 }
 
 input[type="search"] {
+  @extend %-base-input;
+
   &::-webkit-search-cancel-button {
     filter: brightness(1) saturate(0) grayscale(1) contrast(0);
   }
@@ -63,12 +64,16 @@ form {
     margin-block: var(--space);
   }
 
-  div:has(label), p:has(label) {
-    label, input:not([type="checkbox"], [type="radio"]), textarea {
+  div:has(label),
+  p:has(label) {
+    label,
+    input:not([type="checkbox"], [type="radio"]),
+    textarea {
       display: block;
     }
 
-    input[type="checkbox"] + label, input[type="radio"] + label {
+    input[type="checkbox"] + label,
+    input[type="radio"] + label {
       display: inline;
       font-size: var(--fs-default);
     }
