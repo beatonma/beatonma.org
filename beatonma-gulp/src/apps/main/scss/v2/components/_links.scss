@@ -1,4 +1,7 @@
 @use "v2/core";
+@use "v2/core/accessibility";
+@use "v2/core/animation";
+@use "v2/core/breakpoints";
 @use "v2/core/scaffold";
 @use "v2/constants";
 
@@ -19,7 +22,6 @@
   }
 
   a {
-    @extend %hover;
     @extend %hover-underline;
     @extend %padding-small-inline;
 
@@ -27,7 +29,7 @@
     white-space: nowrap;
   }
 
-  @include core.on-touchscreen {
+  @include breakpoints.on-touchscreen {
     a {
       padding: var(--space-half) var(--space);
       border: 2px solid var(--text-tertiary);
@@ -76,7 +78,7 @@
 }
 
 %-animated-indent {
-  @include core.transition-fast((transform));
+  @include animation.transition-fast((transform));
 
   content: "";
   display: inline-block;
@@ -85,8 +87,16 @@
   background-color: var(--accent-color);
   transform: scaleY(1);
   transform-origin: bottom;
+
+  @include accessibility.reduced-motion {
+    transform: none;
+  }
 }
 
 %-animated-indent--hide {
   transform: scaleY(0);
+
+  @include accessibility.reduced-motion {
+    transform: none;
+  }
 }
