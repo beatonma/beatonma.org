@@ -1,6 +1,7 @@
 import math
 
 from common.models import ApiModel, BaseModel, PublishedMixin, TaggableMixin
+from common.models.published import PublishedQuerySet
 from common.models.search import SearchResult
 from django.db import models
 from django.db.models import UniqueConstraint
@@ -45,7 +46,13 @@ class GithubLicense(BaseModel):
         ordering = ["name"]
 
 
+class GithubRepositoryQuerySet(PublishedQuerySet):
+    def get_private_count(self, **query) -> int:
+        return super().get_private__dangerous__().filter(**query).count()
+
+
 class GithubRepository(PublishedMixin, ApiModel, TaggableMixin, BaseModel):
+    objects = GithubRepositoryQuerySet.as_manager()
     search_fields = ["name", "description"]
 
     id = models.PositiveIntegerField(unique=True, primary_key=True, editable=False)

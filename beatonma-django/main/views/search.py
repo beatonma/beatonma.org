@@ -1,26 +1,23 @@
 import logging
 import random
-from itertools import chain
-from typing import List
+from typing import Iterable, List, Optional, Union
 
+from common.models import SearchMixin
+from common.models.search import SearchResult
 from common.views.logged import LoggedView
-from django.db.models import Count, F
+from django.db.models import QuerySet
 from django.shortcuts import redirect, render
-from github.models import GithubLanguage, GithubRepository
+from main.views import view_names
 from main.views.querysets import (
-    MAX_SUGGESTIONS,
-    FeedMessage,
     get_app_types,
     get_apps,
-    get_articles,
-    get_blogs,
+    get_for_language,
+    get_for_tag,
     get_languages,
-    get_notes,
-    get_repositories,
     get_search_results,
     get_suggestions,
 )
-from main.views.util import pluralize
+from main.views.util.pagination import paginate
 from taggit.models import Tag
 
 log = logging.getLogger(__name__)
@@ -30,131 +27,97 @@ class SearchView(LoggedView):
     def get(self, request):
         query = request.GET.get("query")
         if not query:
-            return redirect("index")
+            return redirect(view_names.INDEX)
 
         if query[:1] == "#":
-            return redirect("search-tags", tag=query[1:])
+            return redirect(view_names.TAGS, tag=query[1:])
 
-        return render(
+        return _render_results(
             request,
             "pages/search/search.html",
-            {
-                "filters": get_suggestions()[:MAX_SUGGESTIONS],
-                **get_search_results(query),
-            },
+            search_query=query,
+            results=get_search_results(query),
+            filters=get_suggestions(),
         )
 
 
 class TagView(LoggedView):
     def get(self, request, tag: str):
-        def _filter_tag(qs):
-            return qs.filter(tags__name__iexact=tag)
+        results = get_for_tag(tag)
+        filters = _get_random_filters(Tag.objects.all())
 
-        articles = _filter_tag(get_articles())
-        blogs = _filter_tag(get_blogs())
-        notes = _filter_tag(get_notes())
-        apps = _filter_tag(get_apps())
-        repositories = _filter_tag(get_repositories())
-
-        results = list(chain(articles, blogs, apps, notes, repositories))
-
-        private_repos_count = (
-            GithubRepository.objects.get_private__dangerous__()
-            .filter(tags__name__iexact=tag)
-            .count()
-        )
-
-        if private_repos_count > 0:
-            private_repos_message = FeedMessage(
-                message=f"{private_repos_count} private {pluralize(private_repos_count, 'repository', 'repositories')}",
-            )
-            results += [private_repos_message]
-
-        filters = list(
-            Tag.objects.annotate(item_count=Count("taggit_taggeditem_items"))
-            .exclude(item_count=0)
-            .values_list("name", flat=True)
-        )
-        random.shuffle(filters)
-
-        return render(
+        return _render_results(
             request,
             "pages/search/tag.html",
-            {
-                "filters": filters[:MAX_SUGGESTIONS],
-                "filter": tag,
-                "feed": results,
-            },
+            search_query=tag,
+            results=results,
+            filters=filters,
         )
 
 
 class LanguageView(LoggedView):
     def get(self, request, language: str):
-        resolved_language = (
-            GithubLanguage.objects.filter(name__iexact=language).first()
-            or GithubLanguage.objects.filter(name__icontains=language).first()
-        )
-        if not resolved_language:
-            return self.render(request, language, [])
+        results = get_for_language(language)
+        filters = _get_random_filters(get_languages())
 
-        apps = get_apps().filter(primary_language=resolved_language)
-        repos = get_repositories().filter(primary_language=resolved_language)
-        results = list(chain(apps, repos))
-
-        private_repos_count = (
-            GithubRepository.objects.get_private__dangerous__()
-            .filter(primary_language=resolved_language)
-            .count()
-        )
-
-        if private_repos_count > 0:
-            private_repos_message = FeedMessage(
-                message=f"{private_repos_count} private {pluralize(private_repos_count, 'repository', 'repositories')}",
-            )
-            results += [private_repos_message]
-
-        return self.render(request, resolved_language.name, results)
-
-    def render(self, request, language: str, results: List):
-        filters = get_languages().values_list("name", flat=True)
-
-        return render(
+        return _render_results(
             request,
             "pages/search/language.html",
-            {
-                "filters": filters,
-                "filter": language,
-                "feed": results,
-            },
+            search_query=language,
+            results=results,
+            filters=filters,
         )
 
 
 class AllAppsView(LoggedView):
     def get(self, request):
-        apps = get_apps().order_by(F("published_at").desc(nulls_last=True))
-        app_types = get_app_types().values_list("name", flat=True)
+        results = get_apps().sort_by_recent()
+        filters = _get_random_filters(get_app_types())
 
-        return render(
+        return _render_results(
             request,
             "pages/search/apps.html",
-            {
-                "filters": app_types,
-                "feed": apps,
-            },
+            search_query="",
+            results=results,
+            filters=filters,
         )
 
 
 class FilteredAppsView(LoggedView):
     def get(self, request, app_type: str):
-        apps = get_apps().filter(app_type__name__iexact=app_type)
-        app_types = get_app_types().values_list("name", flat=True)
+        results = get_apps().filter(app_type__name__iexact=app_type).sort_by_recent()
+        filters = _get_random_filters(get_app_types())
 
-        return render(
+        return _render_results(
             request,
             "pages/search/apps.html",
-            {
-                "filters": app_types,
-                "filter": app_type,
-                "feed": apps,
-            },
+            search_query=app_type,
+            results=results,
+            filters=filters,
         )
+
+
+def _render_results(
+    request,
+    template_name: str,
+    search_query: str,
+    results: Iterable[SearchMixin],
+    filters: Optional[List[Union[str, SearchResult]]] = None,
+):
+    paginated_context = paginate(request, results).as_context()
+
+    return render(
+        request,
+        template_name,
+        context={
+            "filter": search_query,
+            "filters": filters or [],
+            **paginated_context,
+        },
+    )
+
+
+def _get_random_filters(qs: QuerySet, field_name: str = "name"):
+    result = list(qs.values_list(field_name, flat=True))
+    random.shuffle(result)
+    return result

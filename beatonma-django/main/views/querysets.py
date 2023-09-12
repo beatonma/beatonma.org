@@ -4,43 +4,53 @@ from itertools import chain
 from typing import Callable, List, Optional, Type
 
 from common.models import PublishedMixin
+from common.models.published import PublishedQuerySet
 from common.models.search import SearchResult
 from common.models.util import implementations_of
+from django.conf import settings
 from django.db.models import QuerySet
 from github.models import GithubLanguage, GithubRepository
 from main.models import App, AppType, Article, Blog, Changelog, Note
 from main.views import reverse
+from main.views.util import pluralize
 from taggit.models import Tag
 
-MAX_SUGGESTIONS = 10
+Feed = List[PublishedMixin]
+
+_searchable_models: List[PublishedMixin] = list(
+    filter(lambda Model: Model.search_enabled, implementations_of(PublishedMixin))
+)
 
 
-def _sorted_feed(items: List[PublishedMixin]) -> List[PublishedMixin]:
-    return sorted(items, key=lambda x: x.get_sorting_datetime(), reverse=True)
+def get_main_feed() -> Feed:
+    return _build_feed()
 
 
-def get_main_feed() -> List[PublishedMixin]:
-    feed = _build_feed(lambda m: m.objects.published())
+def get_for_tag(tag: str) -> Feed:
+    query = {"tags__name__iexact": tag}
+    return _build_feed(**query) + _get_private_repos_result(**query)
 
-    return _sorted_feed(feed)
+
+def get_for_language(language: str) -> Feed:
+    resolved_language = (
+        GithubLanguage.objects.filter(name__iexact=language).first()
+        or GithubLanguage.objects.filter(name__icontains=language).first()
+    )
+    if not resolved_language:
+        return []
+
+    apps = get_apps(primary_language=resolved_language)
+    repos = get_repositories(primary_language=resolved_language)
+    private_repos = _get_private_repos_result(primary_language=resolved_language)
+
+    return _sorted_feed(_flatten(apps, repos)) + private_repos
 
 
-def get_search_results(query: str, to_json: bool = False) -> dict:
+def get_search_results(query: str) -> Feed:
     if not query:
-        return {
-            "query": query,
-            "feed": [],
-        }
+        return []
 
-    feed = _build_feed(lambda m: m.objects.search(query))
-
-    if to_json:
-        feed = list(map(lambda x: x.to_search_result().to_json(), feed))
-
-    return {
-        "query": query,
-        "feed": feed,
-    }
+    return _build_feed(lambda qs: qs.search(query))
 
 
 def get_suggestions(
@@ -85,26 +95,26 @@ def get_suggestions(
     results = _tags + _app_types + _languages
     random.shuffle(results)
 
-    return results
+    return results[: settings.SEARCH_MAX_SUGGESTIONS]
 
 
-def get_apps(**filter_kwargs) -> QuerySet[App]:
+def get_apps(**filter_kwargs) -> PublishedQuerySet[App]:
     return App.objects.published().filter(**filter_kwargs)
 
 
-def get_articles(**filter_kwargs) -> QuerySet[Article]:
+def get_articles(**filter_kwargs) -> PublishedQuerySet[Article]:
     return Article.objects.published().filter(**filter_kwargs)
 
 
-def get_blogs(**filter_kwargs) -> QuerySet[Blog]:
+def get_blogs(**filter_kwargs) -> PublishedQuerySet[Blog]:
     return Blog.objects.published().filter(**filter_kwargs)
 
 
-def get_changelogs(**filter_kwargs) -> QuerySet[Changelog]:
+def get_changelogs(**filter_kwargs) -> PublishedQuerySet[Changelog]:
     return Changelog.objects.published().filter(**filter_kwargs)
 
 
-def get_notes(**filter_kwargs) -> QuerySet[Note]:
+def get_notes(**filter_kwargs) -> PublishedQuerySet[Note]:
     return Note.objects.published().filter(**filter_kwargs)
 
 
@@ -116,12 +126,37 @@ def get_tags(**filter_kwargs) -> QuerySet[Tag]:
     return Tag.objects.filter(**filter_kwargs)
 
 
-def get_repositories(**filter_kwargs) -> QuerySet[GithubRepository]:
+def get_repositories(**filter_kwargs) -> PublishedQuerySet[GithubRepository]:
     return GithubRepository.objects.published().filter(**filter_kwargs)
 
 
 def get_languages(**filter_kwargs) -> QuerySet[GithubLanguage]:
     return GithubLanguage.objects.filter(**filter_kwargs)
+
+
+def _build_feed(
+    queryset_method: Callable[[Type[PublishedQuerySet]], QuerySet] = None,
+    **kwargs,
+) -> Feed:
+    if queryset_method:
+        results = [queryset_method(M.objects.published()) for M in _searchable_models]
+
+    else:
+        results = [M.objects.published().filter(**kwargs) for M in _searchable_models]
+
+    return _sorted_feed(_flatten(*results))
+
+
+def _sorted_feed(items: Feed) -> Feed:
+    def sort_key(item: PublishedMixin):
+        return item.get_sorting_datetime()
+
+    return sorted(items, key=sort_key, reverse=True)
+
+
+def _flatten(*querysets) -> Feed:
+    """Unpack querysets into flat list of the items from those querysets."""
+    return list(chain(*querysets))
 
 
 @dataclass
@@ -132,10 +167,15 @@ class FeedMessage:
     url: Optional[str] = None
 
 
-def _build_feed(
-    query: Callable[[Type], QuerySet],
-):
-    _models = filter(lambda x: x.search_enabled, implementations_of(PublishedMixin))
+def _get_private_repos_result(**query) -> List[FeedMessage]:
+    private_repos_count = GithubRepository.objects.get_private_count(**query)
 
-    results = list(chain(*[query(M) for M in _models]))
-    return _sorted_feed(results)
+    if private_repos_count == 0:
+        return []
+
+    return [
+        FeedMessage(
+            message=f"{private_repos_count} private "
+            f"{pluralize(private_repos_count, 'repository', 'repositories')}",
+        )
+    ]

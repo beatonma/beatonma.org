@@ -1,8 +1,9 @@
 import logging
+from typing import cast
 
 from common.models.search import SearchMixin, SearchQuerySet
 from django.db import models
-from django.db.models import QuerySet
+from django.db.models import F, QuerySet
 from django.utils import timezone
 
 log = logging.getLogger(__name__)
@@ -13,6 +14,9 @@ _null_datetime = timezone.make_aware(timezone.datetime.min)
 class PublishedQuerySet(SearchQuerySet):
     """Overrides default methods to keep unpublished objects hidden."""
 
+    def filter(self, *args, **kwargs):
+        return cast(PublishedQuerySet, super().filter(*args, **kwargs))
+
     def build_search_filter(self, *args, **kwargs) -> QuerySet:
         return super().build_search_filter(*args, **kwargs).filter(is_published=True)
 
@@ -21,6 +25,9 @@ class PublishedQuerySet(SearchQuerySet):
 
     def get_private__dangerous__(self):
         return self.filter(is_published=False)
+
+    def sort_by_recent(self):
+        return self.order_by(F("published_at").desc(nulls_last=True))
 
 
 class PublishedMixin(SearchMixin, models.Model):
