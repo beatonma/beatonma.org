@@ -17,6 +17,28 @@ import { loadJson } from "../../main/js/util/requests";
 const CONTAINER = "#webmentions_testing_tool";
 const ENDPOINT = "active/";
 
+interface TemporaryMentionsResponse {
+    ttl: number;
+    mentions: ActiveMention[];
+}
+
+interface MentionStatus {
+    successful: boolean;
+    status_code: number;
+    message: string;
+    source_url: string;
+    target_url: string;
+    endpoint: string;
+}
+
+interface ActiveMention {
+    url: string;
+    submitted_at: string | Date;
+    expires_at: string | Date;
+    expires_in: number;
+    status: MentionStatus;
+}
+
 export const WebmentionTesterApp = async (dom: Document | Element) => {
     const container = dom.querySelector(CONTAINER);
 
@@ -43,23 +65,6 @@ const WebmentionsTester = () => {
     );
 };
 
-interface MentionStatus {
-    successful: boolean;
-    status_code: number;
-    message: string;
-    source_url: string;
-    target_url: string;
-    endpoint: string;
-}
-
-interface ActiveMention {
-    url: string;
-    submitted_at: string | Date;
-    expires_at: string | Date;
-    expires_in: number;
-    status: MentionStatus;
-}
-
 interface ActiveMentionsProps {
     onChange: boolean;
     refresh: () => void;
@@ -72,7 +77,7 @@ const ActiveMentions = (props: ActiveMentionsProps) => {
     const { refresh, onChange } = props;
 
     useEffect(() => {
-        loadJson(ENDPOINT).then(data => {
+        loadJson<TemporaryMentionsResponse>(ENDPOINT).then(data => {
             setTtl(data.ttl);
 
             const mentions: ActiveMention[] = data.mentions;

@@ -75,8 +75,8 @@ const Search = () => {
     useTextEventListener(inputID, setQuery, "keyup");
 
     useEffect(() => {
-        if (query === undefined) {
-            setQuery(inputElement().value);
+        if (!query) {
+            setResults([]);
             return;
         }
 

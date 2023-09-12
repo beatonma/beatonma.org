@@ -9,6 +9,10 @@ const getContainerElement = () => document.getElementById("webmentions");
 
 const DefaultEmptyMessage = "Nobody has mentioned this page yet :(";
 
+interface MentionsResponse {
+    target_url: string;
+    mentions: Mention[];
+}
 interface HCard {
     name: string;
     avatar?: string;
@@ -54,7 +58,7 @@ export const Webmentions = () => {
         );
         url.searchParams.append("url", window.location.pathname);
 
-        loadJson(url.href)
+        loadJson<MentionsResponse>(url.href)
             .then(data => data.mentions)
             .then((mentions: Mention[]) => {
                 const keys: string[] = [];
