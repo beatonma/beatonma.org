@@ -1,6 +1,7 @@
 from pathlib import Path
 
-from . import BASE_DIR, environment
+from . import environment
+from .defaults import BASE_DIR
 
 STATIC_URL = "/static/"
 STATIC_ROOT = environment.STATIC_ROOT

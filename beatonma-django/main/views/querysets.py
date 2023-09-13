@@ -95,7 +95,7 @@ def get_suggestions(
     results = _tags + _app_types + _languages
     random.shuffle(results)
 
-    return results[: settings.SEARCH_MAX_SUGGESTIONS]
+    return results[: settings.BMA_SEARCH_MAX_SUGGESTIONS]
 
 
 def get_apps(**filter_kwargs) -> PublishedQuerySet[App]:

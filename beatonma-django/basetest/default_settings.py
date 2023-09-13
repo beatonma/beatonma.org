@@ -1,30 +1,26 @@
 import logging
-import uuid
-from pathlib import Path
 
+from beatonma.settings.defaults import *  # noqa
 from beatonma.settings.installed_apps import INSTALLED_APPS  # noqa
+from beatonma.settings.internationalization import LANGUAGE_CODE  # noqa
+from beatonma.settings.internationalization import TIME_ZONE  # noqa
+from beatonma.settings.internationalization import USE_I18N  # noqa
+from beatonma.settings.internationalization import USE_TZ  # noqa
 from beatonma.settings.middleware import MIDDLEWARE  # noqa
 from beatonma.settings.templates import TEMPLATES  # noqa
 
-BASE_DIR = Path(__file__).parent.parent
-
 ALLOWED_HOSTS = ["localhost"]
 SITE_ID = 1
-ROOT_URLCONF = "beatonma.urls"
 
 SECRET_KEY = "some-test-key"
 
-DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": "test.sqlite3"}}
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": "test.sqlite3",
+    }
+}
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-STATIC_URL = "/static/"
-
-LANGUAGE_CODE = "en-gb"
-TIME_ZONE = "UTC"
-USE_I18N = True
-USE_TZ = True
-
-TEST_API_KEY = uuid.uuid4().hex
 HTTP_REQUEST_HEADERS = {}
 
 ADMINS = []

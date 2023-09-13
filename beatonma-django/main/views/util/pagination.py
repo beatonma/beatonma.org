@@ -34,8 +34,7 @@ def paginate(request: HttpRequest, items: Iterable) -> Paginated:
     except ValueError:
         page = 1
 
-    print(items)
-    paginator = Paginator(items, settings.FEED_ITEMS_PER_PAGE)
+    paginator = Paginator(items, settings.BMA_FEED_ITEMS_PER_PAGE)
     page = paginator.get_page(page)
 
     return Paginated(page_obj=page)

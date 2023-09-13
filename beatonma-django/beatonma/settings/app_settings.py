@@ -2,10 +2,6 @@ from github import events as github_events
 
 from . import environment
 
-# Main
-FEED_ITEMS_PER_PAGE = 8
-SEARCH_MAX_SUGGESTIONS = 10
-
 # celery
 CELERY_BROKER_URL = environment.CELERY_BROKER_URL
 
