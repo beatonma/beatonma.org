@@ -19,7 +19,7 @@ class AppView(MentionableView, LoggedView):
             "pages/posts/app/app.html",
             {
                 "post": app,
-                "changelogs": app.changelogs.all(),
+                "changelogs": app.changelogs.published(),
                 **get_theme_context(app),
             },
         )
