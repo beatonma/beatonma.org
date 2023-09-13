@@ -103,6 +103,13 @@ class LocalTestCase(BaseTestCase):
     pass
 
 
+@pytest.mark.skipif("config.getoption('notemplate')")
+class TemplateTestCase(LocalTestCase):
+    """Tests that require templates to be available."""
+
+    pass
+
+
 @pytest.mark.skipif("not config.getoption('network')")
 @skipIf(
     "manage.py" in sys.argv,

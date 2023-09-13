@@ -1,9 +1,9 @@
-from basetest.testcase import LocalTestCase
+from basetest.testcase import TemplateTestCase
 from common.models import PageView
 from main.tasks import sample_data
 
 
-class WebpostViewTests(LocalTestCase):
+class WebpostViewTests(TemplateTestCase):
     """Ensure each webpost type:
     - is accessible
     - renders necessary content

@@ -1,8 +1,8 @@
 """Ensure that main site pages are accessible by anonymous users."""
-from basetest.testcase import LocalTestCase
+from basetest.testcase import TemplateTestCase
 
 
-class IndexTest(LocalTestCase):
+class IndexTest(TemplateTestCase):
     """Ensure main index pages are accessible."""
 
     def test_main_index(self):
@@ -12,7 +12,7 @@ class IndexTest(LocalTestCase):
         self.assert_status_ok("/apps/")
 
 
-class SearchTest(LocalTestCase):
+class SearchTest(TemplateTestCase):
     """Ensure search/filter results are accessible."""
 
     def test_search(self):

@@ -1,4 +1,4 @@
-from basetest.testcase import LocalTestCase
+from basetest.testcase import LocalTestCase, TemplateTestCase
 from main.models import Blog, Note
 from main.models.posts.formats import Formats
 from main.views import reverse
@@ -33,6 +33,8 @@ class WebpostHashtagTests(LocalTestCase):
             ["middle", "start"],
         )
 
+
+class WebpostHashtagViewTests(TemplateTestCase, WebpostHashtagTests):
     def test_tags_are_linked_in_content_html(self):
         note = Note.objects.first()
         self.assert_html_links_to(
@@ -67,7 +69,7 @@ class WebpostHashtagTests(LocalTestCase):
             )
 
 
-class WebpostTests(LocalTestCase):
+class WebpostViewTests(TemplateTestCase):
     def test_raw_urls_are_linkified(self):
         note = Note.objects.create(
             content="Links to "
