@@ -1,5 +1,7 @@
+{% load boolean %}
 <article id="changelog_{{ changelog.version_name }}" class="webpost changelog h-entry">
   {% include "./_changelog-title-bar.html" %}
+  {% include "components/canary.html" with condition=changelog.is_published|negate %}
 
   <div class="e-content">
     {{ changelog.content_html|safe }}

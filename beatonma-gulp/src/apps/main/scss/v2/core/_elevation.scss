@@ -1,14 +1,13 @@
 @use "./animation";
 
-
 :root {
   --elevation-zero: 0;
   --elevation-tooltip: 1000;
   --elevation-search-results: 6000;
   --elevation-dialog-scrim: 5000;
   --elevation-dialog: 10000;
+  --elevation-maxvalue: 2147483647;
 }
-
 
 %elevated {
   @include animation.transition((box-shadow));

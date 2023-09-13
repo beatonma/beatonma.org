@@ -1,10 +1,11 @@
 import { RepresentativeUrls, toFilename } from "./config";
 
 describe("Visit a sample page for each type of content", () => {
-  it("Check no TODO markers left on any templates", () => {
+  it("No .canary or TODO  markers found on any pages", () => {
     RepresentativeUrls.forEach((url) => {
       cy.visit(url);
       cy.contains("todo", { matchCase: false }).should("not.exist");
+      cy.get(".canary").should("not.exist");
     });
   });
 

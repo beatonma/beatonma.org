@@ -1,3 +1,4 @@
+import re
 from random import choice, random
 
 from django import template
@@ -8,7 +9,7 @@ register = template.Library()
 
 @register.filter(name="startswith")
 @stringfilter
-def startswith(self, query: str) -> bool:
+def startswith(self: str, query: str) -> bool:
     if self is None:
         return False
 
@@ -20,7 +21,7 @@ def startswith(self, query: str) -> bool:
 
 @register.filter(name="remove")
 @stringfilter
-def remove(self, substring: str) -> str:
+def remove(self: str, substring: str) -> str:
     if self is None:
         return ""
 
@@ -29,7 +30,7 @@ def remove(self, substring: str) -> str:
 
 @register.filter(name="in_rainbows")
 @stringfilter
-def in_rainbows(self):
+def in_rainbows(self: str):
     def _maybe(options: str) -> str:
         if random() > 0.9:
             return choice(options)
@@ -48,5 +49,12 @@ def in_rainbows(self):
 
 @register.filter("nbsp")
 @stringfilter
-def nbsp(self):
+def nbsp(self: str):
     return self.replace(" ", "&nbsp;")
+
+
+@register.filter("format")
+@stringfilter
+def stringformat(self: str, arg) -> str:
+    """Replaces the first instance of {} with arg. Can be chained to replace multiple values."""
+    return re.sub(r"{}", arg, self, count=1)

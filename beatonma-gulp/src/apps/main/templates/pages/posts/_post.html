@@ -1,4 +1,5 @@
 {% extends 'pages/base/scaffold.html' %}
+{% load boolean %}
 {% load classes %}
 
 {% block title %}{{ post.title }}{% endblock %}
@@ -7,6 +8,8 @@
 {% block content_class %}webpost{% endblock %}
 
 {% block main %}
+  {% include "components/canary.html" with condition=post.is_published|negate message="This post is not published." %}
+
   <section>
     {% include 'staff/edit-links.html' with target=post %}
     <article class="h-entry webpost" data-type="{{ post|get_class|lower }}">

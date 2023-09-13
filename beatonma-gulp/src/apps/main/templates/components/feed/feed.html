@@ -1,39 +1,44 @@
 {% load classes %}
 {% load repetition %}
+{% load attributes %}
+{% load boolean %}
+{% load strings %}
 <section id="feed" data-cy="feed">
     {% block first_feed_items %}{% endblock %}
 
     <div class="feed h-feed">
-
         {% for item in feed %}
-        {% with cls=item|get_class %}
+          {% with cls=item|get_class %}
+            {% if item|hasattr:"is_published" %}
+              {% comment %}Show a canary warning if any item(s) in the feed are supposed to be private.{% endcomment %}
+              {% include "components/canary.html" with condition=item.is_published|negate %}
+            {% endif %}
 
-        {% if cls == "Article" %}
-        {% include "./item/article-item.html" with article=item type=cls %}
+            {% if cls == "Article" %}
+              {% include "./item/article-item.html" with article=item type=cls %}
 
-        {% elif cls == "Blog" %}
-        {% include "./item/blog-item.html" with blog=item type=cls %}
+            {% elif cls == "Blog" %}
+              {% include "./item/blog-item.html" with blog=item type=cls %}
 
-        {% elif cls == "Changelog" %}
-        {% include "./item/changelog-item.html" with changelog=item type=cls %}
+            {% elif cls == "Changelog" %}
+              {% include "./item/changelog-item.html" with changelog=item type=cls %}
 
-        {% elif cls == "App" %}
-        {% include "./item/app-item.html" with app=item type=cls %}
+            {% elif cls == "App" %}
+              {% include "./item/app-item.html" with app=item type=cls %}
 
-        {% elif cls == "Note" %}
-        {% include "./item/note-item.html" with note=item type=cls %}
+            {% elif cls == "Note" %}
+              {% include "./item/note-item.html" with note=item type=cls %}
 
-        {% elif cls == "GithubRepository" %}
-        {% include "./item/repository-item.html" with repo=item type=cls %}
+            {% elif cls == "GithubRepository" %}
+              {% include "./item/repository-item.html" with repo=item type=cls %}
 
-        {% elif cls == "FeedMessage" %}
-        {% include "./item/message-item.html" with message=item type=cls %}
+            {% elif cls == "FeedMessage" %}
+              {% include "./item/message-item.html" with message=item type=cls %}
 
-        {% else %}
-        <div>TODO {{ cls }} {{ item.title }}</div>
-
-        {% endif %}
-        {% endwith %}
+            {% else %}
+              {% include "components/canary.html" with condition=True message="TODO {} {}"|format:cls|format:item.title %}
+            {% endif %}
+          {% endwith %}
         {% empty %}
         <div class="feed-empty">
             <div class="feed-empty-title">no results</div>

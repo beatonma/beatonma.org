@@ -54,6 +54,10 @@ $-contrast-levels: [ "light", "dark", "low-contrast", "high-contrast", ];
       }
     }
   }
+
+  &-warn {
+    @include -surface("warn");
+  }
 }
 
 %foreground {

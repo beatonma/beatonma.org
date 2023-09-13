@@ -26,7 +26,7 @@
 
 %-material-icon {
   // As defined in material-symbols-outlined stylesheet.
-  font-family: 'Material Symbols Outlined';
+  font-family: "Material Symbols Outlined";
   font-style: normal;
   font-size: 24px;
   line-height: 1;
@@ -36,11 +36,11 @@
   white-space: nowrap;
   word-wrap: normal;
   direction: ltr;
-  font-feature-settings: 'liga';
+  font-feature-settings: "liga";
   -webkit-font-smoothing: antialiased;
 }
 
-%-icon {
+%icon {
   // Additional tweaks
   @extend %-material-icon;
 
@@ -53,9 +53,9 @@
 }
 
 .material-symbols-outlined {
-  @extend %-icon;
+  @extend %icon;
 }
 
 .icon {
-  @extend %-icon;
+  @extend %icon;
 }
