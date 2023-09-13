@@ -1,7 +1,7 @@
-from django.contrib import admin
-
 from common.admin import BaseAdmin
+from django.contrib import admin
 from main.admin.models.links import LinkInline
+from main.admin.models.posts.actions import PUBLISH_ACTIONS
 from main.admin.models.relatedfile import RelatedFileInline
 from main.models import App, AppType, Host, Link
 
@@ -16,6 +16,7 @@ class AppAdmin(BaseAdmin):
         RelatedFileInline,
         LinkInline,
     ]
+    actions = PUBLISH_ACTIONS
 
     def save_related(self, request, form, formsets, change):
         super().save_related(request, form, formsets, change)
