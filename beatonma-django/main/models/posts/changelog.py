@@ -8,6 +8,8 @@ from main.models.posts.webpost import RichWebPost
 class Changelog(RichWebPost):
     """A list of changes included in an app update."""
 
+    is_publishable_dependencies = ("app",)
+
     title = models.CharField(max_length=255, blank=True)
     app = models.ForeignKey(
         App,

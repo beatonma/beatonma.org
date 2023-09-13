@@ -43,7 +43,7 @@ def get_for_language(language: str) -> Feed:
     repos = get_repositories(primary_language=resolved_language)
     private_repos = _get_private_repos_result(primary_language=resolved_language)
 
-    return _sorted_feed(_flatten(apps, repos)) + private_repos
+    return _build_feed_from(apps, repos) + private_repos
 
 
 def get_search_results(query: str) -> Feed:
@@ -144,19 +144,16 @@ def _build_feed(
     else:
         results = [M.objects.published().filter(**kwargs) for M in _searchable_models]
 
-    return _sorted_feed(_flatten(*results))
+    return _build_feed_from(*results)
 
 
-def _sorted_feed(items: Feed) -> Feed:
+def _build_feed_from(*querysets: PublishedQuerySet) -> Feed:
+    flat_feed = [x for x in chain(*querysets) if x.is_publishable()]
+
     def sort_key(item: PublishedMixin):
         return item.get_sorting_datetime()
 
-    return sorted(items, key=sort_key, reverse=True)
-
-
-def _flatten(*querysets) -> Feed:
-    """Unpack querysets into flat list of the items from those querysets."""
-    return list(chain(*querysets))
+    return sorted(flat_feed, key=sort_key, reverse=True)
 
 
 @dataclass

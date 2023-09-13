@@ -1,5 +1,5 @@
 import logging
-from typing import cast
+from typing import Iterable, Optional, cast
 
 from common.models.search import SearchMixin, SearchQuerySet
 from django.db import models
@@ -37,6 +37,9 @@ class PublishedMixin(SearchMixin, models.Model):
 
     objects = PublishedQuerySet.as_manager()
 
+    """A list of fields which resolve to other PublishedMixin instances."""
+    is_publishable_dependencies: Optional[Iterable[str]] = None
+
     is_published = models.BooleanField(default=True, help_text="Publicly visible")
     published_at = models.DateTimeField(default=timezone.now)
 
@@ -51,9 +54,26 @@ class PublishedMixin(SearchMixin, models.Model):
         Neglecting to do so could allow non-published content to be accessible."""
 
         objects_class = self.__class__.objects._queryset_class
-        assert issubclass(
-            objects_class, PublishedQuerySet
-        ), f"Model `{self.__class__.__name__}` inherits `PublishedMixin` but manager does not inherit `PublishedQuerySet`! (Found {objects_class.__name__})"
+        assert issubclass(objects_class, PublishedQuerySet), (
+            f"Model `{self.__class__.__name__}` inherits `PublishedMixin` "
+            f"but manager does not inherit `PublishedQuerySet`! "
+            f"(Found {objects_class.__name__})"
+        )
+
+    def is_publishable(self) -> bool:
+        """Return False if this or any dependency has is_published=False."""
+        if not self.is_published:
+            return False
+
+        if self.is_publishable_dependencies is None:
+            return True
+
+        for dependency_field in self.is_publishable_dependencies:
+            dependency = getattr(self, dependency_field)
+            if dependency is not None and not dependency.is_publishable():
+                return False
+
+        return True
 
     def get_sorting_datetime(self) -> timezone.datetime:
         """Return a datetime to be used for sorting."""
