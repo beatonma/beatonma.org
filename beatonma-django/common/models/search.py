@@ -1,4 +1,3 @@
-import dataclasses
 import operator
 from dataclasses import dataclass
 from datetime import datetime
@@ -102,9 +101,16 @@ class SearchResult:
     url: str
     timestamp: Optional[datetime] = None
     description: Optional[str] = None
+    className: Optional[str] = None
 
     def to_json(self):
-        return dataclasses.asdict(self)
+        return {
+            "name": self.name,
+            "url": self.url,
+            "timestamp": self.timestamp,
+            "description": self.description,
+            "className": self.className,
+        }
 
 
 class SearchMixin(models.Model):

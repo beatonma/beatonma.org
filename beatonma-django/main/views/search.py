@@ -1,24 +1,19 @@
 import logging
-import random
 from typing import Iterable, List, Optional, Union
 
 from common.models import SearchMixin
 from common.models.search import SearchResult
 from common.views.logged import LoggedView
-from django.db.models import QuerySet
 from django.shortcuts import redirect, render
 from main.views import view_names
 from main.views.querysets import (
-    get_app_types,
-    get_apps,
+    get_apps_feed,
     get_for_language,
     get_for_tag,
-    get_languages,
     get_search_results,
     get_suggestions,
 )
 from main.views.util.pagination import paginate
-from taggit.models import Tag
 
 log = logging.getLogger(__name__)
 
@@ -44,7 +39,7 @@ class SearchView(LoggedView):
 class TagView(LoggedView):
     def get(self, request, tag: str):
         results = get_for_tag(tag)
-        filters = _get_random_filters(Tag.objects.all())
+        filters = get_suggestions(tags=True)
 
         return _render_results(
             request,
@@ -58,7 +53,7 @@ class TagView(LoggedView):
 class LanguageView(LoggedView):
     def get(self, request, language: str):
         results = get_for_language(language)
-        filters = _get_random_filters(get_languages())
+        filters = get_suggestions(languages=True)
 
         return _render_results(
             request,
@@ -71,8 +66,8 @@ class LanguageView(LoggedView):
 
 class AllAppsView(LoggedView):
     def get(self, request):
-        results = get_apps().sort_by_recent()
-        filters = _get_random_filters(get_app_types())
+        results = get_apps_feed()
+        filters = get_suggestions(app_types=True)
 
         return _render_results(
             request,
@@ -85,8 +80,8 @@ class AllAppsView(LoggedView):
 
 class FilteredAppsView(LoggedView):
     def get(self, request, app_type: str):
-        results = get_apps().filter(app_type__name__iexact=app_type).sort_by_recent()
-        filters = _get_random_filters(get_app_types())
+        results = get_apps_feed(app_type)
+        filters = get_suggestions(app_types=True)
 
         return _render_results(
             request,
@@ -115,9 +110,3 @@ def _render_results(
             **paginated_context,
         },
     )
-
-
-def _get_random_filters(qs: QuerySet, field_name: str = "name"):
-    result = list(qs.values_list(field_name, flat=True))
-    random.shuffle(result)
-    return result

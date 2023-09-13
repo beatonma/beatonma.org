@@ -2,11 +2,13 @@
 
 <div class="filters">
   <span class="links-title">{{ filters_title }}:</span>
+
+  {% comment %}`filters` is a list of `SearchResult` objects.{% endcomment %}
   {% for item in filters %}
     <a
-      href="{% if filters_viewname %}{% url filters_viewname item %}{% else %}{{ item.url }}{% endif %}"
-      data-selected={% equal item filter %}
-      {% if filters_item_class %} class="{{ filters_item_class }}"{% endif %}
-    >{{ item.name|default:item }}</a>
+      href="{{ item.url }}"
+      data-selected="{{ item.name|feedfilter_equals:filter }}"
+      class="{{ item.className }}"
+    >{{ item.name }}</a>
   {% endfor %}
 </div>

@@ -26,6 +26,15 @@ def get_main_feed() -> Feed:
     return _build_feed()
 
 
+def get_apps_feed(app_type: Optional[str] = None) -> Feed:
+    if app_type:
+        apps = get_apps(app_type__name__iexact=app_type)
+    else:
+        apps = get_apps()
+
+    return _build_feed_from(apps)
+
+
 def get_for_tag(tag: str) -> Feed:
     query = {"tags__name__iexact": tag}
     return _build_feed(**query) + _get_private_repos_result(**query)
@@ -54,15 +63,20 @@ def get_search_results(query: str) -> Feed:
 
 
 def get_suggestions(
-    tags: bool = True,
-    app_types: bool = True,
-    languages: bool = True,
+    tags: bool = False,
+    app_types: bool = False,
+    languages: bool = False,
 ) -> List[SearchResult]:
+    if tags is app_types is languages is False:
+        # If no types are specified, default to all.
+        tags = app_types = languages = True
+
     _tags = (
         [
             SearchResult(
-                name=f"#{tag.name}",
+                name=tag.name,
                 url=reverse.tag(tag),
+                className="tag",
             )
             for tag in get_tags()
         ]
@@ -85,6 +99,7 @@ def get_suggestions(
             SearchResult(
                 name=language.name,
                 url=reverse.language(language),
+                className="language",
             )
             for language in get_languages()
         ]

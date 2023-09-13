@@ -123,7 +123,7 @@ const SearchResults = (props: SearchQueryProps) => {
 };
 
 const SearchSuggestions = () => {
-    const [suggestions, setSuggestions] = useState<SuggestionProps[]>();
+    const [suggestions, setSuggestions] = useState<SearchSuggestion[]>();
 
     useEffect(() => {
         Api.searchSuggestions()
@@ -147,18 +147,9 @@ const SearchSuggestions = () => {
     );
 };
 
-interface SuggestionProps {
-    url: string;
-    name: string;
-}
-const Suggestion = (props: SuggestionProps) => {
-    let { url, name } = props;
-    const classNames = ["search-suggestion"];
-
-    if (name.startsWith("#")) {
-        name = name.slice(1);
-        classNames.push("tag");
-    }
+const Suggestion = (props: SearchSuggestion) => {
+    let { url, name, className } = props;
+    const classNames = ["search-suggestion", className].filter(Boolean);
 
     return (
         <a href={url} className={classNames.join(" ")}>

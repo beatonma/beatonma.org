@@ -21,6 +21,7 @@ export interface SearchSuggestion {
     url: string;
     timestamp: string | null;
     description: string | null;
+    className: string | null;
 }
 
 interface SearchResponse {
