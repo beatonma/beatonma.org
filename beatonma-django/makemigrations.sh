@@ -1,1 +1,1 @@
-env/bin/python manage.py makemigrations --settings basetest.default_settings
+env/bin/python manage.py makemigrations --settings basetest.default_settings "$@"
