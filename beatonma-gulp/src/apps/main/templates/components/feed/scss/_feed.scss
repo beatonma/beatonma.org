@@ -17,6 +17,12 @@
   }
 }
 
+section#feed {
+  @extend %center;
+
+  max-width: constants.$readable-text-width;
+}
+
 .feed {
   @extend %center;
 
