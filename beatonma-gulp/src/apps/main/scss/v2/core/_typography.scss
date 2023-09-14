@@ -29,6 +29,15 @@
   }
 }
 
+@font-face {
+  font-family: Roboto;
+  src: url("/static/fonts/Roboto-Regular.ttf");
+}
+@font-face {
+  font-family: Roboto-Mono;
+  src: url("/static/fonts/RobotoMono-Regular.ttf");
+}
+
 %textbox {
   overflow-x: hidden;
   overflow-y: visible;
@@ -38,10 +47,14 @@
 %text-default {
   color: var(--text-primary);
   font-size: var(--fs-default);
-  font-family: sans-serif;
+  font-family: Roboto, sans-serif;
   font-weight: normal;
   line-height: normal;
   letter-spacing: normal;
+}
+
+%text-monospace {
+  font-family: Roboto-Mono, monospace;
 }
 
 %readable-text {

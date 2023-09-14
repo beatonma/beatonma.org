@@ -3,7 +3,6 @@
 :root {
   --preview-image-size: 9rem;
 
-
   @include core.on-medium-width {
     --preview-image-size: 6rem;
   }
@@ -39,11 +38,11 @@
     > .preview-image__text {
       // No actual image available, use some artsy text.
       @include core.size(calc(var(--preview-image-size) * 1.414));
+      @extend %text-monospace;
 
       position: relative;
       top: -25%;
       left: -25%;
-      font-family: monospace;
       letter-spacing: 2px;
       font-size: calc(var(--preview-image-size) / 5);
       font-weight: bold;
