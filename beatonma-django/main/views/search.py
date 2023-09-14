@@ -72,7 +72,7 @@ class AllAppsView(LoggedView):
         return _render_results(
             request,
             "pages/search/apps.html",
-            search_query="",
+            search_query="Apps",
             results=results,
             filters=filters,
         )

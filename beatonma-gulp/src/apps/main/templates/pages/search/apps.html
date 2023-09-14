@@ -9,6 +9,8 @@
 {% endblock %}
 {% endif %}
 
+{% block search_header %}{{ filter }}{% endblock %}
+
 {% block filters %}
 {% include "./_filters.html"
   with
