@@ -33,27 +33,16 @@
   animation-duration: constants.$animation-duration;
   animation-fill-mode: both;
   animation-iteration-count: 1;
+
+  @include accessibility.reduced-motion {
+    animation-delay: 0ms !important;
+  }
 }
 
 %fade-in {
   @extend %-enter-animation;
 
   animation-name: fade-in;
-
-  @keyframes fade-in {
-    0% {
-      opacity: 0;
-      max-height: 0;
-    }
-
-    1% {
-      max-height: inherit;
-    }
-
-    100% {
-      opacity: 1;
-    }
-  }
 }
 
 %fade-and-slide-in {
@@ -61,20 +50,39 @@
 
   animation-name: fade-and-slide-in;
 
-  @keyframes fade-and-slide-in {
-    0% {
-      opacity: 0;
-      transform: translateY(50px);
-      max-height: 0;
-    }
+  @include accessibility.reduced-motion {
+    animation-name: fade-in;
+  }
+}
 
-    1% {
-      max-height: inherit;
-    }
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    max-height: 0;
+  }
 
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  1% {
+    max-height: inherit;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-and-slide-in {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+    max-height: 0;
+  }
+
+  1% {
+    max-height: inherit;
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
