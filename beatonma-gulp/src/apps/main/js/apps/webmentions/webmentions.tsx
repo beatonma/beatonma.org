@@ -193,13 +193,12 @@ const HCardInfo = (props: HCardProps) => {
     const { hcard, sourceUrl } = props;
 
     const { name, avatar, homepage = sourceUrl } = hcard ?? {};
+    const displayText = name ?? homepage.replace(/(https?:\/\/)?(www.)?/, "");
 
     return (
         <div className="mention-hcard">
             <Avatar name={name} avatar={avatar} homepage={homepage} />
-            <div className="hcard-name">
-                {name ?? homepage.replace(/(https?:\/\/)?(www.)?/, "")}
-            </div>
+            <div className="hcard-name">{displayText}</div>
         </div>
     );
 };
