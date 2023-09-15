@@ -10,6 +10,8 @@ DESCRIPTION_CHOICES = (
     ("source", "Source"),
     ("install", "Install"),
     ("download", "Download"),
+    ("webapp", "Webapp"),
+    ("link", "Link"),
 )
 
 
