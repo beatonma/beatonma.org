@@ -3,7 +3,9 @@
     <noscript>
         <div class="media-group-preview" data-item-count="{{ target.file_url_list|length }}">
             {% for url in target.file_url_list %}
-            <img class="media" src="{{ url }}" alt="" />
+              <div class="media-griditem">
+                <img class="media" src="{{ url }}" alt="" />
+              </div>
             {% endfor %}
         </div>
     </noscript>
