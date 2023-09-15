@@ -25,8 +25,8 @@ $-preferred-ui-width: 320px;
 
     display: inline-block;
   }
-  #search_wrapper {
-    @include core.transition((max-width, opacity));
+  .search_wrapper {
+    @include core.transition((opacity));
 
     max-width: 0;
     overflow-x: hidden;
@@ -39,12 +39,12 @@ $-preferred-ui-width: 320px;
     @extend %padding-small;
     @include core.transition((opacity));
 
+    display: none;
     position: absolute;
     right: 0;
-    max-height: 0;
     overflow: hidden;
     opacity: 0;
-    max-width: var(--search-ui-width);
+    width: var(--search-ui-width);
     box-sizing: border-box;
   }
 
@@ -63,12 +63,13 @@ $-preferred-ui-width: 320px;
       color: var(--text-light-primary);
     }
 
-    #search_wrapper {
+    .search_wrapper {
       max-width: var(--search-ui-width);
       opacity: 1;
     }
 
     #search_results {
+      display: block;
       opacity: 1;
       max-height: unset;
     }
@@ -78,7 +79,7 @@ $-preferred-ui-width: 320px;
   @media (width < $show-search-max-width) {
     --search-ui-width: #{$-preferred-ui-width};
 
-    #search_wrapper {
+    .search_wrapper {
       max-width: var(--search-ui-width);
       opacity: 1;
     }
