@@ -9,8 +9,8 @@
     {{ post.description|default:"" }}
   {% endblock %}
 
-  {% if changelogs %}
-    {% block additional_content %}
+  {% block additional_content %}
+    {% if changelogs %}
       <section>
         <h3>Changelogs</h3>
 
@@ -31,6 +31,7 @@
           {% include "./_changelog.html" %}
         {% endfor %}
       </section>
-    {% endblock %}
-  {% endif %}
+    {% endif %}
+  {% endblock %}
 {% endwith %}
+`

@@ -13,13 +13,14 @@ log = logging.getLogger(__name__)
 class AppView(MentionableView, LoggedView):
     def get(self, request, app_id: str):
         app = get_object_or_404(App, app_id=app_id)
+        changelogs = app.changelogs.published()
 
         return render(
             request,
             "pages/posts/app/app.html",
             {
                 "post": app,
-                "changelogs": app.changelogs.published(),
+                "changelogs": changelogs,
                 **get_theme_context(app),
             },
         )
