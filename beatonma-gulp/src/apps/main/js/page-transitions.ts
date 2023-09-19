@@ -162,8 +162,11 @@ const animateContentEnter = (parent: HTMLElement) => {
     }
 };
 
-const scrollToId = (id: string) =>
-    document.getElementById(id.replace("#", "")).scrollIntoView();
+const scrollToId = (id: string) => {
+    const target = document.getElementById(id.replace("#", ""));
+    target.scrollIntoView();
+    target.dataset.highlighted = "true";
+};
 
 namespace PageTransitionEvents {
     const onClick = (e: MouseEvent) => {
