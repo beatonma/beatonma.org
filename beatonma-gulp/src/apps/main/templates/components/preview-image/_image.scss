@@ -16,6 +16,16 @@
   background-position: center;
   background-repeat: no-repeat;
 
+  div.svg {
+    @extend %stretch;
+    @extend %margin-small;
+
+    background-color: var(--vibrant);
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+  }
+
   > svg {
     @extend %stretch;
     @extend %padding-small;

@@ -6,7 +6,11 @@
         class="preview-image {{ imageclass|default:'cover' }}"
         style="{% include 'components/feed/item/_themeable-style.html' %}"
     >
+      {% if image_url|endswith:".svg" %}
+        <div class="svg" style="-webkit-mask-image: url('{{ image_url }}')"></div>
+      {% else %}
         <img src="{{ image_url }}" alt="" />
+      {% endif %}
     </div>
 {% elif image_svg %}
     <div
