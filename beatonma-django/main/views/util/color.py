@@ -10,6 +10,11 @@ __all__ = [
 CSS_TEMPLATE = """:root {{
 {content}
 }}"""
+CSS_ATTR_SEPARATOR = ""
+
+
+RGB = NamedTuple("RGB", [("red", float), ("green", float), ("blue", float)])
+HLS = NamedTuple("HLS", [("hue", float), ("luminance", float), ("saturation", float)])
 
 
 def get_theme_context(*themeable: ThemeableMixin) -> dict:
@@ -37,12 +42,12 @@ def get_themeable_css(*themeable: ThemeableMixin) -> str:
     colors = []
 
     if muted:
-        colors += generate_color_variants(str(muted)).to_css("muted")
+        colors.append(generate_color_variants(str(muted)).to_css("muted"))
 
     if vibrant:
-        colors += generate_color_variants(str(vibrant)).to_css("vibrant")
+        colors.append(generate_color_variants(str(vibrant)).to_css("vibrant"))
 
-    return "".join(colors)
+    return CSS_ATTR_SEPARATOR.join(colors)
 
 
 class ColorVariants:
@@ -75,8 +80,8 @@ class ColorVariants:
         self.light = light
         self.light_hover = light_hover
 
-    def to_css(self, label: str) -> str:
-        return "".join(
+    def to_css(self, label: str, joiner: str = CSS_ATTR_SEPARATOR) -> str:
+        return joiner.join(
             [
                 _css_var(label, self.base),
                 _css_var(f"on-{label}", self.on_base),
@@ -113,10 +118,6 @@ def generate_color_variants(hex_color: str) -> ColorVariants:
         light=hls_to_hex(lighter),
         light_hover=hls_to_hex(lighter_hover),
     )
-
-
-RGB = NamedTuple("RGB", [("red", float), ("green", float), ("blue", float)])
-HLS = NamedTuple("HLS", [("hue", float), ("luminance", float), ("saturation", float)])
 
 
 def hex_to_rgb(hexstr: str) -> RGB:
