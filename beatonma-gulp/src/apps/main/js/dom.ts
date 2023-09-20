@@ -17,7 +17,7 @@ export const requireElement = <T extends HTMLElement>(
 export namespace Scaffold {
     const LoadingId = "loading";
     const ContentWrapperId = "content_wrapper";
-    const ContentId = "content";
+    export const ContentId = "content";
     const ScrimId = "dialog_scrim";
     const DialogContainerId = "dialog_container";
     const LocalStyleId = "local_style";

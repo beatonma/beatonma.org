@@ -163,9 +163,12 @@ const animateContentEnter = (parent: HTMLElement) => {
 };
 
 const scrollToId = (id: string) => {
-    const target = document.getElementById(id.replace("#", ""));
+    const resolvedId = id.replace("#", "");
+    const target = document.getElementById(resolvedId);
     target.scrollIntoView();
-    target.dataset.highlighted = "true";
+    if (resolvedId !== Scaffold.ContentId) {
+        target.dataset.highlighted = "true";
+    }
 };
 
 namespace PageTransitionEvents {
