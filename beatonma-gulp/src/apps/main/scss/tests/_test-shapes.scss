@@ -20,5 +20,23 @@
       @extend %shape-medium-bottom;
       @extend %shape-large-bottom;
     }
+
+    %test-adaptive {
+      @extend %shape-adaptive-small;
+      @extend %shape-adaptive-medium;
+      @extend %shape-adaptive-large;
+
+      %test-adaptive-top {
+        @extend %shape-adaptive-small-top;
+        @extend %shape-adaptive-medium-top;
+        @extend %shape-adaptive-large-top;
+      }
+
+      %test-adaptive-bottom {
+        @extend %shape-adaptive-small-bottom;
+        @extend %shape-adaptive-medium-bottom;
+        @extend %shape-adaptive-large-bottom;
+      }
+    }
   }
 }

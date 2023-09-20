@@ -4,33 +4,15 @@
  */
 @use "v2";
 
-$-color-mixins: [
-    "surface",
-    "surface-muted",
-    "surface-muted-light",
-    "surface-muted-dark",
-    "surface-vibrant",
-    "surface-vibrant-light",
-    "surface-vibrant-dark",
-    "surface-muted-hover",
-    "surface-vibrant-hover",
-    "surface-muted-light-hover",
-    "surface-muted-dark-hover",
-    "surface-vibrant-light-hover",
-    "surface-vibrant-dark-hover",
-    "foreground-muted",
-    "foreground-muted-light",
-    "foreground-muted-dark",
-    "foreground-vibrant",
-    "foreground-vibrant-light",
-    "foreground-vibrant-dark",
-    "on-muted",
-    "on-muted-light",
-    "on-muted-dark",
-    "on-vibrant",
-    "on-vibrant-light",
-    "on-vibrant-dark",
-  ];
+$-color-mixins: [ "surface", "surface-muted", "surface-muted-light",
+  "surface-muted-dark", "surface-vibrant", "surface-vibrant-light",
+  "surface-vibrant-dark", "surface-muted-hover", "surface-vibrant-hover",
+  "surface-muted-light-hover", "surface-muted-dark-hover",
+  "surface-vibrant-light-hover", "surface-vibrant-dark-hover",
+  "foreground-muted", "foreground-muted-light", "foreground-muted-dark",
+  "foreground-vibrant", "foreground-vibrant-light", "foreground-vibrant-dark",
+  "on-muted", "on-muted-light", "on-muted-dark", "on-vibrant",
+  "on-vibrant-light", "on-vibrant-dark", ];
 
 @each $-mixin in $-color-mixins {
   .test-#{$-mixin} {
@@ -45,7 +27,6 @@ $-color-mixins: [
 }
 
 %test-colors {
-
   %test-surface {
     @extend %surface;
 
@@ -61,6 +42,10 @@ $-color-mixins: [
       @extend %surface-vibrant-hover;
       @extend %surface-vibrant-light;
       @extend %surface-vibrant-dark;
+    }
+
+    %test-warning {
+      @extend %surface-warn;
     }
   }
 
