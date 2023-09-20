@@ -34,6 +34,10 @@ $margin-minimal: 4px;
   > #content_wrapper {
     @extend %-content_margins;
   }
+
+  #webmentions {
+    @extend %center-column;
+  }
 }
 
 %-content_margins {

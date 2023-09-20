@@ -1,1 +1,4 @@
-<aside id="webmentions"></aside>
+<aside
+    id="webmentions"
+    {% if empty_message %}data-empty-message="{{ empty_message }}"{% endif %}
+></aside>

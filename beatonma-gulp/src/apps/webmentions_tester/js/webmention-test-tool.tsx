@@ -13,9 +13,11 @@ import { classes } from "../../main/js/components/props";
 import { formatTimeDelta } from "../../main/js/util/datetime";
 import { getCsrfToken } from "../../main/js/util/cookies";
 import { loadJson } from "../../main/js/util/requests";
+import { TitleBar } from "../../main/js/components/title-bar";
 
-const CONTAINER = "#webmentions_testing_tool";
-const ENDPOINT = "active/";
+const ContainerSelector = "#webmentions_testing_tool";
+const Endpoint = "active/";
+const StatusPollingMillis = 3000;
 
 interface TemporaryMentionsResponse {
     ttl: number;
@@ -40,7 +42,7 @@ interface ActiveMention {
 }
 
 export const WebmentionTesterApp = async (dom: Document | Element) => {
-    const container = dom.querySelector(CONTAINER);
+    const container = dom.querySelector(ContainerSelector);
 
     if (container) {
         const root = createRoot(container);
@@ -58,10 +60,10 @@ const WebmentionsTester = () => {
     const refresh = () => setRefreshFlag(!refreshFlag);
 
     return (
-        <div>
+        <>
             <CreateTempMention onSubmit={refresh} />
             <ActiveMentions onChange={refreshFlag} refresh={refresh} />
-        </div>
+        </>
     );
 };
 
@@ -77,7 +79,7 @@ const ActiveMentions = (props: ActiveMentionsProps) => {
     const { refresh, onChange } = props;
 
     useEffect(() => {
-        loadJson<TemporaryMentionsResponse>(ENDPOINT).then(data => {
+        loadJson<TemporaryMentionsResponse>(Endpoint).then(data => {
             setTtl(data.ttl);
 
             const mentions: ActiveMention[] = data.mentions;
@@ -96,15 +98,17 @@ const ActiveMentions = (props: ActiveMentionsProps) => {
         setTimeout(() => {
             refresh();
             callback();
-        }, 500);
+        }, StatusPollingMillis);
     };
 
     return (
         <section>
-            <div className="header-row">
-                <h2 className="section">Active mentions</h2>
-                <Label>{`Temporary mentions submitted in the last ${timeout}`}</Label>
-            </div>
+            <TitleBar
+                title={<h2>Active mentions</h2>}
+                labels={
+                    <Label>{`Temporary mentions submitted in the last ${timeout}`}</Label>
+                }
+            />
 
             <div className="active-mentions">
                 <SampleActiveMention
@@ -147,7 +151,7 @@ const SampleActiveMention = (props: SampleActiveMentionProps) => {
             message: "The target server accepted the webmention.",
             source_url: "/webmentions_tester/",
             target_url: "https://beatonma.org",
-            endpoint: "https://beatonma.org:443/webmention/",
+            endpoint: "https://beatonma.org/webmention/",
         },
     };
 
@@ -167,7 +171,6 @@ interface ActiveMentionProps extends HTMLAttributes<any> {
     expanded: boolean;
     label?: string;
 }
-
 const ActiveMentionUI = (props: ActiveMentionProps) => {
     const [awaitingTask, setAwaitingTask] = useState(true);
 
@@ -204,7 +207,6 @@ interface MentionStatusProps {
     status?: MentionStatus;
     expanded: boolean;
 }
-
 const MentionStatusUI = (props: MentionStatusProps) => {
     const { status, expanded } = props;
 
@@ -283,7 +285,7 @@ const CreateTempMention = (props: CreateTempMentionProps) => {
     const [isError, setIsError] = useState(false);
 
     const post = () => {
-        create(ENDPOINT, { url: url })
+        create(Endpoint, { url: url })
             .then(response => {
                 if (response.status === 400) {
                     throw "Validation failure";
@@ -323,22 +325,25 @@ const CreateTempMention = (props: CreateTempMentionProps) => {
                 </li>
             </ul>
 
-            <div className="form">
+            <form action="#">
                 <input
-                    type="text"
+                    type="url"
                     value={url}
                     onChange={e => setUrl(e.target.value)}
-                    placeholder="https://mysite.example/my-article/"
+                    placeholder="https://yoursite.example/your-article/"
                     onKeyUp={onKeyPress}
                     autoFocus
+                    required
                 />
-                <button onClick={post}>Submit</button>
+                <button type="submit" onClick={post}>
+                    Submit
+                </button>
                 <ErrorMessage show={isError} />
-            </div>
+            </form>
 
             <p>
                 If your page mentions this page, it should appear{" "}
-                <a href="#webmentions">below</a>.
+                <a href="#webmentions">below</a> in a few moments.
             </p>
         </section>
     );
@@ -347,7 +352,6 @@ const CreateTempMention = (props: CreateTempMentionProps) => {
 interface ErrorMessageProps {
     show: boolean;
 }
-
 const ErrorMessage = (props: ErrorMessageProps) => {
     if (props.show) {
         return <div>Please check your URL - validation failed.</div>;
@@ -356,17 +360,15 @@ const ErrorMessage = (props: ErrorMessageProps) => {
     }
 };
 
-const headers = {
-    "Content-Type": "application/json",
-    "X-CSRFToken": getCsrfToken(),
-};
-
 const create = (url: string, data: any) =>
     fetch(url, {
         method: "POST",
         cache: "no-cache",
         credentials: "same-origin",
-        headers: headers,
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCsrfToken(),
+        },
         body: JSON.stringify(data),
     });
 

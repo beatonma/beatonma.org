@@ -6,8 +6,7 @@ import { loadJson } from "../../util/requests";
 
 const CONTAINER = "#webmentions";
 const getContainerElement = () => document.getElementById("webmentions");
-
-const DefaultEmptyMessage = "Nobody has mentioned this page yet :(";
+const DataAttr = { EmptyMessage: "data-empty-message" };
 
 interface MentionsResponse {
     target_url: string;
@@ -41,14 +40,14 @@ export const WebmentionsApp = async (dom: Document | Element) => {
 
 export const Webmentions = () => {
     const [mentions, setMentions] = useState(null);
-    const [showWhenEmpty, setShowWhenEmpty] = useState(false);
+    const [emptyMessage, setEmptyMessage] = useState<string>();
 
     useEffect(() => {
-        // If data-show-when-empty is defined, allow rendering even when there are no mentions to display.
-        if (
-            typeof getContainerElement().dataset.showWhenEmpty !== "undefined"
-        ) {
-            setShowWhenEmpty(true);
+        const _emptyMessage = getContainerElement().getAttribute(
+            DataAttr.EmptyMessage
+        );
+        if (_emptyMessage !== undefined) {
+            setEmptyMessage(_emptyMessage);
         }
     }, []);
 
@@ -79,7 +78,7 @@ export const Webmentions = () => {
         return (
             <MentionsContainer
                 mentions={mentions}
-                showWhenEmpty={showWhenEmpty}
+                emptyMessage={emptyMessage}
             />
         );
     }
@@ -88,35 +87,19 @@ export const Webmentions = () => {
 
 interface MentionsContainerProps {
     mentions: Mention[];
-    showWhenEmpty: boolean;
+    emptyMessage: string | undefined;
 }
 const MentionsContainer = (props: MentionsContainerProps) => {
-    const { mentions, showWhenEmpty } = props;
+    const { mentions, emptyMessage } = props;
     const isEmpty = mentions.length === 0;
 
-    if (isEmpty && !showWhenEmpty) {
+    if (isEmpty && !emptyMessage) {
         return null;
     }
 
-    const [title, setTitle] = useState("Mentions");
-    const [emptyMessage, setEmptyMessage] = useState(DefaultEmptyMessage);
-
-    useEffect(() => {
-        const dataset = getContainerElement().dataset;
-        const customTitle = isEmpty ? dataset.titleWhenEmpty : dataset.title;
-        if (typeof customTitle !== "undefined") {
-            setTitle(customTitle);
-        }
-
-        const customEmptyMessage = dataset.emptyMessage;
-        if (typeof customEmptyMessage !== "undefined") {
-            setEmptyMessage(customEmptyMessage);
-        }
-    }, []);
-
     return (
         <>
-            <h3 data-animate-in={true}>{title}</h3>
+            <h3>Mentions</h3>
             <Mentions mentions={mentions} emptyMessage={emptyMessage} />
         </>
     );
