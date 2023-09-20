@@ -2,25 +2,18 @@
 
 #webmentions_testing_tool {
   @extend %center-column;
+  @extend %bottom-gap;
 
-  .header-row {
-    @include core.row($vertical: baseline, $column-gap: 1rem, $row-gap: 0.5rem);
-  }
-
-  .form {
-    @extend %row-spaced;
-    @extend %padding-medium;
+  form {
     @extend %center;
+    @include core.row(center, none, $gap: var(--space));
 
     width: fit-content;
 
     input[type="text"] {
       @extend %padding-medium-inline;
 
-      font-size: var(--fs-h5);
-    }
-
-    button {
+      width: 30ch;
       font-size: var(--fs-h5);
     }
   }

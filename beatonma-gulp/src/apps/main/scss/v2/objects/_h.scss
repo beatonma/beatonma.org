@@ -24,10 +24,6 @@ h6 {
   font-size: var(--fs-h6);
 }
 
-%-section-header {
-  margin-bottom: var(--space-2x);
-}
-
 h1,
 h2,
 h3,
@@ -41,17 +37,29 @@ h6 {
   overflow-y: hidden;
   font-weight: normal;
   margin: 0;
+}
 
-  &.section {
-    @extend %-section-header;
+@mixin headers {
+  > h1,
+  > h2,
+  > h3,
+  > h4,
+  > h5,
+  > h6 {
+    @content;
   }
 }
 
-section > h1,
-section > h2,
-section > h3,
-section > h4,
-section > h5,
-section > h6 {
-  @extend %-section-header;
+main,
+form,
+section,
+#webmentions {
+  @include headers {
+    margin-block: 0.5em;
+
+    @include core.on-medium-width {
+      margin-inline: auto;
+      text-align: center;
+    }
+  }
 }

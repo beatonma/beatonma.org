@@ -43,8 +43,12 @@ $-spacing: (
   @include -generate-spacing(margin);
 }
 
-%center {
+@mixin center {
   margin-inline: auto;
+}
+
+%center {
+  @include center;
 }
 
 %bottom-gap {

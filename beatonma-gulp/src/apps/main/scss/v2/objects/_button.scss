@@ -6,8 +6,10 @@
   @extend %text-one-line;
   @include core.transition((color, border-color, background-color));
 
-  padding: 4px 8px;
-  font-variant: all-small-caps;
+  padding: 0.5em 1ch;
+  text-transform: uppercase;
+  line-height: 1;
+  max-width: 32ch;
 }
 
 %button-transparent {
@@ -40,4 +42,26 @@
 
 button {
   @extend %button-outline;
+}
+
+button[type="submit"] {
+  @extend %surface-vibrant-hover;
+  font-size: var(--fs-default);
+}
+
+button:disabled,
+form:invalid button[type="submit"] {
+  cursor: default;
+  background-color: var(--text-tertiary-invert);
+  border-color: var(--text-tertiary);
+  color: var(--text-tertiary);
+}
+
+form button {
+  @include core.on-medium-width {
+    @include core.stretch-width;
+    @include core.center;
+
+    display: block;
+  }
 }

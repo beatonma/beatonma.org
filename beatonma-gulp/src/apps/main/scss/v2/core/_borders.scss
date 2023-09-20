@@ -1,11 +1,9 @@
+@use "v2/constants";
 @use "./layout";
 @use "./breakpoints";
 
-$-border-width: 2px;
-$-border-style: $-border-width solid;
-
 %outlined {
-  $-style: $-border-style var(--text-tertiary);
+  $-style: constants.$border-style var(--text-tertiary);
   border: $-style;
 
   &-adaptive {
@@ -19,13 +17,13 @@ $-border-style: $-border-width solid;
 }
 
 %border {
-  @include layout.directional(border, $-border-style);
+  @include layout.directional(border, constants.$border-style);
 }
 
 /**
  * Adds a left border and indents content to compensate.
  */
 %indented {
-  border-left: $-border-style var(--accent-color);
-  padding-inline: $-border-width * 2;
+  border-left: constants.$border-style var(--accent-color);
+  padding-inline: constants.$border-width * 2;
 }

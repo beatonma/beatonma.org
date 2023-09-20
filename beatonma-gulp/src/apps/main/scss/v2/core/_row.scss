@@ -10,11 +10,16 @@
   flex-flow: row $wrap;
   justify-content: $horizontal;
   align-items: $vertical;
-  column-gap: $column-gap;
-  row-gap: $row-gap;
+  @if ($column-gap == $row-gap) {
+    gap: $column-gap;
+  } @else {
+    column-gap: $column-gap;
+    row-gap: $row-gap;
+  }
 }
 
-%row, .row {
+%row,
+.row {
   @include row;
 }
 

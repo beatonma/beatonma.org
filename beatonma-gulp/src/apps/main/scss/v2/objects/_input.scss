@@ -1,3 +1,4 @@
+@use "v2/constants";
 @use "v2/core";
 
 input,
@@ -7,15 +8,17 @@ textarea {
 }
 
 %-base-input {
-  @extend %shape-small-top;
+  @extend %shape-adaptive-small-top;
   @extend %padding-small;
+  @include core.transition-fast((border-color));
 
   font-size: var(--fs-small);
   color: var(--text-primary);
   background-color: var(--input-text-background);
+  border-bottom: constants.$border-style transparent;
 
   &:focus {
-    border-bottom: 2px solid var(--vibrant);
+    border-color: var(--vibrant);
   }
 }
 
@@ -23,25 +26,21 @@ textarea {
   @extend %-base-input;
 
   min-width: 8ch;
-  width: 480px;
   max-width: 100%;
 
-  &:focus {
-    border-bottom: 2px solid var(--vibrant);
-  }
-
-  @include core.on-small-width {
+  @include core.on-medium-width {
     @include core.stretch-width;
   }
-}
-
-input[type="text"] {
-  @extend %-input-text;
 }
 
 input[type="number"],
 select {
   @extend %-base-input;
+}
+
+input[type="text"],
+input[type="url"] {
+  @extend %-input-text;
 }
 
 input[type="search"] {
@@ -54,28 +53,8 @@ input[type="search"] {
 
 textarea {
   @extend %-input-text;
+  @extend %stretch-width;
 
-  resize: both;
-}
-
-form {
-  label {
-    font-size: var(--fs-smallest);
-    margin-block: var(--space);
-  }
-
-  div:has(label),
-  p:has(label) {
-    label,
-    input:not([type="checkbox"], [type="radio"]),
-    textarea {
-      display: block;
-    }
-
-    input[type="checkbox"] + label,
-    input[type="radio"] + label {
-      display: inline;
-      font-size: var(--fs-default);
-    }
-  }
+  min-height: 8em;
+  resize: vertical;
 }

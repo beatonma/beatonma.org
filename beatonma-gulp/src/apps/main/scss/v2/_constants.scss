@@ -6,3 +6,6 @@ $readable-text-width: 800px;
 $sidebar-width: 420px;
 $two-column-min-width: $readable-text-width + $sidebar-width;
 $three-column-min-width: $readable-text-width + (2 * $sidebar-width);
+
+$border-width: 2px;
+$border-style: $border-width solid;

@@ -4,30 +4,8 @@
 #contact {
   @extend %center-column;
 
-  textarea {
+  input[type="text"] {
     @extend %stretch-width;
-
-    min-height: 8em;
-  }
-
-  button {
-    @extend %padding-large;
-    @extend %surface-vibrant-hover;
-    @include core.transition((padding, max-width, opacity, background-color));
-
-    font-weight: bold;
-    font-size: var(--fs-h5);
-
-    &:disabled,
-    &:disabled:hover {
-      cursor: default;
-      padding: 0;
-      background-color: var(--text-tertiary-invert);
-      border-color: var(--text-tertiary);
-      color: var(--text-tertiary);
-      max-width: 0;
-      opacity: 0;
-    }
   }
 
   .success,
@@ -40,30 +18,15 @@
     width: fit-content;
   }
 
-  h2 {
-    font-size: var(--fs-h4);
-  }
-
-  h3 {
-    font-size: var(--fs-h6);
-  }
-
   .submit {
-    @include core.row($gap: var(--space));
-  }
+    @include core.row(space-between, flex-start, $gap: var(--space-2x));
 
-  @include core.on-medium-width {
-    button,
-    input[type="text"],
-    textarea {
-      @include core.stretch-width;
+    @include core.on-medium-width {
+      justify-content: center;
 
-      min-width: 0;
-    }
-
-    .submit {
-      width: min-content;
-      margin-inline: auto;
+      > button[type="submit"] {
+        order: 2;
+      }
     }
   }
 }
