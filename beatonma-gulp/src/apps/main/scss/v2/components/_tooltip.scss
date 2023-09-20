@@ -33,6 +33,7 @@
     line-height: 1;
     font-weight: normal;
     font-variant: none;
+    text-transform: none;
   }
 
   &[title]:hover::after {
@@ -42,7 +43,6 @@
   &[data-tooltip]:hover::after {
     content: attr(data-tooltip);
   }
-
 
   @keyframes tooltip {
     0% {
