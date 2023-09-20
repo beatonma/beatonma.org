@@ -19,6 +19,18 @@ def startswith(self: str, query: str) -> bool:
         return str(self).startswith(query)
 
 
+@register.filter(name="endswith")
+@stringfilter
+def endswith(self: str, query: str) -> bool:
+    if self is None:
+        return False
+
+    try:
+        return self.endswith(query)
+    except AttributeError:
+        return str(self).endswith(query)
+
+
 @register.filter(name="remove")
 @stringfilter
 def remove(self: str, substring: str) -> str:
