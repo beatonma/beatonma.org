@@ -31,9 +31,9 @@
     >
         <div class="preview-image__text">
             {% if title %}
-                {{ title|repeat_until_length:120|in_rainbows|nbsp|safe }}
+                {{ title|repeat_until_length:60|in_rainbows|nbsp|safe }}
             {% elif description %}
-                {{ description|repeat_until_length:120|in_rainbows|nbsp|safe }}
+                {{ description|repeat_until_length:60|in_rainbows|nbsp|safe }}
             {% endif %}
         </div>
     </div>

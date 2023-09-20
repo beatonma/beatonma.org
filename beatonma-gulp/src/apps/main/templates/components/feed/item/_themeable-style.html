@@ -1,8 +1,8 @@
-{% load css %}
+{% load themeable %}
 
+{% comment %}
+This content is used within the style="" attribute of an HTML tag.
+{% endcomment %}
 {% if themeable %}
-{% style "background-color" themeable.color_muted %}
-{% style "color" themeable.color_vibrant %}
-{% style "fill" themeable.color_vibrant %}
-{% style "stroke" themeable.color_vibrant %}
+  {% item_theme themeable %}
 {% endif %}
