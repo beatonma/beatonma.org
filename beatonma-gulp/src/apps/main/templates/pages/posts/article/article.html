@@ -20,3 +20,9 @@
 {% block links %}
   {% include "../_related-links.html" %}
 {% endblock %}
+
+{% block post_scripts %}
+  {% if post.content_script %}
+    {{ post.content_script|default:""|safe }}
+  {% endif %}
+{% endblock %}

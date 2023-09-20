@@ -33,7 +33,3 @@
 {% block webmentions %}
   {% include "components/react/webmentions-container.html" %}
 {% endblock %}
-
-{% block post_scripts %}
-  {{ post.content_script|default:""|safe }}
-{% endblock %}
