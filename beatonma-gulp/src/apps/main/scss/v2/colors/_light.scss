@@ -9,23 +9,23 @@
 
     --input-text-background: #e2e2e2;
 
-    --muted: #3b476b;
-    --muted-hover: #405080;
-    --muted-dark: #242b41;
-    --muted-dark-hover: #2a3554;
-    --muted-light: #bdc4da;
-    --muted-light-hover: #aab4d4;
-    --on-muted: #dee1ec;
-    --on-muted-hover: #ccd2e5;
+  --muted: #ffffff;
+  --on-muted: #191919;
+  --muted-hover: #f2f2f2;
+  --on-muted-hover: #262626;
+  --muted-dark: #333333;
+  --muted-dark-hover: #3f3f3f;
+  --muted-light: #cccccc;
+  --muted-light-hover: #bfbfbf;
 
-    --vibrant: #206f80;
-    --vibrant-hover: #297e8f;
-    --vibrant-dark: #144751;
-    --vibrant-dark-hover: #1c5762;
-    --vibrant-light: #ade0ea;
-    --vibrant-light-hover: #9cd6e2;
-    --on-vibrant: #d6eff4;
-    --on-vibrant-hover: #c3e6ed;
+  --vibrant: #0b7d3f;
+  --on-vibrant: #d0fae4;
+  --vibrant-hover: #11904c;
+  --on-vibrant-hover: #baf6d6;
+  --vibrant-dark: #085d30;
+  --vibrant-dark-hover: #0d713c;
+  --vibrant-light: #a1f6c9;
+  --vibrant-light-hover: #8df1bb;
 
     --muted-low-contrast: var(--muted-light);
     --on-muted-low-contrast: var(--on-muted-light);
