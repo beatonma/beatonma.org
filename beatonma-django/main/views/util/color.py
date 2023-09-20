@@ -1,7 +1,6 @@
 import colorsys
-from typing import List, NamedTuple
+from typing import NamedTuple
 
-from colorfield.fields import ColorField
 from main.models.mixins import ThemeableMixin
 
 __all__ = [
@@ -14,11 +13,106 @@ CSS_TEMPLATE = """:root {{
 
 
 def get_theme_context(*themeable: ThemeableMixin) -> dict:
-    style = _find_theme(*themeable)
+    style = get_themeable_css(*themeable)
     if style:
-        result = CSS_TEMPLATE.format(content="\n".join(style))
+        result = CSS_TEMPLATE.format(content=style)
         return {"local_style": result}
     return {}
+
+
+def get_themeable_css(*themeable: ThemeableMixin) -> str:
+    muted = None
+    vibrant = None
+
+    for item in themeable:
+        if not item:
+            continue
+
+        muted = item.color_muted
+        vibrant = item.color_vibrant
+
+        if muted and vibrant:
+            break
+
+    colors = []
+
+    if muted:
+        colors += generate_color_variants(str(muted)).to_css("muted")
+
+    if vibrant:
+        colors += generate_color_variants(str(vibrant)).to_css("vibrant")
+
+    return "".join(colors)
+
+
+class ColorVariants:
+    base: str
+    on_base: str
+    hover: str
+    on_hover: str
+    dark: str
+    dark_hover: str
+    light: str
+    light_hover: str
+
+    def __init__(
+        self,
+        base: str,
+        on_base: str,
+        hover: str,
+        on_hover: str,
+        dark: str,
+        dark_hover: str,
+        light: str,
+        light_hover: str,
+    ):
+        self.base = base
+        self.on_base = on_base
+        self.hover = hover
+        self.on_hover = on_hover
+        self.dark = dark
+        self.dark_hover = dark_hover
+        self.light = light
+        self.light_hover = light_hover
+
+    def to_css(self, label: str) -> str:
+        return "".join(
+            [
+                _css_var(label, self.base),
+                _css_var(f"on-{label}", self.on_base),
+                _css_var(f"{label}-hover", self.hover),
+                _css_var(f"on-{label}-hover", self.on_hover),
+                _css_var(f"{label}-dark", self.dark),
+                _css_var(f"{label}-dark-hover", self.dark_hover),
+                _css_var(f"{label}-light", self.light),
+                _css_var(f"{label}-light-hover", self.light_hover),
+            ]
+        )
+
+
+def generate_color_variants(hex_color: str) -> ColorVariants:
+    main = hex_to_hls(hex_color)
+    main_hover = _hover(main)
+
+    lighter = _lighter(main)
+    lighter_hover = _hover(lighter)
+
+    darker = _darker(main)
+    darker_hover = _hover(darker)
+
+    on_main = _on(main)
+    on_main_hover = _hover(on_main)
+
+    return ColorVariants(
+        base=hls_to_hex(main),
+        on_base=hls_to_hex(on_main),
+        hover=hls_to_hex(main_hover),
+        on_hover=hls_to_hex(on_main_hover),
+        dark=hls_to_hex(darker),
+        dark_hover=hls_to_hex(darker_hover),
+        light=hls_to_hex(lighter),
+        light_hover=hls_to_hex(lighter_hover),
+    )
 
 
 RGB = NamedTuple("RGB", [("red", float), ("green", float), ("blue", float)])
@@ -109,59 +203,4 @@ def _on(hls: HLS) -> HLS:
 
 
 def _css_var(name: str, hex_value: str) -> str:
-    return f"--{name}: {hex_value} !important;"
-
-
-def _generate_variants(
-    label: str,
-    colorfield: ColorField,
-) -> List[str]:
-    hexcolor = str(colorfield)
-
-    main = hex_to_hls(hexcolor)
-    main_hover = _hover(main)
-
-    lighter = _lighter(main)
-    lighter_hover = _hover(lighter)
-
-    darker = _darker(main)
-    darker_hover = _hover(darker)
-
-    on_main = _on(main)
-    on_main_hover = _hover(on_main)
-
-    return [
-        _css_var(label, hls_to_hex(main)),
-        _css_var(f"{label}-hover", hls_to_hex(main_hover)),
-        _css_var(f"{label}-dark", hls_to_hex(darker)),
-        _css_var(f"{label}-dark-hover", hls_to_hex(darker_hover)),
-        _css_var(f"{label}-light", hls_to_hex(lighter)),
-        _css_var(f"{label}-light-hover", hls_to_hex(lighter_hover)),
-        _css_var(f"on-{label}", hls_to_hex(on_main)),
-        _css_var(f"on-{label}-hover", hls_to_hex(on_main_hover)),
-    ]
-
-
-def _find_theme(*themeable: ThemeableMixin) -> List[str]:
-    muted = None
-    vibrant = None
-
-    for item in themeable:
-        if not item:
-            continue
-
-        muted = item.color_muted
-        vibrant = item.color_vibrant
-
-        if muted and vibrant:
-            break
-
-    colors = []
-
-    if muted:
-        colors += _generate_variants("muted", muted)
-
-    if vibrant:
-        colors += _generate_variants("vibrant", vibrant)
-
-    return colors
+    return f"--{name}:{hex_value}!important;"
