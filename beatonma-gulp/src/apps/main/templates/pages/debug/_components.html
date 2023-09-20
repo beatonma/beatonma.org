@@ -2,7 +2,7 @@
   <section class="icons">
     <h2>Icons with tooltips</h2>
     {% for app_type in app_types %}
-    {% include "pages/posts/app/_app_type.html" %}
+      {% include "pages/posts/app/_app_type.html" %}
     {% endfor %}
   </section>
 
@@ -12,41 +12,41 @@
     <form id="inputs" action="#">
       <div>
         <p>
-          <input id="checkbox_checked" type="checkbox" checked/>
+          <input id="checkbox_checked" type="checkbox" checked />
           <label for="checkbox_checked">Checkbox checked</label>
         </p>
 
         <p>
-          <input id="checkbox_unchecked" type="checkbox"/>
+          <input id="checkbox_unchecked" type="checkbox" />
           <label for="checkbox_unchecked">Checkbox unchecked</label>
         </p>
       </div>
 
       <div>
         <p>
-          <input id="radio_checked" type="radio" checked/>
+          <input id="radio_checked" type="radio" checked />
           <label for="radio_checked">Radio checked</label>
         </p>
 
         <p>
-          <input id="radio_unchecked" type="radio"/>
+          <input id="radio_unchecked" type="radio" />
           <label for="radio_unchecked">Radio unchecked</label>
         </p>
       </div>
 
       <div>
         <label for="number">Number</label>
-        <input id="number" type="number" placeholder="12345"/>
+        <input id="number" type="number" placeholder="12345" />
       </div>
 
       <div>
         <label for="search">Search</label>
-        <input id="search" type="search" placeholder="Search input"/>
+        <input id="search" type="search" placeholder="Search input" />
       </div>
 
       <div>
         <label for="text">Text</label>
-        <input id="text" type="text" placeholder="Text input"/>
+        <input id="text" type="text" placeholder="Text input" />
       </div>
 
       <div>
@@ -63,15 +63,24 @@
 
   <section>
     <h2>Code</h2>
-    <p>Look here's some <code>code</code> in a paragraph of <code>text</code> which is <code>#very interesting</code>.</p>
+    <p>Look here's some <code>code</code> in a paragraph of <code>text</code> which is <code>#very interesting</code>.
+    </p>
 
     <div class="codehilite">
       <pre>
-        <code><span class="k">class</span> <span class="nc">DevThemePreview</span><span class="p">(</span><span class="n">LoggedView</span><span class="p">):</span>
-          <span>&nbsp;&nbsp;</span><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="k">return</span> <span class="n">render</span><span class="p">(</span>
+        <code><span class="k">class</span> <span class="nc">DevThemePreview</span><span class="p">(</span><span
+          class="n"
+        >LoggedView</span><span class="p">):</span>
+          <span>&nbsp;&nbsp;</span><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span
+            class="bp"
+          >self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="k">return</span> <span class="n">render</span><span
+            class="p"
+          >(</span>
           <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="n">request</span><span class="p">,</span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="s2">&quot;pages/debug/theme-preview.html&quot;</span><span class="p">,</span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+            class="s2"
+          >&quot;pages/debug/theme-preview.html&quot;</span><span class="p">,</span>
           <span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p">)</span></code>
       </pre>
     </div>
@@ -82,38 +91,38 @@
 
     <table>
       <thead>
-        <tr>
-          <th>Magical Creature</th>
-          <th>Power Level</th>
-          <th>Favorite Food</th>
-        </tr>
+      <tr>
+        <th>Magical Creature</th>
+        <th>Power Level</th>
+        <th>Favorite Food</th>
+      </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Unicorn</td>
-          <td>10,000</td>
-          <td>Glitter</td>
-        </tr>
-        <tr>
-          <td>Dragon</td>
-          <td>9,000</td>
-          <td>Roasted Knights</td>
-        </tr>
-        <tr>
-          <td>Phoenix</td>
-          <td>8,500</td>
-          <td>Spicy Firewood</td>
-        </tr>
-        <tr>
-          <td>Griffin</td>
-          <td>7,500</td>
-          <td>Giant Meatballs</td>
-        </tr>
-        <tr>
-          <td>Pegasus</td>
-          <td>6,500</td>
-          <td>Rainbow Sherbet</td>
-        </tr>
+      <tr>
+        <td>Unicorn</td>
+        <td>10,000</td>
+        <td>Glitter</td>
+      </tr>
+      <tr>
+        <td>Dragon</td>
+        <td>9,000</td>
+        <td>Roasted Knights</td>
+      </tr>
+      <tr>
+        <td>Phoenix</td>
+        <td>8,500</td>
+        <td>Spicy Firewood</td>
+      </tr>
+      <tr>
+        <td>Griffin</td>
+        <td>7,500</td>
+        <td>Giant Meatballs</td>
+      </tr>
+      <tr>
+        <td>Pegasus</td>
+        <td>6,500</td>
+        <td>Rainbow Sherbet</td>
+      </tr>
       </tbody>
     </table>
   </section>
@@ -123,11 +132,11 @@
 
     <div class="loading--bar" data-active="true" style="position: relative;"></div>
     <div class="loading--spinner">
-        <div class="spinner-wrapper">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
+      <div class="spinner-wrapper">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
     </div>
   </section>
 </div>

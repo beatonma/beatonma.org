@@ -13,17 +13,17 @@
   <section>
     {% include 'staff/edit-links.html' with target=post %}
     <article class="h-entry webpost" data-type="{{ post|get_class|lower }}">
-        {% block article %}
-          {% block post_header %}{% endblock %}
+      {% block article %}
+        {% block post_header %}{% endblock %}
 
-          {% block titlebar %}{% include "./_post-title-bar.html" %}{% endblock %}
+        {% block titlebar %}{% include "./_post-title-bar.html" %}{% endblock %}
 
-          <div class="e-content">
-              {% block post_content %}{{ post.content_html|safe }}{% endblock %}
-          </div>
-        {% endblock %}
+        <div class="e-content">
+          {% block post_content %}{{ post.content_html|safe }}{% endblock %}
+        </div>
+      {% endblock %}
 
-        {% include 'components/react/media-container.html' with target=post style="carousel" %}
+      {% include 'components/react/media-container.html' with target=post style="carousel" %}
     </article>
   </section>
 

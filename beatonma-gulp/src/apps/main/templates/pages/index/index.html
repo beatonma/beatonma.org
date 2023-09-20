@@ -5,28 +5,27 @@
 
 {% block content_class %}main-index{% endblock %}
 {% block content %}
+  {% if motd %}
+    {% include './_motd.html' %}
+  {% endif %}
 
-{% if motd %}
-{% include './_motd.html' %}
-{% endif %}
+  {% include "./_quick-links.html" %}
 
-{% include "./_quick-links.html" %}
+  {% if is_first_page %}
+    <div id="github_recent" data-cy="github">
+      <noscript>
+        <a href="https://github.com/beatonma"><h2>github/beatonma</h2></a>
+      </noscript>
+    </div>
+  {% endif %}
 
-{% if is_first_page %}
-<div id="github_recent" data-cy="github">
-  <noscript>
-    <a href="https://github.com/beatonma"><h2>github/beatonma</h2></a>
-  </noscript>
-</div>
-{% endif %}
-
-<main>
+  <main>
     {% include 'components/feed/feed.html' %}
-</main>
+  </main>
 {% endblock %}
 
 {% block hcard %}
-<div data-meta>
+  <div data-meta>
     {% include "components/hcard/hcard.html" %}
-</div>
+  </div>
 {% endblock %}

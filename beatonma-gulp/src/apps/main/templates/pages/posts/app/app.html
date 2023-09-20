@@ -19,9 +19,9 @@
             <nav class="changelog-versions">
               <h1>Versions</h1>
               <ul>
-              {% for changelog in changelogs %}
-                <li><a href="#changelog_{{ changelog.version_name }}">{{ changelog.version_name }}</a></li>
-              {% endfor %}
+                {% for changelog in changelogs %}
+                  <li><a href="#changelog_{{ changelog.version_name }}">{{ changelog.version_name }}</a></li>
+                {% endfor %}
               </ul>
             </nav>
           </div>

@@ -7,9 +7,5 @@
 {% block search_header %}{{ filter }}{% endblock %}
 
 {% block filters %}
-  {% include "./_filters.html"
-  with
-  filters_title="More tags"
-  filters_item_class="tag"
-  %}
+  {% include "./_filters.html" with filters_title="More tags" filters_item_class="tag" %}
 {% endblock %}

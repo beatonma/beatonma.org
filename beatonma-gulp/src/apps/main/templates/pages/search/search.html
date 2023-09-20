@@ -6,8 +6,5 @@
 {% block search_header %}Results for '<span class="">{{ filter }}</span>'{% endblock %}
 
 {% block filters %}
-  {% include "./_filters.html"
-    with
-    filters_title="Explore"
-    %}
+  {% include "./_filters.html" with filters_title="Explore" %}
 {% endblock %}

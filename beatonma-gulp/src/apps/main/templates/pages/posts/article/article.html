@@ -1,22 +1,22 @@
 {% extends 'pages/posts/_post.html' %}
 
 {% block post_header %}
-{% if post.hero_html %}
-<div class="hero-wrapper">
-  {{ post.hero_html|safe }}
-</div>
-{% elif post.hero_image %}
-<div class="hero-wrapper {{ post.hero_banner_css|default:'contain' }}">
-  <img
-    loading="lazy"
-    class="hero {{ post.hero_css|default:'contain' }}"
-    src="{{ post.hero_image.url }}"
-    alt=""
-  />
-</div>
-{% endif %}
+  {% if post.hero_html %}
+    <div class="hero-wrapper">
+      {{ post.hero_html|safe }}
+    </div>
+  {% elif post.hero_image %}
+    <div class="hero-wrapper {{ post.hero_banner_css|default:'contain' }}">
+      <img
+          loading="lazy"
+          class="hero {{ post.hero_css|default:'contain' }}"
+          src="{{ post.hero_image.url }}"
+          alt=""
+      />
+    </div>
+  {% endif %}
 {% endblock %}
 
 {% block links %}
-{% include "../_related-links.html" %}
+  {% include "../_related-links.html" %}
 {% endblock %}

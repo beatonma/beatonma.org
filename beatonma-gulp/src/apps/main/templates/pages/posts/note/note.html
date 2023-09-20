@@ -5,11 +5,11 @@
 {% block description %}{% endblock %}
 
 {% block article %}
-<div class="note-text">
+  <div class="note-text">
     <div class="e-content">
-        {{ post.content_html|safe }}
+      {{ post.content_html|safe }}
     </div>
 
     {% include "components/date.html" with date=post.published_at %}
-</div>
+  </div>
 {% endblock %}
