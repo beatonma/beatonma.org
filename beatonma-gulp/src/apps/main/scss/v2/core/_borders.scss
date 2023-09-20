@@ -24,6 +24,6 @@
  * Adds a left border and indents content to compensate.
  */
 %indented {
-  border-left: constants.$border-style var(--accent-color);
+  border-left: constants.$border-style var(--vibrant);
   padding-inline: constants.$border-width * 2;
 }

@@ -45,11 +45,10 @@
   --on-vibrant-dark: var(--vibrant-light);
   --on-vibrant-dark-hover: var(--vibrant-light-hover);
 
-  --accent-color: var(--vibrant);
   --bg-color: var(--surface);
   --fg-color: var(--on-surface);
 
-  accent-color: var(--accent-color);
+  accent-color: var(--vibrant);
 }
 
 html {
