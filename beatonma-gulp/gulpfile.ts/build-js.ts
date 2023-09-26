@@ -27,7 +27,7 @@ const renameForWebpack = () =>
         }
 
         const webappMatches = original.match(
-            /^.*\/webapp\/([\w-]+)\/(js\/)?entrypoint\.tsx?$/
+            /^.*\/webapp\/([\w-]+)\/(?=.*\/)?entrypoint\.tsx?$/
         );
         if (!webappMatches) {
             throw `Unexpected structure for entrypoint: ${original}`;
