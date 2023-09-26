@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    """Create sample data for running frontend tests."""
+    """Create sample data for running frontend development."""
 
     models = [
         About,
