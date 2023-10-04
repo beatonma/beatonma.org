@@ -1,10 +1,11 @@
 {% load repetition %}
 {% load strings %}
+{% load themeable %}
 
 {% if image_url %}
     <div
         class="preview-image {{ imageclass|default:'cover' }}"
-        style="{% include 'components/feed/item/_themeable-style.html' %}"
+        style="{% item_theme themeable %}"
     >
       {% if image_url|endswith:".svg" %}
         <div class="svg" style="-webkit-mask-image: url('{{ image_url }}')"></div>
@@ -15,7 +16,7 @@
 {% elif image_svg %}
     <div
         class="preview-image {{ imageclass }}"
-        style="{% include 'components/feed/item/_themeable-style.html' %}"
+        style="{% item_theme themeable %}"
     >
         {% if image_svg|startswith:"icon/" %}
             {% include image_svg %}
@@ -27,7 +28,7 @@
     <div
         aria-hidden="true"
         class="preview-image preview-image__text-wrapper {{ imageclass }}"
-        style="{% include 'components/feed/item/_themeable-style.html' %}"
+        style="{% item_theme themeable %}"
     >
         <div class="preview-image__text">
             {% if title %}

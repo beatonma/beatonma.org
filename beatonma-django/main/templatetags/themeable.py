@@ -15,6 +15,9 @@ def css_attr(key: str, value) -> str:
 
 @register.simple_tag(name="item_theme")
 def item_theme(obj: ThemeableMixin) -> str:
+    if not isinstance(obj, ThemeableMixin):
+        return ""
+
     vibrant = obj.color_vibrant
 
     if not vibrant:
