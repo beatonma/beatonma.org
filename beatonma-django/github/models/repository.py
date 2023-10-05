@@ -5,6 +5,8 @@ from common.models.published import PublishedQuerySet
 from common.models.search import SearchResult
 from django.db import models
 from django.db.models import UniqueConstraint
+from django.templatetags.static import static
+from main.view_adapters import FeedItemContext
 
 
 class GithubLanguage(BaseModel):
@@ -120,6 +122,17 @@ class GithubRepository(PublishedMixin, ApiModel, TaggableMixin, BaseModel):
             description=self.description,
             timestamp=self.published_at,
             url=self.url,
+        )
+
+    def to_feeditem_context(self) -> FeedItemContext:
+        return FeedItemContext(
+            title=self.name,
+            url=self.url,
+            date=self.updated_at,
+            type=self.__class__.__name__,
+            summary=self.description,
+            image_url=static("icon/github.svg"),
+            image_class="contain",
         )
 
     def __str__(self):

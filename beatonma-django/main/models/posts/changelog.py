@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.text import slugify
 from main.models import App
 from main.models.posts.webpost import RichWebPost
+from main.view_adapters import FeedItemContext
 
 
 class Changelog(RichWebPost):
@@ -43,6 +44,18 @@ class Changelog(RichWebPost):
             description=self.preview_text,
             timestamp=self.published_at,
             url=self.get_absolute_url(),
+        )
+
+    def to_feeditem_context(self) -> FeedItemContext:
+        return FeedItemContext(
+            title=self.preview_title(),
+            url=self.get_absolute_url(),
+            date=self.published_at,
+            type=self.__class__.__name__,
+            summary=self.preview_text,
+            image_url=self.app.resolve_icon_url(),
+            image_class="contain",
+            themeable=self.app,
         )
 
     def __str__(self):

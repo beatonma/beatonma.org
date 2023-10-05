@@ -2,6 +2,7 @@ import re
 
 from django import template
 from django.template.defaultfilters import stringfilter
+from django.utils.safestring import mark_safe
 
 register = template.Library()
 
@@ -16,6 +17,7 @@ def plaintext(html: str) -> str:
 
 @register.filter("notetext")
 @stringfilter
+@mark_safe
 def notetext(html: str) -> str:
     """Strip HTML tags, except <a>links</a>."""
     pattern = re.compile(r"<(?!/?a\s*[^>]*>)[^>]*>")

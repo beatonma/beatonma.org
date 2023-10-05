@@ -1,3 +1,7 @@
+{% comment %}
+	message: FeedMessage
+{% endcomment %}
+
 {% if message.url %}
 <a class="feed-message" href="{{ message.url }}">
   {{ message.message }}

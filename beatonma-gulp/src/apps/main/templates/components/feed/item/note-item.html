@@ -1,4 +1,9 @@
 {% load html %}
+
+{% comment %}
+  note: Note
+{% endcomment %}
+
 <div
     class="h-entry"
     data-type="note"
@@ -6,7 +11,7 @@
   <article>
     <div class="e-content p-summary">
       <a title="View this note" class="canonical-url icon" href="{{ note.get_absolute_url }}">open_in_full</a>
-      {{ note.content_html|notetext|safe }}
+      {{ note.content_html|notetext }}
     </div>
 
     {% include 'components/react/media-container.html' with target=note style='preview' %}

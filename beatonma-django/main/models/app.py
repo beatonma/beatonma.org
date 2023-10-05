@@ -13,6 +13,7 @@ from main.models.link import Link
 from main.models.mixins.styleable_svg import StyleableSvgMixin
 from main.models.mixins.themeable import ThemeableMixin
 from main.models.related_file import RelatedFilesMixin
+from main.view_adapters import FeedItemContext
 from main.views import view_names
 from mentions.models.mixins.mentionable import MentionableMixin
 
@@ -152,6 +153,18 @@ class App(
             description=self.description,
             timestamp=self.published_at,
             url=self.get_absolute_url(),
+        )
+
+    def to_feeditem_context(self) -> FeedItemContext:
+        return FeedItemContext(
+            title=self.title,
+            url=self.get_absolute_url(),
+            date=self.published_at,
+            type=self.__class__.__name__,
+            summary=self.description,
+            image_class="contain",
+            image_url=self.resolve_icon_url(),
+            themeable=self,
         )
 
     def __str__(self):

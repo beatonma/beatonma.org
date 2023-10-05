@@ -1,4 +1,4 @@
-{% load classes %}
+{% load object %}
 <div id="{{ target|get_class|lower }}_media_{{ target.pk }}" class="media-container" data-urls="{{ target.file_urls }}" data-media-viewer-style="{{ style|default:'preview' }}">
     <noscript>
         <div class="media-group-preview" data-item-count="{{ target.file_url_list|length }}">

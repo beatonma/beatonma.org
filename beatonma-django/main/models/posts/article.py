@@ -4,6 +4,7 @@ from main.forms import SanitizedFileField
 from main.models.mixins.themeable import ThemeableMixin
 from main.models.posts.formats import Formats
 from main.models.posts.webpost import RichWebPost
+from main.view_adapters import FeedItemContext
 from main.views import view_names
 
 
@@ -83,3 +84,20 @@ class Article(ThemeableMixin, RichWebPost):
     def save_text(self):
         super().save_text()
         self.abstract_html = Formats.to_html(self.format, self.abstract)
+
+    def to_feeditem_context(self) -> FeedItemContext:
+        try:
+            image_url = self.preview_image.url
+        except ValueError:
+            image_url = None
+
+        return FeedItemContext(
+            title=self.title,
+            url=self.get_absolute_url(),
+            date=self.published_at,
+            type=self.__class__.__name__,
+            summary=self.preview_text,
+            image_url=image_url,
+            image_class=self.preview_image_css,
+            themeable=self,
+        )

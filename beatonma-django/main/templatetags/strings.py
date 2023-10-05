@@ -9,46 +9,48 @@ register = template.Library()
 
 @register.filter(name="startswith")
 @stringfilter
-def startswith(self: str, query: str) -> bool:
-    if self is None:
+def startswith(text: str, query: str) -> bool:
+    if text is None:
         return False
 
     try:
-        return self.startswith(query)
+        return text.startswith(query)
     except AttributeError:
-        return str(self).startswith(query)
+        return str(text).startswith(query)
 
 
 @register.filter(name="endswith")
 @stringfilter
-def endswith(self: str, query: str) -> bool:
-    if self is None:
+def endswith(text: str, query: str) -> bool:
+    if text is None:
         return False
 
     try:
-        return self.endswith(query)
+        return text.endswith(query)
     except AttributeError:
-        return str(self).endswith(query)
+        return str(text).endswith(query)
 
 
 @register.filter(name="remove")
 @stringfilter
-def remove(self: str, substring: str) -> str:
-    if self is None:
+def remove(text: str, substring: str) -> str:
+    if text is None:
         return ""
 
-    return self.replace(substring, "")
+    return text.replace(substring, "")
 
 
 @register.filter(name="in_rainbows")
 @stringfilter
-def in_rainbows(self: str):
+def in_rainbows(text: str) -> str:
+    """Break up the given text in the style of that album art."""
+
     def _maybe(options: str) -> str:
         if random() > 0.9:
             return choice(options)
         return ""
 
-    words = self.split(" ")
+    words = text.split(" ")
     for index, word in enumerate(words):
         if len(word) < 4:
             words[index] = f"{_maybe('_/')}{word}{_maybe('_/')}"
@@ -61,8 +63,9 @@ def in_rainbows(self: str):
 
 @register.filter("nbsp")
 @stringfilter
-def nbsp(self: str):
-    return self.replace(" ", "&nbsp;")
+def nbsp(text: str) -> str:
+    """Replace normal space characters with non-breaking spaces."""
+    return text.replace(" ", "&nbsp;")
 
 
 @register.filter("format")
