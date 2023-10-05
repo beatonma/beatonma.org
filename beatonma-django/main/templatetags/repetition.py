@@ -1,5 +1,4 @@
 import math
-import random
 
 from django import template
 from django.template.defaultfilters import stringfilter
@@ -28,8 +27,3 @@ def repeat_until_length(content: str, target_length: int) -> str:
 @register.filter(name="as_list")
 def as_list(content):
     return [content]
-
-
-@register.simple_tag(name="choose")
-def choose(*args) -> str:
-    return random.choice(args)
