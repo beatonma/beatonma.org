@@ -5,7 +5,8 @@ import gulpReplace from "gulp-replace";
 import Vinyl from "vinyl";
 import { unwrap } from "./build";
 import { ANY_HTML, distPath, srcPath } from "./paths";
-import { getGitHash } from "./setup";
+import { getGitHash, isDevBuild } from "./setup";
+import { Transform } from "node:stream";
 
 const isRootTemplate = (file: Vinyl): boolean => {
     const path = file.history[0];
@@ -38,27 +39,49 @@ const injectGitHash = () =>
         `$1$2-${getGitHash()}.min.$3`
     );
 
-const removeNewlinesInDjangoTags = () =>
-    gulpReplace(/(?<={%).*?(?=%})/gs, match => match.replace(/\s/g, " "));
+/**
+ * Template source files should optimise for maintainability, but that can
+ * result in silly amounts of whitespace in the final HTML files after extend,
+ * include, etc.
+ *
+ * Not that it really matters, but it looks untidy.
+ * Anyway, here we remove most of that whitespace, resulting in HTML source
+ * that keeps the basic structure of the document intact but without any
+ * indentations or gaps.
+ */
+const minimiseWhitespace = (): NodeJS.ReadWriteStream => {
+    const afterDjangoTag = /(%})\s+/gs;
+    const inHtmlTag = /(?<=<.*?)\s+(?=[^<]*>)/gs;
+    const atLineStart = /^\s+/gm;
+    const repeatedLineBreaks = /[\r\n]{2,}/g;
 
-const removeWhitespaceAfterDjangoTags = () =>
-    gulpReplace(/([%}]})[\r\n]+\s*/gs, "$1");
+    return new Transform({
+        objectMode: true,
+        transform(
+            file: Vinyl,
+            encoding: BufferEncoding,
+            callback: (error?: Error | null, data?: any) => void
+        ) {
+            if (file.isNull()) return callback(null, file);
 
-const removeNewlinesInHtmlTags = () =>
-    gulpReplace(/(?<=<.*?)\s+(?=[^<]*>)/gs, " ");
-
-const removeWhitespaceAtLineStart = () => gulpReplace(/^\s+/gm, "");
-
-const removeLinebreaks = () => gulpReplace(/[\r\n]{2,}/g, "\n");
+            if (file.isBuffer()) {
+                const contents = String(file.contents)
+                    .replace(afterDjangoTag, "$1")
+                    .replace(inHtmlTag, " ")
+                    .replace(atLineStart, "")
+                    .replace(repeatedLineBreaks, "\n");
+                file.contents = Buffer.from(contents);
+                return callback(null, file);
+            }
+            callback(TypeError(`Unhandled file: ${file}`));
+        },
+    });
+};
 
 export const buildTemplates = () =>
     src([srcPath(ANY_HTML), srcPath("**/templates/**/*.svg")])
         .pipe(injectGitHash())
-        .pipe(removeNewlinesInDjangoTags())
-        .pipe(removeWhitespaceAfterDjangoTags())
-        .pipe(removeNewlinesInHtmlTags())
-        .pipe(removeWhitespaceAtLineStart())
-        .pipe(removeLinebreaks())
+        .pipe(gulpIf(!isDevBuild(), minimiseWhitespace()))
         .pipe(collectRootPages())
         .pipe(unwrap())
         .pipe(dest(distPath()));
