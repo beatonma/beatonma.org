@@ -44,7 +44,7 @@ ALLOWED_HOSTS = [
 ]
 CSRF_TRUSTED_ORIGINS = [
     f"https://{DOMAIN_NAME}",
-    "http://localhost",
+    "http://localhost:3000",
 ]
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
