@@ -40,16 +40,10 @@ const includeEnv = () => {
     const env = getEnvironment();
 
     return gulpReplace(/__env__:(\w+)/g, function (match: string, key: string) {
-        if (Object.keys(env).includes(key)) {
-            console.debug(
-                `__env__:${key} -> '${env[key as keyof Env]}' | ${
-                    this.file.basename
-                }`
-            );
+        if (key in env) {
             return env[key as keyof Env] as string;
-        } else {
-            throw `Unknown environment key ${key}`;
         }
+        throw `Unknown environment key '${key}'. (Keys: ${Object.keys(env).join("")})`;
     });
 };
 
