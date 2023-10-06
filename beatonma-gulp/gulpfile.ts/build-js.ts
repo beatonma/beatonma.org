@@ -2,7 +2,7 @@ import { distPath, srcPath } from "./paths";
 import { dest, parallel, src } from "gulp";
 import { exec as shellExec } from "child_process";
 import webpackStream from "webpack-stream";
-import { getConfig } from "../webpack.config";
+import { getConfig } from "./webpack.config";
 import named from "vinyl-named";
 import Vinyl from "vinyl";
 import { unwrap } from "./build";
