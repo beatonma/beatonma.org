@@ -1,6 +1,6 @@
 import { create as browserSyncCreate } from "browser-sync";
 import { exec as shellExec } from "child_process";
-import del from "del";
+import { sync as deleteSync } from "del";
 import gulp, { dest, parallel, series, src } from "gulp";
 import { ANY_FILE, distPath, djangoPath, localPath, srcPath } from "./paths";
 import { build } from "./build";
@@ -17,13 +17,13 @@ const refreshBrowser = async () => {
 };
 
 const localDist = () => src(distPath(ANY_FILE)).pipe(dest(localPath()));
-const localClean = async () => del.sync(localPath(), { force: true });
+const localClean = async () => deleteSync(localPath(), { force: true });
 const localBuild = series(
     parallel(build, localClean),
     localDist,
-    refreshBrowser
+    refreshBrowser,
 );
 
 export const watch = series(localBuild, initBrowserSync, () =>
-    gulp.watch(srcPath(ANY_FILE), localBuild)
+    gulp.watch(srcPath(ANY_FILE), localBuild),
 );

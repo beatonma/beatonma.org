@@ -1,4 +1,4 @@
-import del from "del";
+import { sync as deleteSync } from "del";
 import { ANY_FILE, distPath } from "./paths";
 import { Env } from "./env";
 
@@ -34,7 +34,7 @@ const init = async (_buildType: BuildMode) => {
     checkConfiguration();
 };
 
-const clean = () => del.sync([distPath(ANY_FILE)]);
+const clean = () => deleteSync([distPath(ANY_FILE)]);
 const checkConfiguration = () => {
     Object.entries(environment).forEach(([, value]) => {
         if (!value) {
