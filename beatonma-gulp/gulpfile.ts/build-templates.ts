@@ -1,11 +1,10 @@
 import { dest, src } from "gulp";
 import gulpIf from "gulp-if";
 import gulpRename from "gulp-rename";
-import gulpReplace from "gulp-replace";
 import Vinyl from "vinyl";
 import { unwrap } from "./build";
 import { ANY_HTML, distPath, srcPath } from "./paths";
-import { getGitHash, isDevBuild } from "./setup";
+import { isDevBuild } from "./setup";
 import { Transform } from "node:stream";
 
 const isRootTemplate = (file: Vinyl): boolean => {
@@ -31,12 +30,6 @@ const collectRootPages = () =>
                 );
             }
         })
-    );
-
-const injectGitHash = () =>
-    gulpReplace(
-        /({% static )(.*?).min.(.*? %})/g,
-        `$1$2-${getGitHash()}.min.$3`
     );
 
 /**
@@ -80,7 +73,6 @@ const minimiseWhitespace = (): NodeJS.ReadWriteStream => {
 
 export const buildTemplates = () =>
     src([srcPath(ANY_HTML), srcPath("**/templates/**/*.svg")])
-        .pipe(injectGitHash())
         .pipe(gulpIf(!isDevBuild(), minimiseWhitespace()))
         .pipe(collectRootPages())
         .pipe(unwrap())
