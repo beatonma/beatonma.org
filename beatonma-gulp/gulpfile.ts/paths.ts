@@ -4,8 +4,8 @@ export const ANY_FILE = "**";
 /* Paths */
 const SRC_PATH = "src/";
 const DIST_PATH = "dist/";
-const LOCAL_PATH = process.env.GULP_OUTPUT_ROOT;
-const DJANGO_PATH = process.env.DJANGO_ROOT;
+const LOCAL_PATH = process.env.GULP_OUTPUT_ROOT ?? DIST_PATH;
+const DJANGO_PATH = process.env.DJANGO_ROOT ?? DIST_PATH;
 
 export const srcPath = (path?: string) => joinPath(SRC_PATH, path);
 export const distPath = (path?: string) => joinPath(DIST_PATH, path);
