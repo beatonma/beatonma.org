@@ -5,6 +5,7 @@ from main.models.mixins import ThemeableMixin
 
 __all__ = [
     "get_theme_context",
+    "generate_color_variants",
 ]
 
 CSS_TEMPLATE = """:root {{
