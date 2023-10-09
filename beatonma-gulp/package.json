@@ -38,8 +38,7 @@
       "custom-property-empty-line-before": null,
       "color-hex-length": "long",
       "color-hex-case": "lower",
-      "selector-id-pattern": null,
-      "selector-class-pattern": null
+      "selector-id-pattern": null
     }
   },
   "devDependencies": {
