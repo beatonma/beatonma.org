@@ -18,8 +18,8 @@ import {
 } from "./types";
 import { Repository } from "./types/common";
 import { PushPayload, WikiPayload } from "./types/payload";
-import { LargeFeedItem } from "../../components/feed-item";
 import { createRoot } from "react-dom/client";
+import { Dropdown } from "../../components/dropdown";
 
 const CONTAINER = "#github_recent";
 
@@ -31,7 +31,7 @@ export const GithubEventsApp = async (dom: Document | Element) => {
         root.render(
             <StrictMode>
                 <GithubEvents />
-            </StrictMode>
+            </StrictMode>,
         );
     }
 };
@@ -56,20 +56,20 @@ const GithubEvents = () => {
         return null;
     } else {
         return (
-            <LargeFeedItem
+            <Dropdown
+                expandedDefault={true}
                 header={
                     <a href="https://github.com/beatonma">
                         <h2>github/beatonma</h2>
                     </a>
                 }
-                parentID={CONTAINER}
             >
                 <div className="github-events">
                     {groups.map((group: Group, index: number) => (
                         <EventGroup key={index} {...group} />
                     ))}
                 </div>
-            </LargeFeedItem>
+            </Dropdown>
         );
     }
 };
@@ -133,7 +133,7 @@ export const filterEvents = (events: Event[]): Group[] => {
                 break;
             case Events.Wiki:
                 wikiEditEvents = wikiEditEvents.concat(
-                    event.payload as WikiPayload
+                    event.payload as WikiPayload,
                 );
                 break;
 
@@ -143,11 +143,11 @@ export const filterEvents = (events: Event[]): Group[] => {
                         let msg = push.message
                             .replace(
                                 /(https:\/\/[^\s]+\.[^\s]+)/g,
-                                `<a href="$1">$1</a>`
+                                `<a href="$1">$1</a>`,
                             ) // Linkify links
                             .replace(
                                 /#(\d+)/g,
-                                `<a href="${event.repository.url}/issues/$1/">#$1</a>`
+                                `<a href="${event.repository.url}/issues/$1/">#$1</a>`,
                             ) // Linkify references to Github issues
                             .replace(/`([^\s]+)`/g, `<code>$1</code>`); // wrap text in `quotes` with code tags
 
@@ -161,7 +161,7 @@ export const filterEvents = (events: Event[]): Group[] => {
                             message: msg,
                             url: push.url,
                         };
-                    })
+                    }),
                 );
 
                 break;
