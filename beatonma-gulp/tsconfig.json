@@ -12,7 +12,6 @@
         "esModuleInterop": true,
         "skipLibCheck": true,
         "typeRoots": [
-            "gulpfile.ts/types",
             "node_modules/@types"
         ]
     },
@@ -20,13 +19,17 @@
         "build/",
         "dist/",
         "node_modules/",
-        "gulpfile.ts/types/",
         "cypress/",
-        "gulpfile.ts/"
+        "gulpfile.ts/",
+        "gulpfile.ts/types/",
+        "src/webapp"
     ],
     "ts-node": {
         "compilerOptions": {
-            "module": "commonjs"
-        }
+            "module": "commonjs",
+            "typeRoots": [
+                "gulpfile.ts/types"
+            ]
+        },
     }
 }

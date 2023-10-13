@@ -1,0 +1,13 @@
+@use "mixin";
+
+dialog {
+  @extend %surface;
+  @extend %shape-adaptive-medium;
+
+  border: none;
+  z-index: var(--elevation-dialog);
+  overflow: clip;
+  position: fixed;
+  inset: 0;
+  padding: 0;
+}

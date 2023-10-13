@@ -1,6 +1,0 @@
-@use "v2/core";
-
-p {
-  @extend %readable-text;
-  @extend %textbox;
-}

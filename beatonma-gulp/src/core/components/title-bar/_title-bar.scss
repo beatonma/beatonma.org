@@ -1,0 +1,40 @@
+@use "mixin";
+@use "components/card";
+
+.title-bar {
+  @extend %stretch-width;
+
+  &__primary {
+    @extend %stretch-width;
+
+    @include mixin.row(
+      $horizontal: flex-start,
+      $vertical: baseline,
+      $gap: 1rem,
+      $wrap: nowrap
+    );
+
+    align-items: baseline;
+    gap: var(--space-2x);
+
+    .title-bar__title {
+      @extend %readable-text;
+      @extend %textbox;
+
+      letter-spacing: 0.1ch;
+    }
+
+    .title-bar__labels {
+      font-size: var(--fs-smallest);
+      flex-grow: 10;
+    }
+
+    .title-bar__trailing {
+      font-size: var(--fs-smallest);
+      text-align: end;
+    }
+  }
+
+  &__secondary {
+  }
+}

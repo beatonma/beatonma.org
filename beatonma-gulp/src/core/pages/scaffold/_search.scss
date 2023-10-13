@@ -1,0 +1,150 @@
+@use "components/card";
+@use "mixin";
+
+$show-search-max-width: 700px; // On narrow devices, hide the search icon and always show search input.
+$-preferred-ui-width: 320px;
+
+#search_container {
+  @include mixin.stretch-width;
+
+  --search-ui-width: 0;
+  --search-alignment: end;
+
+  font-size: var(--fs-small);
+  position: relative;
+
+  #search_form {
+    @include mixin.row(flex-end, $wrap: nowrap);
+  }
+  #search_icon {
+    @extend %clickable;
+    @extend %hover;
+    @extend %padding-small;
+    @include mixin.size(var(--fs-h6));
+
+    display: inline-block;
+    font-size: var(--fs-h6);
+  }
+  .search_wrapper {
+    @include mixin.transition((opacity));
+
+    max-width: 0;
+    overflow-x: hidden;
+    opacity: 0;
+    width: var(--search-ui-width);
+  }
+
+  #search_results {
+    @extend %card;
+    @extend %padding-small;
+    @include mixin.transition((opacity));
+
+    display: none;
+    position: absolute;
+    right: 0;
+    overflow: hidden;
+    opacity: 0;
+    width: var(--search-ui-width);
+    box-sizing: border-box;
+  }
+
+  #search {
+    font-size: var(--fs-small);
+    width: var(--search-ui-width);
+  }
+
+  // Search UI is in use.
+  &:focus-within {
+    --search-ui-width: #{$-preferred-ui-width};
+    z-index: var(--elevation-search-results);
+
+    #search_icon {
+      // Icon should still be visible over the scrim.
+      color: var(--text-light-primary);
+    }
+
+    .search_wrapper {
+      max-width: var(--search-ui-width);
+      opacity: 1;
+    }
+
+    #search_results {
+      display: block;
+      opacity: 1;
+      max-height: unset;
+    }
+  }
+
+  // Search bar always visible
+  @media (width < $show-search-max-width) {
+    --search-ui-width: #{$-preferred-ui-width};
+
+    .search_wrapper {
+      max-width: var(--search-ui-width);
+      opacity: 1;
+    }
+
+    #search_icon {
+      display: none;
+    }
+  }
+
+  // Search UI fills display width
+  @include mixin.on-medium-width {
+    --search-ui-width: 100%;
+    --search-alignment: center;
+
+    &:focus-within {
+      --search-ui-width: 100%;
+    }
+  }
+
+  .search--results {
+    @extend %margin-medium-bottom;
+
+    .search-result {
+      @extend %shape-adaptive-small;
+      @extend %surface-muted-hover;
+      @extend %margin-small-block;
+      @extend %padding-small;
+      @include mixin.stretch-width;
+
+      display: block;
+
+      &--name {
+        @include mixin.max-lines(2);
+
+        font-weight: bold;
+      }
+
+      &--description {
+        @include mixin.max-lines(2);
+        @extend %text-small;
+      }
+
+      > time {
+        @extend %margin-small-top;
+
+        display: block;
+        text-align: end;
+      }
+    }
+  }
+
+  .search--suggestions {
+    @extend %link-buttons;
+
+    justify-content: var(--search-alignment);
+
+    .links-title {
+      flex: 0 0 100%;
+      justify-content: var(--search-alignment);
+      text-align: var(--search-alignment);
+
+      &::after {
+        // Disable animated border from %link-buttons.
+        display: none !important;
+      }
+    }
+  }
+}

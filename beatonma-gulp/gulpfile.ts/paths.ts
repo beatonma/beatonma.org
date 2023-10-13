@@ -1,19 +1,84 @@
-export const ANY_HTML = "**/*.html";
-export const ANY_FILE = "**";
+/**
+ * Special named paths which get specific treatment.
+ *
+ * If any of these paths change in the filetree they must also be updated here!
+ */
+import { DjangoApp, StaticResourceType } from "./build/types";
+import * as path from "path";
 
-/* Paths */
-const SRC_PATH = "src/";
-const DIST_PATH = "dist/";
-const LOCAL_PATH = process.env.GULP_OUTPUT_ROOT ?? DIST_PATH;
-const DJANGO_PATH = process.env.DJANGO_ROOT ?? DIST_PATH;
+const _distPath = process.env.GULP_OUTPUT_ROOT ?? "dist/";
+const absoluteDistPath = _distPath.startsWith("/")
+    ? _distPath
+    : path.join(path.resolve("."), _distPath);
 
-export const srcPath = (path?: string) => joinPath(SRC_PATH, path);
-export const distPath = (path?: string) => joinPath(DIST_PATH, path);
+/**
+ * Build a path relative to the root source directory.
+ */
+export const srcPath = (_path?: string) =>
+    path.join(SpecialPath.Gulp.Source, _path ?? "");
 
-export const localPath = (path?: string) => joinPath(LOCAL_PATH, path);
-export const djangoPath = (path?: string) => joinPath(DJANGO_PATH, path);
+/**
+ * Build a path relative to the root output directory.
+ */
+export const distPath = (_path?: string) =>
+    path.join(SpecialPath.Gulp.Dist, _path ?? "");
 
-const joinPath = (root: string, leaf: string | undefined) => {
-    if (!leaf) return root;
-    return `${root}${leaf}`;
+const djangoStatic = (appName: DjangoApp, type: StaticResourceType): string => {
+    const root = `${appName}/static/${appName}`;
+    if (type) return `${root}/${type}/`;
+    return root;
+};
+
+const djangoTemplate = (appName: DjangoApp, path: string) => {
+    if (appName) return `${appName}/templates/${path}`;
+    return `templates/${path}`;
+};
+
+/**
+ * Names of any special directories that get some sort of specific treatment
+ * during the Gulp build process.
+ *
+ * Any changes in the source filetree must be reflected here.
+ */
+export const SpecialPath = {
+    Gulp: {
+        Source: "src/",
+        Dist: _distPath,
+    },
+
+    Templates: {
+        FlatPages: "pages/__root__/flatpages",
+        RootTemplates: "pages/__root__/",
+    },
+
+    /**
+     * Names of special top-level directories within the gulp sources root..
+     */
+    SourceRoot: {
+        /**
+         * Name of the root directory of the main web app.
+         */
+        Core: "core",
+        /**
+         * Name of the root directory of Django app resources.
+         */
+        DjangoApps: "django_apps",
+        /**
+         * Name of the root directory of standalone webapps.
+         */
+        WebApps: "webapp",
+        /**
+         * Name of the root directory of generic static files.
+         */
+        Static: "static",
+    },
+
+    Outputs: {
+        djangoTemplate: djangoTemplate,
+        djangoStatic: djangoStatic,
+        djangoWebapp: path.join(
+            absoluteDistPath,
+            djangoStatic("main", "webapp"),
+        ),
+    },
 };

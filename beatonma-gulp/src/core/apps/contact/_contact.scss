@@ -1,0 +1,32 @@
+@use "mixin";
+@use "components/card";
+
+#contact {
+  @extend %center-column;
+
+  input[type="text"] {
+    @extend %stretch-width;
+  }
+
+  .success,
+  .failure {
+    @extend %card;
+    @extend %card-content;
+    @extend %margin-large-block;
+    @extend %fade-and-slide-in;
+
+    width: fit-content;
+  }
+
+  .submit {
+    @include mixin.row(space-between, flex-start, $gap: var(--space-2x));
+
+    @include mixin.on-medium-width {
+      justify-content: center;
+
+      > button[type="submit"] {
+        order: 2;
+      }
+    }
+  }
+}

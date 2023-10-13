@@ -1,0 +1,110 @@
+@use "./accessibility";
+@use "./animation";
+@use "./borders";
+@use "./color";
+@use "./elevation";
+@use "./shapes";
+@use "./state";
+@use "./typography";
+
+%clickable {
+  cursor: pointer;
+}
+
+/* Buttons */
+%button {
+  @extend %clickable;
+  @extend %shape-small;
+  @extend %text-one-line;
+  @include animation.transition((color, border-color, background-color));
+
+  padding: 0.5em 1ch;
+  text-transform: uppercase;
+  line-height: 1;
+  max-width: 32ch;
+}
+
+%button-transparent {
+  @extend %button;
+  @extend %hover;
+
+  background: none;
+  color: var(--text-primary);
+}
+
+%button-solid {
+  @extend %button;
+  @extend %elevated;
+  @extend %surface-muted-hover;
+}
+
+%button-outline {
+  @extend %button;
+  @extend %outlined;
+
+  background-color: transparent;
+  color: var(--text-primary);
+
+  &:hover,
+  &[data-selected="true"] {
+    color: var(--vibrant-high-contrast);
+    border-color: var(--vibrant-high-contrast);
+  }
+}
+
+/* Hover */
+%hover {
+  @extend %shape-small;
+  @include animation.transition((background-color));
+
+  &:hover {
+    background-color: var(--hover);
+  }
+}
+
+%hover-underline {
+  @extend %hover;
+  @extend %-underline;
+
+  &::after {
+    @include animation.transition-fast((background-color, transform));
+
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
+  }
+
+  &[data-selected]:not([data-selected="false"]) {
+    &::after {
+      background-color: var(--muted);
+      transform: none;
+    }
+
+    &:hover::after {
+      background-color: var(--vibrant);
+      transform: scaleX(1);
+    }
+  }
+}
+
+%-underline {
+  position: relative;
+
+  &::after {
+    content: "";
+    display: block;
+    position: absolute;
+    margin-top: 2px;
+    height: 2px;
+    width: 100%;
+    left: 0;
+    background-color: var(--vibrant);
+
+    @include accessibility.reduced-motion {
+      height: 1px;
+    }
+  }
+}

@@ -1,0 +1,14 @@
+@use "mixin";
+
+.search-results {
+  @extend %margin-large-block;
+
+  .filters {
+    @extend %quick-links;
+    @extend %margin-large-block;
+
+    :nth-child(n + 7) {
+      display: none;
+    }
+  }
+}

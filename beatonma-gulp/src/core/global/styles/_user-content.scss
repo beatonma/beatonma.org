@@ -1,0 +1,12 @@
+/**
+ * Classes that may be used in user-generated content.
+ */
+@use "mixin";
+
+.row {
+  @extend %row;
+}
+
+.row-spaced {
+  @extend %row-spaced;
+}

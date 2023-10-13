@@ -1,0 +1,83 @@
+@use "mixin";
+
+.github-events {
+  .github-group {
+    @extend %margin-medium-inline;
+    @extend %readable-text;
+
+    time {
+      @extend %text-small;
+
+      color: var(--text-secondary);
+    }
+
+    > .github-group-header {
+      @include mixin.row($vertical: baseline, $gap: 0.5rem);
+    }
+
+    > .private {
+      @include mixin.row($wrap: nowrap);
+      @extend %text-small;
+
+      color: var(--text-secondary);
+    }
+
+    span.github-event {
+      @extend %margin-small-right;
+      @extend %padding-small-inline;
+      @extend %shape-small;
+      @extend %text-small;
+
+      color: var(--text-light);
+      background-color: var(--vibrant-light);
+    }
+
+    code {
+      @extend %text-small;
+    }
+
+    &::after {
+      content: "";
+      display: block;
+      width: 2px;
+      height: 0.5rem;
+      margin-top: 2px;
+      margin-left: 4px;
+    }
+  }
+
+  .github-event-badges {
+    @extend %text-smallest;
+
+    display: flex;
+    flex-direction: row;
+    gap: var(--space);
+
+    :nth-child(n + 6) {
+      display: none;
+    }
+
+    :nth-child(5) {
+      > * {
+        display: none;
+      }
+
+      &::before {
+        content: "…";
+        color: var(--text-primary);
+      }
+    }
+  }
+
+  .github-event {
+    @extend %text-small;
+  }
+
+  .github-commit {
+    @extend %text-monospace;
+
+    span {
+      @include mixin.max-lines(2);
+    }
+  }
+}

@@ -24,7 +24,7 @@ class BaseAdmin(admin.ModelAdmin):
     class Media:
         js = ()
         css = {
-            "all": (f"/static/css/admin-{environment.GIT_HASH}.min.css",),
+            "all": (f"/static/css/admin-{environment.GIT_HASH}.css",),
         }
 
     def get_model_fields(self, Model: models.Model):

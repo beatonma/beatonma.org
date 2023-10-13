@@ -1,0 +1,34 @@
+@use "mixin";
+
+form {
+  max-width: 100%;
+
+  label {
+    font-size: var(--fs-small);
+    margin-block: var(--space);
+  }
+
+  div,
+  p {
+    label,
+    input:not([type="checkbox"], [type="radio"]),
+    textarea {
+      display: block;
+    }
+
+    input[type="checkbox"] + label,
+    input[type="radio"] + label {
+      display: inline;
+      font-size: var(--fs-default);
+    }
+  }
+
+  button {
+    @include mixin.on-medium-width {
+      @include mixin.stretch-width;
+      @include mixin.center;
+
+      display: block;
+    }
+  }
+}

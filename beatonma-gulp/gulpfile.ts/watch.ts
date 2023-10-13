@@ -1,9 +1,8 @@
+import { build } from "./build";
+import { srcPath } from "./paths";
 import { create as browserSyncCreate } from "browser-sync";
 import { exec as shellExec } from "child_process";
-import { sync as deleteSync } from "del";
-import gulp, { dest, parallel, series, src } from "gulp";
-import { ANY_FILE, distPath, djangoPath, localPath, srcPath } from "./paths";
-import { build } from "./build";
+import gulp, { series } from "gulp";
 
 const browserSync = browserSyncCreate();
 const initBrowserSync = async () =>
@@ -12,18 +11,12 @@ const initBrowserSync = async () =>
         open: false,
     });
 const refreshBrowser = async () => {
-    shellExec(`touch ${djangoPath("beatonma/__init__.py")}`);
+    shellExec(`touch ${process.env.DJANGO_ROOT}beatonma/__init__.py`);
     browserSync.reload();
 };
 
-const localDist = () => src(distPath(ANY_FILE)).pipe(dest(localPath()));
-const localClean = async () => deleteSync(localPath(), { force: true });
-const localBuild = series(
-    parallel(build, localClean),
-    localDist,
-    refreshBrowser,
-);
+const localBuild = series(build, refreshBrowser);
 
 export const watch = series(localBuild, initBrowserSync, () =>
-    gulp.watch(srcPath(ANY_FILE), localBuild),
+    gulp.watch([srcPath("**"), "!**/node_modules/**"], localBuild),
 );

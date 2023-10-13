@@ -1,0 +1,17 @@
+@use "mixin";
+
+#dialog_scrim {
+  @include mixin.transition((opacity));
+  @extend %scrim-colors;
+
+  position: fixed;
+  opacity: 0;
+  z-index: 0;
+
+  &[data-visible] {
+    inset: 0;
+    opacity: 1;
+    z-index: var(--elevation-dialog-scrim);
+    min-height: 100vh; // Ensures full coverage while scrolling on mobile
+  }
+}

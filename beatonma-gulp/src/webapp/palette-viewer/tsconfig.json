@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "module": "ESNext",
+        "target": "ESNext",
+        "lib": ["ESNext", "dom"],
+        "allowJs": false,
+        "jsx": "react",
+        "moduleResolution": "bundler",
+        "noImplicitAny": true,
+        "sourceMap": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        "baseUrl": "./",
+        "paths": {
+            "core/*": [
+                "./core/*"
+            ]
+        }
+    },
+    "exclude": [
+        "node_modules/",
+    ]
+}

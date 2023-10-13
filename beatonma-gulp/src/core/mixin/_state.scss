@@ -1,0 +1,62 @@
+// @use "./accessibility";
+// @use "./animation";
+// @use "./shapes";
+//
+// /**
+//  * Hover, select, focus, etc.
+//  */
+// %hover {
+//   @extend %shape-small;
+//   @include animation.transition((background-color));
+//
+//   &:hover {
+//     background-color: var(--hover);
+//   }
+// }
+//
+// %hover-underline {
+//   @extend %hover;
+//   @extend %-underline;
+//
+//   &::after {
+//     @include animation.transition-fast((background-color, transform));
+//
+//     transform: scaleX(0);
+//     transform-origin: left;
+//   }
+//
+//   &:hover::after {
+//     transform: scaleX(1);
+//   }
+//
+//   &[data-selected]:not([data-selected="false"]) {
+//     &::after {
+//       background-color: var(--muted);
+//       transform: none;
+//     }
+//
+//     &:hover::after {
+//       background-color: var(--vibrant);
+//       transform: scaleX(1);
+//     }
+//   }
+// }
+//
+// %-underline {
+//   position: relative;
+//
+//   &::after {
+//     content: "";
+//     display: block;
+//     position: absolute;
+//     margin-top: 2px;
+//     height: 2px;
+//     width: 100%;
+//     left: 0;
+//     background-color: var(--vibrant);
+//
+//     @include accessibility.reduced-motion {
+//       height: 1px;
+//     }
+//   }
+// }

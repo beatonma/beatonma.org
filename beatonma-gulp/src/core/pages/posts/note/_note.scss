@@ -1,0 +1,25 @@
+@use "mixin";
+
+article[data-type="note"] {
+  .note-text {
+    @extend %margin-large-block;
+    @extend %padding-large;
+    @extend %center;
+    @extend %surface;
+    @extend %outlined-adaptive;
+    @extend %shape-adaptive-medium;
+
+    max-width: 480px;
+
+    .e-content {
+      @extend %text-large;
+
+      margin-top: 0;
+    }
+
+    time {
+      display: block;
+      text-align: end;
+    }
+  }
+}

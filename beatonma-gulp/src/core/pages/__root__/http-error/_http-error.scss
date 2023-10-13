@@ -1,0 +1,21 @@
+@use "mixin";
+@use "components/card";
+
+.http-error {
+  @extend %card;
+  @extend %center;
+  @extend %padding-large;
+
+  text-align: center;
+  width: fit-content;
+
+  h1 {
+    @extend %text-funky;
+
+    font-size: calc(2 * var(--fs-h1));
+  }
+
+  .error-message {
+    font-size: var(--fs-h4);
+  }
+}

@@ -1,0 +1,18 @@
+{% extends "components/title-bar/title-bar.html" %}
+
+{% block title %}
+  <h2 class="p-name">{{ app.title }}</h2>
+{% endblock %}
+
+{% block labels %}
+  {% include "./_app_type.html" with app_type=app.app_type %}
+{% endblock %}
+
+{% block trailing %}
+  {% include "components/datetime/date.html" with date=app.published_at %}
+{% endblock %}
+
+{% block subtitle %}
+  <div class="tagline p-summary">{{ app.tagline|default:'' }}</div>
+  {% include "../_related-links.html" with links=app.links.all tags=app.tags.all %}
+{% endblock %}

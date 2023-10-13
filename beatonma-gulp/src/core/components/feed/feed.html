@@ -1,0 +1,60 @@
+{% load object %}
+{% load boolean %}
+{% load page.feed %}
+<section id="feed" data-cy="feed">
+    {% block first_feed_items %}{% endblock %}
+
+    <div class="feed h-feed">
+        {% for item in feed %}
+          {% with cls=item|get_class %}
+            {% if item|hasattr:"is_published" %}
+              {% comment %}Show a canary warning if any item(s) in the feed are supposed to be private.{% endcomment %}
+              {% include "components/canary/canary.html" with condition=item.is_published|negate %}
+            {% endif %}
+
+            {% if cls == "Note" %}
+              {% include "./item/note-item.html" with note=item type=cls %}
+            {% elif cls == "FeedMessage" %}
+              {% include "./item/message-item.html" with message=item type=cls %}
+            {% else %}
+              {% include "./item/default-item.html" with item=item.to_feeditem_context %}
+            {% endif %}
+          {% endwith %}
+        {% empty %}
+          <div class="feed-empty">
+              <div class="feed-empty-title">no results</div>
+              <div class="feed-empty-message">{% choose_empty_feed_message %}</div>
+          </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        <div class="pagination-group">
+            {% if page_obj.has_previous %}
+              <a href="/#content" title="First page" class="tooltip">
+                  <span class="icon">first_page</span>
+              </a>
+
+              {% if page_obj.number > 2 %}
+                <a href="?page={{ page_obj.previous_page_number }}#content" title="Previous page" class="tooltip">
+                    <span class="icon">navigate_before</span>
+                </a>
+              {% endif %}
+            {% endif %}
+        </div>
+
+        <div class="pagination-group">
+            {% if page_obj.has_next %}
+              {% if page_obj.next_page_number != page_obj.paginator.num_pages %}
+                <a href="?page={{ page_obj.next_page_number }}#content" title="Next page" data-cy="next_page" class="tooltip">
+                    <span class="icon">navigate_next</span>
+                </a>
+              {% endif %}
+
+              <a href="?page={{ page_obj.paginator.num_pages }}#content" title="Last page" data-cy="last_page" class="tooltip">
+                  <span class="icon">last_page</span>
+              </a>
+            {% endif %}
+        </div>
+    </div>
+</section>

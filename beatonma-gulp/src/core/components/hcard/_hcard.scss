@@ -1,0 +1,112 @@
+@use "mixin";
+@use "components/card";
+
+.h-card {
+  @extend %outlined;
+  @extend %card;
+  @extend %card-content;
+  @extend %margin-large-bottom;
+  @extend %center;
+
+  width: fit-content;
+
+  .basic {
+    display: grid;
+    grid-template-areas:
+      "photo info"
+      "links links";
+    align-items: center;
+    column-gap: var(--space-2x);
+    row-gap: var(--space);
+  }
+
+  .about {
+    grid-area: info;
+  }
+
+  .p-name {
+    font-weight: bold;
+  }
+
+  .p-addr {
+    @extend %text-small;
+  }
+
+  .u-photo {
+    @extend %shape-small;
+
+    grid-area: photo;
+    justify-self: flex-end;
+  }
+
+  @include mixin.on-small-width {
+    width: auto;
+    border: none;
+
+    .u-photo {
+      justify-self: center;
+    }
+
+    .basic {
+      grid-template-areas:
+        "photo"
+        "info"
+        "links";
+      justify-items: center;
+    }
+
+    .about {
+      text-align: center;
+    }
+  }
+
+  #relme {
+    @extend %stretch-width;
+
+    grid-area: links;
+    display: grid;
+    grid-template-areas: "self make do etc";
+    font-size: var(--fs-small);
+
+    @include mixin.on-medium-width {
+      grid-template-areas:
+        "self make"
+        "do make"
+        "do etc";
+    }
+
+    section {
+      @extend %margin-small-block;
+
+      min-width: 14ch;
+    }
+
+    a {
+      @extend %text-small;
+      @extend %padding-smallest-block;
+
+      display: block;
+    }
+
+    .group-name {
+      @extend %text-label;
+      @extend %margin-smallest-block;
+    }
+
+    #relme_self {
+      grid-area: self;
+    }
+
+    #relme_make {
+      grid-area: make;
+    }
+
+    #relme_do {
+      grid-area: do;
+    }
+
+    #relme_etc {
+      grid-area: etc;
+    }
+  }
+}

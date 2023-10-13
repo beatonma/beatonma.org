@@ -1,0 +1,19 @@
+{% extends 'pages/scaffold/scaffold.html' %}
+
+{% block title %}About{% endblock %}
+{% block description %}{{ about.description }}{% endblock %}
+
+{% block main %}
+  {% include 'staff/edit-links.html' with target=about %}
+  <article id="about" data-cy="about_me">
+    {% include "components/hcard/hcard.html" %}
+
+    {{ about.content_html|safe }}
+  </article>
+{% endblock %}
+
+{% block hcard %}
+  {% comment %}
+    Remove basic hcard from scaffold.html
+  {% endcomment %}
+{% endblock %}
