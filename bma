@@ -1,21 +1,5 @@
 #!/usr/bin/env bash
 
-log() {
-  echo "$*" > "$(tty)"
-}
-
-run_command() {
-  log "COMMAND: '$*'"
-  "$@"
-}
-
-case $1 in
-  "pull")
-    run_command git pull --recurse-submodules
-    exit 0
-    ;;
-esac
-
 FILE_PRODUCTION="./production.yml"
 FILE_DEV="./dev.yml"
 FILE_TEST="./test.yml"
@@ -26,18 +10,26 @@ CONTEXT_DEV="dev"
 CONTEXT_PRODUCTION="production"
 CONTEXT_TEST="test"
 
-COMPOSE_FILE=""
-CONTEXT="$1"
+compose_file=""
+context="$1"
 shift
 
 log() {
-  echo "$*" > "$(tty)"
+  echo "$*" >"$(tty)"
 }
 
 run_command() {
   log "COMMAND: '$*'"
   "$@"
 }
+
+# Short-circuit for simple commands that don't require a build context.
+case $context in
+  "pull")
+    run_command git pull --recurse-submodules
+    exit 0
+    ;;
+esac
 
 show_help() {
   log 'bma (dev | production | test | certbot | pull)'
@@ -50,7 +42,7 @@ show_help() {
 }
 
 docker_compose() {
-  run_command docker compose -f "$COMPOSE_FILE" "$@"
+  run_command docker compose -f "$compose_file" "$@"
 }
 
 docker_compose_build() {
@@ -80,7 +72,7 @@ production() {
       production_build "$@"
       exit 0
       ;;
-    "up"|"down"|"--")
+    "up" | "down" | "--")
       docker_compose "$@"
       exit 0
       ;;
@@ -93,7 +85,7 @@ production() {
 
 dev() {
   case "$1" in
-    "up"|"down"|"--")
+    "up" | "down" | "--")
       docker_compose "$@"
       ;;
     *)
@@ -108,10 +100,12 @@ dev() {
 runtests() {
   case "$1" in
     "dev")
+      # Keep the Django server running after tests complete - use with `cypress`..
       shift
       docker_compose up "$@"
       ;;
     "cypress")
+      # Run cypress tests on running Django server - use with `dev`.
       docker_compose up cypress
       ;;
     "--")
@@ -153,7 +147,8 @@ certbot_renew() {
 
 certbot() {
   source "$FILE_ENV"
-  common_args=(
+
+  common_args_list=(
     "-d ${DOMAIN_NAME}"
     "-d www.${DOMAIN_NAME}"
     "--email ${DOMAIN_EMAIL}"
@@ -162,39 +157,42 @@ certbot() {
     "--agree-tos"
     "--non-interactive"
   )
-  common_args=$(printf "%s " "${common_args[@]}")
 
-  if [ "$1" = "init" ]; then
-    shift
-    certbot_init "$common_args"
+  # Concat list to string
+  common_args=$(printf "%s " "${common_args_list[@]}")
 
-  elif [ "$1" = "renew" ]; then
-    shift
-    certbot_renew "$common_args"
-  fi
+  case "$1" in
+    "init")
+      shift
+      certbot_init "$common_args"
+      ;;
+    "renew")
+      shift
+      certbot_renew "$common_args"
+      ;;
+  esac
 
   exit 0
 }
 
-
-case $CONTEXT in
+case $context in
   "$CONTEXT_PRODUCTION")
-    COMPOSE_FILE=$FILE_PRODUCTION
+    compose_file=$FILE_PRODUCTION
     production "$@"
     ;;
   "$CONTEXT_DEV")
-    COMPOSE_FILE=$FILE_DEV
+    compose_file=$FILE_DEV
     dev "$@"
     ;;
   "$CONTEXT_TEST")
-    COMPOSE_FILE=$FILE_TEST
+    compose_file=$FILE_TEST
     runtests "$@"
     ;;
   "$CONTEXT_CERTBOT")
     certbot "$@"
     ;;
   *)
-    log "Unhandled context '$CONTEXT'"
+    log "Unhandled context '$context'"
     exit 1
     ;;
 esac
