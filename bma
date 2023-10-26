@@ -10,6 +10,9 @@ CONTEXT_DEV="dev"
 CONTEXT_PRODUCTION="production"
 CONTEXT_TEST="test"
 
+EXPORT_TEMP_DIR="data-export"
+DOCKER_CONTAINER_POSTGRES="postgres"
+
 compose_file=""
 context="$1"
 shift
@@ -32,13 +35,14 @@ case $context in
 esac
 
 show_help() {
-  log 'bma (dev | production | test | certbot | pull)'
+  log 'bma (dev | production | test | certbot | pull | export)'
   log ''
   log 'dev'
   log 'production'
   log 'test'
   log 'certbot (init|renew)'
   log 'pull'
+  log 'export'
 }
 
 docker_compose() {
@@ -60,6 +64,19 @@ production_build() {
     "$@"
 }
 
+export_data() {
+  source "$FILE_ENV"
+
+  temp_dir="/tmp/$EXPORT_TEMP_DIR"
+
+  output_filename="export-$(date +%F).tar.gz"
+  run_command mkdir -p "$temp_dir"
+
+  run_command cp -r "$MEDIA_ROOT" "$temp_dir"
+  run_command docker exec -t "$DOCKER_CONTAINER_POSTGRES" pg_dumpall -c -U beatonma > "$temp_dir/db.sql"
+  run_command tar -czvf "$output_filename" -C "/tmp" "$EXPORT_TEMP_DIR"
+}
+
 production() {
   if [ $# -eq 0 ]; then
     production_build
@@ -74,6 +91,10 @@ production() {
       ;;
     "up" | "down" | "--")
       docker_compose "$@"
+      exit 0
+      ;;
+    "export")
+      export_data "$@"
       exit 0
       ;;
     *)
