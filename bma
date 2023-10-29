@@ -5,12 +5,9 @@ FILE_DEV="./dev.yml"
 FILE_TEST="./test.yml"
 FILE_ENV="./.env"
 
-CONTEXT_CERTBOT="certbot"
-CONTEXT_DEV="dev"
-CONTEXT_PRODUCTION="production"
-CONTEXT_TEST="test"
-
-EXPORT_TEMP_DIR="data-export"
+# Data import/export
+ARCHIVE_DIRNAME="data-archive"
+ARCHIVE_DB="backup.sql"
 DOCKER_CONTAINER_POSTGRES="postgres"
 
 compose_file=""
@@ -35,14 +32,15 @@ case $context in
 esac
 
 show_help() {
-  log 'bma (dev | production | test | certbot | pull | export)'
+  log 'bma (dev | production | test | certbot | pull | export | import)'
   log ''
-  log 'dev'
-  log 'production'
+  log 'dev (up|down) [CONTAINER]'
+  log 'production (up|down|build) [CONTAINER]'
   log 'test'
   log 'certbot (init|renew)'
   log 'pull'
   log 'export'
+  log 'import (FILENAME)'
 }
 
 docker_compose() {
@@ -67,14 +65,50 @@ production_build() {
 export_data() {
   source "$FILE_ENV"
 
-  temp_dir="/tmp/$EXPORT_TEMP_DIR"
+  local_temp_path="/tmp/$ARCHIVE_DIRNAME"
+  output_filename="archive-$(date +%F).tar.gz"
+  docker_temp_db_path="/tmp/$ARCHIVE_DB"
 
-  output_filename="export-$(date +%F).tar.gz"
-  run_command mkdir -p "$temp_dir"
+  run_command mkdir -p "$local_temp_path/"
+  run_command cp -r "$MEDIA_ROOT/." "$local_temp_path/media/"
+  run_command docker exec "$DOCKER_CONTAINER_POSTGRES" \
+    pg_dump --clean --create --no-owner \
+    --format=custom \
+    --username="$POSTGRES_USER" \
+    --file="$docker_temp_db_path" \
+    "$POSTGRES_DB"
+  run_command docker cp "${DOCKER_CONTAINER_POSTGRES}:$docker_temp_db_path" "$local_temp_path"
+  run_command tar -czvf "$output_filename" -C "/tmp" "$ARCHIVE_DIRNAME"
 
-  run_command cp -r "$MEDIA_ROOT" "$temp_dir"
-  run_command docker exec -t "$DOCKER_CONTAINER_POSTGRES" pg_dumpall -c -U beatonma > "$temp_dir/db.sql"
-  run_command tar -czvf "$output_filename" -C "/tmp" "$EXPORT_TEMP_DIR"
+  run_command rm -r "$local_temp_path"
+  run_command docker exec "$DOCKER_CONTAINER_POSTGRES" \
+    rm "$docker_temp_db_path"
+  exit 0
+}
+
+import_data() {
+  source "$FILE_ENV"
+
+  archive_file="$1"
+  local_temp_path="/tmp/$ARCHIVE_DIRNAME"
+  docker_temp_db_path="/tmp/$ARCHIVE_DB"
+
+  run_command mkdir -p "$MEDIA_ROOT"
+  run_command tar -xzvf "$archive_file" -C "/tmp"
+  run_command cp -r "$local_temp_path/media/." "$MEDIA_ROOT"
+  run_command docker cp "$local_temp_path/$ARCHIVE_DB" "$DOCKER_CONTAINER_POSTGRES:$docker_temp_db_path"
+  run_command docker exec -i "$DOCKER_CONTAINER_POSTGRES" \
+    pg_restore --clean \
+    --verbose \
+    --no-owner \
+    --username="$POSTGRES_USER" \
+    --dbname="$POSTGRES_DB" \
+    "$docker_temp_db_path"
+
+  run_command rm -r "$local_temp_path"
+  run_command docker exec -i "$DOCKER_CONTAINER_POSTGRES" rm "$docker_temp_db_path"
+
+  exit 0
 }
 
 production() {
@@ -91,10 +125,6 @@ production() {
       ;;
     "up" | "down" | "--")
       docker_compose "$@"
-      exit 0
-      ;;
-    "export")
-      export_data "$@"
       exit 0
       ;;
     *)
@@ -197,19 +227,27 @@ certbot() {
 }
 
 case $context in
-  "$CONTEXT_PRODUCTION")
+  "export")
+    compose_file=$FILE_PRODUCTION
+    export_data "$@"
+    ;;
+  "import")
+    compose_file=$FILE_PRODUCTION
+    import_data "$@"
+    ;;
+  "production")
     compose_file=$FILE_PRODUCTION
     production "$@"
     ;;
-  "$CONTEXT_DEV")
+  "dev")
     compose_file=$FILE_DEV
     dev "$@"
     ;;
-  "$CONTEXT_TEST")
+  "test")
     compose_file=$FILE_TEST
     runtests "$@"
     ;;
-  "$CONTEXT_CERTBOT")
+  "certbot")
     certbot "$@"
     ;;
   *)
