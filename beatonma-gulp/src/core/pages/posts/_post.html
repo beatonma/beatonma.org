@@ -1,0 +1,35 @@
+{% extends 'pages/scaffold/scaffold.html' %}
+{% load boolean %}
+{% load object %}
+
+{% block title %}{{ post.title }}{% endblock %}
+{% block description %}{{ post.tagline }}{% endblock %}
+
+{% block content_class %}webpost{% endblock %}
+
+{% block main %}
+  {% include "components/canary/canary.html" with condition=post.is_published|negate message="This post is not published." %}
+
+  <section>
+    {% include 'staff/edit-links.html' with target=post %}
+    <article class="h-entry webpost" data-type="{{ post|get_class|lower }}">
+      {% block article %}
+        {% block post_header %}{% endblock %}
+
+        {% block titlebar %}{% include "./_post-title-bar.html" %}{% endblock %}
+
+        <div class="e-content">
+          {% block post_content %}{{ post.content_html|safe }}{% endblock %}
+        </div>
+      {% endblock %}
+
+      {% include 'apps/media-viewer/media-container.html' with target=post style="carousel" %}
+    </article>
+  </section>
+
+  {% block additional_content %}{% endblock %}
+{% endblock %}
+
+{% block webmentions %}
+  {% include "apps/webmentions/webmentions-container.html" %}
+{% endblock %}

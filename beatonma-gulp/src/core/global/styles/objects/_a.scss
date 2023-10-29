@@ -1,0 +1,18 @@
+@use "mixin";
+@use "./button";
+
+a {
+  @include mixin.transition((color));
+
+  text-decoration: none;
+  color: var(--vibrant);
+  width: fit-content;
+
+  &:hover {
+    color: var(--vibrant-hover);
+  }
+}
+
+a.button {
+  @extend %button-outline;
+}

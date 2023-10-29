@@ -22,7 +22,8 @@
         "node_modules/",
         "gulpfile.ts/types/",
         "cypress/",
-        "gulpfile.ts/"
+        "gulpfile.ts/",
+        "src/webapp"
     ],
     "ts-node": {
         "compilerOptions": {

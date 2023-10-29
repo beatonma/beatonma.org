@@ -1,0 +1,14 @@
+{% extends 'pages/posts/_post.html' %}
+
+{% block title %}{{ post.content|truncatechars:24 }}{% endblock %}
+{% block description %}{% endblock %}
+
+{% block article %}
+  <div class="note-text">
+    <div class="e-content">
+      {{ post.content_html|safe }}
+    </div>
+
+    {% include "components/datetime/date.html" with date=post.published_at %}
+  </div>
+{% endblock %}

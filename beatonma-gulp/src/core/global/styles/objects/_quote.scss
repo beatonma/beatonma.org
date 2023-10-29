@@ -1,0 +1,14 @@
+@use "mixin";
+
+blockquote {
+  @extend %readable-text;
+  @extend %outlined;
+  @extend %indented;
+
+  margin-inline: 0;
+  padding-inline: 1em;
+
+  &:not(:has(p, div, span)) {
+    padding-block: 1em;
+  }
+}

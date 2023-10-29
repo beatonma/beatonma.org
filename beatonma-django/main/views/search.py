@@ -29,7 +29,7 @@ class SearchView(LoggedView):
 
         return _render_results(
             request,
-            "pages/search/search.html",
+            "pages/search-results/search.html",
             search_query=query,
             results=get_search_results(query),
             filters=get_suggestions(),
@@ -43,7 +43,7 @@ class TagView(LoggedView):
 
         return _render_results(
             request,
-            "pages/search/tag.html",
+            "pages/search-results/tag.html",
             search_query=tag,
             results=results,
             filters=filters,
@@ -57,7 +57,7 @@ class LanguageView(LoggedView):
 
         return _render_results(
             request,
-            "pages/search/language.html",
+            "pages/search-results/language.html",
             search_query=language,
             results=results,
             filters=filters,
@@ -71,7 +71,7 @@ class AllAppsView(LoggedView):
 
         return _render_results(
             request,
-            "pages/search/apps.html",
+            "pages/search-results/apps.html",
             search_query="Apps",
             results=results,
             filters=filters,
@@ -85,7 +85,7 @@ class FilteredAppsView(LoggedView):
 
         return _render_results(
             request,
-            "pages/search/apps.html",
+            "pages/search-results/apps.html",
             search_query=app_type,
             results=results,
             filters=filters,

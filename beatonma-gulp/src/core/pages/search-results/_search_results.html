@@ -1,0 +1,13 @@
+{% extends 'pages/scaffold/scaffold.html' %}
+
+{% block html_head %}
+  <meta name="robots" content="noindex">
+{% endblock %}
+
+{% block main %}
+  <h2 class="{% block search_header_class %}{% endblock %}">{% block search_header %}{% endblock %}</h2>
+  <div class="search-results">
+    {% block filters %}{% endblock %}
+    {% include 'components/feed/feed.html' %}
+  </div>
+{% endblock %}

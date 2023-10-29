@@ -1,10 +1,7 @@
 import logging
-import os
-from pathlib import Path
 from typing import Optional
 
 from common.views.logged import LoggedView
-from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.http import Http404, HttpResponse
 from django.shortcuts import render
@@ -37,23 +34,21 @@ def _serve_uploaded_webapp(request, slug: str) -> Optional[HttpResponse]:
 
 
 def _serve_static_webapp(request, slug: str) -> Optional[HttpResponse]:
-    if os.path.exists(Path(settings.BASE_DIR) / f"webapp/static/{slug}/"):
-        filename = f"{slug}/js/{slug}-{settings.GIT_HASH}.min.js"
-        app_script = finders.find(filename)
+    filename = f"webapp/{slug}.js"
+    app_script = finders.find(filename)
 
-        if app_script:
-            script_url = StaticNode.handle_simple(filename)
-            log.info(f"Serving webapp: '{script_url}'")
-            return render(
-                request,
-                "pages/webapp-react.html",
-                {
-                    "react_app": {
-                        "name": slug,
-                        "url": script_url,
-                    },
+    if app_script:
+        script_url = StaticNode.handle_simple(filename)
+        log.info(f"Serving webapp: '{script_url}'")
+        return render(
+            request,
+            "pages/webapp-react.html",
+            {
+                "react_app": {
+                    "name": slug,
+                    "url": script_url,
                 },
-            )
+            },
+        )
 
-        else:
-            log.warning(f"Unknown webapp: {filename}")
+    log.warning(f"Unknown webapp: {filename}")

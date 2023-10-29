@@ -1,0 +1,88 @@
+@use "sass:list";
+@use "sass:string";
+@use "./accessibility";
+@use "./constants";
+
+@mixin transition(
+  $props,
+  $duration: constants.$animation-duration,
+  $easing: ease-in-out
+) {
+  $result: ();
+
+  @each $prop in $props {
+    $result: list.join(
+      $result,
+      string.unquote("#{$prop} #{$duration} #{$easing}"),
+      $separator: comma
+    );
+  }
+
+  transition: $result;
+
+  @include accessibility.reduced-motion {
+    transition: none;
+  }
+}
+
+@mixin transition-fast($props) {
+  @include transition($props, constants.$animation-duration-fast);
+}
+
+%-enter-animation {
+  animation-duration: constants.$animation-duration;
+  animation-fill-mode: both;
+  animation-iteration-count: 1;
+
+  @include accessibility.reduced-motion {
+    animation-delay: 0ms !important;
+  }
+}
+
+%fade-in {
+  @extend %-enter-animation;
+
+  animation-name: -fade-in;
+}
+
+%fade-and-slide-in {
+  @extend %-enter-animation;
+
+  animation-name: -fade-and-slide-in;
+
+  @include accessibility.reduced-motion {
+    animation-name: -fade-in;
+  }
+}
+
+@keyframes -fade-in {
+  0% {
+    opacity: 0;
+    max-height: 0;
+  }
+
+  1% {
+    max-height: inherit;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes -fade-and-slide-in {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+    max-height: 0;
+  }
+
+  1% {
+    max-height: inherit;
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

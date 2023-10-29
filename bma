@@ -1,7 +1,21 @@
 #!/usr/bin/env bash
 
+FILE_PRODUCTION="./production.yml"
+FILE_DEV="./dev.yml"
+FILE_TEST="./test.yml"
+FILE_ENV="./.env"
+
+# Data import/export
+ARCHIVE_DIRNAME="data-archive"
+ARCHIVE_DB="backup.sql"
+DOCKER_CONTAINER_POSTGRES="postgres"
+
+compose_file=""
+context="$1"
+shift
+
 log() {
-  echo "$*" > "$(tty)"
+  echo "$*" >"$(tty)"
 }
 
 run_command() {
@@ -9,48 +23,28 @@ run_command() {
   "$@"
 }
 
-case $1 in
+# Short-circuit for simple commands that don't require a build context.
+case $context in
   "pull")
     run_command git pull --recurse-submodules
     exit 0
     ;;
 esac
 
-FILE_PRODUCTION="./production.yml"
-FILE_DEV="./dev.yml"
-FILE_TEST="./test.yml"
-FILE_ENV="./.env"
-
-CONTEXT_CERTBOT="certbot"
-CONTEXT_DEV="dev"
-CONTEXT_PRODUCTION="production"
-CONTEXT_TEST="test"
-
-COMPOSE_FILE=""
-CONTEXT="$1"
-shift
-
-log() {
-  echo "$*" > "$(tty)"
-}
-
-run_command() {
-  log "COMMAND: '$*'"
-  "$@"
-}
-
 show_help() {
-  log 'bma (dev | production | test | certbot | pull)'
+  log 'bma (dev | production | test | certbot | pull | export | import)'
   log ''
-  log 'dev'
-  log 'production'
+  log 'dev (up|down) [CONTAINER]'
+  log 'production (up|down|build) [CONTAINER]'
   log 'test'
   log 'certbot (init|renew)'
   log 'pull'
+  log 'export'
+  log 'import (FILENAME)'
 }
 
 docker_compose() {
-  run_command docker compose -f "$COMPOSE_FILE" "$@"
+  run_command docker compose -f "$compose_file" "$@"
 }
 
 docker_compose_build() {
@@ -68,6 +62,55 @@ production_build() {
     "$@"
 }
 
+export_data() {
+  source "$FILE_ENV"
+
+  local_temp_path="/tmp/$ARCHIVE_DIRNAME"
+  output_filename="archive-$(date +%F).tar.gz"
+  docker_temp_db_path="/tmp/$ARCHIVE_DB"
+
+  run_command mkdir -p "$local_temp_path/"
+  run_command cp -r "$MEDIA_ROOT/." "$local_temp_path/media/"
+  run_command docker exec "$DOCKER_CONTAINER_POSTGRES" \
+    pg_dump --clean --create --no-owner \
+    --format=custom \
+    --username="$POSTGRES_USER" \
+    --file="$docker_temp_db_path" \
+    "$POSTGRES_DB"
+  run_command docker cp "${DOCKER_CONTAINER_POSTGRES}:$docker_temp_db_path" "$local_temp_path"
+  run_command tar -czvf "$output_filename" -C "/tmp" "$ARCHIVE_DIRNAME"
+
+  run_command rm -r "$local_temp_path"
+  run_command docker exec "$DOCKER_CONTAINER_POSTGRES" \
+    rm "$docker_temp_db_path"
+  exit 0
+}
+
+import_data() {
+  source "$FILE_ENV"
+
+  archive_file="$1"
+  local_temp_path="/tmp/$ARCHIVE_DIRNAME"
+  docker_temp_db_path="/tmp/$ARCHIVE_DB"
+
+  run_command mkdir -p "$MEDIA_ROOT"
+  run_command tar -xzvf "$archive_file" -C "/tmp"
+  run_command cp -r "$local_temp_path/media/." "$MEDIA_ROOT"
+  run_command docker cp "$local_temp_path/$ARCHIVE_DB" "$DOCKER_CONTAINER_POSTGRES:$docker_temp_db_path"
+  run_command docker exec -i "$DOCKER_CONTAINER_POSTGRES" \
+    pg_restore --clean \
+    --verbose \
+    --no-owner \
+    --username="$POSTGRES_USER" \
+    --dbname="$POSTGRES_DB" \
+    "$docker_temp_db_path"
+
+  run_command rm -r "$local_temp_path"
+  run_command docker exec -i "$DOCKER_CONTAINER_POSTGRES" rm "$docker_temp_db_path"
+
+  exit 0
+}
+
 production() {
   if [ $# -eq 0 ]; then
     production_build
@@ -80,7 +123,7 @@ production() {
       production_build "$@"
       exit 0
       ;;
-    "up"|"down"|"--")
+    "up" | "down" | "--")
       docker_compose "$@"
       exit 0
       ;;
@@ -93,7 +136,7 @@ production() {
 
 dev() {
   case "$1" in
-    "up"|"down"|"--")
+    "up" | "down" | "--")
       docker_compose "$@"
       ;;
     *)
@@ -108,10 +151,12 @@ dev() {
 runtests() {
   case "$1" in
     "dev")
+      # Keep the Django server running after tests complete - use with `cypress`..
       shift
       docker_compose up "$@"
       ;;
     "cypress")
+      # Run cypress tests on running Django server - use with `dev`.
       docker_compose up cypress
       ;;
     "--")
@@ -153,7 +198,8 @@ certbot_renew() {
 
 certbot() {
   source "$FILE_ENV"
-  common_args=(
+
+  common_args_list=(
     "-d ${DOMAIN_NAME}"
     "-d www.${DOMAIN_NAME}"
     "--email ${DOMAIN_EMAIL}"
@@ -162,39 +208,50 @@ certbot() {
     "--agree-tos"
     "--non-interactive"
   )
-  common_args=$(printf "%s " "${common_args[@]}")
 
-  if [ "$1" = "init" ]; then
-    shift
-    certbot_init "$common_args"
+  # Concat list to string
+  common_args=$(printf "%s " "${common_args_list[@]}")
 
-  elif [ "$1" = "renew" ]; then
-    shift
-    certbot_renew "$common_args"
-  fi
+  case "$1" in
+    "init")
+      shift
+      certbot_init "$common_args"
+      ;;
+    "renew")
+      shift
+      certbot_renew "$common_args"
+      ;;
+  esac
 
   exit 0
 }
 
-
-case $CONTEXT in
-  "$CONTEXT_PRODUCTION")
-    COMPOSE_FILE=$FILE_PRODUCTION
+case $context in
+  "export")
+    compose_file=$FILE_PRODUCTION
+    export_data "$@"
+    ;;
+  "import")
+    compose_file=$FILE_PRODUCTION
+    import_data "$@"
+    ;;
+  "production")
+    compose_file=$FILE_PRODUCTION
     production "$@"
     ;;
-  "$CONTEXT_DEV")
-    COMPOSE_FILE=$FILE_DEV
+  "dev")
+    compose_file=$FILE_DEV
     dev "$@"
     ;;
-  "$CONTEXT_TEST")
-    COMPOSE_FILE=$FILE_TEST
+  "test")
+    compose_file=$FILE_TEST
     runtests "$@"
     ;;
-  "$CONTEXT_CERTBOT")
+  "certbot")
     certbot "$@"
     ;;
   *)
-    log "Unhandled context '$CONTEXT'"
+    log "Unhandled context '$context'"
     exit 1
     ;;
 esac

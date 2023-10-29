@@ -1,0 +1,161 @@
+@use "./breakpoints";
+@use "./constants";
+
+:root {
+  --fs-default: 18px;
+  --fs-small: 16px;
+  --fs-smallest: 14px;
+  --fs-label: 12px;
+
+  --fs-h1: 38px;
+  --fs-h2: 34px;
+  --fs-h3: 30px;
+  --fs-h4: 28px;
+  --fs-h5: 26px;
+  --fs-h6: 24px;
+
+  @include breakpoints.on-medium-width {
+    --fs-default: 16px;
+    --fs-small: 14px;
+    --fs-smallest: 12px;
+    --fs-label: 10px;
+
+    --fs-h1: 30px;
+    --fs-h2: 28px;
+    --fs-h3: 24px;
+    --fs-h4: 22px;
+    --fs-h5: 20px;
+    --fs-h6: 18px;
+  }
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url("/static/fonts/Roboto-Regular.ttf");
+}
+@font-face {
+  font-family: Roboto-Mono;
+  src: url("/static/fonts/RobotoMono-Regular.ttf");
+}
+
+%textbox {
+  overflow-x: hidden;
+  overflow-y: visible;
+  text-overflow: ellipsis;
+}
+
+%text-default {
+  color: var(--text-primary);
+  font-size: var(--fs-default);
+  font-family: Roboto, sans-serif;
+  font-weight: normal;
+  line-height: normal;
+  letter-spacing: normal;
+}
+
+%text-monospace {
+  font-family: Roboto-Mono, monospace;
+}
+
+%readable-text {
+  max-width: #{constants.$readable-text-width};
+  line-height: 1.5;
+}
+
+%text-small {
+  font-size: var(--fs-small);
+}
+
+%text-smallest {
+  font-size: var(--fs-smallest);
+}
+
+%text-label {
+  font-size: var(--fs-label);
+  font-weight: bold;
+  letter-spacing: 0.2ch;
+  width: fit-content;
+}
+
+%text-large {
+  font-size: var(--fs-h6);
+  line-height: 1.5;
+  letter-spacing: 0.1ch;
+}
+
+@mixin max-lines($max-lines, $line-height: 1.5) {
+  max-height: #{$line-height * $max-lines}em;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $max-lines;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+  line-height: $line-height;
+}
+
+%text-one-line {
+  @extend %textbox;
+
+  white-space: nowrap;
+  line-break: anywhere;
+}
+
+%text-funky {
+  background: rgb(2 0 36);
+  background: linear-gradient(
+    211deg,
+    var(--vibrant),
+    rgb(129 52 163),
+    var(--muted)
+  );
+  background-size: 300% 300%;
+  animation-name: gradient-rotation;
+  animation-duration: 8s;
+  animation-iteration-count: infinite;
+  animation-direction: normal;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+
+  @keyframes gradient-rotation {
+    0% {
+      background-position: 0 0;
+    }
+
+    25% {
+      background-position: 100% 0;
+    }
+
+    75% {
+      background-position: 0 100%;
+    }
+
+    100% {
+      background-position: 0 0;
+    }
+  }
+}
+
+@mixin force-color($color: var(--text-primary)) {
+  a,
+  button {
+    &,
+    &:active,
+    &:hover,
+    &:link,
+    &:visited,
+    &:visited:hover {
+      color: $color;
+    }
+  }
+}
+
+%nolinks {
+  @include force-color;
+}
+
+.e-content {
+  @extend %readable-text;
+  @extend %textbox;
+}

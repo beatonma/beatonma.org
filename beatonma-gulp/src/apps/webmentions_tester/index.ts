@@ -1,1 +1,0 @@
-export { WebmentionTesterApp } from "./js";

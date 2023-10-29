@@ -1,0 +1,89 @@
+@use "mixin";
+
+$-webmention-min-width: 18ch;
+
+%-grid {
+  display: grid;
+  gap: var(--space);
+  align-items: start;
+}
+
+#webmentions {
+  @extend %center;
+
+  h3 {
+    @extend %margin-medium-bottom;
+  }
+
+  .grouped-mentions {
+    @extend %-grid;
+
+    grid-template-columns: 1fr $-webmention-min-width;
+
+    &:has(> :only-child) {
+      grid-template-columns: 1fr;
+    }
+
+    @media (width < 700px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .mentions {
+    @extend %-grid;
+
+    &[data-quoted="false"] {
+      grid-template-columns: repeat(
+        auto-fill,
+        minmax($-webmention-min-width, 1fr)
+      );
+    }
+  }
+
+  a.mention {
+    @extend %padding-small;
+    @extend %shape-adaptive-small;
+    @extend %surface-muted-hover;
+    @extend %stretch-width;
+
+    display: block;
+
+    .mention-hcard {
+      @include mixin.row($gap: 1ch, $wrap: nowrap);
+
+      line-height: 1.75;
+
+      .hcard-name {
+        @extend %text-one-line;
+      }
+    }
+
+    %-mention-avatar {
+      @include mixin.size(1.75rem);
+      @extend %shape-small;
+
+      object-fit: cover;
+    }
+
+    .mention-avatar {
+      @extend %-mention-avatar;
+
+      &-null {
+        @extend %-mention-avatar;
+        @extend %surface-vibrant;
+
+        text-transform: uppercase;
+        text-align: center;
+      }
+    }
+
+    .mention-quote {
+      @extend %margin-small-top;
+      @extend %padding-small;
+      @extend %shape-small;
+      @extend %text-small;
+
+      background-color: var(--hover);
+    }
+  }
+}

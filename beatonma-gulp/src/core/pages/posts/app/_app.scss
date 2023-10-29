@@ -1,0 +1,28 @@
+@use "mixin";
+@use "components/card";
+
+#app {
+  --preview-image-size: 300px;
+
+  .app-image {
+    @extend %center;
+    @extend %margin-large-block;
+
+    width: min-content;
+  }
+
+  .e-content:not(:empty) {
+    @extend %margin-large-block;
+  }
+}
+
+.app-type {
+  @include mixin.size(1em);
+  font-size: var(--fs-h6);
+  stroke: currentColor;
+  fill: currentColor;
+
+  > svg {
+    @include mixin.size(1em);
+  }
+}

@@ -1,0 +1,69 @@
+@use "mixin";
+@use "components/card";
+
+#content.webpost {
+  @extend %center-column;
+
+  nav {
+    h1 {
+      @extend %text-large;
+    }
+
+    ul {
+      list-style-position: inside;
+      padding-inline-start: 0;
+    }
+  }
+}
+
+article.webpost {
+  .title-bar {
+    @extend %margin-large-block;
+  }
+
+  &[data-type="app"] {
+    .title-bar__title {
+      align-items: center;
+    }
+  }
+
+  .related {
+    @extend %link-buttons-row;
+
+    .related__description {
+      color: var(--vibrant);
+    }
+  }
+
+  .e-content {
+    @extend %margin-large-block;
+    :first-child {
+      margin-top: 0;
+    }
+    :last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.changelogs-nav-wrapper {
+  @include mixin.sticky;
+
+  .nav-card {
+    @extend %card;
+    @extend %fade-in;
+
+    display: none;
+    position: absolute;
+    left: calc(-24ch - var(--space-4x));
+    width: 24ch;
+
+    @include mixin.on-three-column {
+      display: block;
+    }
+
+    nav {
+      @extend %card-content;
+    }
+  }
+}

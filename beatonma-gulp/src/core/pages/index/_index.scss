@@ -1,0 +1,86 @@
+@use "mixin";
+@use "../../mixin/constants";
+@use "components/card";
+
+@mixin -grid-columns-3 {
+  @media (width >= constants.$three-column-min-width) {
+    grid-template-columns: constants.$sidebar-width 1fr constants.$sidebar-width;
+    @content;
+  }
+}
+
+@mixin -grid-columns-2 {
+  @media (width >= constants.$two-column-min-width) {
+    grid-template-columns: 1fr constants.$sidebar-width;
+    @content;
+  }
+}
+
+.main-index {
+  display: grid;
+  gap: var(--space-2x);
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "motd"
+    "quick-links"
+    "main-feed";
+
+  .quick-links {
+    @extend %quick-links;
+
+    grid-area: quick-links;
+  }
+
+  #github_recent {
+    grid-area: github;
+  }
+
+  main {
+    @extend %center;
+
+    grid-area: main-feed;
+  }
+
+  #motd {
+    @extend %card;
+    @extend %card-content;
+    @extend %center-column;
+    @extend %surface-vibrant;
+    @extend %margin-large-block;
+
+    grid-area: motd;
+  }
+
+  &[data-page="1"] {
+    grid-template-areas:
+      "motd"
+      "quick-links"
+      "github"
+      "main-feed";
+
+    @include -grid-columns-2 {
+      grid-template-areas:
+        "motd motd"
+        "quick-links quick-links"
+        "main-feed github"
+        "main-feed ."
+        "main-feed .";
+
+      #github_recent {
+        @include mixin.sticky;
+
+        overflow-y: visible;
+        max-height: none;
+      }
+    }
+
+    @include -grid-columns-3 {
+      grid-template-areas:
+        ". motd ."
+        "quick-links quick-links quick-links"
+        ". main-feed github"
+        ". main-feed ."
+        ". main-feed .";
+    }
+  }
+}

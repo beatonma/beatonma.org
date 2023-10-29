@@ -1,0 +1,29 @@
+@use "./layout";
+@use "./breakpoints";
+@use "./constants";
+
+%outlined {
+  $-style: constants.$border-style var(--text-tertiary);
+  border: $-style;
+
+  &-adaptive {
+    @extend %outlined;
+
+    @include breakpoints.on-small-width {
+      border-block: $-style;
+      border-inline: none;
+    }
+  }
+}
+
+%border {
+  @include layout.directional(border, constants.$border-style);
+}
+
+/**
+ * Adds a left border and indents content to compensate.
+ */
+%indented {
+  border-left: constants.$border-style var(--vibrant);
+  padding-inline: constants.$border-width * 2;
+}

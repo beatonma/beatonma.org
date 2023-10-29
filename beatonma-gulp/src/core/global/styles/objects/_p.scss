@@ -1,0 +1,6 @@
+@use "mixin";
+
+p {
+  @extend %readable-text;
+  @extend %textbox;
+}

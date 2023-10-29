@@ -1,0 +1,29 @@
+{% comment %}
+  item: FeedItemContext
+{% endcomment %}
+
+<a
+    class="h-entry"
+    href="{{ item.url }}"
+    aria-label="{{ item.type }}: {{ item.title }}"
+    title="{{ item.type }}: {{ item.title }}"
+    data-type="{{ item.type|lower }}"
+>
+
+  <article
+      class="feeditem-summary"
+      data-type="{{ item.type|default:''|lower }}"
+  >
+    {% include "./image.html" %}
+
+    <div class="feeditem-summary-text">
+      <div class="feeditem-summary-headline">
+        <h2 class="p-name">{{ item.title }}</h2>
+
+        {% include "components/datetime/date.html" with date=item.date %}
+      </div>
+      <div class="p-summary">{{ item.summary|default:"" }}</div>
+    </div>
+  </article>
+
+</a>

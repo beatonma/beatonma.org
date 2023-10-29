@@ -6,6 +6,7 @@ module.exports = async () => ({
         "node_modules/",
         "tools/",
         "cypress/",
+        "src/webapp/",
     ],
     testEnvironment: "jsdom",
 });

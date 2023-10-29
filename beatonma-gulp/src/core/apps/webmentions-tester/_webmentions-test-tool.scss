@@ -1,0 +1,53 @@
+@use "mixin";
+
+#webmentions_testing_tool {
+  @extend %center-column;
+  @extend %bottom-gap;
+
+  form {
+    @extend %center;
+    @include mixin.row(center, none, $gap: var(--space));
+
+    width: fit-content;
+
+    input[type="url"] {
+      @extend %padding-medium-inline;
+
+      width: 30ch;
+      font-size: var(--fs-h5);
+    }
+  }
+
+  .active-mentions {
+    .active-mention {
+      @extend %outlined;
+      @extend %shape-small;
+      @extend %padding-medium;
+      @extend %margin-medium-bottom;
+    }
+  }
+
+  .label {
+    @extend %text-label;
+
+    color: var(--text-secondary);
+
+    &.temp {
+      @extend %padding-smallest-block;
+      @extend %shape-small;
+    }
+  }
+
+  .header {
+    @include mixin.row($horizontal: space-between);
+  }
+
+  table {
+    @extend %stretch-width;
+    @extend %margin-small-block;
+
+    code {
+      line-break: anywhere;
+    }
+  }
+}
