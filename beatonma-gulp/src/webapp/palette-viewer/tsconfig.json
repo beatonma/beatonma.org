@@ -1,25 +1,21 @@
 {
     "compilerOptions": {
         "allowSyntheticDefaultImports": true,
-        "module": "ESNext",
-        "target": "ESNext",
-        "lib": ["ESNext", "dom"],
+        "module": "es2020",
+        "target": "es2020",
+        "lib": ["es2020", "dom"],
         "allowJs": false,
         "jsx": "react",
-        "moduleResolution": "bundler",
+        "moduleResolution": "node",
         "noImplicitAny": true,
         "sourceMap": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
+        "types": ["node"],
         "typeRoots": [
             "node_modules/@types"
         ],
-        "baseUrl": "./",
-        "paths": {
-            "core/*": [
-                "./core/*"
-            ]
-        }
+        "baseUrl": "./"
     },
     "exclude": [
         "node_modules/",

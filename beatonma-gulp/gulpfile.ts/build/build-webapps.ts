@@ -1,26 +1,12 @@
 import { srcPath } from "../paths";
-import child_process from "child_process";
+import { shell_command } from "./util";
 import * as glob from "glob";
 import path from "path";
 
 const Webapps = srcPath("webapp/*/package.json");
 
-const npmBuild = (cwd: string) =>
-    new Promise<void>((resolve, reject) => {
-        child_process.exec(
-            "npm run build",
-            { cwd: cwd, timeout: 60_000 },
-            (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`NPM build error: ${error}`);
-                    if (stderr) console.error(stderr);
-                    if (stdout) console.error(stdout);
-                    return reject(error);
-                }
-                resolve();
-            },
-        );
-    });
+const npmInstall = (cwd: string) => shell_command("npm install", cwd);
+const npmBuild = (cwd: string) => shell_command("npm run build", cwd);
 
 export const buildWebapps = (mapToOutput: (webappDir: string) => void) =>
     function buildWebapps() {
@@ -28,6 +14,7 @@ export const buildWebapps = (mapToOutput: (webappDir: string) => void) =>
             const webappGlobs = glob.sync(Webapps);
             const builders = webappGlobs.map(async filepath => {
                 const webappCwd = path.dirname(filepath);
+                await npmInstall(webappCwd);
                 await npmBuild(webappCwd);
                 return mapToOutput(webappCwd);
             });
