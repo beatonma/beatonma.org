@@ -18,5 +18,9 @@ const refreshBrowser = async () => {
 const localBuild = series(build, refreshBrowser);
 
 export const watch = series(localBuild, initBrowserSync, () =>
-    gulp.watch([srcPath("**"), "!**/node_modules/**"], localBuild),
+    gulp.watch(
+        [srcPath("**"), "!**/node_modules/**", "!**/dist/**"],
+        { ignoreInitial: false },
+        localBuild,
+    ),
 );
