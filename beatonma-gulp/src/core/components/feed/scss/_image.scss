@@ -47,9 +47,8 @@
   }
 
   &.preview-image__text-wrapper {
+    @extend %surface;
     user-select: none;
-    background-color: var(--surface);
-    color: var(--on-surface);
 
     > .preview-image__text {
       // No actual image available, use some artsy text.
@@ -72,4 +71,8 @@
       overflow: clip;
     }
   }
+}
+
+[data-type="githubrepository"] .preview-image > div.svg {
+  background-color: var(--text-primary);
 }
