@@ -1,5 +1,5 @@
 import { SpecialPath } from "../paths";
-import { injectGitHash } from "./config";
+import { getEnvironment } from "./config";
 import { DjangoApp, StaticResourceType } from "./types";
 import fs from "fs";
 import * as glob from "glob";
@@ -97,3 +97,9 @@ export const includeWebappArtifacts = (webappDir: string) => {
         .map(it => path.resolve(it))
         .forEach(distFile => importWebappArtifact(distFile));
 };
+
+const injectGitHash = (filename: string): string =>
+    filename.replace(
+        /(?<basename>[^.]+)(?<extension>\.?.*)/,
+        `$1-${getEnvironment().gitHash}$2`,
+    );

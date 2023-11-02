@@ -11,7 +11,6 @@ export const ignore =
                 callback: (error?: Error | null, data?: any) => void,
             ) {
                 if (condition(file)) {
-                    console.debug(`ignore ${file.relative}`);
                     return callback();
                 }
                 return callback(null, file);

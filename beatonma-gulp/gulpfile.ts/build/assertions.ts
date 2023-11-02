@@ -1,17 +1,17 @@
 import { distPath } from "../paths";
-import { isProductionBuild } from "./config";
+import { getBuildOptions, isProductionBuild } from "./config";
 import * as glob from "glob";
 
 type Globs = string[];
 
 export const assertOutputCorrect = async () => {
+    const missingOutput: Globs = [];
     const checkFileExists = (path: string) => {
         const exists = glob.sync(distPath(path)).length === 1;
         if (!exists) missingOutput.push(path);
     };
 
-    const missingOutput: Globs = [];
-    ExpectedFileOutput.forEach(checkFileExists);
+    getExpectedFiles().forEach(checkFileExists);
     if (isProductionBuild()) {
         ExpectedProductionFiles.forEach(checkFileExists);
     }
@@ -73,10 +73,15 @@ const ExpectedProductionFiles: Globs = [
     "main/static/main/js/bma-*.js.map",
 ];
 
-const ExpectedFileOutput: Globs = [
-    ...ExpectedStatic,
-    ...ExpectedCss,
-    ...ExpectedJs,
-    ...ExpectedTemplates,
-    ...ExpectedWebapps,
-];
+const getExpectedFiles = () => {
+    const options = getBuildOptions();
+    const expected = [];
+
+    if (options.buildCss) expected.push(...ExpectedCss);
+    if (options.buildStatic) expected.push(...ExpectedStatic);
+    if (options.buildJs) expected.push(...ExpectedJs);
+    if (options.buildTemplates) expected.push(...ExpectedTemplates);
+    if (options.buildWebapps) expected.push(...ExpectedWebapps);
+
+    return expected;
+};

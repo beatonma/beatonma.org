@@ -5,7 +5,7 @@ import { buildJs } from "./build-js";
 import { buildStatic } from "./build-static";
 import { buildTemplates } from "./build-templates";
 import { buildWebapps } from "./build-webapps";
-import { getEnvironment, isProductionBuild } from "./config";
+import { getBuildOptions, getEnvironment, isProductionBuild } from "./config";
 import { includeWebappArtifacts, mapToOutput } from "./output-mapping";
 import { ignore } from "./transforms";
 import { Env, StreamWrapper } from "./types";
@@ -63,13 +63,19 @@ const streamWrapper: StreamWrapper = stream =>
         .pipe(mapToOutput())
         .pipe(dest(distPath()));
 
-export const build = series(
-    parallel(
-        buildCss(streamWrapper),
-        buildJs(streamWrapper),
-        buildStatic(streamWrapper),
-        buildTemplates(streamWrapper),
-        buildWebapps(includeWebappArtifacts),
-    ),
-    assertOutputCorrect,
-);
+const buildTasks = (callback: () => void) => {
+    const options = getBuildOptions();
+    const tasks = [
+        options.buildCss ? buildCss(streamWrapper) : null,
+        options.buildJs ? buildJs(streamWrapper) : null,
+        options.buildStatic ? buildStatic(streamWrapper) : null,
+        options.buildTemplates ? buildTemplates(streamWrapper) : null,
+        options.buildWebapps ? buildWebapps(includeWebappArtifacts) : null,
+    ].filter(Boolean);
+
+    if (tasks.length === 0)
+        throw "All build tasks have been disabled by options!";
+    return parallel(...tasks)(callback);
+};
+
+export const build = series(buildTasks, assertOutputCorrect);
