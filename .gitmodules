@@ -1,3 +1,3 @@
-[submodule "beatonma-gulp/src/apps/webapp/clocks"]
-	path = beatonma-gulp/src/apps/webapp/clocks
+[submodule "clocks"]
+	path = beatonma-gulp/src/webapp/clocks
 	url = https://github.com/beatonma/gclocks/
