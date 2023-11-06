@@ -11,8 +11,7 @@ from installer.components import (
     SshInstaller,
 )
 from installer.components.installer import Installer
-
-from install.installer.shell import cmd
+from installer.shell import cmd
 
 log = env.get_logger(__name__)
 
