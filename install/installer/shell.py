@@ -92,11 +92,19 @@ def is_installed(*packages) -> bool:
     )
 
 
-def write_file(path: str, content: str, sudo: bool = False) -> Result:
-    tee = f"tee"
+def _tee(tee_cmd: str, path: str | Path, content: str, sudo: bool) -> Result:
     if sudo:
-        tee = f"sudo {tee}"
-    return cmd(f"echo '{content}' | {tee} {path}", sudo=sudo)
+        tee_cmd = f"sudo {tee_cmd}"
+
+    return cmd(f"echo '{content}' | {tee_cmd} {path}", sudo=sudo)
+
+
+def write_file(path: str | Path, content: str, sudo: bool = False) -> Result:
+    return _tee("tee", path, content, sudo)
+
+
+def append_file(path: str | Path, content: str, sudo: bool = False) -> Result:
+    return _tee("tee -a", path, content, sudo)
 
 
 def mkdir(

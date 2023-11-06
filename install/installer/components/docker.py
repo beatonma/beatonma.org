@@ -1,7 +1,15 @@
 import os
 
 from .. import env
-from ..shell import apt_install, apt_update, cmd, copy_file, is_installed, mkdir
+from ..shell import (
+    append_file,
+    apt_install,
+    apt_update,
+    cmd,
+    copy_file,
+    is_installed,
+    mkdir,
+)
 from .installer import Installer
 
 
@@ -60,8 +68,9 @@ class RootlessDockerInstaller(Installer):
             "files/docker-privileged-ports.conf",
             f"{override_dir}/override.conf",
         )
-        cmd(
-            "echo 'net.ipv4.ip_unprivileged_port_start=0' >> /etc/sysctl.conf",
+        append_file(
+            "/etc/sysctl.conf",
+            "net.ipv4.ip_unprivileged_port_start=0",
             sudo=True,
         )
 

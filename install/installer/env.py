@@ -1,4 +1,5 @@
 import logging
+import os
 from pathlib import Path
 
 
@@ -12,13 +13,8 @@ def get_logger(name: str) -> logging.Logger:
 log = get_logger(__name__)
 DOTENV_KEYS = ["HOST_USERNAME", "HOST_SAMBA_PASSWORD", "HOST_SSH_PASSWORD"]
 
-_cwd = Path.cwd()
-if _cwd.name != "install":
-    raise EnvironmentError(
-        "Unexpected cwd: please run the installer from within the 'install' directory."
-    )
-DOTENV_FILE = _cwd / ".env"
-del _cwd
+os.chdir(Path(__file__).parent.parent)
+DOTENV_FILE = Path.cwd() / ".env"
 
 if not DOTENV_FILE.exists():
     raise EnvironmentError(".env file not found in 'install' directory")
