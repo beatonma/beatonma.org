@@ -1,0 +1,32 @@
+[DEFAULT]
+bantime.incremement = true
+bantime.maxtime = 48h
+bantime.multipliers = 1 2 5 10 15 30 60 300 720 1440
+bantime = 1m
+findtime = 1m
+maxretry = 5
+
+[sshd]
+enabled = true
+port = ssh
+logpath = %(sshd_log)s
+backend = %(sshd_backend)s
+
+[nginx-http-auth]
+enabled = true
+port = http, https
+logpath = /var/log/nginx/error.log
+
+[nginx-all]
+enabled = true
+port = http,https
+logpath = /var/log/nginx/access.log
+findtime = 60
+maxretry = 300
+
+[nginx-4xx]
+enabled = true
+port = http,https
+logpath = /var/log/nginx/access.log
+findtime = 30
+maxretry = 20

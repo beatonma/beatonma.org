@@ -1,0 +1,18 @@
+alias upd="sudo apt update && apt list --upgradeable"
+alias upg="sudo apt upgrade"
+
+# Enter a shell session for the specified container
+dockershell() {
+    docker exec -it $1 sh
+}
+
+# Prepare SSH for private Github repositories.
+sshagent() {
+    eval $(ssh-agent -s)
+    ssh-add
+}
+
+# Docker rootless
+export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
+export DOCKER_BUILDKIT=1
+export COMPOSE_DOCKER_CLI_BUILD=1
