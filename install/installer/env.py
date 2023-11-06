@@ -18,10 +18,14 @@ if not DOTENV_FILE.exists():
 _env = {}
 with open(DOTENV_FILE, "r") as dotenv:
     for line in dotenv.readlines():
+        line = line.strip()
         if line.startswith("#"):
             continue
 
-        key, value = line.strip().split("=")
+        if line.count("=") != 1:
+            continue
+
+        key, value = line.split("=")
         _env[key] = value
 
     for key in DOTENV_KEYS:
