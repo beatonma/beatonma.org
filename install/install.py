@@ -8,7 +8,6 @@ from installer.components import (
     GitInstaller,
     RootlessDockerInstaller,
     SambaInstaller,
-    SshInstaller,
 )
 from installer.components.installer import Installer
 from installer.shell import cmd
@@ -57,7 +56,6 @@ def main():
         Fail2BanInstaller,
         SambaInstaller,
         RootlessDockerInstaller,
-        SshInstaller,
     ]
     for component_class in installers:
         component = component_class()
@@ -68,8 +66,13 @@ def main():
         log.info(f"- {component_class.name}")
 
     cmd("./bma certbot init")
-    cmd("./bma production build")
-    cmd("./bma production up -d")
+
+    log.info("System setup complete!")
+    log.info("Next steps:")
+    log.info("> eval $(ssh-agent -s && ssh-add")
+    log.info("> ./bma production build")
+    log.info("> ./bma production up -d")
+    log.info("> ./bma import path/to/archive.tar.gz")
 
 
 if __name__ == "__main__":

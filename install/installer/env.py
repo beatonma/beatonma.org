@@ -11,7 +11,7 @@ def get_logger(name: str) -> logging.Logger:
 
 
 log = get_logger(__name__)
-DOTENV_KEYS = ["HOST_USERNAME", "HOST_SAMBA_PASSWORD", "HOST_SSH_PASSWORD"]
+DOTENV_KEYS = ["HOST_USERNAME", "HOST_SAMBA_PASSWORD"]
 
 os.chdir(Path(__file__).parent.parent)
 DOTENV_FILE = Path.cwd() / ".env"
@@ -38,7 +38,6 @@ with open(DOTENV_FILE, "r") as dotenv:
 
 USERNAME = _env["HOST_USERNAME"]
 SAMBA_PASS = _env["HOST_SAMBA_PASSWORD"]
-SSH_PASS = _env["HOST_SSH_PASSWORD"]
 HOME_DIR = Path(f"/home/{USERNAME}")
 del _env, DOTENV_KEYS, DOTENV_FILE
 
