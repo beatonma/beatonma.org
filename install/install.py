@@ -1,3 +1,5 @@
+import os
+
 from installer import env
 from installer.components import (
     BashRcInstaller,
@@ -65,6 +67,7 @@ def main():
     for component_class in installers:
         log.info(f"- {component_class.name}")
 
+    os.chdir(env.project_root())
     cmd("./bma certbot init")
 
     log.info("System setup complete!")

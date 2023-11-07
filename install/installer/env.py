@@ -10,10 +10,13 @@ def get_logger(name: str) -> logging.Logger:
     return _log
 
 
+installer_root = Path(__file__).parent.parent
+
+
 log = get_logger(__name__)
 DOTENV_KEYS = ["HOST_USERNAME", "HOST_SAMBA_PASSWORD"]
 
-os.chdir(Path(__file__).parent.parent)
+os.chdir(installer_root)
 DOTENV_FILE = Path.cwd() / ".env"
 
 if not DOTENV_FILE.exists():
@@ -44,3 +47,7 @@ del _env, DOTENV_KEYS, DOTENV_FILE
 
 def homedir(path: str = "") -> Path:
     return HOME_DIR / path
+
+
+def project_root() -> Path:
+    return installer_root.parent
