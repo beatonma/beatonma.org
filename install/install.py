@@ -1,4 +1,5 @@
 import os
+from argparse import ArgumentParser
 
 from installer import env
 from installer.components import (
@@ -16,9 +17,29 @@ from installer.shell import cmd
 
 log = env.get_logger(__name__)
 
+INSTALLERS = [
+    FilesystemInstaller,
+    GitInstaller,
+    BashRcInstaller,
+    CronInstaller,
+    Fail2BanInstaller,
+    SambaInstaller,
+    RootlessDockerInstaller,
+]
 
-def install_component(component: Installer) -> bool:
-    if component.is_installed():
+
+def parse_args():
+    parser = ArgumentParser()
+
+    parser.add_argument(
+        "--component", type=str, choices=map(lambda x: x.name, INSTALLERS)
+    )
+
+    return parser.parse_args()
+
+
+def install_component(component: Installer, force: bool = False) -> bool:
+    if (not force) and component.is_installed():
         log.info(f"Component '{component.name}' is ready.")
         return False
 
@@ -47,24 +68,25 @@ def preinstall_docker():
         exit(0)
 
 
-def main():
+def reinstall_component(component_name: str):
+    for inst in INSTALLERS:
+        if component_name == inst.name:
+            component = inst()
+            install_component(component, force=True)
+        return
+    else:
+        log.warning(f"Unknown component '{component_name}'")
+
+
+def complete_install():
     preinstall_docker()
 
-    installers = [
-        FilesystemInstaller,
-        GitInstaller,
-        BashRcInstaller,
-        CronInstaller,
-        Fail2BanInstaller,
-        SambaInstaller,
-        RootlessDockerInstaller,
-    ]
-    for component_class in installers:
+    for component_class in INSTALLERS:
         component = component_class()
         install_component(component)
 
     log.info("All components installed!")
-    for component_class in installers:
+    for component_class in INSTALLERS:
         log.info(f"- {component_class.name}")
 
     os.chdir(env.project_root())
@@ -78,8 +100,14 @@ def main():
     log.info("> ./bma import path/to/archive.tar.gz")
 
 
+def main():
+    args = parse_args()
+
+    if args.component:
+        return reinstall_component(args.component)
+
+    complete_install()
+
+
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        exit(1)
+    main()
