@@ -89,11 +89,9 @@ def complete_install():
     for component_class in INSTALLERS:
         log.info(f"- {component_class.name}")
 
-    os.chdir(env.project_root())
-    cmd("./bma certbot init")
-
     log.info("System setup complete!")
     log.info("Next steps:")
+    log.info("> ./bma certbot init")
     log.info("> eval $(ssh-agent -s && ssh-add")
     log.info("> ./bma production build")
     log.info("> ./bma production up -d")
