@@ -32,7 +32,7 @@ def parse_args():
     parser = ArgumentParser()
 
     parser.add_argument(
-        "--component", type=str, choices=map(lambda x: x.name, INSTALLERS)
+        "--component", type=str, choices=list(map(lambda x: x.name, INSTALLERS))
     )
 
     return parser.parse_args()
@@ -71,9 +71,10 @@ def preinstall_docker():
 def reinstall_component(component_name: str):
     for inst in INSTALLERS:
         if component_name == inst.name:
+            log.info(f"Force-installing component '{component_name}'")
             component = inst()
             install_component(component, force=True)
-        return
+            return
     else:
         log.warning(f"Unknown component '{component_name}'")
 
