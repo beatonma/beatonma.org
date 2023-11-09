@@ -18,7 +18,7 @@ _FRIENDLY_URL_REPLACEMENTS = {
     r"https://(www\.)?pypi\.org/project/(?P<name>[-\w]+)/?": "pypi/{name}",
     r"https://(www\.)?thingiverse\.com/thing:(?P<name>\d+)/?": "thingiverse/{name}",
     r"https://(www\.)?youtube\.com/(?P<name>@[-\w]+)/?": "youtube/{name}",
-    r"https://(www\.)?youtube\.com/watch\?v=(?P<name>[-\w]+)/?": "youtube/v={name}",
+    r"https://(www\.)?youtube\.com/watch\?v=(?P<name>[-\w]+)/?": "youtube",
 }
 
 """Keys will be replaced with their corresponding value.

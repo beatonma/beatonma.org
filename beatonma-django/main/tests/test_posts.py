@@ -83,5 +83,5 @@ class WebpostViewTests(TemplateTestCase):
         self.assert_html_links_to(
             note.content_html,
             "https://youtube.com/watch?v=123456abcde",
-            displaytext="youtube/v=123456abcde",
+            displaytext="youtube",
         )

@@ -49,7 +49,7 @@ class FormatsTests(LocalTestCase):
         self.assert_html_links_to(
             formatted,
             "https://youtube.com/watch?v=blah",
-            displaytext="youtube/v=blah",
+            displaytext="youtube",
         )
         self.assert_html_links_to(
             formatted,
