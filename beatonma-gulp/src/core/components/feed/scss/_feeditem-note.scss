@@ -1,3 +1,4 @@
+@use "sass:math";
 @use "mixin";
 
 .feed > [data-type="note"] {
@@ -15,22 +16,22 @@
       @extend %text-large;
     }
 
-    a.canonical-url {
-      @extend %padding-small-left;
-      @extend %padding-small-bottom;
-
-      float: right;
-      font-size: var(--fs-small);
-    }
-
-    > time {
+    > .canonical-url {
       margin-top: var(--space);
+      margin-inline: auto 0;
       display: block;
       text-align: end;
+      color: var(--text-primary);
     }
 
     @include mixin.on-medium-width {
       padding-inline: var(--space);
+    }
+  }
+
+  &:hover {
+    .canonical-url {
+      color: var(--vibrant-hover);
     }
   }
 
@@ -39,10 +40,14 @@
   }
 
   &:nth-child(3n + 1) {
-    margin-inline: 0 auto;
+    margin-inline: auto;
   }
 
   &:nth-child(3n + 2) {
+    margin-inline: 0 auto;
+  }
+
+  &:nth-child(3n + 3) {
     margin-inline: auto 0;
   }
 }
