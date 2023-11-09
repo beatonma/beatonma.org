@@ -128,7 +128,7 @@ class GithubRepository(PublishedMixin, ApiModel, TaggableMixin, BaseModel):
         return FeedItemContext(
             title=self.name,
             url=self.url,
-            date=self.updated_at,
+            date=self.published_at,
             type=self.__class__.__name__,
             summary=self.description,
             image_url=static("icon/github.svg"),
