@@ -6,11 +6,6 @@ from main.models import Note
 
 @admin.register(Note)
 class NoteAdmin(WebPostAdmin):
-    readonly_fields = [
-        "content_html",
-        "created_at",
-        "slug",
-    ]
     actions = actions.PUBLISH_ACTIONS
     list_display = [
         "content",
@@ -37,15 +32,6 @@ class NoteAdmin(WebPostAdmin):
             },
         ),
         fieldsets.PUBLISHING,
-        (
-            "Metadata",
-            {
-                "classes": ("collapse",),
-                "fields": (
-                    "slug",
-                    "created_at",
-                ),
-            },
-        ),
+        fieldsets.METADATA,
         fieldsets.generated_html("content_html"),
     )

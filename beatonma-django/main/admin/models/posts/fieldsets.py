@@ -25,9 +25,9 @@ METADATA = (
         "fields": (
             "slug",
             (
+                "published_at",
                 "created_at",
                 "modified_at",
-                "published_at",
             ),
         ),
     },

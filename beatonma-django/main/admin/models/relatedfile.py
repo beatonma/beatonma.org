@@ -16,6 +16,7 @@ VIDEO_PATTERN = re.compile(r".*\.(mp4|webm)")
 
 class RelatedFileInline(GenericTabularInline):
     model = RelatedFile
+    extra = 1
 
 
 @admin.register(RelatedFile)
