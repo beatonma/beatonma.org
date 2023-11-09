@@ -2,7 +2,7 @@
 @use "./button";
 
 a {
-  @include mixin.transition((color));
+  @include mixin.transition-fast((color));
 
   text-decoration: none;
   color: var(--vibrant);
