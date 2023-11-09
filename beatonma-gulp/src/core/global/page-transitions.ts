@@ -248,6 +248,10 @@ namespace PageTransitionEvents {
             return false;
         }
 
+        if ((element.tabIndex ?? 0) < 0) {
+            return false;
+        }
+
         // Links annotated with NoAnimationClass should be treated as external (no content transition animations)
         if (element.className.includes(NoAnimationClass)) {
             return false;
