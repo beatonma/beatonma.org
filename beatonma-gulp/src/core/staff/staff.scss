@@ -1,5 +1,6 @@
 @use "../mixin";
 @use "../global/styles/objects/button";
+@forward "./theme-preview";
 
 .staff {
   @include mixin.row($horizontal: flex-end, $gap: var(--space));

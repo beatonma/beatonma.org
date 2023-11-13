@@ -1,5 +1,5 @@
-@use "mixin";
-@use "components/card";
+@use "../../mixin";
+@use "../../components/card";
 
 %-grid {
   display: grid;

@@ -22,7 +22,7 @@ class DevThemeView(LoggedView):
     def get(self, request):
         return render(
             request,
-            "pages/debug/theme-preview.html",
+            "staff/theme-preview/theme-preview.html",
             {
                 "app_types": AppType.objects.all(),
                 **get_theme_context(DevThemePreview.objects.first()),
