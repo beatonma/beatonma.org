@@ -27,10 +27,13 @@ class FormatsTests(LocalTestCase):
             '<a href="https://www.thingiverse.com/thing:4828770">https://www.thingiverse.com/thing:4828770</a> '
             '<a href="https://youtube.com/@fallofmath">https://youtube.com/@fallofmath</a> '
             '<a href="https://youtube.com/watch?v=blah">https://youtube.com/watch?v=blah</a> '
+            '<a href="https://unaffected.url/path?i=blah">https://unaffected.url/path?i=blah</a> '
+            '<a href="https://unaffected.url/path?i=blah">Explicit display text is maintained</a> '
+            '<a href="http://unaffected.url/path?i=keep-non-https-urls">http://unaffected.url/path?i=keep-non-https-urls</a> '
             "</p>"
         )
 
-        formatted = formats._friendly_common_links(html)
+        formatted = formats._prettify_links(html)
         self.assert_html_links_to(
             formatted,
             "https://reddit.com/u/fallofmath/",
@@ -66,9 +69,29 @@ class FormatsTests(LocalTestCase):
             "https://pypi.org/project/django-wm",
             displaytext="pypi/django-wm",
         )
+        self.assert_html_links_to(
+            formatted,
+            "https://unaffected.url/path?i=blah",
+            displaytext="unaffected.url/…",
+        )
+        self.assert_html_links_to(
+            formatted,
+            "https://unaffected.url/path?i=blah",
+            displaytext="Explicit display text is maintained",
+        )
+        self.assert_html_links_to(
+            formatted,
+            "https://unaffected.url/path?i=blah",
+            displaytext="Explicit display text is maintained",
+        )
+        self.assert_html_links_to(
+            formatted,
+            "http://unaffected.url/path?i=keep-non-https-urls",
+            displaytext="http://unaffected.url/path?i=keep-non-https-urls",
+        )
 
         self.assertInHTML(
-            '<a class="keep-this" href="https://github.com/beatonma">github/beatonma</a>',
+            '<a href="https://github.com/beatonma" class="keep-this">github/beatonma</a>',
             formatted,
         )
         self.assertInHTML(

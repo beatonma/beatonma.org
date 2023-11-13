@@ -6,12 +6,10 @@ import markdown2
 from common.util import regex
 from django.db import models
 from main.views import reverse
+from urllib3.exceptions import LocationParseError
+from urllib3.util import parse_url
 
-"""Regex to match a simple HTML <a> with the same href and inner text."""
-_HTML_ANCHOR_REGEX = re.compile(
-    rf"(<a .*?href=\"(?P<href>https://(?:www\.)?[-.\w]+/[-/@=:?\w]+?)\".*?>)(?P<displaytext>\2)(</a>)"
-)
-_FRIENDLY_URL_REPLACEMENTS = {
+_PRETTY_URL_REPLACEMENTS = {
     r"https://(www\.)?(old\.)?reddit\.com/r/(?P<name>[-\w]+)/?": "/r/{name}",
     r"https://(www\.)?(old\.)?reddit\.com/u(ser)?/(?P<name>[-\w]+)/?": "/u/{name}",
     r"https://(www\.)?github\.com/(?P<name>[-\w]+)/?": "github/{name}",
@@ -71,36 +69,68 @@ class FormatMixin(models.Model):
     )
 
 
-def _url_tag(href: str, displayname: str):
-    return f'<a href="{href}">{displayname}</a>'
-
-
 def _postprocess_html(html: str) -> str:
-    return _linkify_hashtags(_friendly_common_links(html))
+    return _linkify_hashtags(_prettify_links(html))
 
 
 def _linkify_hashtags(html: str) -> str:
     """Replace raw string #hashtags with a link to that tag."""
+
+    def _sub(sub_match: Match):
+        previous_token = sub_match.group("previous_token")
+        href = reverse.tag(sub_match.group("name"))
+        display_name = sub_match.group("hashtag")
+
+        return f'{previous_token}<a href="{href}">{display_name}</a>'
+
+    return re.sub(regex.HASHTAG, _sub, html)
+
+
+def _prettify_links(html: str) -> str:
+    """Prettify display text for any links in the given HTML.
+
+    Recognised URLs are replaced as defined in _FRIENDLY_URL_REPLACEMENTS.
+    Unrecognised URLs are shortened to their hostname.
+    Links that already have explicit display text will not be affected.
+
+    URLs that do not use https scheme are kept in their explicitly ugly form.
+    """
+
+    def _sub(sub_match: Match):
+        url = sub_match.group("url")
+        display_text = sub_match.group("display_text")
+        attrs = " ".join(
+            [
+                x.strip()
+                for x in [
+                    f'href="{url}"',
+                    sub_match.group("attrs_1"),
+                    sub_match.group("attrs_2"),
+                ]
+                if x
+            ]
+        )
+
+        if display_text == url:
+            for pattern, replacement in _PRETTY_URL_REPLACEMENTS.items():
+                if pattern_match := re.match(pattern, url):
+                    display_text = replacement.format(name=pattern_match.group("name"))
+                    break
+            else:
+                try:
+                    parsed_url = parse_url(url)
+                    if parsed_url.scheme == "https":
+                        display_text = f"{parsed_url.host}/…"
+                except LocationParseError:
+                    pass
+
+        return rf"<a {attrs}>{display_text}</a>"
+
     return re.sub(
-        regex.HASHTAG,
-        lambda match: f"{match.group(1)}{_url_tag(href=reverse.tag(match.group(3)), displayname=match.group(2))}",
+        r"<a(?P<attrs_1>.*?)href=\"(?P<url>[^\"]+)\"(?P<attrs_2>.*?)>(?P<display_text>.*?)</a>",
+        _sub,
         html,
     )
-
-
-def _friendly_common_links(html: str) -> str:
-    """Replace URLs with common domains with a reduced display name."""
-
-    def _sub(match: Match):
-        for pattern, replacement in _FRIENDLY_URL_REPLACEMENTS.items():
-            pattern_match = re.match(pattern, match.group(2))
-            if pattern_match:
-                named = replacement.format(name=pattern_match.group("name"))
-                return f"{match.group(1)}{named}{match.group(4)}"
-
-        return match.group(0)
-
-    return re.sub(_HTML_ANCHOR_REGEX, _sub, html)
 
 
 def _apply_ligatures(text: str) -> str:
@@ -112,7 +142,7 @@ def _apply_ligatures(text: str) -> str:
         return marker
 
     editable_text = re.sub(
-        "(```.*?```|`[^`].*?`)",
+        "(```.*?```|`[^`].*?`)",  # ```code blocks``` or `inline code`
         remember_canonical,
         text,
         flags=re.DOTALL,
@@ -142,10 +172,11 @@ def _markdown_to_html(content) -> str:
     return markdown2.markdown(
         content,
         extras=[
+            "cuddled-lists",
             "fenced-code-blocks",
-            "link-patterns",
+            "footnotes",
             "header-ids",
-            # "numbering",
+            "link-patterns",
             "smarty-pants",
             "spoiler",
             "strike",
