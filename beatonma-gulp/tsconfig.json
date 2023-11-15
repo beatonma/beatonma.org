@@ -14,7 +14,8 @@
         "typeRoots": [
             "gulpfile.ts/types",
             "node_modules/@types"
-        ]
+        ],
+        "baseUrl": "src"
     },
     "exclude": [
         "build/",

@@ -1,4 +1,2 @@
 {% load date %}
-<time class="{{ dateclass|default:"dt-published" }}" title="{{ date }}" datetime="{{ date }}">
-  {{ date|minimaldate }}
-</time>
+<time class="{{ dateclass|default:"dt-published" }}" title="{{ date }}" datetime="{{ date }}">{{ date|minimaldate }}</time>
