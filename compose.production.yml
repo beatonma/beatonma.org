@@ -48,6 +48,7 @@ services:
     build:
       context: .
       target: app
+      dockerfile: ./docker/Dockerfile
     container_name: django
     depends_on:
       db:
@@ -66,6 +67,7 @@ services:
     build:
       context: .
       target: server
+      dockerfile: ./docker/Dockerfile
     container_name: nginx
     depends_on:
       django:
@@ -88,6 +90,7 @@ services:
     build:
       context: .
       target: celery
+      dockerfile: ./docker/Dockerfile
     container_name: celery
     depends_on:
       rabbitmq:
@@ -98,6 +101,7 @@ services:
     build:
       context: .
       target: crontab
+      dockerfile: ./docker/Dockerfile
     container_name: crontab
     depends_on:
       - django
@@ -117,6 +121,7 @@ services:
     build:
       context: .
       target: server_checks
+      dockerfile: ./docker/Dockerfile
     links:
       - "nginx:nginx-server-tests"
     container_name: server_startup_checks

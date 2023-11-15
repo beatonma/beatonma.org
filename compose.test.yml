@@ -11,7 +11,7 @@ services:
   cypress.django:
     <<: *common
     build:
-      dockerfile: Dockerfile.test
+      dockerfile: ./docker/Dockerfile.test
       target: cypress_django
     environment:
       - GIT_HASH=dockertest
@@ -21,14 +21,14 @@ services:
       test: curl http://localhost:8000/ping/
       interval: 5s
       timeout: 2s
-      start_period: 20s
+      start_period: 60s
     ports:
       - "8123:8000"
 
   cypress:
     <<: *common
     build:
-      dockerfile: Dockerfile.test
+      dockerfile: ./docker/Dockerfile.test
       target: cypress
     depends_on:
       cypress.django:

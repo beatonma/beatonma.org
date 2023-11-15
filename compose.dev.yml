@@ -6,7 +6,7 @@ volumes:
   generated:
 
 x-common: &common
-  env_file: ".env.dev"
+  env_file: "./.env.dev"
   restart: "unless-stopped"
   tty: true
 
@@ -28,11 +28,11 @@ services:
       <<: *health
 
   gulp:
+    <<: *common
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: ./docker/Dockerfile.dev
       target: gulp_watch
-    env_file:
-      - ".env.dev"
+      context: .
     ports:
       - "3000:3000"
       - "3001:3001"
@@ -49,8 +49,9 @@ services:
   django:
     <<: *common
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: ./docker/Dockerfile.dev
       target: django
+      context: .
     depends_on:
       db:
         condition: service_healthy

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-FILE_PRODUCTION="./production.yml"
-FILE_DEV="./dev.yml"
-FILE_TEST="./test.yml"
+FILE_PRODUCTION="./compose.production.yml"
+FILE_DEV="./compose.dev.yml"
+FILE_TEST="./compose.test.yml"
 FILE_ENV="./.env"
 
 # Data import/export
