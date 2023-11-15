@@ -23,11 +23,11 @@ describe("Contact page is correct", () => {
     cy.get(contactMethod).should("be.visible");
     cy.get(contactMessage).should("be.visible");
 
-    cy.get(contactSubmit).should("not.be.visible");
+    cy.get(contactSubmit).should("not.be.enabled");
 
     clickRecaptcha();
 
-    cy.get(contactSubmit).should("be.visible");
+    cy.get(contactSubmit).should("be.enabled");
   });
 
   it("Validates correctly", () => {

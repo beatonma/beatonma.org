@@ -28,7 +28,7 @@ describe("Search results are correct", () => {
   });
 
   it("Language results are displayed", () => {
-    cy.visit("/language/testTarget-language/");
+    cy.visit("/language/TestTarget-Language/");
     cy.title().should("contain", "TestTarget-Language");
     cy.contains("TestTarget App");
   });

@@ -1,5 +1,5 @@
 import { srcPath } from "../paths";
-import { isProductionBuild } from "./config";
+import { isProductionBuild, isTestBuild } from "./config";
 import { shell_command } from "./util";
 import * as glob from "glob";
 import path from "path";
@@ -15,7 +15,7 @@ export const buildWebapps = (mapToOutput: (webappDir: string) => void) =>
             const webappGlobs = glob.sync(Webapps);
             const builders = webappGlobs.map(async filepath => {
                 const webappCwd = path.dirname(filepath);
-                if (isProductionBuild()) {
+                if (isProductionBuild() || isTestBuild()) {
                     await npmInstall(webappCwd);
                 }
                 await npmBuild(webappCwd);
