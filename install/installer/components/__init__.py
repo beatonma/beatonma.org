@@ -5,3 +5,4 @@ from .fail2ban import Fail2BanInstaller
 from .filesystem import FilesystemInstaller
 from .git import GitInstaller
 from .samba import SambaInstaller
+from .swap import SwapfileInstaller

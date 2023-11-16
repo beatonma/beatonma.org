@@ -1,4 +1,3 @@
-import os
 from argparse import ArgumentParser
 
 from installer import env
@@ -11,14 +10,15 @@ from installer.components import (
     GitInstaller,
     RootlessDockerInstaller,
     SambaInstaller,
+    SwapfileInstaller,
 )
 from installer.components.installer import Installer
-from installer.shell import cmd
 
 log = env.get_logger(__name__)
 
 INSTALLERS = [
     FilesystemInstaller,
+    SwapfileInstaller,
     GitInstaller,
     BashRcInstaller,
     CronInstaller,
