@@ -8,7 +8,6 @@ import { src } from "gulp";
 import gulpIf from "gulp-if";
 import gulpPostCss from "gulp-postcss";
 import gulp_sass from "gulp-sass";
-import gulpSourcemaps from "gulp-sourcemaps";
 import sass from "sass";
 
 const gulpSass = gulp_sass(sass);
@@ -31,14 +30,12 @@ export const buildCss: BuildStream = (wrapper: StreamWrapper) =>
                         includePaths: [srcPath(SpecialPath.SourceRoot.Core)],
                     }),
                 )
-                .pipe(gulpSourcemaps.init())
                 .pipe(
                     gulpIf(
                         isDevBuild(),
                         gulpPostCss([autoprefixer()]),
                         gulpPostCss([autoprefixer(), cssnano()]),
                     ),
-                )
-                .pipe(gulpSourcemaps.write(".")),
+                ),
         );
     };

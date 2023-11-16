@@ -68,7 +68,6 @@ const ExpectedWebapps: Globs = [
  * Files that are only required in production.
  */
 const ExpectedProductionFiles: Globs = [
-    "main/static/main/css/bma-*.css.map",
     "main/static/main/js/bma-*.LICENSE.txt",
     "main/static/main/js/bma-*.js.map",
 ];
