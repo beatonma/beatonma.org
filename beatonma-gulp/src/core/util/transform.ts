@@ -4,7 +4,7 @@
  * Any falsy class names are filtered out.
  */
 interface ClassNameProps {
-    className: string | null | undefined;
+    className?: string | null | undefined;
 }
 export const classes = (
     propsOrClassname: ClassNameProps | string | undefined,

@@ -3,6 +3,16 @@
 @use "./accessibility";
 @use "./constants";
 
+@function -count($string, $char: " ") {
+  $count: 0;
+  @each $character in $string {
+    @if ($character == $char) {
+      $count: $count + 1;
+    }
+  }
+  @return $count;
+}
+
 @mixin transition(
   $props,
   $duration: constants.$animation-duration,
@@ -11,11 +21,22 @@
   $result: ();
 
   @each $prop in $props {
-    $result: list.join(
-      $result,
-      string.unquote("#{$prop} #{$duration} #{$easing}"),
-      $separator: comma
-    );
+    $spaces: -count($prop, " ");
+    @if $spaces == 0 {
+      $result: list.join(
+        $result,
+        string.unquote("#{$prop} #{$duration} #{$easing}"),
+        $separator: comma
+      );
+    } @else if $spaces == 1 {
+      $result: list.join(
+        $result,
+        string.unquote("#{$prop} #{$easing}"),
+        $separator: comma
+      );
+    } @else {
+      $result: list.join($result, $prop, $separator: comma);
+    }
   }
 
   transition: $result;
@@ -25,8 +46,12 @@
   }
 }
 
-@mixin transition-fast($props) {
-  @include transition($props, constants.$animation-duration-fast);
+@mixin transition-fast(
+  $props,
+  $duration: constants.$animation-duration-fast,
+  $easing: ease-in-out
+) {
+  @include transition($props, $duration, $easing);
 }
 
 %-enter-animation {
