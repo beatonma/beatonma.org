@@ -37,6 +37,10 @@
       @include mixin.stretch-width;
     }
   }
+
+  @include mixin.on-medium-width {
+    justify-content: center;
+  }
 }
 
 .header-row-secondary {

@@ -1,5 +1,6 @@
 @use "mixin";
 @use "components/card";
+@use "global";
 
 .title-bar {
   @extend %stretch-width;
@@ -36,5 +37,29 @@
   }
 
   &__secondary {
+  }
+
+  @include mixin.on-medium-width {
+    &__primary,
+    &__secondary {
+      margin-block: var(--space);
+      flex-direction: column;
+      gap: 0;
+      margin-inline: auto;
+      text-align: center;
+
+      @include global.headers {
+        text-align: center;
+      }
+      .title-bar__title {
+        margin-inline: auto;
+        text-align: center;
+      }
+
+      .title-bar__trailing {
+        margin-inline: auto;
+        text-align: center;
+      }
+    }
   }
 }

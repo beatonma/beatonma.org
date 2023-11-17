@@ -37,6 +37,11 @@ h6 {
   overflow-y: hidden;
   font-weight: normal;
   margin: 0;
+
+  @include mixin.on-medium-width {
+    margin-inline: auto;
+    text-align: center;
+  }
 }
 
 @mixin headers {
@@ -56,10 +61,5 @@ section,
 #webmentions {
   @include headers {
     margin-block: 0.5em;
-
-    @include mixin.on-medium-width {
-      margin-inline: auto;
-      text-align: center;
-    }
   }
 }
