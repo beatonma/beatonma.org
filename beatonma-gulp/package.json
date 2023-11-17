@@ -8,7 +8,8 @@
     "buildTest": "gulp test",
     "watch": "gulp dev",
     "watchWebapps": "gulp devWithWebapps",
-    "jest": "jest"
+    "jest": "jest",
+    "gulp": "gulp"
   },
   "typings": "./types",
   "keywords": [

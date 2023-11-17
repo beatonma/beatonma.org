@@ -4,11 +4,16 @@ FROM node:20-alpine AS gulp_watch
 RUN apk add \
     curl
 
-COPY ./docker/gulp/entrypoint.dev.sh /
 WORKDIR /app
 EXPOSE 3000
 
-ENTRYPOINT /entrypoint.dev.sh
+ARG task="watch"
+RUN echo "task=$task"
+RUN { echo "npm install"; echo "npm run gulp -- $task"; } > /tmp/entrypoint.dev.sh
+RUN chmod 764 /tmp/entrypoint.dev.sh
+
+ENTRYPOINT /tmp/entrypoint.dev.sh
+CMD ["$task"]
 
 
 ################################################################################

@@ -13,6 +13,7 @@ interface BuildOptions {
     buildJs: boolean;
     buildTemplates: boolean;
     buildStatic: boolean;
+    clean: boolean;
 }
 export interface BuildOptionsFactory {
     buildWebapps?: boolean;
@@ -20,6 +21,7 @@ export interface BuildOptionsFactory {
     buildJs?: boolean;
     buildTemplates?: boolean;
     buildStatic?: boolean;
+    clean?: boolean;
 }
 let buildMode: BuildMode = null;
 let environment: Env = null;
@@ -48,6 +50,7 @@ const init = async (mode: BuildMode, options?: BuildOptionsFactory) => {
         buildJs: options?.buildJs ?? true,
         buildTemplates: options?.buildTemplates ?? true,
         buildStatic: options?.buildStatic ?? true,
+        clean: options?.clean ?? true,
     };
     environment = {
         gitHash: process.env.GIT_HASH ?? "__no_env__",
@@ -56,7 +59,9 @@ const init = async (mode: BuildMode, options?: BuildOptionsFactory) => {
             process.env.GOOGLE_RECAPTCHA_TOKEN ?? "__no_env__",
         siteName: process.env.SITE_NAME ?? "__no_env__",
     };
-    clean();
+    if (buildOptions.clean) {
+        clean();
+    }
     printConfig();
 };
 

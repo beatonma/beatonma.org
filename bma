@@ -140,8 +140,8 @@ dev() {
       docker_compose "$@"
       ;;
     *)
-      docker_compose_build
-      docker_compose up "$@"
+      docker_compose_build "$@"
+      docker_compose up
       ;;
   esac
 
