@@ -2,4 +2,6 @@
 import re
 
 # Match a #hashtag.
-HASHTAG = re.compile(r"(?P<previous_token>^|>|\s)(?P<hashtag>#(?P<name>[-\w]+))")
+HASHTAG = re.compile(
+    r"(?P<previous_token>^|>|\s)(?P<hashtag>#(?![a-fA-F0-9]{3})(?P<name>[-\w]+))(?=$|[\s.!?<])(?!\s*{)"
+)

@@ -23,15 +23,38 @@ class WebpostHashtagTests(LocalTestCase):
             format=Formats.NONE,
         )
 
+        Blog.objects.create(
+            title="Another markdown blog",
+            content="[link to a fragment](https://example.org/article#section) #real",
+            format=Formats.MARKDOWN,
+        )
+
+        Blog.objects.create(
+            title="Another HTML blog",
+            content="<style>"
+            "body { background-color: #f00; } "
+            "#target { background-color: #f0f0f0; }}"
+            "</style>"
+            '<div id="target>this is an #actual-tag</div>',
+            format=Formats.NONE,
+        )
+
     def test_tags_are_extracted_from_content(self):
         self.assertListEqual(
             Note.objects.first().get_tags_list(),
             ["awesome-hashtag", "startoftext", "yes-this-one"],
         )
         self.assertListEqual(
-            Blog.objects.first().get_tags_list(),
+            Blog.objects.get(title="Markdown blog").get_tags_list(),
             ["middle", "start"],
         )
+
+    def test_only_tags_are_extracted_from_content(self):
+        markdown = Blog.objects.get(title="Another markdown blog")
+        self.assertListEqual(markdown.get_tags_list(), ["real"])
+
+        html = Blog.objects.get(title="Another HTML blog")
+        self.assertListEqual(html.get_tags_list(), ["actual-tag"])
 
 
 class WebpostHashtagViewTests(TemplateTestCase, WebpostHashtagTests):
