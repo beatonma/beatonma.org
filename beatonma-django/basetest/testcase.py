@@ -84,16 +84,18 @@ class BaseTestCase(TestCase):
 
         if displaytext:
             results = [x for x in links if x[0] == href and x[1] == displaytext]
+            formatted_links = "\n- ".join([str(x) for x in links])
             self.assertTrue(
                 len(results) > 0,
-                msg=f"Link (href='{href}', text='{displaytext}') not found in {links}",
+                msg=f"Link (href='{href}', text='{displaytext}') not found in:\n- {formatted_links}",
             )
 
         else:
             results = set(filter(lambda x: x[0] == href, links))
+            formatted_links = "\n- ".join([x[0] for x in links])
             self.assertTrue(
                 len(results) > 0,
-                msg=f"Link {href} not found in {[x[0] for x in links]}",
+                msg=f"Link {href} not found in:\n- {formatted_links}",
             )
 
 

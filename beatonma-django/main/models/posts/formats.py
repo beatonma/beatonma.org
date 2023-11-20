@@ -6,18 +6,63 @@ import markdown2
 from common.util import regex
 from django.db import models
 from main.views import reverse
-from urllib3.exceptions import LocationParseError
-from urllib3.util import parse_url
 
+_NAME = r"(?P<name>@?[-\w]+)"
+_URL_PREFIX = r"https://(?:www\.)?"
 _PRETTY_URL_REPLACEMENTS = {
-    r"https://(www\.)?(old\.)?reddit\.com/r/(?P<name>[-\w]+)/?": "/r/{name}",
-    r"https://(www\.)?(old\.)?reddit\.com/u(ser)?/(?P<name>[-\w]+)/?": "/u/{name}",
-    r"https://(www\.)?github\.com/(?P<name>[-\w]+)/?": "github/{name}",
-    r"https://(www\.)?pypi\.org/project/(?P<name>[-\w]+)/?": "pypi/{name}",
-    r"https://(www\.)?thingiverse\.com/thing:(?P<name>\d+)/?": "thingiverse/{name}",
-    r"https://(www\.)?youtube\.com/(?P<name>@[-\w]+)/?": "youtube/{name}",
-    r"https://(www\.)?youtube\.com/watch\?v=(?P<name>[-\w]+)/?": "youtube",
+    rf"{_URL_PREFIX}(?:old\.)?reddit\.com/r/{_NAME}.*": r"/r/\g<name>",
+    rf"{_URL_PREFIX}(?:old\.)?reddit\.com/u(?:ser)?/{_NAME}.*": r"/u/\g<name>",
+    rf"{_URL_PREFIX}github\.com/{_NAME}.*": r"github/\g<name>",
+    rf"{_URL_PREFIX}pypi\.org/project/{_NAME}.*": r"pypi/\g<name>",
+    rf"{_URL_PREFIX}thingiverse\.com/thing:(?P<name>\d+).*": r"thingiverse/\g<name>",
+    rf"{_URL_PREFIX}youtube\.com/watch\?v={_NAME}.*": r"youtube",
+    rf"{_URL_PREFIX}youtube\.com/{_NAME}.*": r"youtube/\g<name>",
+    rf"{_URL_PREFIX}(?P<host>.*?)([/?]|$).*": r"\g<host>/…",
 }
+
+
+_LINKIFY_PATTERNS = [
+    (re.compile(rf"/u/({_NAME})"), r"https://reddit.com/u/\g<name>"),
+    (re.compile(rf"/r/({_NAME})"), r"https://reddit.com/r/\g<name>"),
+    (re.compile(rf"github/({_NAME})"), r"https://github.com/\g<name>"),
+    (re.compile(rf"pypi/({_NAME})"), r"https://pypi.org/project/\g<name>"),
+    (
+        re.compile(r"thingiverse/(?P<id>\d+)"),
+        r"https://thingiverse.com/thing:\g<id>",
+    ),
+    (re.compile(rf"youtube/@?({_NAME})"), r"https://youtube.com/@\g<name>"),
+    (
+        re.compile(
+            r"((([A-Za-z]{3,9}:(?://)?)"  # scheme
+            r"(?:[\-;:&=+$,\w]+@)?[A-Za-z0-9.\-]+(:\[0-9]+)?"  # user@hostname:port
+            r"|(?:www\.|[\-;:&=+$,\w]+@)[A-Za-z0-9.\-]+)"  # www.|user@hostname
+            r"((?:/[+~%/.\w\-_]*)?"  # path
+            r"\??(?:[\-+=&;:%@.\w_]*)"  # query parameters
+            r"#?(?:[.!/\\\w]*))?)"  # fragment
+            r"(?![^<]*?(?:</\w+>|/?>))"  # ignore anchor HTML tags
+            r"(?![^(]*?\))"  # ignore links in brackets (Markdown links and images)
+        ),
+        r"\1",
+    ),  # plaintext URLs
+]
+
+_LINKIFY_KEYWORDS = (
+    ("beatonma.org", "https://beatonma.org"),
+    ("Celery", "https://docs.celeryq.dev"),
+    ("Django", "https://www.djangoproject.com"),
+    ("Gulp", "https://gulpjs.com"),
+    ("Indieweb", "https://indieweb.org"),
+    ("Lightsail", "https://aws.amazon.com/lightsail"),
+    ("Microformats", "https://microformats.org"),
+    ("NGINX", "https://www.nginx.com"),
+    ("PostgreSQL", "https://postgreql.org"),
+    ("React", "https://reactjs.org"),
+    ("SASS", "https://sass-lang.com"),
+    ("Typescript", "https://typescriptlang.org"),
+    ("Webpack", "https://webpack.js.org"),
+    ("Webmention", "https://indieweb.org/Webmention"),
+    ("django-wm", "https://github.com/beatonma/django-wm"),
+)
 
 """Keys will be replaced with their corresponding value.
 
@@ -56,7 +101,7 @@ class Formats(models.IntegerChoices):
         else:
             html = content
 
-        return _postprocess_html(html)
+        return _postprocess_html(html).strip()
 
 
 class FormatMixin(models.Model):
@@ -70,7 +115,7 @@ class FormatMixin(models.Model):
 
 
 def _postprocess_html(html: str) -> str:
-    return _linkify_hashtags(_prettify_links(html))
+    return _linkify_keywords(_linkify_hashtags(_prettify_links(html)))
 
 
 def _linkify_hashtags(html: str) -> str:
@@ -113,16 +158,9 @@ def _prettify_links(html: str) -> str:
 
         if display_text == url:
             for pattern, replacement in _PRETTY_URL_REPLACEMENTS.items():
-                if pattern_match := re.match(pattern, url):
-                    display_text = replacement.format(name=pattern_match.group("name"))
+                display_text, changes = re.subn(pattern, replacement, url)
+                if changes:
                     break
-            else:
-                try:
-                    parsed_url = parse_url(url)
-                    if parsed_url.scheme == "https":
-                        display_text = f"{parsed_url.host}/…"
-                except LocationParseError:
-                    pass
 
         return rf"<a {attrs}>{display_text}</a>"
 
@@ -131,6 +169,18 @@ def _prettify_links(html: str) -> str:
         _sub,
         html,
     )
+
+
+def _linkify_keywords(html: str) -> str:
+    # for match, url in _LINKIFY_KEYWORDS.items():
+    for match, url in _LINKIFY_KEYWORDS:
+        html = re.sub(
+            rf"(^|\s){match}(?=$|[,.;:!?\s])",
+            rf'\1<a href="{url}">{match}</a>',
+            html,
+            count=1,
+        )
+    return html
 
 
 def _apply_ligatures(text: str) -> str:
@@ -156,19 +206,7 @@ def _apply_ligatures(text: str) -> str:
     return editable_text
 
 
-def _markdown_to_html(content) -> str:
-    pattern = (
-        r"((([A-Za-z]{3,9}:(?:\/\/)?)"  # scheme
-        r"(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+(:\[0-9]+)?"  # user@hostname:port
-        r"|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)"  # www.|user@hostname
-        r"((?:\/[\+~%\/\.\w\-_]*)?"  # path
-        r"\??(?:[\-\+=&;:%@\.\w_]*)"  # query parameters
-        r"#?(?:[\.\!\/\\\w]*))?)"  # fragment
-        r"(?![^<]*?(?:<\/\w+>|\/?>))"  # ignore anchor HTML tags
-        r"(?![^\(]*?\))"  # ignore links in brackets (Markdown links and images)
-    )
-    link_patterns = [(re.compile(pattern), r"\1")]
-
+def _markdown_to_html(content: str) -> str:
     return markdown2.markdown(
         content,
         extras=[
@@ -183,5 +221,5 @@ def _markdown_to_html(content) -> str:
             "tables",
             "tag-friendly",
         ],
-        link_patterns=link_patterns,
+        link_patterns=_LINKIFY_PATTERNS,
     )

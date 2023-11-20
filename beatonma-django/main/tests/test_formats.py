@@ -1,9 +1,11 @@
 from basetest.testcase import LocalTestCase
+from common.util.html import html_parser
 from main.models.posts import formats
+from main.models.posts.formats import Formats, _linkify_keywords
 from main.views import reverse
 
 
-class FormatsTests(LocalTestCase):
+class LinkifyHashtagTests(LocalTestCase):
     def test_linkify_hashtags(self):
         plain_text = formats._linkify_hashtags("#one #two #three")
         self.assert_html_links_to(plain_text, reverse.tag("one"), displaytext="#one")
@@ -17,7 +19,9 @@ class FormatsTests(LocalTestCase):
         self.assert_html_links_to(html, reverse.tag("two"), displaytext="#two")
         self.assert_html_links_to(html, reverse.tag("three"), displaytext="#three")
 
-    def test_replacements(self):
+
+class PrettifyLinkTests(LocalTestCase):
+    def test_prettify_links(self):
         html = (
             "<p>"
             '<a class="keep-this" href="https://github.com/beatonma">https://github.com/beatonma</a> '
@@ -99,6 +103,101 @@ class FormatsTests(LocalTestCase):
             formatted,
         )
 
+    def test_md_link_patterns(self):
+        """Tests for patterns passed to markdown2 link-patterns extra."""
+
+        formatted = Formats.to_html(
+            Formats.MARKDOWN,
+            "This is text with links to /u/fallofmath and /r/android "
+            "and github/beatonma and pypi/django-wm and thingiverse/4828770 "
+            "and thing/4828771 and youtube/@fallofmath amd youtube/fallofmath2 "
+            "and https://google.com and https://www.google.com/search?q=test",
+        )
+
+        self.assert_html_links_to(
+            formatted,
+            "https://reddit.com/u/fallofmath",
+            displaytext="/u/fallofmath",
+        )
+        self.assert_html_links_to(
+            formatted,
+            "https://reddit.com/r/android",
+            displaytext="/r/android",
+        )
+        self.assert_html_links_to(
+            formatted,
+            "https://github.com/beatonma",
+            displaytext="github/beatonma",
+        )
+        self.assert_html_links_to(
+            formatted,
+            "https://thingiverse.com/thing:4828770",
+            displaytext="thingiverse/4828770",
+        )
+        self.assert_html_links_to(
+            formatted,
+            "https://youtube.com/@fallofmath",
+            displaytext="youtube/@fallofmath",
+        )
+        self.assert_html_links_to(
+            formatted,
+            "https://youtube.com/@fallofmath2",
+        )
+        self.assert_html_links_to(
+            formatted,
+            "https://google.com",
+            displaytext="google.com/…",
+        )
+        self.assert_html_links_to(
+            formatted,
+            "https://www.google.com/search?q=test",
+            displaytext="google.com/…",
+        )
+
+
+class LinkifyKeywordsTests(LocalTestCase):
+    EXPECTED_LINK = '<a href="https://beatonma.org">beatonma.org</a>'
+
+    def test_simple(self):
+        self.assertEqual(
+            _linkify_keywords("beatonma.org"),
+            self.EXPECTED_LINK,
+        )
+
+    def test_replaces_only_first_instance(self):
+        self.assertEqual(
+            _linkify_keywords("beatonma.org and beatonma.org again"),
+            f"{self.EXPECTED_LINK} and beatonma.org again",
+        )
+
+    def test_does_not_match_already_linkified(self):
+        self.assertEqual(
+            _linkify_keywords(
+                '<a href="https://beatonma.org">beatonma.org</a> and beatonma.org again'
+            ),
+            f"{self.EXPECTED_LINK} and {self.EXPECTED_LINK} again",
+        )
+
+    def test_replacement_in_text_block(self):
+        self.assertEqual(
+            _linkify_keywords(
+                "This is stuff about beatonma.org and it's super interesting"
+            ),
+            f"This is stuff about {self.EXPECTED_LINK} and it's super interesting",
+        )
+
+        self.assertEqual(
+            _linkify_keywords(
+                "This is stuff about beatonma.org: it's super interesting"
+            ),
+            f"This is stuff about {self.EXPECTED_LINK}: it's super interesting",
+        )
+
+        self.assertEqual(
+            _linkify_keywords("This is stuff about beatonma.org."),
+            f"This is stuff about {self.EXPECTED_LINK}.",
+        )
+
 
 class LigatureTests(LocalTestCase):
     def test_simple_text_ligatures(self):
@@ -159,3 +258,24 @@ z = x (c) y
     def test_individual_ligatures(self):
         for key, value in formats._LIGATURES.items():
             self.assertEqual(formats._apply_ligatures(key), value)
+
+
+class FormatsTests(LocalTestCase):
+    def assert_html(self, content: str, expected: str):
+        self.assertEqual(Formats.to_html(Formats.NONE, content), expected)
+
+    def assert_md(self, content: str, expected: str):
+        self.assertEqual(
+            str(html_parser(Formats.to_html(Formats.MARKDOWN, content))),
+            str(html_parser(expected)),
+        )
+
+    def test_markdown_formatting(self):
+        self.assert_md(
+            "something about beatonma.org!",
+            '<p>something about <a href="https://beatonma.org">beatonma.org</a>!</p>',
+        )
+        self.assert_md(
+            "something about [beatonma.org](https://beatonma.org)?",
+            '<p>something about <a href="https://beatonma.org">beatonma.org</a>?</p>',
+        )
