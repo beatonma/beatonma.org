@@ -203,7 +203,7 @@ class LigatureTests(LocalTestCase):
     def test_simple_text_ligatures(self):
         self.assertEqual(
             formats._apply_ligatures("if this(c) -> that..."),
-            "if this© → that…",
+            "if this&copy; &rarr; that&hellip;",
         )
 
     def test_code_blocks_unchanged(self):
@@ -240,13 +240,13 @@ z = x (c) y
         self.assertEqual(
             formats._apply_ligatures(mixed_content),
             """
-Here's some text with → and © ligatures.
+Here's some text with &rarr; and &copy; ligatures.
 This is a code block:
 ```
 def foo():
     return x -> y
 ```
-Another code ⟹ `block...`:
+Another code &xrArr; `block...`:
 ```python
 x = 10
 y = 20
@@ -261,16 +261,12 @@ z = x (c) y
 
 
 class FormatsTests(LocalTestCase):
-    def assert_html(self, content: str, expected: str):
-        self.assertEqual(Formats.to_html(Formats.NONE, content), expected)
-
     def assert_md(self, content: str, expected: str):
-        self.assertEqual(
-            str(html_parser(Formats.to_html(Formats.MARKDOWN, content))),
-            str(html_parser(expected)),
-        )
+        actual = html_parser(Formats.to_html(Formats.MARKDOWN, content)).prettify()
+        expected = html_parser(expected).prettify()
+        self.assertEqual(actual, expected)
 
-    def test_markdown_formatting(self):
+    def test_markdown_link_formatting(self):
         self.assert_md(
             "something about beatonma.org!",
             '<p>something about <a href="https://beatonma.org">beatonma.org</a>!</p>',
@@ -278,4 +274,50 @@ class FormatsTests(LocalTestCase):
         self.assert_md(
             "something about [beatonma.org](https://beatonma.org)?",
             '<p>something about <a href="https://beatonma.org">beatonma.org</a>?</p>',
+        )
+
+    def test_markdown_complex(self):
+        self.assert_md(
+            """# Article
+
+This --> is a #complicated piece of writing with a link(tm) to beatonma.org and some `inline code` and...
+
+```python
+
+# And a block of code
+```
+
+## Another section
+
+| Table |
+|-------|
+|content|
+
+List of stuff:
+- one(r)
+- two(c)
+- ==> three
+""",
+            """<h1 id="article">Article</h1>
+
+<p>This &xrarr; is a <a href="/tag/complicated/">#complicated</a> piece of writing with a link&trade; to <a href="https://beatonma.org">beatonma.org</a> and some <code>inline code</code> and&hellip;</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="c1"># And a block of code</span>
+</pre></code>
+</div>
+
+<h2 id="another-section">Another section</h2>
+
+<table>
+<thead><tr><th>Table</th></tr></thead>
+<tbody><tr><td>content</td></tr></tbody>
+</table>
+
+<p>List of stuff:</p>
+
+<ul>
+<li>one®</li>
+<li>two©</li>
+<li>&xrArr; three</li></ul>""",
         )
