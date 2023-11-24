@@ -6,7 +6,6 @@ from .feeds import LatestUpdatesFeed
 from .views import view_names
 from .views.about import AboutView
 from .views.api.media import RelatedFilesJsonView
-from .views.api.notes import ApiNotesView
 from .views.api.search import SearchApiView, SearchSuggestionsView
 from .views.api.status import PingView
 from .views.app import AppView
@@ -28,11 +27,6 @@ api_urlpatterns = [
         "api/related_media/",
         RelatedFilesJsonView,
         view_names.API_RELATED_FILES,
-    ),
-    path(
-        "api/notes/",
-        ApiNotesView,
-        view_names.API_NOTES,
     ),
     path("api/", include("github.urls")),
     path("api/search/", SearchApiView),

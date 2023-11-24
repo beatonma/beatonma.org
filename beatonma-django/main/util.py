@@ -1,7 +1,8 @@
 import logging
 import re
 from functools import reduce
-from typing import Callable, Dict, List, Optional, Protocol, Tuple, TypeVar, Union
+from typing import Callable, Dict, List, Optional, Tuple, TypeVar, Union
+from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 from django.conf import settings
@@ -34,7 +35,7 @@ def get_media_type_description(file: Optional["RelatedFile"]) -> str:
 
 
 def to_absolute_url(path: str) -> str:
-    return f"https://{settings.DOMAIN_NAME}{path}"
+    return urljoin(f"https://{settings.DOMAIN_NAME}", path)
 
 
 _T = TypeVar("_T")

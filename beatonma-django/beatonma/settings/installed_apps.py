@@ -14,6 +14,7 @@ _THIRD_PARTY_APPS = [
     "taggit",
     "django_extensions",
     "django_user_agents",
+    "rest_framework",
 ]
 _FIRST_PARTY_APPS = [
     "bmanotify_django",

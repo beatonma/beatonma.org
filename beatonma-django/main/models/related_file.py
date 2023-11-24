@@ -44,7 +44,8 @@ class RelatedFile(GenericFkMixin, ApiModel, BaseModel):
         using=None,
         update_fields=None,
     ):
-        self.original_filename = self.file.name
+        if not self.original_filename:
+            self.original_filename = self.file.name
 
         super().save(force_insert, force_update, using, update_fields)
 

@@ -1,35 +1,72 @@
-from bma_app.forms import CreateNoteForm, RelatedFileForm
-from bma_app.views import AppApiView
+from bma_app.forms import CreateNoteForm
+from bma_app.views.api import ApiViewSet
 from common.models.generic import generic_fk
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse
 from main.models import Note, RelatedFile
+from main.util import get_media_type_description
+from main.views.querysets import get_notes
+from rest_framework import serializers
+from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.request import Request
 
 
-class CreateNoteView(AppApiView):
-    def post(self, request: HttpRequest):
+class NotesSerializer(serializers.HyperlinkedModelSerializer):
+    content = serializers.CharField(write_only=True)
+    content_html = serializers.CharField(read_only=True)
+    timestamp = serializers.DateTimeField(source="created_at", read_only=True)
+    url = serializers.URLField(source="get_absolute_url", read_only=True)
+
+    class Meta:
+        model = Note
+        fields = [
+            "content",
+            "content_html",
+            "url",
+            "timestamp",
+            "is_published",
+        ]
+
+
+class MediaSerializer(serializers.ModelSerializer):
+    file = serializers.FileField(write_only=True)
+    type = serializers.SerializerMethodField(read_only=True)
+
+    def get_type(self, file: RelatedFile):
+        return get_media_type_description(file)
+
+    class Meta:
+        model = RelatedFile
+        fields = [
+            "file",
+            "url",
+            "description",
+            "type",
+        ]
+
+
+class NoteWithMediaSerializer(serializers.Serializer):
+    note = NotesSerializer(source="*")
+    media = MediaSerializer(source="related_files", many=True)
+
+
+class NotesViewSet(ApiViewSet):
+    queryset = get_notes()
+    parser_classes = [FormParser, MultiPartParser]
+    serializer_class = NoteWithMediaSerializer
+
+    def create(self, request: Request, *args, **kwargs):
         form = CreateNoteForm(request.POST, request.FILES)
         if not form.is_valid():
-            return HttpResponse(status=400)
+            return HttpResponse(status=401)
 
-        return _create_note(form, request)
+        content = form.cleaned_data.get("content")
+        note = Note.objects.create(content=content.strip())
 
-    def delete(self, request: HttpRequest):
-        return HttpResponse(status=403)
+        if form.files:
+            RelatedFile.objects.create(
+                file=form.files["file"],
+                description=form.cleaned_data.get("file_description"),
+                **generic_fk(note),
+            )
 
-
-def _create_note(form: CreateNoteForm, request: HttpRequest) -> HttpResponse:
-    content = form.cleaned_data.get("content")
-    note = Note.objects.create(content=content.strip())
-
-    _upload_file(note, RelatedFileForm(request.POST, request.FILES))
-
-    return JsonResponse({"id": note.pk}, status=200)
-
-
-def _upload_file(note: Note, form: RelatedFileForm):
-    if form.is_valid():
-        RelatedFile.objects.create(
-            file=form.files["file"],
-            description=form.cleaned_data.get("file_description"),
-            **generic_fk(note),
-        )
+        return JsonResponse({"id": note.pk}, status=201)
