@@ -53,6 +53,7 @@ class NotesViewSet(ApiViewSet):
     queryset = get_notes()
     parser_classes = [FormParser, MultiPartParser]
     serializer_class = NotesSerializer
+    lookup_field = "api_id"
 
     def create(self, request: Request, *args, **kwargs):
         form = CreateNoteForm(request.POST, request.FILES)
