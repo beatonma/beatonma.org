@@ -2,6 +2,7 @@ import logging
 import re
 
 from common.models import BaseModel, PublishedMixin, TaggableMixin
+from common.models.api import ApiEditable
 from common.models.search import SearchResult
 from common.util import regex
 from django.contrib.contenttypes.fields import GenericRelation
@@ -21,6 +22,7 @@ class BasePost(
     MentionableMixin,
     TaggableMixin,
     RelatedFilesMixin,
+    ApiEditable,
     BaseModel,
 ):
     class Meta:

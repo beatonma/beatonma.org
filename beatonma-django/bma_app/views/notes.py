@@ -1,5 +1,6 @@
 from bma_app.forms import CreateNoteForm
 from bma_app.views.api import ApiViewSet
+from bma_app.views.serializers import ApiSerializer
 from common.models.generic import generic_fk
 from django.http import HttpResponse, JsonResponse
 from main.models import Note, RelatedFile
@@ -10,7 +11,7 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.request import Request
 
 
-class NotesSerializer(serializers.HyperlinkedModelSerializer):
+class NotesSerializer(ApiSerializer):
     content = serializers.CharField(write_only=True)
     content_html = serializers.CharField(read_only=True)
     timestamp = serializers.DateTimeField(source="created_at", read_only=True)
@@ -19,6 +20,7 @@ class NotesSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Note
         fields = [
+            "id",
             "content",
             "content_html",
             "url",
@@ -69,4 +71,4 @@ class NotesViewSet(ApiViewSet):
                 **generic_fk(note),
             )
 
-        return JsonResponse({"id": note.pk}, status=201)
+        return JsonResponse({"id": note.api_id}, status=201)

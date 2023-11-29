@@ -1,4 +1,5 @@
 from common.models import ApiModel, BaseModel
+from common.models.api import ApiEditable
 from common.models.generic import GenericFkMixin
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
@@ -6,7 +7,7 @@ from main.forms import SanitizedFileField
 from main.util import get_media_type_description, to_absolute_url
 
 
-class RelatedFile(GenericFkMixin, ApiModel, BaseModel):
+class RelatedFile(GenericFkMixin, ApiModel, ApiEditable, BaseModel):
     """Files that are uploaded"""
 
     file = SanitizedFileField(

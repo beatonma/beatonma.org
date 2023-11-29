@@ -20,6 +20,7 @@ class WebPostAdmin(BaseAdmin):
         "created_at",
         "modified_at",
         "slug",
+        "api_id",
     ]
     actions = PUBLISH_ACTIONS
     list_display = [

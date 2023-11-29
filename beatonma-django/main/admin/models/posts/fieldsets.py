@@ -24,6 +24,7 @@ METADATA = (
         "classes": ("collapse",),
         "fields": (
             "slug",
+            "api_id",
             (
                 "published_at",
                 "created_at",
