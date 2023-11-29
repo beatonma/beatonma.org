@@ -11,11 +11,30 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.request import Request
 
 
+class MediaSerializer(ApiSerializer):
+    file = serializers.FileField(write_only=True)
+    type = serializers.SerializerMethodField(read_only=True)
+
+    def get_type(self, file: RelatedFile):
+        return get_media_type_description(file)
+
+    class Meta:
+        model = RelatedFile
+        fields = [
+            "id",
+            "file",
+            "url",
+            "description",
+            "type",
+        ]
+
+
 class NotesSerializer(ApiSerializer):
     content = serializers.CharField(write_only=True)
     content_html = serializers.CharField(read_only=True)
     timestamp = serializers.DateTimeField(source="created_at", read_only=True)
     url = serializers.URLField(source="get_absolute_url", read_only=True)
+    media = MediaSerializer(source="related_files", many=True)
 
     class Meta:
         model = Note
@@ -26,35 +45,14 @@ class NotesSerializer(ApiSerializer):
             "url",
             "timestamp",
             "is_published",
+            "media",
         ]
-
-
-class MediaSerializer(serializers.ModelSerializer):
-    file = serializers.FileField(write_only=True)
-    type = serializers.SerializerMethodField(read_only=True)
-
-    def get_type(self, file: RelatedFile):
-        return get_media_type_description(file)
-
-    class Meta:
-        model = RelatedFile
-        fields = [
-            "file",
-            "url",
-            "description",
-            "type",
-        ]
-
-
-class NoteWithMediaSerializer(serializers.Serializer):
-    note = NotesSerializer(source="*")
-    media = MediaSerializer(source="related_files", many=True)
 
 
 class NotesViewSet(ApiViewSet):
     queryset = get_notes()
     parser_classes = [FormParser, MultiPartParser]
-    serializer_class = NoteWithMediaSerializer
+    serializer_class = NotesSerializer
 
     def create(self, request: Request, *args, **kwargs):
         form = CreateNoteForm(request.POST, request.FILES)

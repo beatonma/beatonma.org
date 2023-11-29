@@ -8,7 +8,9 @@ from bs4 import BeautifulSoup
 from django.conf import settings
 
 VIDEO_PATTERN = re.compile(r".*\.(mp4|webm)$")
-AUDIO_PATTERN = re.compile(r".*\.(mp3)$")
+AUDIO_PATTERN = re.compile(r".*\.(mp3|wav)$")
+IMAGE_PATTERN = re.compile(r".*\.(jpe?g|png|svg|webp)$")
+TEXT_PATTERN = re.compile(r".*\.(md|txt)$")
 
 log = logging.getLogger(__name__)
 
@@ -26,12 +28,16 @@ def get_media_type_description(file: Optional["RelatedFile"]) -> str:
     if not file:
         return ""
 
-    if VIDEO_PATTERN.match(file.file.url):
+    url = file.file.url
+    if VIDEO_PATTERN.match(url):
         return "video"
-    elif AUDIO_PATTERN.match(file.file.url):
+    if AUDIO_PATTERN.match(url):
         return "audio"
-    else:
+    if IMAGE_PATTERN.match(url):
         return "image"
+    if TEXT_PATTERN.match(url):
+        return "text"
+    return "unknown"
 
 
 def to_absolute_url(path: str) -> str:
