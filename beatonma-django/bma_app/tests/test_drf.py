@@ -1,6 +1,6 @@
 from basetest.testcase import LocalTestCase
 from bma_app.models import ApiToken
-from bma_app.views.api import TOKEN_KEY
+from bma_app.views.api import HEADER_TOKEN, TOKEN_KEY
 from django.contrib.auth.models import User
 from django.urls import reverse
 from rest_framework import status
@@ -19,12 +19,12 @@ class DrfTestCase(LocalTestCase):
         self.token_disabled = ApiToken.objects.create(user=self.staff_user).uuid.hex
 
 
-class RootApiTests(DrfTestCase):
+class RootApiKeyTests(DrfTestCase):
     view_name = "api:api-root"
 
-    def _get(self, token):
+    def _get(self, token, headers=None):
         data = {TOKEN_KEY: token} if token else None
-        return self.client.get(reverse(self.view_name), data=data)
+        return self.client.get(reverse(self.view_name), data=data, headers=headers)
 
     def test_root_accessible_to_staff(self):
         self.client.force_login(self.staff_user)
@@ -50,3 +50,7 @@ class RootApiTests(DrfTestCase):
 
         response = self._get(token="whatever")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_root_accessible_with_key_in_headers(self):
+        response = self._get(token=None, headers={HEADER_TOKEN: self.token})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

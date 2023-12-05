@@ -1,6 +1,8 @@
+import json
 import uuid
 
 from bma_app.tests.test_drf import DrfTestCase
+from bma_app.views.api import HEADER_TOKEN, TOKEN_KEY
 from django.core.files import File
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponse
@@ -12,7 +14,7 @@ from rest_framework import status
 class DrfCreateNoteTests(DrfTestCase):
     def post_request(
         self,
-        note: str = None,
+        content: str = None,
         token: str | bool | None = True,
         file: File | None = None,
         file_description: str | None = None,
@@ -20,9 +22,9 @@ class DrfCreateNoteTests(DrfTestCase):
         note_id: str | None = None,
     ) -> HttpResponse:
         data = {
-            "token": self.token if token is True else token,
+            TOKEN_KEY: self.token if token is True else token,
             "id": note_id,
-            "content": note,
+            "content": content,
             "file": file,
             "file_description": file_description,
             "is_published": is_published,
@@ -34,23 +36,23 @@ class DrfCreateNoteTests(DrfTestCase):
         return self.client.post(reverse("api:note-list"), data)
 
     def test_missing_usertoken_returns_403(self):
-        response = self.post_request(note="missing token", token=None)
+        response = self.post_request(content="missing token", token=None)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_wrong_usertoken_returns_403(self):
-        response = self.post_request(note="wrong token", token=uuid.uuid4().hex)
+        response = self.post_request(content="wrong token", token=uuid.uuid4().hex)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_simple_note(self):
+    def test_create_simple_note(self):
         response = self.post_request(
-            note="drf test",
+            content="drf test",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIsNotNone(Note.objects.get(content="drf test"))
 
-    def test_file_upload(self):
+    def test_create_note_with_media(self):
         response = self.post_request(
-            note="drf note with media",
+            content="drf note with media",
             file=_file(),
             file_description="Drf description",
         )
@@ -61,6 +63,35 @@ class DrfCreateNoteTests(DrfTestCase):
 
         self.assertRegex(str(file.file), r"related/\d{4}/[-\w]+\.\w+$")
         self.assertEqual(file.description, "Drf description")
+
+    def test_edit_note(self):
+        note = Note.objects.create(content="unedited note :(", is_published=False)
+        response = self.client.put(
+            reverse("api:note-detail", args=[note.api_id]),
+            json.dumps(
+                {
+                    "content": "edited note :)",
+                    "is_published": True,
+                }
+            ),
+            content_type="application/json",
+            headers={HEADER_TOKEN: self.token},
+        )
+        note.refresh_from_db()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(note.content, "edited note :)")
+        self.assertTrue(note.is_published)
+
+    def test_delete_note(self):
+        note = Note.objects.create(content="delete this")
+        response = self.client.delete(
+            reverse("api:note-detail", args=[note.api_id]),
+            headers={HEADER_TOKEN: self.token},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        with self.assertRaises(Note.DoesNotExist):
+            note.refresh_from_db()
 
 
 class DrfAddMediaToNoteTests(DrfTestCase):

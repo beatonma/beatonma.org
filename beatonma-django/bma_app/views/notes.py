@@ -7,9 +7,13 @@ from main.models import Note, RelatedFile
 from main.util import get_media_type_description
 from rest_framework import serializers, status
 from rest_framework.decorators import action
-from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
+
+
+def bad_request():
+    return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
 
 class MediaSerializer(ApiSerializer):
@@ -31,16 +35,19 @@ class MediaSerializer(ApiSerializer):
 
 
 class NotesSerializer(ApiSerializer):
-    content_html = serializers.CharField()
-    timestamp = serializers.DateTimeField(source="created_at")
-    url = serializers.URLField(source="get_absolute_url")
-    media = MediaSerializer(source="related_files", many=True)
+    id = serializers.CharField(read_only=True)
+    content_html = serializers.CharField(read_only=True)
+    content = serializers.CharField(write_only=True)
+    timestamp = serializers.DateTimeField(source="created_at", read_only=True)
+    url = serializers.URLField(source="get_absolute_url", read_only=True)
+    media = MediaSerializer(source="related_files", many=True, read_only=True)
 
     class Meta:
         model = Note
         fields = [
             "id",
             "content_html",
+            "content",
             "url",
             "timestamp",
             "is_published",
@@ -50,14 +57,14 @@ class NotesSerializer(ApiSerializer):
 
 class NotesViewSet(ApiViewSet):
     queryset = Note.objects.all()
-    parser_classes = [FormParser, MultiPartParser]
+    parser_classes = [FormParser, MultiPartParser, JSONParser]
     serializer_class = NotesSerializer
     lookup_field = "api_id"
 
     def create(self, request: Request, *args, **kwargs):
         form = CreateNoteForm(request.POST, request.FILES)
         if not form.is_valid():
-            return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+            return bad_request()
 
         note = Note.objects.create(content=form.cleaned_data.get("content"))
 

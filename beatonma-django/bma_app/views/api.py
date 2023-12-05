@@ -1,15 +1,15 @@
 import logging
-from typing import Optional
 
 from bma_app.models import ApiToken
 from django.core.exceptions import ValidationError
-from django.http import HttpRequest, HttpResponse
-from rest_framework import status
+from django.http import HttpRequest
+from rest_framework.permissions import BasePermission
 from rest_framework.viewsets import ModelViewSet
 
 log = logging.getLogger(__name__)
 
 
+HEADER_TOKEN = "ApiToken"
 TOKEN_KEY = "token"
 
 
@@ -21,31 +21,35 @@ class BadApiToken(ApiTokenException):
     pass
 
 
+class ApiTokenPermission(BasePermission):
+    def has_permission(self, request, view):
+        return has_api_permission(request)
+
+    def has_object_permission(self, request, view, obj):
+        return has_api_permission(request)
+
+
 class ApiViewSet(ModelViewSet):
-    def dispatch(self, request: HttpRequest, *args, **kwargs):
-        return check_request_token(request) or super().dispatch(
-            request, *args, **kwargs
-        )
+    permission_classes = (ApiTokenPermission,)
 
 
-def check_request_token(request: HttpRequest) -> Optional[HttpResponse]:
-    """Return None if the request passes validation, else return HTTP 403.
-
-    Valid requests:
-    - The signed-in user is a staff member, or
-    - The request includes a valid API token which corresponds to a staff user.
-    """
-    token = request.GET.get(TOKEN_KEY) or request.POST.get(TOKEN_KEY)
+def has_api_permission(request: HttpRequest) -> bool:
+    token = (
+        request.headers.get(HEADER_TOKEN)
+        or request.GET.get(TOKEN_KEY)
+        or request.POST.get(TOKEN_KEY)
+    )
 
     try:
-        return check_token(token)
+        check_token(token)
+        return True
     except BadApiToken:
-        return HttpResponse("Bad token", status=status.HTTP_403_FORBIDDEN)
+        return False
     except ApiTokenException:
-        pass
+        if request.user.is_staff:
+            return True
 
-    if not request.user.is_staff:
-        return HttpResponse(status=status.HTTP_403_FORBIDDEN)
+    return False
 
 
 def check_token(user_token: str) -> None:

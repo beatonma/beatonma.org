@@ -13,7 +13,6 @@ class MediaAttachmentForm(forms.Form):
 
 
 class CreateNoteForm(MediaAttachmentForm, forms.Form):
-    token = forms.CharField(max_length=36, required=True)
     content = forms.CharField(
         max_length=Note.max_length,
         strip=True,
