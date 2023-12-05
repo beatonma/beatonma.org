@@ -10,9 +10,10 @@ from main.views import view_names
 
 
 class Note(ApiModel, BasePost):
+    max_length: int = 280
     search_fields = ["content", "tags__name"]
 
-    content = models.CharField(max_length=280, default="")
+    content = models.CharField(max_length=max_length, default="")
     slug = models.SlugField(unique=True, max_length=7, editable=False)
 
     def build_slug(self):

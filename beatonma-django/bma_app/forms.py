@@ -2,25 +2,36 @@ import logging
 
 from django import forms
 from django.core.exceptions import ValidationError
+from main.models import Note, RelatedFile
 
 log = logging.getLogger(__name__)
 
 
-class CreateNoteForm(forms.Form):
+class MediaAttachmentForm(forms.Form):
+    file: forms.FileField
+    file_description: forms.CharField
+
+
+class CreateNoteForm(MediaAttachmentForm, forms.Form):
     token = forms.CharField(max_length=36, required=True)
-    content = forms.CharField(required=False)
+    content = forms.CharField(
+        max_length=Note.max_length,
+        strip=True,
+        required=False,
+    )
     file = forms.FileField(required=False)
-    file_description = forms.CharField(max_length=140, required=False)
+    file_description = forms.CharField(
+        max_length=RelatedFile.description_max_length,
+        strip=True,
+        required=False,
+    )
+    is_published = forms.BooleanField()
 
     def clean(self):
         cleaned_data = super().clean()
 
         content = cleaned_data.get("content")
         file = cleaned_data.get("file")
-
-        if content:
-            content = content.strip()
-            cleaned_data["content"] = content
 
         if not content and not file:
             raise ValidationError(
@@ -29,3 +40,11 @@ class CreateNoteForm(forms.Form):
             )
 
         return cleaned_data
+
+
+class AppendNoteMediaForm(MediaAttachmentForm, forms.Form):
+    file = forms.FileField()
+    file_description = forms.CharField(
+        max_length=RelatedFile.description_max_length,
+        strip=True,
+    )

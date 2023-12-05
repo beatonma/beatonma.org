@@ -10,6 +10,8 @@ from main.util import get_media_type_description, to_absolute_url
 class RelatedFile(GenericFkMixin, ApiModel, ApiEditable, BaseModel):
     """Files that are uploaded"""
 
+    description_max_length = 140
+
     file = SanitizedFileField(
         blank=True,
         upload_to="related/%Y/",
@@ -22,7 +24,7 @@ class RelatedFile(GenericFkMixin, ApiModel, ApiEditable, BaseModel):
     )
 
     description = models.CharField(
-        max_length=140,
+        max_length=description_max_length,
         blank=True,
         null=True,
         help_text="File content description",
