@@ -3,6 +3,7 @@ import uuid
 
 from bma_app.tests.test_drf import DrfTestCase
 from bma_app.views.api import HEADER_TOKEN, TOKEN_KEY
+from common.models.generic import generic_fk
 from django.core.files import File
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponse
@@ -44,9 +45,7 @@ class DrfCreateNoteTests(DrfTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_simple_note(self):
-        response = self.post_request(
-            content="drf test",
-        )
+        response = self.post_request(content="drf test")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIsNotNone(Note.objects.get(content="drf test"))
 
@@ -94,9 +93,9 @@ class DrfCreateNoteTests(DrfTestCase):
             note.refresh_from_db()
 
 
-class DrfAddMediaToNoteTests(DrfTestCase):
+class DrfNoteMediaTests(DrfTestCase):
     def test_append_media_to_existing_note(self):
-        note = Note.objects.create(content_html="Hello")
+        note = Note.objects.create(content="Hello")
 
         response = self.client.post(
             reverse("api:note-media", args=[note.api_id]),
@@ -111,6 +110,19 @@ class DrfAddMediaToNoteTests(DrfTestCase):
         file: RelatedFile = note.related_files.first()
 
         self.assertEqual(file.description, "Added later")
+
+    def test_delete_media(self):
+        note = Note.objects.create(content="delete the media")
+        file = RelatedFile.objects.create(file=_file(), **generic_fk(note))
+
+        file_id = note.related_files.first().api_id
+        response = self.client.delete(
+            reverse("api:relatedfile-detail", args=[file_id]),
+            headers={HEADER_TOKEN: self.token},
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        with self.assertRaises(RelatedFile.DoesNotExist):
+            file.refresh_from_db()
 
 
 def _file():

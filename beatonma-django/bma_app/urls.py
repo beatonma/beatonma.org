@@ -1,5 +1,5 @@
 from bma_app.views.api import ApiTokenPermission
-from bma_app.views.notes import NotesViewSet
+from bma_app.views.notes import MediaViewSet, NotesViewSet
 from bma_app.views.whoami import WhoamiView
 from django.urls import include, path
 from rest_framework import routers
@@ -16,6 +16,7 @@ class Router(routers.DefaultRouter):
 
 router = Router()
 router.register("notes", NotesViewSet)
+router.register("media", MediaViewSet)
 
 
 app_name = "api"

@@ -1,5 +1,5 @@
 from bma_app.forms import AppendNoteMediaForm, CreateNoteForm, MediaAttachmentForm
-from bma_app.views.api import ApiViewSet
+from bma_app.views.api import ApiModelViewSet, ApiViewSet
 from bma_app.views.serializers import ApiSerializer
 from common.models.generic import generic_fk
 from django.http import HttpResponse
@@ -7,6 +7,7 @@ from main.models import Note, RelatedFile
 from main.util import get_media_type_description
 from rest_framework import serializers, status
 from rest_framework.decorators import action
+from rest_framework.mixins import DestroyModelMixin
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -55,7 +56,7 @@ class NotesSerializer(ApiSerializer):
         ]
 
 
-class NotesViewSet(ApiViewSet):
+class NotesViewSet(ApiModelViewSet):
     queryset = Note.objects.all()
     parser_classes = [FormParser, MultiPartParser, JSONParser]
     serializer_class = NotesSerializer
@@ -83,6 +84,12 @@ class NotesViewSet(ApiViewSet):
 
         file = _create_related_file(note, form)
         return Response({"id": file.api_id}, status=status.HTTP_201_CREATED)
+
+
+class MediaViewSet(DestroyModelMixin, ApiViewSet):
+    queryset = RelatedFile.objects.all()
+    serializer_class = MediaSerializer
+    lookup_field = "api_id"
 
 
 def _create_related_file(note: Note, form: MediaAttachmentForm):

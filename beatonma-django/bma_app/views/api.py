@@ -4,7 +4,7 @@ from bma_app.models import ApiToken
 from django.core.exceptions import ValidationError
 from django.http import HttpRequest
 from rest_framework.permissions import BasePermission
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 log = logging.getLogger(__name__)
 
@@ -29,8 +29,12 @@ class ApiTokenPermission(BasePermission):
         return has_api_permission(request)
 
 
-class ApiViewSet(ModelViewSet):
+class ApiViewSet(GenericViewSet):
     permission_classes = (ApiTokenPermission,)
+
+
+class ApiModelViewSet(ApiViewSet, ModelViewSet):
+    pass
 
 
 def has_api_permission(request: HttpRequest) -> bool:
