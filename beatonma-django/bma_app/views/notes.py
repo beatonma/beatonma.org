@@ -42,7 +42,6 @@ class UpdateMediaSerializer(serializers.ModelSerializer):
 
 
 class NotesSerializer(ApiSerializer):
-    id = serializers.CharField(read_only=True)
     content_html = serializers.CharField(read_only=True)
     content = serializers.CharField(write_only=True)
     timestamp = serializers.DateTimeField(source="created_at", read_only=True)

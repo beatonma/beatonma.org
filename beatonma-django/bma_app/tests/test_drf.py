@@ -1,7 +1,11 @@
+import json
+from functools import partialmethod
+
 from basetest.testcase import LocalTestCase
 from bma_app.models import ApiToken
 from bma_app.views.api import HEADER_TOKEN, TOKEN_KEY, ApiTokenPermission
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 from django.urls import reverse
 from rest_framework import status
 
@@ -17,6 +21,48 @@ class DrfTestCase(LocalTestCase):
             user=self.staff_user, enabled=True
         ).uuid.hex
         self.token_disabled = ApiToken.objects.create(user=self.staff_user).uuid.hex
+
+    def get_with_api_token(
+        self, url: str, data=None, headers: dict | None = None, **kwargs
+    ):
+        return self._client_method_with_api_token(
+            self.client.get, url, data, headers, **kwargs
+        )
+
+    def post_with_api_token(
+        self, url: str, data=None, headers: dict | None = None, **kwargs
+    ):
+        return self._client_method_with_api_token(
+            self.client.post, url, data, headers, **kwargs
+        )
+
+    def put_with_api_token(
+        self, url: str, data: dict, headers: dict | None = None, **kwargs
+    ):
+        return self._client_method_with_api_token(
+            self.client.put,
+            url,
+            json.dumps(data),
+            headers,
+            content_type="application/json",
+            **kwargs
+        )
+
+    def delete_with_api_token(
+        self, url: str, data=None, headers: dict | None = None, **kwargs
+    ):
+        return self._client_method_with_api_token(
+            self.client.delete, url, data, headers, **kwargs
+        )
+
+    def _client_method_with_api_token(
+        self, method, url: str, data=None, headers: dict = None, **kwargs
+    ) -> HttpResponse:
+        if not headers:
+            headers = {}
+        headers[HEADER_TOKEN] = self.token
+
+        return method(url, data=data, headers=headers, **kwargs)
 
 
 class ApiRootPermissionsTests(DrfTestCase):

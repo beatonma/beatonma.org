@@ -1,8 +1,8 @@
-import json
+import re
 import uuid
 
 from bma_app.tests.test_drf import DrfTestCase
-from bma_app.views.api import HEADER_TOKEN, TOKEN_KEY
+from bma_app.views.api import TOKEN_KEY
 from common.models.generic import generic_fk
 from django.core.files import File
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -10,6 +10,45 @@ from django.http import HttpResponse
 from django.urls import reverse
 from main.models import Note, RelatedFile
 from rest_framework import status
+
+
+class NoteGetTests(DrfTestCase):
+    def test_note_structure_is_correct(self):
+        note = Note.objects.create(content="This is content")
+        file = RelatedFile.objects.create(
+            file=_file(), description="file description", **generic_fk(note)
+        )
+
+        response = self.get_with_api_token(reverse("api:note-list"))
+        data = response.json()[0]
+
+        match data:
+            case {
+                "id": str(),
+                "content_html": str(),
+                "url": str(),
+                "timestamp": str(),
+                "is_published": bool(),
+                "media": [
+                    {
+                        "id": str(),
+                        "url": str(),
+                        "description": str(),
+                        "type": str(),
+                    }
+                ],
+            }:
+                pass
+            case _:
+                raise AssertionError(f"Unexpected data structure: {data}")
+
+        # Ensure that ID fields are using UUIDs, not default integer PK.
+        uuid_pattern = re.compile(r"(?=.*[a-zA-Z])(?=.*[0-9])[\-a-zA-Z0-9]+")
+        self.assertRegex(data["id"], uuid_pattern)
+        self.assertEqual(data["id"], str(note.api_id))
+
+        self.assertRegex(data["media"][0]["id"], uuid_pattern)
+        self.assertEqual(data["media"][0]["id"], str(file.api_id))
 
 
 class DrfCreateNoteTests(DrfTestCase):
@@ -65,16 +104,12 @@ class DrfCreateNoteTests(DrfTestCase):
 
     def test_edit_note(self):
         note = Note.objects.create(content="unedited note :(", is_published=False)
-        response = self.client.put(
+        response = self.put_with_api_token(
             reverse("api:note-detail", args=[note.api_id]),
-            json.dumps(
-                {
-                    "content": "edited note :)",
-                    "is_published": True,
-                }
-            ),
-            content_type="application/json",
-            headers={HEADER_TOKEN: self.token},
+            {
+                "content": "edited note :)",
+                "is_published": True,
+            },
         )
         note.refresh_from_db()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -83,9 +118,8 @@ class DrfCreateNoteTests(DrfTestCase):
 
     def test_delete_note(self):
         note = Note.objects.create(content="delete this")
-        response = self.client.delete(
-            reverse("api:note-detail", args=[note.api_id]),
-            headers={HEADER_TOKEN: self.token},
+        response = self.delete_with_api_token(
+            reverse("api:note-detail", args=[note.api_id])
         )
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
@@ -115,9 +149,8 @@ class DrfNoteMediaTests(DrfTestCase):
         note = Note.objects.create(content="delete the media")
         file = RelatedFile.objects.create(file=_file(), **generic_fk(note))
 
-        response = self.client.delete(
+        response = self.delete_with_api_token(
             reverse("api:relatedfile-detail", args=[file.api_id]),
-            headers={HEADER_TOKEN: self.token},
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         with self.assertRaises(RelatedFile.DoesNotExist):
@@ -129,15 +162,11 @@ class DrfNoteMediaTests(DrfTestCase):
             file=_file(), description="unedited", **generic_fk(note)
         )
 
-        response = self.client.put(
+        response = self.put_with_api_token(
             reverse("api:relatedfile-detail", args=[file.api_id]),
-            json.dumps(
-                {
-                    "description": "edited!",
-                }
-            ),
-            content_type="application/json",
-            headers={HEADER_TOKEN: self.token},
+            {
+                "description": "edited!",
+            },
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         file.refresh_from_db()
