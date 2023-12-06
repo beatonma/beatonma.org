@@ -1,6 +1,6 @@
 from basetest.testcase import LocalTestCase
 from bma_app.models import ApiToken
-from bma_app.views.api import HEADER_TOKEN, TOKEN_KEY
+from bma_app.views.api import HEADER_TOKEN, TOKEN_KEY, ApiTokenPermission
 from django.contrib.auth.models import User
 from django.urls import reverse
 from rest_framework import status
@@ -19,7 +19,7 @@ class DrfTestCase(LocalTestCase):
         self.token_disabled = ApiToken.objects.create(user=self.staff_user).uuid.hex
 
 
-class RootApiKeyTests(DrfTestCase):
+class ApiRootPermissionsTests(DrfTestCase):
     view_name = "api:api-root"
 
     def _get(self, token, headers=None):
@@ -54,3 +54,11 @@ class RootApiKeyTests(DrfTestCase):
     def test_root_accessible_with_key_in_headers(self):
         response = self._get(token=None, headers={HEADER_TOKEN: self.token})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class ApiRouterTests(DrfTestCase):
+    def test_viewsets_have_required_permissions(self):
+        from bma_app.urls import router
+
+        for _, viewset, _ in router.registry:
+            self.assertTrue(ApiTokenPermission in viewset.permission_classes)
