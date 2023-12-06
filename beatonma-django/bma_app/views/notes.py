@@ -13,8 +13,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 
-def bad_request():
-    return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+def bad_request(reason: str = None):
+    return HttpResponse(reason, status=status.HTTP_400_BAD_REQUEST)
 
 
 class MediaSerializer(ApiSerializer):
@@ -70,9 +70,12 @@ class NotesViewSet(ApiModelViewSet):
     def create(self, request: Request, *args, **kwargs):
         form = CreateNoteForm(request.POST, request.FILES)
         if not form.is_valid():
-            return bad_request()
+            return bad_request(f"invalid Create form : {form.errors}")
 
-        note = Note.objects.create(content=form.cleaned_data.get("content"))
+        note = Note.objects.create(
+            content=form.cleaned_data.get("content"),
+            is_published=form.cleaned_data.get("is_published"),
+        )
 
         if form.files:
             _create_related_file(note, form)
@@ -85,7 +88,7 @@ class NotesViewSet(ApiModelViewSet):
         form = AppendNoteMediaForm(request.POST, request.FILES)
 
         if not form.is_valid():
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return bad_request(f"Invalid media form: {form.errors}")
 
         file = _create_related_file(note, form)
         return Response({"id": file.api_id}, status=status.HTTP_201_CREATED)

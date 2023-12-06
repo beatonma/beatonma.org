@@ -1,5 +1,4 @@
 import json
-from functools import partialmethod
 
 from basetest.testcase import LocalTestCase
 from bma_app.models import ApiToken

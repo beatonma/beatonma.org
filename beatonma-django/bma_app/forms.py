@@ -18,13 +18,29 @@ class CreateNoteForm(MediaAttachmentForm, forms.Form):
         strip=True,
         required=False,
     )
+    is_published = forms.CharField()
     file = forms.FileField(required=False)
     file_description = forms.CharField(
         max_length=RelatedFile.description_max_length,
         strip=True,
         required=False,
     )
-    is_published = forms.BooleanField()
+
+    def clean_is_published(self):
+        is_published = self.cleaned_data.get("is_published")
+        if isinstance(is_published, str):
+            is_published = is_published.lower()
+            if is_published == "true":
+                return True
+            if is_published == "false":
+                return False
+            raise forms.ValidationError(
+                "is_published field must be a 'true' or 'false' string."
+            )
+        if isinstance(is_published, bool):
+            return is_published
+
+        raise ValidationError(f"Unexpected value is_published={is_published}")
 
     def clean(self):
         cleaned_data = super().clean()
@@ -46,4 +62,5 @@ class AppendNoteMediaForm(MediaAttachmentForm, forms.Form):
     file_description = forms.CharField(
         max_length=RelatedFile.description_max_length,
         strip=True,
+        required=False,
     )
