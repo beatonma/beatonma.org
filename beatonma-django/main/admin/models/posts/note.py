@@ -8,7 +8,8 @@ from main.models import Note
 class NoteAdmin(WebPostAdmin):
     actions = actions.PUBLISH_ACTIONS
     list_display = [
-        "content",
+        "_content",
+        "_files",
         "is_published",
     ]
     list_filter = [
@@ -35,3 +36,9 @@ class NoteAdmin(WebPostAdmin):
         fieldsets.METADATA,
         fieldsets.generated_html("content_html"),
     )
+
+    def _files(self, obj: Note) -> str:
+        return obj.related_files.all().count()
+
+    def _content(self, obj: Note) -> str:
+        return obj.content or "-"

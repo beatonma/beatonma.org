@@ -106,6 +106,10 @@ tr:nth-child(even) {
   background-color: var(--body-bg);
 }
 
+tr:hover {
+  background-color: var(--input-background);
+}
+
 p.datetime {
   input[type="text"] {
     min-width: 12ch !important;
