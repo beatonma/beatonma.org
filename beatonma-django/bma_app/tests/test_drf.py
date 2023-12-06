@@ -48,6 +48,18 @@ class DrfTestCase(LocalTestCase):
             **kwargs
         )
 
+    def patch_with_api_token(
+        self, url: str, data: dict, headers: dict | None = None, **kwargs
+    ):
+        return self._client_method_with_api_token(
+            self.client.patch,
+            url,
+            json.dumps(data),
+            headers,
+            content_type="application/json",
+            **kwargs
+        )
+
     def delete_with_api_token(
         self, url: str, data=None, headers: dict | None = None, **kwargs
     ):

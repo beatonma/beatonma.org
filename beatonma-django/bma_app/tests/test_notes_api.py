@@ -116,6 +116,19 @@ class DrfCreateNoteTests(DrfTestCase):
         self.assertEqual(note.content, "edited note :)")
         self.assertTrue(note.is_published)
 
+    def test_edit_note_partial(self):
+        note = Note.objects.create(content="unchanged :)", is_published=False)
+        response = self.patch_with_api_token(
+            reverse("api:note-detail", args=[note.api_id]),
+            {
+                "is_published": True,
+            },
+        )
+        note.refresh_from_db()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(note.content, "unchanged :)")
+        self.assertTrue(note.is_published)
+
     def test_delete_note(self):
         note = Note.objects.create(content="delete this")
         response = self.delete_with_api_token(
