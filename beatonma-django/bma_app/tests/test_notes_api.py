@@ -115,14 +115,33 @@ class DrfNoteMediaTests(DrfTestCase):
         note = Note.objects.create(content="delete the media")
         file = RelatedFile.objects.create(file=_file(), **generic_fk(note))
 
-        file_id = note.related_files.first().api_id
         response = self.client.delete(
-            reverse("api:relatedfile-detail", args=[file_id]),
+            reverse("api:relatedfile-detail", args=[file.api_id]),
             headers={HEADER_TOKEN: self.token},
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         with self.assertRaises(RelatedFile.DoesNotExist):
             file.refresh_from_db()
+
+    def test_update_media(self):
+        note = Note.objects.create(content="delete the media")
+        file = RelatedFile.objects.create(
+            file=_file(), description="unedited", **generic_fk(note)
+        )
+
+        response = self.client.put(
+            reverse("api:relatedfile-detail", args=[file.api_id]),
+            json.dumps(
+                {
+                    "description": "edited!",
+                }
+            ),
+            content_type="application/json",
+            headers={HEADER_TOKEN: self.token},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        file.refresh_from_db()
+        self.assertEqual(file.description, "edited!")
 
 
 def _file():

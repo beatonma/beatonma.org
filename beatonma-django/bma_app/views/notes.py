@@ -7,7 +7,7 @@ from main.models import Note, RelatedFile
 from main.util import get_media_type_description
 from rest_framework import serializers, status
 from rest_framework.decorators import action
-from rest_framework.mixins import DestroyModelMixin
+from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -33,6 +33,12 @@ class MediaSerializer(ApiSerializer):
             "description",
             "type",
         ]
+
+
+class UpdateMediaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RelatedFile
+        fields = ["description"]
 
 
 class NotesSerializer(ApiSerializer):
@@ -86,9 +92,9 @@ class NotesViewSet(ApiModelViewSet):
         return Response({"id": file.api_id}, status=status.HTTP_201_CREATED)
 
 
-class MediaViewSet(DestroyModelMixin, ApiViewSet):
+class MediaViewSet(UpdateModelMixin, DestroyModelMixin, ApiViewSet):
     queryset = RelatedFile.objects.all()
-    serializer_class = MediaSerializer
+    serializer_class = UpdateMediaSerializer
     lookup_field = "api_id"
 
 
