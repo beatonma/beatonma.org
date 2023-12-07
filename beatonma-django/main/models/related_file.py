@@ -26,7 +26,7 @@ class RelatedFile(GenericFkMixin, ApiModel, ApiEditable, BaseModel):
     description = models.CharField(
         max_length=description_max_length,
         blank=True,
-        null=True,
+        default="",
         help_text="File content description",
     )
 
