@@ -53,13 +53,13 @@ def has_api_permission(request: HttpRequest) -> bool:
         if request.user.is_staff:
             return True
 
+    log.warning(f"Missing API token for {request.get_full_path()}.")
     return False
 
 
 def check_token(user_token: str) -> None:
     """Raises ApiTokenException if user_token does not map to a valid staff user."""
     if not user_token:
-        log.warning("Missing API token.")
         raise ApiTokenException()
 
     try:

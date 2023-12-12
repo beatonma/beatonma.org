@@ -25,6 +25,7 @@ class NoteGetTests(DrfTestCase):
         match data:
             case {
                 "id": str(),
+                "content": str(),
                 "content_html": str(),
                 "url": str(),
                 "timestamp": str(),

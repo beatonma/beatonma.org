@@ -1,4 +1,5 @@
-from bma_app.forms import AppendNoteMediaForm, CreateNoteForm, MediaAttachmentForm
+from bma_app.forms import (AppendNoteMediaForm, CreateNoteForm,
+                           MediaAttachmentForm)
 from bma_app.views.api import ApiModelViewSet, ApiViewSet
 from bma_app.views.serializers import ApiSerializer
 from common.models.generic import generic_fk
@@ -43,7 +44,7 @@ class UpdateMediaSerializer(serializers.ModelSerializer):
 
 class NotesSerializer(ApiSerializer):
     content_html = serializers.CharField(read_only=True)
-    content = serializers.CharField(write_only=True)
+    content = serializers.CharField()
     timestamp = serializers.DateTimeField(source="created_at", read_only=True)
     url = serializers.URLField(source="get_absolute_url", read_only=True)
     media = MediaSerializer(source="related_files", many=True, read_only=True)
