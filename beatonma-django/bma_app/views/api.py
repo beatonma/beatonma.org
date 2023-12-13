@@ -1,6 +1,7 @@
 import logging
 
 from bma_app.models import ApiToken
+from bma_app.views.pagination import ApiPagination
 from django.core.exceptions import ValidationError
 from django.http import HttpRequest
 from rest_framework.permissions import BasePermission
@@ -31,6 +32,7 @@ class ApiTokenPermission(BasePermission):
 
 class ApiViewSet(GenericViewSet):
     permission_classes = (ApiTokenPermission,)
+    pagination_class = ApiPagination
 
 
 class ApiModelViewSet(ApiViewSet, ModelViewSet):

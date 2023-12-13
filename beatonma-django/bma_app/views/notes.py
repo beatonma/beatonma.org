@@ -1,5 +1,4 @@
-from bma_app.forms import (AppendNoteMediaForm, CreateNoteForm,
-                           MediaAttachmentForm)
+from bma_app.forms import AppendNoteMediaForm, CreateNoteForm, MediaAttachmentForm
 from bma_app.views.api import ApiModelViewSet, ApiViewSet
 from bma_app.views.serializers import ApiSerializer
 from common.models.generic import generic_fk
@@ -19,7 +18,6 @@ def bad_request(reason: str = None):
 
 
 class MediaSerializer(ApiSerializer):
-    file = serializers.FileField()
     type = serializers.SerializerMethodField()
 
     def get_type(self, file: RelatedFile):
@@ -29,7 +27,6 @@ class MediaSerializer(ApiSerializer):
         model = RelatedFile
         fields = [
             "id",
-            "file",
             "url",
             "description",
             "type",
