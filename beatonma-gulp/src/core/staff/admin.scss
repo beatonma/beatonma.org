@@ -3,6 +3,10 @@
   --input-background-focus: #2b2b2b;
 }
 
+* {
+  box-sizing: content-box;
+}
+
 *:focus {
   outline-color: var(--accent);
 }
@@ -40,6 +44,10 @@ textarea {
     border: 1px solid var(--input-background-focus);
     background-color: var(--input-background-focus);
   }
+}
+
+select {
+  padding: 1ch !important;
 }
 
 option {
