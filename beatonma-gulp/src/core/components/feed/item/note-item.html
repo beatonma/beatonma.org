@@ -10,7 +10,7 @@
 >
   <article>
     <div class="e-content p-summary">
-      {{ note.content_html|note_text }}
+      {{ note.content_html|safe }}
     </div>
 
     {% include 'apps/media-viewer/media-container.html' with target=note style='preview' %}
