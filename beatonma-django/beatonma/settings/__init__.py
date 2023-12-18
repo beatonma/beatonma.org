@@ -38,12 +38,14 @@ WSGI_APPLICATION = "beatonma.wsgi.application"
 
 ALLOWED_HOSTS = [
     DOMAIN_NAME,
+    f"www.{DOMAIN_NAME}",
     "localhost",
     "django",
     "nginx-server-tests",
 ]
 CSRF_TRUSTED_ORIGINS = [
     f"https://{DOMAIN_NAME}",
+    f"https://www.{DOMAIN_NAME}",
     "http://localhost:3000",
 ]
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
