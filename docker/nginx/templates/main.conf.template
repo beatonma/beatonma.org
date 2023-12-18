@@ -32,7 +32,7 @@ server {
 
     server_name ${DOMAIN_NAME} www.${DOMAIN_NAME};
 
-    client_max_body_size 8M;
+    client_max_body_size 128M;
 
     include templates/includes/ignore-file-ext.inc;
     include templates/includes/healthcheck.inc;
