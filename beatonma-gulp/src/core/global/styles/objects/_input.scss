@@ -4,21 +4,22 @@
 input,
 textarea {
   outline: none;
-  border: none;
 }
 
 %-base-input {
   @extend %shape-adaptive-small-top;
-  @extend %padding-small;
+  @extend %padding-medium;
+  @extend %border;
   @include mixin.transition-fast((border-color));
 
+  border-color: var(--text-tertiary);
   font-size: var(--fs-small);
   color: var(--text-primary);
   background-color: var(--input-text-background);
-  border-bottom: constants.$border-style transparent;
 
   &:focus {
-    border-color: var(--vibrant);
+    border-bottom: (constants.$border-width * 2) constants.$border-style
+      var(--vibrant);
   }
 }
 

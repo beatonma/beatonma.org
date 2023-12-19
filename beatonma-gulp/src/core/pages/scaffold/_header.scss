@@ -13,7 +13,7 @@
   @include mixin.row(
     $horizontal: space-between,
     $vertical: baseline,
-    $gap: var(--space)
+    $gap: var(--space-2x)
   );
 
   .left {
