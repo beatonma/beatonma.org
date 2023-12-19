@@ -86,14 +86,16 @@ def complete_install():
         component = component_class()
         install_component(component)
 
+    log.info("")
     log.info("All components installed!")
     for component_class in INSTALLERS:
         log.info(f"- {component_class.name}")
 
+    log.info("")
     log.info("System setup complete!")
     log.info("Next steps:")
     log.info("> ./bma certbot init")
-    log.info("> eval $(ssh-agent -s && ssh-add")
+    log.info("> eval $(ssh-agent -s) && ssh-add")
     log.info("> ./bma production build")
     log.info("> ./bma production up -d")
     log.info("> ./bma import path/to/archive.tar.gz")
