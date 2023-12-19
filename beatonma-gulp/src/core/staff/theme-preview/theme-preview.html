@@ -1,4 +1,9 @@
 {% extends 'pages/scaffold/scaffold.html' %}
+{% load static %}
+
+{% block html_head %}
+  <link rel="stylesheet" href="{% static 'css/test-__env__:gitHash.css' %}" />
+{% endblock %}
 
 {% block title %}Theme preview{% endblock %}
 
