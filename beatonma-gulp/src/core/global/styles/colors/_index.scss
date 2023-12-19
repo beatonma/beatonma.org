@@ -51,13 +51,32 @@
   accent-color: var(--vibrant);
 }
 
-html {
-  @include dark.dark;
+@mixin -choose-theme() {
+  &:not(.light) {
+    @include dark.dark;
+  }
 
+  &.light {
+    @include light.light;
+  }
+}
+
+html {
   @media (prefers-color-scheme: no-preference) {
+    &:not(.light) {
+      @include dark.dark;
+    }
+
+    &.light {
+      @include light.light;
+    }
   }
 
   @media (prefers-color-scheme: dark) {
+    &:not(.light) {
+      @include dark.dark;
+    }
+
     &.light {
       @include light.light;
     }
@@ -66,6 +85,10 @@ html {
   @media (prefers-color-scheme: light) {
     &:not(.dark) {
       @include light.light;
+    }
+
+    &.dark {
+      @include dark.dark;
     }
   }
 }

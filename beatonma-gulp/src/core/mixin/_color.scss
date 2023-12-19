@@ -14,11 +14,15 @@ $-contrast-levels:
   "high-contrast",
   ];
 
-@mixin -foreground-color($-name) {
-  --fg-color: var(--on-#{$-name});
+@mixin color($-value) {
+  --fg-color: #{$-value};
   color: var(--fg-color);
   fill: var(--fg-color);
   stroke: var(--fg-color);
+}
+
+@mixin -foreground-color($-name) {
+  @include color(var(--on-#{$-name}));
 }
 
 @mixin -hover($-color) {
