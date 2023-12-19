@@ -22,12 +22,12 @@
         </p>
 
         <p>
-          <input id="switch_checked" type="checkbox" class="switch" checked/>
+          <input id="switch_checked" type="checkbox" class="switch" checked />
           <label for="switch_checked">Switch on</label>
         </p>
 
         <p>
-          <input id="switch_unchecked" type="checkbox" class="switch"/>
+          <input id="switch_unchecked" type="checkbox" class="switch" />
           <label for="switch_unchecked">Switch off</label>
         </p>
       </div>
@@ -77,22 +77,87 @@
     </p>
 
     <div class="codehilite">
-      <pre>
-        <code><span class="k">class</span> <span class="nc">DevThemePreview</span><span class="p">(</span><span
+      <pre><span></span><code><span class="c1"># urls.py</span>
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">path</span><span class="p">(</span>
+        <span class="sa">fr</span><span class="s2">"&lt;int:year&gt;/&lt;int:month&gt;/&lt;int:day&gt;/&lt;slug:post_slug&gt;/"</span><span
+          class="p"
+        >,</span>
+        <span class="n">MyBlogPostView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">"my-blog"</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">"model_name"</span><span class="p">:</span> <span class="s2">"myapp.MyBlog"</span><span
+          class="p"
+        >,</span>
+        <span class="p">},</span>
+    <span class="p">),</span>
+<span class="p">]</span>
+
+<span class="c1"># models.py</span>
+<span class="k">class</span> <span class="nc">MyBlog</span><span class="p">(</span><span class="n">MentionableMixin</span><span
+          class="p"
+        >,</span> <span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span
           class="n"
-        >LoggedView</span><span class="p">):</span>
-          <span>&nbsp;&nbsp;</span><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span
-            class="bp"
-          >self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="k">return</span> <span class="n">render</span><span
-            class="p"
-          >(</span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="n">request</span><span class="p">,</span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
-            class="s2"
-          >&quot;pages/debug/theme-preview.html&quot;</span><span class="p">,</span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p">)</span></code>
-      </pre>
+        >DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">timezone</span><span
+          class="o"
+        >.</span><span class="n">now</span><span class="p">)</span>
+    <span class="n">slug</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span
+          class="n"
+        >SlugField</span><span class="p">()</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span
+          class="n"
+        >TextField</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">all_text</span><span class="p">(</span><span class="bp">self</span><span
+          class="p"
+        >):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span>
+
+    <span class="k">def</span> <span class="nf">get_absolute_url</span><span class="p">(</span><span class="bp">self</span><span
+          class="p"
+        >):</span>
+        <span class="k">return</span> <span class="n">reverse</span><span class="p">(</span>
+            <span class="s2">"my-blog"</span><span class="p">,</span>
+            <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">"year"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span
+          class="n"
+        >date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"%Y"</span><span
+          class="p"
+        >),</span>
+                <span class="s2">"month"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span
+          class="n"
+        >date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"%m"</span><span
+          class="p"
+        >),</span>
+                <span class="s2">"day"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span
+          class="n"
+        >date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"</span><span
+          class="si"
+        >%d</span><span class="s2">"</span><span class="p">),</span>
+                <span class="s2">"post_slug"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span
+          class="n"
+        >slug</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">resolve_from_url_kwargs</span><span class="p">(</span><span class="bp">cls</span><span
+          class="p"
+        >,</span> <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span
+          class="n"
+        >day</span><span class="p">,</span> <span class="n">post_slug</span><span class="p">,</span> <span class="o">**</span><span
+          class="n"
+        >url_kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">objects</span><span
+          class="o"
+        >.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">date__year</span><span class="o">=</span><span class="n">year</span><span class="p">,</span>
+            <span class="n">date__month</span><span class="o">=</span><span class="n">month</span><span class="p">,</span>
+            <span class="n">date__day</span><span class="o">=</span><span class="n">day</span><span class="p">,</span>
+            <span class="n">slug</span><span class="o">=</span><span class="n">post_slug</span><span class="p">,</span>
+        <span class="p">)</span>
+</code></pre>
     </div>
   </section>
 
