@@ -52,6 +52,9 @@ class GithubRepositoryQuerySet(PublishedQuerySet):
     def get_private_count(self, **query) -> int:
         return super().get_private__dangerous__().filter(**query).count()
 
+    def published(self):
+        return super().published().filter(is_private=False)
+
 
 class GithubRepository(PublishedMixin, ApiModel, TaggableMixin, BaseModel):
     objects = GithubRepositoryQuerySet.as_manager()

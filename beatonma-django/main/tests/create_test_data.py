@@ -54,7 +54,7 @@ def _generate(published: bool):
         f"{label} MOTD content",
         is_published=published,
     )
-    language = sample.create_language(name="TestTarget-Language")
+    language = sample.create_sample_language(name="TestTarget-Language")
     app_type = sample.create_app_type(
         name="TestTarget-AppType",
         date=TESTDATA_DATE,
@@ -97,10 +97,11 @@ def _generate(published: bool):
         tags=tags,
         date=TESTDATA_DATE,
     )
-    repo = sample_github.create_repository(
+    repo = sample_github.create_sample_repository(
         name=f"{label} Repo",
         description=f"{label} repo description",
-        is_public=published,
+        is_published=published,
+        is_private=not published,
     )
 
     sample.create_hcard(

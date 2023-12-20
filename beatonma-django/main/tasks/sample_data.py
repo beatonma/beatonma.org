@@ -9,7 +9,7 @@ from common.models import TaggableMixin
 from common.models.util import implementations_of
 from django.db.models import QuerySet
 from django.utils.text import slugify
-from github.management.commands.sample_github_data import create_language
+from github.tests.sampledata import create_sample_language
 from main.models import App, AppType, Article, Blog, Changelog, MessageOfTheDay, Note
 from main.models.posts import About
 from main.tasks import samples
@@ -28,7 +28,7 @@ __all__ = [
     "create_blog",
     "create_changelog",
     "create_hcard",
-    "create_language",
+    "create_sample_language",
     "create_note",
     "generate_hcards",
     "generate_posts",
@@ -195,7 +195,7 @@ def create_app(
     if not title:
         title = samples.any_app_name()
 
-    language = create_language(language)
+    language = create_sample_language(language)
 
     app, _ = App.objects.get_or_create(
         title=title,

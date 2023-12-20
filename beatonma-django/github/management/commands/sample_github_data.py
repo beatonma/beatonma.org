@@ -1,17 +1,8 @@
-import random
-from typing import Optional
-
 from django.core.management import BaseCommand
-from django.utils import timezone
-from github.models import (
-    CachedResponse,
-    GithubLanguage,
-    GithubLicense,
-    GithubRepository,
-    GithubUser,
-)
+from github.models import CachedResponse
+from github.tests.sampledata import create_sample_repository
 
-data = [
+sample_data = [
     {
         "id": "27999829329",
         "type": "PushEvent",
@@ -435,91 +426,26 @@ data = [
 ]
 
 
-LANGUAGES = [
-    "Kotlin",
-    "Python",
-    "Typescript",
-]
-
-
-_sample_repo_id = 1
-
-
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        CachedResponse.objects.get_or_create(data=data)
+        CachedResponse.objects.get_or_create(data=sample_data)
 
         _create_repositories()
 
 
 def _create_repositories():
-    public_repo = create_repository(
+    public_repo = create_sample_repository(
         name="Github project repo",
         description="A sample github repository",
-        is_public=True,
+        is_published=True,
+        is_private=False,
     )
-    private_repo = create_repository(
+    private_repo = create_sample_repository(
         name="PRIVATE_REPOSITORY",
         description="THIS SHOULD NEVER BE PUBLICLY VISIBLE",
-        is_public=False,
+        is_published=True,
+        is_private=True,
     )
 
     public_repo.tags.add("sample-tag")
     private_repo.tags.add("sample-tag")
-
-
-def create_repository(
-    name: str = None,
-    description: str = None,
-    is_public: bool = True,
-):
-    global _sample_repo_id
-
-    try:
-        repo = GithubRepository.objects.get(id=_sample_repo_id)
-    except GithubRepository.DoesNotExist:
-        repo = GithubRepository.objects.create(
-            id=_sample_repo_id,
-            url="https://fake-github.com/beatonma/my-repo",
-            updated_at=timezone.now(),
-            name=name,
-            full_name=name,
-            description=description,
-            size_kb=random.randint(1, 20480),
-            is_private=not is_public,
-            is_published=is_public,
-            primary_language=create_language(),
-            license=generate_license(),
-            owner=generate_user(),
-        )
-
-    _sample_repo_id += 1
-    return repo
-
-
-def create_language(name: Optional[str] = None):
-    lang, _ = GithubLanguage.objects.get_or_create(
-        name=name or random.choice(LANGUAGES)
-    )
-
-    return lang
-
-
-def generate_license():
-    _license, _ = GithubLicense.objects.get_or_create(
-        key="mit",
-        defaults={"name": "MIT License", "url": "https://api.github.com/licenses/mit"},
-    )
-    return _license
-
-
-def generate_user():
-    user, _ = GithubUser.objects.get_or_create(
-        id=1,
-        defaults={
-            "username": "beatonma",
-            "url": "https://fake-github.com/beatonma/",
-            "avatar_url": "https://i.pravatar.cc/64",
-        },
-    )
-    return user
