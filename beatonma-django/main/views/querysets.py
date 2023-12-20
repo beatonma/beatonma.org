@@ -142,7 +142,11 @@ def get_tags(**filter_kwargs) -> QuerySet[Tag]:
 
 
 def get_repositories(**filter_kwargs) -> PublishedQuerySet[GithubRepository]:
-    return GithubRepository.objects.published().filter(**filter_kwargs)
+    return (
+        GithubRepository.objects.filter(is_private=False)
+        .published()
+        .filter(**filter_kwargs)
+    )
 
 
 def get_languages(**filter_kwargs) -> QuerySet[GithubLanguage]:
