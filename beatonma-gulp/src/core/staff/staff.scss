@@ -70,13 +70,12 @@
       @extend %surface-vibrant;
 
       position: absolute;
-      bottom: 0;
+      bottom: -0.25em;
       right: 0;
-      font-size: var(--fs-smallest);
-      aspect-ratio: 1;
+      font-size: var(--fs-label);
       height: 1em;
-      text-align: center;
-      font-weight: bold;
+      padding: 1px 2px;
+      border-radius: 2px;
     }
   }
 }
