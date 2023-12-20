@@ -19,7 +19,7 @@ export const Badge = (props: BadgeProps) => {
             <IconWithText
                 icon={icon}
                 text={`${issue ?? text}`}
-                className={classes(className, "badge")}
+                className={classes(className, "github-badge")}
                 {...rest}
             />
         </a>
