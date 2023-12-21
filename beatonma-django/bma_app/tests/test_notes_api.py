@@ -1,9 +1,11 @@
 import re
 import uuid
+from datetime import datetime
 
 from bma_app.tests.test_drf import DrfTestCase
 from bma_app.views.api import TOKEN_KEY
 from common.models.generic import generic_fk
+from common.util.time import tzdatetime
 from django.core.files import File
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponse
@@ -28,8 +30,8 @@ class NoteGetTests(DrfTestCase):
                 "content": str(),
                 "content_html": str(),
                 "url": str(),
-                "timestamp": str(),
                 "is_published": bool(),
+                "published_at": str(),
                 "media": [
                     {
                         "id": str(),
@@ -60,6 +62,7 @@ class DrfCreateNoteTests(DrfTestCase):
         file: File | None = None,
         file_description: str | None = None,
         is_published: bool = True,
+        published_at: datetime | None = None,
         note_id: str | None = None,
     ) -> HttpResponse:
         data = {
@@ -69,11 +72,10 @@ class DrfCreateNoteTests(DrfTestCase):
             "file": file,
             "file_description": file_description,
             "is_published": is_published,
+            "published_at": published_at,
         }
 
-        empty_keys = [key for key in data.keys() if data[key] is None]
-        for key in empty_keys:
-            del data[key]
+        data = {key: value for key, value in data.items() if value is not None}
         return self.client.post(reverse("api:note-list"), data)
 
     def test_missing_usertoken_returns_403(self):
@@ -88,6 +90,19 @@ class DrfCreateNoteTests(DrfTestCase):
         response = self.post_request(content="drf test")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIsNotNone(Note.objects.get(content="drf test"))
+
+    def test_create_note_with_custom_published_at(self):
+        response = self.post_request(
+            content="custom published at",
+            published_at=datetime(2023, 12, 20, 18, 0, 0),
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        note = Note.objects.get(content="custom published at")
+        self.assertEqual(
+            note.published_at,
+            tzdatetime(2023, 12, 20, 18, 0, 0),
+        )
 
     def test_create_note_with_media(self):
         response = self.post_request(

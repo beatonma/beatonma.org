@@ -13,6 +13,7 @@ class MediaAttachmentForm(forms.Form):
 
 
 class CreateNoteForm(MediaAttachmentForm, forms.Form):
+    published_at = forms.DateTimeField(required=False)
     content = forms.CharField(
         max_length=Note.max_length,
         strip=True,

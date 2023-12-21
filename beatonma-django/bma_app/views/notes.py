@@ -41,8 +41,8 @@ class UpdateMediaSerializer(serializers.ModelSerializer):
 
 class NotesSerializer(ApiSerializer):
     content_html = serializers.CharField(read_only=True)
-    content = serializers.CharField()
-    timestamp = serializers.DateTimeField(source="created_at", read_only=True)
+    content = serializers.CharField(required=False)
+    published_at = serializers.DateTimeField()
     url = serializers.URLField(source="get_absolute_url", read_only=True)
     media = MediaSerializer(source="related_files", many=True, read_only=True)
 
@@ -53,14 +53,14 @@ class NotesSerializer(ApiSerializer):
             "content_html",
             "content",
             "url",
-            "timestamp",
             "is_published",
+            "published_at",
             "media",
         ]
 
 
 class NotesViewSet(ApiModelViewSet):
-    queryset = Note.objects.all()
+    queryset = Note.objects.sort_by_recent()
     parser_classes = [FormParser, MultiPartParser, JSONParser]
     serializer_class = NotesSerializer
     lookup_field = "api_id"
@@ -70,10 +70,16 @@ class NotesViewSet(ApiModelViewSet):
         if not form.is_valid():
             return bad_request(f"invalid Create form : {form.errors}")
 
-        note = Note.objects.create(
-            content=form.cleaned_data.get("content"),
-            is_published=form.cleaned_data.get("is_published"),
-        )
+        note_kwargs = {
+            "content": form.cleaned_data.get("content"),
+            "is_published": form.cleaned_data.get("is_published"),
+            "published_at": form.cleaned_data.get("published_at"),
+        }
+        note_kwargs = {
+            key: value for key, value in note_kwargs.items() if value is not None
+        }
+
+        note = Note.objects.create(**note_kwargs)
 
         if form.files:
             _create_related_file(note, form)

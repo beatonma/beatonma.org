@@ -32,6 +32,6 @@ class Note(ApiModel, BasePost):
         return {
             "content": self.content_html,
             "url": to_absolute_url(self.get_absolute_url()),
-            "timestamp": self.created_at,
+            "timestamp": self.published_at,
             "is_published": self.is_published,
         }
