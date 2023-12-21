@@ -22,7 +22,7 @@ class PublishedQuerySet(SearchQuerySet):
         return super().build_search_filter(*args, **kwargs).filter(is_published=True)
 
     def published(self):
-        return self.filter(is_published=True)
+        return self.filter(is_published=True, published_at__lte=timezone.now())
 
     def get_private__dangerous__(self):
         return self.filter(is_published=False)
