@@ -22,4 +22,11 @@ article[data-type="note"] {
       text-align: end;
     }
   }
+  > time {
+    @extend %center;
+    @extend %padding-medium;
+
+    display: block;
+    text-align: center;
+  }
 }

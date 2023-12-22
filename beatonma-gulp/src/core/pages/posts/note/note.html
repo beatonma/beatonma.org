@@ -4,11 +4,15 @@
 {% block description %}{% endblock %}
 
 {% block article %}
-  <div class="note-text">
-    <div class="e-content">
-      {{ post.content_html|safe }}
-    </div>
+  {% if post.content %}
+    <div class="note-text">
+      <div class="e-content">
+        {{ post.content_html|safe }}
+      </div>
 
+      {% include "components/datetime/date.html" with date=post.published_at %}
+    </div>
+  {% else %}
     {% include "components/datetime/date.html" with date=post.published_at %}
-  </div>
+  {% endif %}
 {% endblock %}
