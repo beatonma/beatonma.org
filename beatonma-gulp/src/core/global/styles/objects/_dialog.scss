@@ -1,9 +1,9 @@
 @use "mixin";
 
 dialog {
-  @extend %surface;
   @extend %shape-adaptive-medium;
 
+  background-color: transparent;
   border: none;
   z-index: var(--elevation-dialog);
   overflow: clip;

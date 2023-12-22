@@ -13,14 +13,17 @@
     outline-color: var(--vibrant);
   }
 
-  &:hover {
+  &:hover,
+  &[data-selected="true"] {
     background-color: var(--scrim);
+    color: var(--on-scrim);
     filter: brightness(1);
   }
 }
 
 .media-carousel {
   @extend %full-bleed;
+  @extend %surface;
 
   max-width: 100svw;
   line-height: 1;
@@ -33,14 +36,41 @@
     @extend %center;
     @extend %shape-adaptive-medium-top;
 
-    overflow: clip;
-    max-height: 80svh;
+    $-max-height: 90svh;
+
+    overflow: hidden;
+    max-height: $-max-height;
     aspect-ratio: 1;
     position: relative;
 
-    @include mixin.on-medium-width {
-      &[data-item-count="1"] {
-        height: auto;
+    &-primary {
+      @extend %fill;
+
+      .media {
+        @include mixin.transition-fast((opacity));
+        @extend %fill;
+
+        object-fit: contain;
+      }
+
+      [data-visible="true"] {
+        @extend %fade-in;
+        animation-name: -opacity-only-fade-in;
+        @keyframes -opacity-only-fade-in {
+          0% {
+            opacity: 0;
+          }
+
+          100% {
+            opacity: 1;
+          }
+        }
+      }
+
+      [data-visible="false"] {
+        opacity: 0;
+        z-index: -1;
+        height: 0;
       }
     }
 
@@ -53,19 +83,16 @@
       @extend %shape-adaptive-medium;
       aspect-ratio: unset;
 
-      > .media {
-        max-height: 90svmin;
+      .media-carousel--focussed-primary > .media {
+        max-height: $-max-height;
         background-color: transparent;
       }
     }
 
-    > .media {
-      @extend %fill;
-      @extend %fade-in;
-
-      background-color: var(--muted);
-      object-fit: contain;
-      transition: all 200ms;
+    @include mixin.on-medium-width {
+      &[data-item-count="1"] {
+        height: auto;
+      }
     }
   }
 
@@ -89,7 +116,7 @@
       $wrap: nowrap
     );
 
-    margin-block: var(--space);
+    padding-block: var(--space);
     margin-inline: auto;
     max-width: 100%;
     width: fit-content;

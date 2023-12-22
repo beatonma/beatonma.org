@@ -66,13 +66,20 @@ export const MediaCarousel = (
                 className="media-carousel--focussed"
                 data-item-count={fileUrls.length}
             >
-                <Media
-                    src={focussed}
-                    key={focussed}
-                    showControls={true}
-                    allowAutoplay={true}
+                <div
+                    className="media-carousel--focussed-primary"
                     {...swipeNavigation}
-                />
+                >
+                    {fileUrls.map(url => (
+                        <Media
+                            src={url}
+                            key={url}
+                            showControls={url === focussed}
+                            allowAutoplay={url === focussed}
+                            data-visible={url === focussed}
+                        />
+                    ))}
+                </div>
 
                 <NavigationButtons
                     fileCount={fileUrls.length}
