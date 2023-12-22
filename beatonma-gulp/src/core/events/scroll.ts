@@ -1,12 +1,6 @@
-import { DependencyList, useEffect, useRef } from "react";
-import { useEventListener } from "./event";
+import { useEffect, useRef } from "react";
 
 const ScrollEvents = ["scroll", "mousewheel", "touchmove"];
-
-export const useNoScroll = (
-    elements: EventTarget | EventTarget[],
-    deps: DependencyList = undefined,
-) => useEventListener(elements, ScrollEvents, noScroll);
 
 export const useNoScrollRef = <T extends HTMLElement>() => {
     const ref = useRef<T>();
@@ -33,5 +27,4 @@ export const useNoScrollRef = <T extends HTMLElement>() => {
 
 const noScroll = (ev: UIEvent) => {
     ev.preventDefault();
-    ev.stopPropagation();
 };

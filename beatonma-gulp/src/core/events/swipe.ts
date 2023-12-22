@@ -11,7 +11,13 @@ interface HorizontalSwipeHandlers {
     stopPropagation?: boolean;
 }
 
-export const useSwipe = (config: HorizontalSwipeHandlers) => {
+interface SwipeTouchEvents {
+    onTouchStart: (e: TouchEvent) => void;
+    onTouchMove: (e: TouchEvent) => void;
+    onTouchEnd: (e: TouchEvent) => void;
+}
+
+export const useSwipe = (config: HorizontalSwipeHandlers): SwipeTouchEvents => {
     const [touchStartX, setTouchStartX] = useState<number>();
     const [touchEndX, setTouchEndX] = useState<number>();
     const [touchStartY, setTouchStartY] = useState<number>();
@@ -22,6 +28,7 @@ export const useSwipe = (config: HorizontalSwipeHandlers) => {
         onSwipeRight,
         onSwipeUp,
         onSwipeDown,
+        preventDefault = true,
         stopPropagation = true,
     } = config;
 
@@ -31,6 +38,7 @@ export const useSwipe = (config: HorizontalSwipeHandlers) => {
     };
 
     const onTouchStart = (e: TouchEvent) => {
+        if (preventDefault && e.cancelable) e.preventDefault();
         if (stopPropagation) e.stopPropagation();
         const touch = e.targetTouches[0];
         setTouchStartX(touch.clientX);
@@ -38,6 +46,7 @@ export const useSwipe = (config: HorizontalSwipeHandlers) => {
     };
 
     const onTouchMove = (e: TouchEvent) => {
+        if (preventDefault && e.cancelable) e.preventDefault();
         if (stopPropagation) e.stopPropagation();
         const touch = e.targetTouches[0];
         setTouchEndX(touch.clientX);
@@ -45,6 +54,7 @@ export const useSwipe = (config: HorizontalSwipeHandlers) => {
     };
 
     const onTouchEnd = (e: TouchEvent) => {
+        if (preventDefault && e.cancelable) e.preventDefault();
         if (stopPropagation) e.stopPropagation();
 
         const distanceX = touchEndX - touchStartX;

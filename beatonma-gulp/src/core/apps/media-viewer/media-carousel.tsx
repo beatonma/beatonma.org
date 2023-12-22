@@ -58,6 +58,7 @@ export const MediaCarousel = (
     const swipeNavigation = useSwipe({
         onSwipeLeft: navigateNext,
         onSwipeRight: navigatePrevious,
+        preventDefault: false,
     });
 
     return (

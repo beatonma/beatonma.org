@@ -1,5 +1,5 @@
 import { useEventListener } from "../../events/event";
-import { useNoScroll, useNoScrollRef } from "../../events/scroll";
+import { useNoScrollRef } from "../../events/scroll";
 import { Scaffold } from "../../global/dom";
 import React, { HTMLProps, ReactElement, useEffect, useState } from "react";
 import { createRoot, Root } from "react-dom/client";
@@ -68,7 +68,6 @@ export const Dialog = (
     useEventListener(scrim, ["click"], onClose);
 
     // Disable background scrolling
-    useNoScroll(scrim, []);
     const dialogRef = useNoScrollRef<HTMLDialogElement>();
 
     return <dialog ref={dialogRef} {...rest} open={isOpen} />;
