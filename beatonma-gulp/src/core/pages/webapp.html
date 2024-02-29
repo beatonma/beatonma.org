@@ -3,15 +3,16 @@
 <head>
   <title>{{ webapp.title }}</title>
   <meta name="description" content="{{ webapp.description }}" />
-  {% include "pages/scaffold/_meta.html" %}
-  <script type="application/javascript" src="{{ webapp.script.url }}" defer></script>
+  {% include "pages/scaffold/_head_meta.html" %}
+  {% if webapp.inherit_site_theme %}{% include "pages/scaffold/_head_styles.html" %}{% endif %}
   <style>
       body {
           margin: 0;
       }
   </style>
 </head>
-<body>
 {{ webapp.content_html|safe }}
+<body>
+  <script type="application/javascript" src="{{ webapp.script.url }}" defer></script>
 </body>
 </html>

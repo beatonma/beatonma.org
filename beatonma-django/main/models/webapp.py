@@ -17,6 +17,7 @@ class WebApp(BaseModel):
         blank=True,
         help_text="The main body of the webapp in HTML",
     )
+    inherit_site_theme = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if not self.id:
