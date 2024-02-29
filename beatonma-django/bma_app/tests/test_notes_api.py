@@ -125,12 +125,14 @@ class DrfCreateNoteTests(DrfTestCase):
             {
                 "content": "edited note :)",
                 "is_published": True,
+                "published_at": tzdatetime(2024, 1, 2).isoformat(),
             },
         )
         note.refresh_from_db()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(note.content, "edited note :)")
         self.assertTrue(note.is_published)
+        self.assertEqual(note.published_at, tzdatetime(2024, 1, 2))
 
     def test_edit_note_partial(self):
         note = Note.objects.create(content="unchanged :)", is_published=False)
