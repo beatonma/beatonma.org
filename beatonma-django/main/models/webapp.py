@@ -41,7 +41,33 @@ class WebappResource(UploadedMediaMixin, BaseModel):
 
         super().save(*args, **kwargs)
         if created:
+            if self.basename().endswith(".zip"):
+                self._extract_zip()
+                self.delete()
+                return
+
             _notify_resource_added(self.webapp)
+
+    def basename(self) -> str:
+        return os.path.basename(self.file.path)
+
+    def _extract_zip(self):
+        from zipfile import ZipFile
+
+        resource_dir = self.webapp.resource_directory()
+        script_path = self.webapp.file.path
+
+        with ZipFile(self.file, "r") as contents:
+            contents.extractall(resource_dir)
+            extracted_files = contents.filelist
+
+        for f in extracted_files:
+            path = _relative_media_path(os.path.join(resource_dir, f.filename))
+            if path == script_path:
+                continue
+            if os.path.isdir(os.path.join(settings.MEDIA_ROOT, path)):
+                continue
+            WebappResource.objects.get_or_create(webapp=self.webapp, file=path)
 
     def __str__(self):
         return f"{self.webapp.slug}/{self.file.name}"
@@ -95,19 +121,6 @@ class WebApp(UploadedMediaMixin, BaseModel):
 
     def get_absolute_url(self):
         return reverse(view_names.WEBAPP, args=[self.slug])
-
-    def _extract_zip(self):
-        resource_dir = self.resource_directory()
-
-        from zipfile import ZipFile
-
-        with ZipFile(self.script, "r") as contents:
-            contents.extractall(resource_dir)
-
-        for cwd, _, files in os.walk(resource_dir):
-            for f in files:
-                path = _relative_media_path(os.path.join(cwd, f))
-                WebappResource.objects.get_or_create(webapp=self, file=path)
 
 
 def _notify_resource_added(webapp: WebApp):
