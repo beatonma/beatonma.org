@@ -9,3 +9,7 @@ location /static {
     expires 1y;
     add_header Cache-Control "public";
 }
+
+location ~ ^/webapp/.+?/.+$ {
+    rewrite ^/webapp/(.+?)/(.+) /media/webapps/$1/$2 permanent;
+}
