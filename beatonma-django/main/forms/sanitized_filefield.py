@@ -13,57 +13,54 @@ from typing import List, Optional, Tuple, Union
 from django.conf import settings
 from django.core.files.base import ContentFile, File
 from django.db.models import FileField
-from PIL import Image, ImageFile
-
 from main.forms import RandomFilename
+from PIL import Image, ImageFile
 
 IMAGE_PATTERN = re.compile(r"(.*)\.(jpg|jpeg|png)")
 
 
-DEFAULT_SIZE = getattr(settings, "UPLOAD_DEFAULT_IMAGE_SIZE", [2560, 1440])
+DEFAULT_SIZE = getattr(settings, "UPLOAD_DEFAULT_IMAGE_SIZE", [2560, 2560])
 DEFAULT_QUALITY = getattr(settings, "UPLOAD_DEFAULT_QUALITY", 75)
 
 
 def rescale_image(
     content: File,
-    size: Tuple[int, int] = DEFAULT_SIZE,
+    size: Tuple[int, int] = None,
     quality: int = DEFAULT_QUALITY,
     outfile: Union[str, Path] = None,
 ) -> Optional[File]:
-    img = Image.open(content.file)
+    if size is None:
+        size = DEFAULT_SIZE
 
-    try:
-        resample = Image.Resampling.LANCZOS
-    except AttributeError:
-        resample = Image.ANTIALIAS
+    resample = Image.Resampling.LANCZOS
 
-    img.thumbnail(size, resample)
-    thumb = img
+    with Image.open(content.file) as img:
+        img.thumbnail(size, resample)
+        img_format = img.format
+        img_info = img.info
 
-    img_info = img.info
-    if "exif" in img_info:
-        img_info.pop("exif")
+        if "exif" in img_info:
+            img_info.pop("exif")
 
-    ImageFile.MAXBLOCK = max(ImageFile.MAXBLOCK, thumb.size[0] * thumb.size[1])
-    img_format = img.format
+        ImageFile.MAXBLOCK = max(ImageFile.MAXBLOCK, img.size[0] * img.size[1])
 
-    if outfile:
-        thumb.save(
-            outfile,
+        if outfile:
+            img.save(
+                outfile,
+                format=img_format,
+                quality=quality,
+                **img_info,
+            )
+            return
+
+        new_content = BytesIO()
+        img.save(
+            new_content,
             format=img_format,
             quality=quality,
             **img_info,
         )
-        return
-
-    new_content = BytesIO()
-    thumb.save(
-        new_content,
-        format=img_format,
-        quality=quality,
-        **img_info,
-    )
-    return ContentFile(new_content.getvalue())
+        return ContentFile(new_content.getvalue())
 
 
 class ResizeFieldFile(FileField.attr_class):
