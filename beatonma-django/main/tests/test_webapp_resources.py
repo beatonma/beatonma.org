@@ -8,21 +8,23 @@ from main.models.webapp import WebappResource
 
 
 class WebpostResourceTests(LocalTestCase):
-    def setUp(self):
-        self.script = SimpleUploadedFile("script.js", b"const a = 1;")
-        self.resource = SimpleUploadedFile("resource.txt", b"Hello World!")
-
     def test_webapp_with_resources_is_moved_to_own_directory(self):
-        app = WebApp.objects.create(title="title", slug="slug", script=self.script)
+        app = WebApp.objects.create(
+            title="title",
+            slug="slug",
+            file=SimpleUploadedFile("script.js", b"const a = 1;"),
+        )
         self.assertTrue(
-            app.script.path.endswith("webapps/script.js"),
-            msg=app.script.path,
+            app.file.path.endswith("webapps/script.js"),
+            msg=app.file.path,
         )
 
-        res = WebappResource.objects.create(webapp=app, file=self.resource)
+        res = WebappResource.objects.create(
+            webapp=app, file=SimpleUploadedFile("resource.txt", b"Hello World!")
+        )
         self.assertTrue(
-            app.script.path.endswith("webapps/slug/script.js"),
-            msg=app.script.path,
+            app.file.path.endswith("webapps/slug/script.js"),
+            msg=app.file.path,
         )
         self.assertTrue(
             res.file.path.endswith("webapps/slug/resource.txt"),
@@ -39,16 +41,28 @@ class WebpostResourceTests(LocalTestCase):
             f.write("xml resource")
 
         with ZipFile(zip_path, "w") as zip:
-            zip.write(xml_path)
+            zip.write(xml_path, arcname="string.xml")
 
         with open(zip_path, "rb") as zip:
-            WebApp.objects.create(
+            webapp = WebApp.objects.create(
                 title="title",
                 slug="slug",
-                script=SimpleUploadedFile("resources.zip", zip.read()),
+                file=SimpleUploadedFile("script.js", b"const b = 2;"),
+            )
+            WebappResource.objects.create(
+                webapp=webapp,
+                file=SimpleUploadedFile("resources.zip", zip.read()),
             )
 
         resource = WebappResource.objects.get(file__endswith="string.xml")
         with open(resource.file.path, "r") as f:
             content = f.read()
         self.assertEqual(content, "xml resource")
+
+        self.assertEqual(1, WebappResource.objects.all().count())
+
+    def tearDown(self):
+        for path in ["resources.zip", "string.xml"]:
+            path = os.path.join(settings.MEDIA_ROOT, path)
+            if os.path.exists(path):
+                os.remove(path)

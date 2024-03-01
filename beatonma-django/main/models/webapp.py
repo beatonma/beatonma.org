@@ -5,6 +5,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
+from main.models.mixins.media_upload import UploadedMediaMixin
 from main.storage import OverwriteStorage
 from main.views import view_names
 
@@ -24,16 +25,20 @@ def _relative_media_path(path: str) -> str:
     return os.path.relpath(path, settings.MEDIA_ROOT)
 
 
-class WebappResource(BaseModel):
+class WebappResource(UploadedMediaMixin, BaseModel):
     webapp = models.ForeignKey(
         "WebApp",
         on_delete=models.CASCADE,
         related_name="resources",
     )
-    file = models.FileField(upload_to=_resource_upload_to, storage=OverwriteStorage())
+    file = models.FileField(
+        upload_to=_resource_upload_to,
+        storage=OverwriteStorage(),
+    )
 
     def save(self, *args, **kwargs):
         created = not self.pk
+
         super().save(*args, **kwargs)
         if created:
             _notify_resource_added(self.webapp)
@@ -42,13 +47,13 @@ class WebappResource(BaseModel):
         return f"{self.webapp.slug}/{self.file.name}"
 
 
-class WebApp(BaseModel):
+class WebApp(UploadedMediaMixin, BaseModel):
     """A simple page with an attached javascript webapp."""
 
     title = models.CharField(max_length=140)
     slug = models.SlugField(unique=True, max_length=255)
     description = models.CharField(max_length=255, blank=True, null=True)
-    script = models.FileField(upload_to=WEBAPPS_UPLOAD_PATH, storage=OverwriteStorage())
+    file = models.FileField(upload_to=WEBAPPS_UPLOAD_PATH, storage=OverwriteStorage())
     content_html = models.TextField(
         blank=True,
         help_text="The main body of the webapp in HTML",
@@ -61,14 +66,11 @@ class WebApp(BaseModel):
 
         super().save(*args, **kwargs)
 
-        if self.script.path.endswith(".zip"):
-            self._extract_zip()
-
         if self.resources.all().exists():
             # If webapp has additional resources, move its script from root
             # webapps/ directory to webapps/slug/ directory, alongside resource
             # files.
-            f = self.script
+            f = self.file
             move_to = os.path.join(
                 self.resource_directory(),
                 os.path.basename(f.name),
@@ -78,7 +80,7 @@ class WebApp(BaseModel):
                     f.path,
                     move_to,
                 )
-                self.script = _relative_media_path(move_to)
+                self.file = _relative_media_path(move_to)
 
                 super().save(*args, **kwargs)
 
@@ -87,6 +89,9 @@ class WebApp(BaseModel):
 
     def resource_directory(self):
         return _webapp_resource_dir(self.slug)
+
+    def basename(self) -> str:
+        return os.path.basename(self.file.path)
 
     def get_absolute_url(self):
         return reverse(view_names.WEBAPP, args=[self.slug])

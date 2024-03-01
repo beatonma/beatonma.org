@@ -4,10 +4,11 @@ from common.models.generic import GenericFkMixin
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from main.forms import SanitizedFileField
+from main.models.mixins.media_upload import UploadedMediaMixin
 from main.util import get_media_type_description, to_absolute_url
 
 
-class RelatedFile(GenericFkMixin, ApiModel, ApiEditable, BaseModel):
+class RelatedFile(UploadedMediaMixin, GenericFkMixin, ApiModel, ApiEditable, BaseModel):
     """Files that are uploaded"""
 
     description_max_length = 140
