@@ -26,7 +26,7 @@ class WebappResource(BaseModel):
         on_delete=models.CASCADE,
         related_name="resources",
     )
-    file = models.FileField(upload_to=_resource_upload_to)
+    file = models.FileField(upload_to=_resource_upload_to, storage=OverwriteStorage())
 
     def save(self, *args, **kwargs):
         created = not self.pk
@@ -52,7 +52,7 @@ class WebApp(BaseModel):
     inherit_site_theme = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        if not self.id:
+        if not self.slug:
             self.slug = slugify(self.title)
 
         super().save(*args, **kwargs)
@@ -61,10 +61,12 @@ class WebApp(BaseModel):
             self._extract_zip()
 
         if self.resources.all().exists():
-            # If webapp has additional resources, move it to same directory.
+            # If webapp has additional resources, move its script from root
+            # webapps/ directory to webapps/slug/ directory, alongside resource
+            # files.
             f = self.script
             move_to = os.path.join(
-                _webapp_resource_dir(self.slug),
+                self.resource_directory(),
                 os.path.basename(f.name),
             )
             if f.path != move_to:
@@ -87,6 +89,7 @@ class WebApp(BaseModel):
 
     def _extract_zip(self):
         resource_dir = self.resource_directory()
+
         from zipfile import ZipFile
 
         with ZipFile(self.script, "r") as contents:
