@@ -20,6 +20,10 @@ def _webapp_resource_dir(webapp_name: str):
     return os.path.join(settings.MEDIA_ROOT, WEBAPPS_UPLOAD_PATH, webapp_name)
 
 
+def _relative_media_path(path: str) -> str:
+    return os.path.relpath(path, settings.MEDIA_ROOT)
+
+
 class WebappResource(BaseModel):
     webapp = models.ForeignKey(
         "WebApp",
@@ -103,7 +107,3 @@ class WebApp(BaseModel):
 
 def _notify_resource_added(webapp: WebApp):
     webapp.save()
-
-
-def _relative_media_path(path: str) -> str:
-    return os.path.relpath(path, settings.MEDIA_ROOT)
