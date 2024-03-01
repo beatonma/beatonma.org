@@ -22,7 +22,9 @@ def _webapp_resource_dir(webapp_name: str):
 
 class WebappResource(BaseModel):
     webapp = models.ForeignKey(
-        "WebApp", on_delete=models.CASCADE, related_name="resources"
+        "WebApp",
+        on_delete=models.CASCADE,
+        related_name="resources",
     )
     file = models.FileField(upload_to=_resource_upload_to)
 
@@ -31,6 +33,9 @@ class WebappResource(BaseModel):
         super().save(*args, **kwargs)
         if created:
             _notify_resource_added(self.webapp)
+
+    def __str__(self):
+        return f"{self.webapp.slug}/{self.file.name}"
 
 
 class WebApp(BaseModel):
@@ -52,6 +57,9 @@ class WebApp(BaseModel):
 
         super().save(*args, **kwargs)
 
+        if self.script.path.endswith(".zip"):
+            self._extract_zip()
+
         if self.resources.all().exists():
             # If webapp has additional resources, move it to same directory.
             f = self.script
@@ -64,16 +72,35 @@ class WebApp(BaseModel):
                     f.path,
                     move_to,
                 )
-                self.script = os.path.relpath(move_to, settings.MEDIA_ROOT)
+                self.script = _relative_media_path(move_to)
 
                 super().save(*args, **kwargs)
 
     def __str__(self):
         return self.slug
 
+    def resource_directory(self):
+        return _webapp_resource_dir(self.slug)
+
     def get_absolute_url(self):
         return reverse(view_names.WEBAPP, args=[self.slug])
+
+    def _extract_zip(self):
+        resource_dir = self.resource_directory()
+        from zipfile import ZipFile
+
+        with ZipFile(self.script, "r") as contents:
+            contents.extractall(resource_dir)
+
+        for cwd, _, files in os.walk(resource_dir):
+            for f in files:
+                path = _relative_media_path(os.path.join(cwd, f))
+                WebappResource.objects.get_or_create(webapp=self, file=path)
 
 
 def _notify_resource_added(webapp: WebApp):
     webapp.save()
+
+
+def _relative_media_path(path: str) -> str:
+    return os.path.relpath(path, settings.MEDIA_ROOT)
