@@ -53,3 +53,7 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 TEST_RUNNER = "basetest.testrunner.PytestTestRunner"
 LOGIN_URL = "/"
 LOGIN_REDIRECT_URL = "/"
+
+SILENCED_SYSTEM_CHECKS = [
+    "rest_framework.W001",  # Default pagination class warning.
+]
