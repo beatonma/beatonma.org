@@ -59,10 +59,7 @@ const ExpectedTemplates: Globs = [
     "webmentions_tester/templates/webmentions_tester.html",
 ];
 
-const ExpectedWebapps: Globs = [
-    "main/static/main/webapp/clocks.js",
-    "main/static/main/webapp/palette.js",
-];
+const ExpectedWebapps: Globs = [];
 
 /**
  * Files that are only required in production.

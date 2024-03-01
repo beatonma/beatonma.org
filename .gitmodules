@@ -1,3 +1,0 @@
-[submodule "clocks"]
-	path = beatonma-gulp/src/webapp/clocks
-	url = https://github.com/beatonma/gclocks/
