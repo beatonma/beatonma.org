@@ -198,6 +198,30 @@ class LinkifyKeywordsTests(LocalTestCase):
             f"This is stuff about {self.EXPECTED_LINK}.",
         )
 
+        linked = _linkify_keywords(
+            """This site is powered by Django, Celery, Nginx and PostgreSQL, running as a Docker Compose project on 
+            Lightsail.
+
+The front end is built with a mixture of Sass, React and Typescript, preprocessed with Gulp and Webpack.
+
+beatonma.org is built with the Indieweb in mind. It supports Microformats and Webmentions (via my library, django-wm)."""
+        )
+        self.assert_html_links_to(
+            linked,
+            [
+                "https://beatonma.org",
+                "https://github.com/docker/compose",
+                "https://github.com/beatonma/django-wm",
+                "https://gulpjs.com",
+                "https://indieweb.org",
+                "https://postgreql.org",
+                "https://reactjs.org",
+                "https://sass-lang.com",
+                "https://typescriptlang.org",
+                "https://webpack.js.org",
+            ],
+        )
+
 
 class LigatureTests(LocalTestCase):
     def test_simple_text_ligatures(self):

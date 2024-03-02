@@ -34,13 +34,7 @@ class About(
     def save_text(self):
         self.content_html = Formats.to_html(self.format, self.content)
 
-    def save(
-        self,
-        force_insert=False,
-        force_update=False,
-        using=None,
-        update_fields=None,
-    ):
+    def save(self, *args, **kwargs):
         if self.active:
             About.objects.filter(active=True).update(active=False)
         else:
@@ -49,7 +43,7 @@ class About(
                 raise Exception("No 'about' page is active!")
 
         self.save_text()
-        super().save(force_insert, force_update, using, update_fields)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.description

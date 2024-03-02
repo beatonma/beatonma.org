@@ -50,16 +50,20 @@ _LINKIFY_KEYWORDS = (
     ("beatonma.org", "https://beatonma.org"),
     ("Celery", "https://docs.celeryq.dev"),
     ("Django", "https://www.djangoproject.com"),
+    ("Docker Compose", "https://github.com/docker/compose"),
+    ("Docker", "https://www.docker.com/"),
     ("Gulp", "https://gulpjs.com"),
     ("Indieweb", "https://indieweb.org"),
     ("Lightsail", "https://aws.amazon.com/lightsail"),
     ("Microformats", "https://microformats.org"),
+    ("Microformat", "https://microformats.org"),
     ("NGINX", "https://www.nginx.com"),
     ("PostgreSQL", "https://postgreql.org"),
     ("React", "https://reactjs.org"),
     ("SASS", "https://sass-lang.com"),
     ("Typescript", "https://typescriptlang.org"),
     ("Webpack", "https://webpack.js.org"),
+    ("Webmentions", "https://indieweb.org/Webmention"),
     ("Webmention", "https://indieweb.org/Webmention"),
     ("django-wm", "https://github.com/beatonma/django-wm"),
 )
@@ -172,13 +176,13 @@ def _prettify_links(html: str) -> str:
 
 
 def _linkify_keywords(html: str) -> str:
-    # for match, url in _LINKIFY_KEYWORDS.items():
     for match, url in _LINKIFY_KEYWORDS:
         html = re.sub(
-            rf"(^|\s){match}(?=$|[,.;:!?\s])",
+            rf"(^|\s|\(){match}(?=$|[,.;:!?\s)])",
             rf'\1<a href="{url}">{match}</a>',
             html,
             count=1,
+            flags=re.IGNORECASE,
         )
     return html
 

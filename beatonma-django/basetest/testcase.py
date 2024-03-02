@@ -1,5 +1,5 @@
 import sys
-from typing import Optional, Sized, Type, Union
+from typing import List, Optional, Sized, Type, Union
 from unittest import skipIf
 
 import pytest
@@ -76,9 +76,14 @@ class BaseTestCase(TestCase):
     def assert_html_links_to(
         self,
         html: str,
-        href: str,
+        href: str | List[str],
         displaytext: Optional[str] = None,
     ):
+        if isinstance(href, list):
+            for url in href:
+                self.assert_html_links_to(html, url, displaytext)
+            return
+
         soup = html_parser(html)
         links = {(a["href"], a.get_text(strip=True)) for a in find_links_in_soup(soup)}
 
