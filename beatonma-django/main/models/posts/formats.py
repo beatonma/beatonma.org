@@ -4,7 +4,9 @@ from typing import List
 
 import markdown2
 from common.util import regex
+from common.util.html import find_links_in_html
 from django.db import models
+from main.util import apply_pipeline
 from main.views import reverse
 
 _NAME = r"(?P<name>@?[-\w]+)"
@@ -46,26 +48,29 @@ _LINKIFY_PATTERNS = [
     ),  # plaintext URLs
 ]
 
+
+"""A link will be inserted whenever these words appear in text.
+
+Beware: Order matters! If one key is a substring of another it should be defined
+later in the dictionary."""
 _LINKIFY_KEYWORDS = (
-    ("beatonma.org", "https://beatonma.org"),
-    ("Celery", "https://docs.celeryq.dev"),
-    ("Django", "https://www.djangoproject.com"),
-    ("Docker Compose", "https://github.com/docker/compose"),
-    ("Docker", "https://www.docker.com/"),
-    ("Gulp", "https://gulpjs.com"),
-    ("Indieweb", "https://indieweb.org"),
-    ("Lightsail", "https://aws.amazon.com/lightsail"),
-    ("Microformats", "https://microformats.org"),
-    ("Microformat", "https://microformats.org"),
-    ("NGINX", "https://www.nginx.com"),
-    ("PostgreSQL", "https://postgreql.org"),
-    ("React", "https://reactjs.org"),
-    ("SASS", "https://sass-lang.com"),
-    ("Typescript", "https://typescriptlang.org"),
-    ("Webpack", "https://webpack.js.org"),
-    ("Webmentions", "https://indieweb.org/Webmention"),
-    ("Webmention", "https://indieweb.org/Webmention"),
-    ("django-wm", "https://github.com/beatonma/django-wm"),
+    (r"beatonma\.org", "https://beatonma.org"),
+    (r"Celery", "https://docs.celeryq.dev"),
+    (r"Django", "https://www.djangoproject.com"),
+    (r"Docker Compose", "https://github.com/docker/compose"),
+    (r"Docker", "https://www.docker.com"),
+    (r"Gulp", "https://gulpjs.com"),
+    (r"Indieweb", "https://indieweb.org"),
+    (r"Lightsail", "https://aws.amazon.com/lightsail"),
+    (r"Microformats?", "https://microformats.org"),
+    (r"NGINX", "https://www.nginx.com"),
+    (r"PostgreSQL", "https://postgreql.org"),
+    (r"React", "https://reactjs.org"),
+    (r"SASS", "https://sass-lang.com"),
+    (r"Typescript", "https://typescriptlang.org"),
+    (r"Webpack", "https://webpack.js.org"),
+    (r"Webmentions?", "https://indieweb.org/Webmention"),
+    (r"django-wm", "https://github.com/beatonma/django-wm"),
 )
 
 """Keys will be replaced with their corresponding value.
@@ -101,11 +106,58 @@ class Formats(models.IntegerChoices):
     @classmethod
     def to_html(cls, format_: int, content: str) -> str:
         if format_ == Formats.MARKDOWN:
-            html = _markdown_to_html(_apply_ligatures(content))
+            html = apply_pipeline(
+                content,
+                [
+                    cls.preprocess_markdown,
+                    cls.markdown_to_html,
+                ],
+            )
         else:
             html = content
 
-        return _postprocess_html(html).strip()
+        return cls.postprocess_html(html)
+
+    @classmethod
+    def preprocess_markdown(cls, markdown: str) -> str:
+        return apply_pipeline(
+            markdown,
+            [
+                _apply_ligatures,
+            ],
+        )
+
+    @classmethod
+    def postprocess_html(cls, html: str) -> str:
+        existing_links = find_links_in_html(html)
+
+        return apply_pipeline(
+            html,
+            [
+                _prettify_links,
+                _linkify_hashtags,
+                (_linkify_keywords, [existing_links]),
+            ],
+        )
+
+    @classmethod
+    def markdown_to_html(cls, content: str) -> str:
+        return markdown2.markdown(
+            content,
+            extras=[
+                "cuddled-lists",
+                "fenced-code-blocks",
+                "footnotes",
+                "header-ids",
+                "link-patterns",
+                "smarty-pants",
+                "spoiler",
+                "strike",
+                "tables",
+                "tag-friendly",
+            ],
+            link_patterns=_LINKIFY_PATTERNS,
+        )
 
 
 class FormatMixin(models.Model):
@@ -116,10 +168,6 @@ class FormatMixin(models.Model):
         choices=Formats.choices,
         default=Formats.MARKDOWN,
     )
-
-
-def _postprocess_html(html: str) -> str:
-    return _linkify_keywords(_linkify_hashtags(_prettify_links(html)))
 
 
 def _linkify_hashtags(html: str) -> str:
@@ -175,11 +223,13 @@ def _prettify_links(html: str) -> str:
     )
 
 
-def _linkify_keywords(html: str) -> str:
+def _linkify_keywords(html: str, existing_links: List[str]) -> str:
     for match, url in _LINKIFY_KEYWORDS:
+        if url in existing_links:
+            continue
         html = re.sub(
-            rf"(^|\s|\(){match}(?=$|[,.;:!?\s)])",
-            rf'\1<a href="{url}">{match}</a>',
+            rf"(^|\s|\()({match})(?=$|[,.;:!?\s)])",
+            rf'\1<a href="{url}">\2</a>',
             html,
             count=1,
             flags=re.IGNORECASE,
@@ -208,22 +258,3 @@ def _apply_ligatures(text: str) -> str:
     editable_text = re.sub(marker, lambda match: canonical_blocks.pop(0), editable_text)
 
     return editable_text
-
-
-def _markdown_to_html(content: str) -> str:
-    return markdown2.markdown(
-        content,
-        extras=[
-            "cuddled-lists",
-            "fenced-code-blocks",
-            "footnotes",
-            "header-ids",
-            "link-patterns",
-            "smarty-pants",
-            "spoiler",
-            "strike",
-            "tables",
-            "tag-friendly",
-        ],
-        link_patterns=_LINKIFY_PATTERNS,
-    )
