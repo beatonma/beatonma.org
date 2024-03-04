@@ -5,13 +5,13 @@ from common.models import BaseModel, PublishedMixin, TaggableMixin
 from common.models.api import ApiEditable
 from common.models.search import SearchResult
 from common.util import regex
+from common.util.html import text_from_html
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils.text import slugify
 from main.models.app import Link
 from main.models.posts.formats import FormatMixin, Formats
 from main.models.related_file import RelatedFilesMixin
-from main.util import text_from_html
 from mentions.models.mixins.mentionable import MentionableMixin
 
 log = logging.getLogger(__name__)

@@ -1,13 +1,15 @@
 """Copied from django-wm."""
-__all__ = [
-    "html_parser",
-    "find_links_in_html",
-    "find_links_in_soup",
-]
 
 from typing import Set
 
 from bs4 import BeautifulSoup, ResultSet
+
+__all__ = [
+    "html_parser",
+    "find_links_in_html",
+    "find_links_in_soup",
+    "text_from_html",
+]
 
 
 def html_parser(content) -> BeautifulSoup:
@@ -22,3 +24,12 @@ def find_links_in_html(html: str) -> Set[str]:
 
 def find_links_in_soup(soup: BeautifulSoup) -> ResultSet:
     return soup.find_all("a", href=True)
+
+
+def text_from_html(html: str) -> str:
+    """Extract raw text from the given html."""
+    soup = html_parser(html)
+    text = soup.get_text()
+    lines = (line.strip() for line in text.splitlines())
+    chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+    return "\n".join(chunk for chunk in chunks if chunk)
