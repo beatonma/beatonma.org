@@ -1,11 +1,11 @@
 from random import choice, random
 
+from common.util.pipeline import apply_pipeline
 from django import template
 from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
 from main.models.mixins import ThemeableMixin
 from main.templatetags.string import repeat_until_length
-from main.util import apply_pipeline
 from main.view_adapters import FeedItemContext
 from main.views.util.color import generate_color_variants
 

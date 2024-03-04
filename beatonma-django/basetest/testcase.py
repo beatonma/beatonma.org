@@ -6,10 +6,52 @@ import pytest
 from common.models.types import Model
 from common.util.html import find_links_in_soup, html_parser
 from django.db.models import QuerySet
+from django.test import SimpleTestCase as DjangoSimpleTestCase
 from django.test import TestCase
 
 
-class BaseTestCase(TestCase):
+class SimpleTestCase(DjangoSimpleTestCase):
+    def assert_length(self, items: Sized, expected: int, msg: Optional[str] = ""):
+        self.assertEqual(
+            len(items),
+            expected,
+            msg=f"Expected {expected} items, got {(len(items))}: {items} {msg}",
+        )
+
+    def assert_html_links_to(
+        self,
+        html: str,
+        href: str | List[str],
+        displaytext: Optional[str] = None,
+    ):
+        if isinstance(href, list):
+            for url in href:
+                self.assert_html_links_to(html, url, displaytext)
+            return
+
+        soup = html_parser(html)
+        links = {(a["href"], a.get_text(strip=True)) for a in find_links_in_soup(soup)}
+        if not links:
+            raise AssertionError(f"No links found in HTML: {html}")
+
+        if displaytext:
+            results = [x for x in links if x[0] == href and x[1] == displaytext]
+            formatted_links = "\n- ".join([str(x) for x in links])
+            self.assertTrue(
+                len(results) > 0,
+                msg=f"Link (href='{href}', text='{displaytext}') not found in: \n- {formatted_links}",
+            )
+
+        else:
+            results = set(filter(lambda x: x[0] == href, links))
+            formatted_links = "\n- ".join([x[0] for x in links])
+            self.assertTrue(
+                len(results) > 0,
+                msg=f"Link {href} not found in: \n- {formatted_links}",
+            )
+
+
+class BaseTestCase(SimpleTestCase, TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.maxDiff = None
@@ -65,43 +107,6 @@ class BaseTestCase(TestCase):
         if count == 1:
             return qs.first()
         return qs
-
-    def assert_length(self, items: Sized, expected: int, msg: Optional[str] = ""):
-        self.assertEqual(
-            len(items),
-            expected,
-            msg=f"Expected {expected} items, got {(len(items))}: {items} {msg}",
-        )
-
-    def assert_html_links_to(
-        self,
-        html: str,
-        href: str | List[str],
-        displaytext: Optional[str] = None,
-    ):
-        if isinstance(href, list):
-            for url in href:
-                self.assert_html_links_to(html, url, displaytext)
-            return
-
-        soup = html_parser(html)
-        links = {(a["href"], a.get_text(strip=True)) for a in find_links_in_soup(soup)}
-
-        if displaytext:
-            results = [x for x in links if x[0] == href and x[1] == displaytext]
-            formatted_links = "\n- ".join([str(x) for x in links])
-            self.assertTrue(
-                len(results) > 0,
-                msg=f"Link (href='{href}', text='{displaytext}') not found in:\n- {formatted_links}",
-            )
-
-        else:
-            results = set(filter(lambda x: x[0] == href, links))
-            formatted_links = "\n- ".join([x[0] for x in links])
-            self.assertTrue(
-                len(results) > 0,
-                msg=f"Link {href} not found in:\n- {formatted_links}",
-            )
 
 
 class LocalTestCase(BaseTestCase):

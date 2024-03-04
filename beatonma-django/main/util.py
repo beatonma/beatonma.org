@@ -42,31 +42,3 @@ def get_media_type_description(file: Optional["RelatedFile"]) -> str:
 
 def to_absolute_url(path: str) -> str:
     return urljoin(f"https://{settings.DOMAIN_NAME}", path)
-
-
-_T = TypeVar("_T")
-_PipelineFunc = Callable[[_T, ...], _T]
-_PipelineItem = Union[
-    _PipelineFunc,
-    Tuple[_PipelineFunc],
-    Tuple[_PipelineFunc, List],
-    Tuple[_PipelineFunc, List, Dict],
-]
-_Pipeline = List[_PipelineItem]
-
-
-def apply_pipeline(receiver: _T, pipeline: _Pipeline) -> _T:
-    """Apply each function from the pipeline to the receiver and return the final result."""
-
-    def pipeline_item(accumulator: _T, item: _PipelineItem) -> _T:
-        if callable(item):
-            return item(accumulator)
-
-        item_len = len(item)
-        func = item[0]
-        args = item[1] if item_len > 1 else []
-        kwargs = item[2] if item_len > 2 else {}
-
-        return func(accumulator, *args, **kwargs)
-
-    return reduce(pipeline_item, pipeline, receiver)

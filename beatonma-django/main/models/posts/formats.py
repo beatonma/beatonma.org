@@ -5,8 +5,8 @@ from typing import List
 import markdown2
 from common.util import regex
 from common.util.html import find_links_in_html
+from common.util.pipeline import apply_pipeline
 from django.db import models
-from main.util import apply_pipeline
 from main.views import reverse
 
 _NAME = r"(?P<name>@?[-\w]+)"
