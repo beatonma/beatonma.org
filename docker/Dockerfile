@@ -1,6 +1,9 @@
-################################################################################
-FROM node:20-alpine AS gulp
+ARG NODE_VERSION=21
+ARG PYTHON_VERSION=3.12
+ARG NGINX_VERSION=latest
 
+################################################################################
+FROM node:${NODE_VERSION}-alpine AS gulp
 LABEL description="Generate frontend webapp and template files."
 
 ARG GIT_HASH
@@ -25,13 +28,12 @@ ENTRYPOINT ["/bin/ash"]
 
 
 ################################################################################
-FROM python:3.11-alpine as python
+FROM python:${PYTHON_VERSION}-alpine as python
+ENV PYTHONBUFFERED 1
 
 
 ################################################################################
 FROM python AS app_core
-LABEL maintainer="Michael Beaton <beatonma@gmail.com>"
-ENV PYTHONBUFFERED 1
 
 RUN apk add \
     curl \
@@ -63,6 +65,7 @@ COPY --from=gulp /app/dist /django
 
 ################################################################################
 FROM app_core AS app
+LABEL description="Main Django project."
 
 EXPOSE 8000
 
@@ -73,12 +76,14 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 ################################################################################
 FROM app_core AS celery
+LABEL description="Celery task runner."
 
 ENTRYPOINT ["celery", "-A", "beatonma", "worker", "-l", "info"]
 
 
 ################################################################################
 FROM app_core as crontab
+LABEL description="Scheduled tasks."
 
 WORKDIR /cron/
 COPY ./docker/cron/cron-schedule /tmp/
@@ -87,7 +92,7 @@ RUN chmod +x /cron/*.sh
 RUN crontab /tmp/cron-schedule
 
 ################################################################################
-FROM nginx AS server
+FROM nginx:${NGINX_VERSION} AS server
 
 COPY ./docker/nginx/nginx.conf /etc/nginx/
 COPY ./docker/nginx/templates/ /etc/nginx/templates/
@@ -100,6 +105,7 @@ EXPOSE 443
 
 ################################################################################
 FROM python as server_checks
+LABEL description="Basic tests to ensure server is up and accessible."
 
 RUN --mount=type=cache,target=/root/.cache/pip pip install requests
 

@@ -1,5 +1,8 @@
+ARG NODE_VERSION=21
+ARG PYTHON_VERSION=3.12
+
 ################################################################################
-FROM node:20-alpine AS gulp
+FROM node:${NODE_VERSION}-alpine AS gulp
 
 LABEL description="Generate frontend webapp and template files."
 
@@ -19,7 +22,7 @@ RUN npm run jest
 
 
 ################################################################################
-FROM python:3.11-alpine AS cypress_django
+FROM python:${PYTHON_VERSION}-alpine AS cypress_django
 ENV PYTHONBUFFERED 1
 
 RUN apk add \

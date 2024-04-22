@@ -1,30 +1,61 @@
-"""Each submodule should define a `test()` function."""
+import importlib.machinery
+import importlib.util
+import logging
 import pkgutil
 import sys
+from pathlib import Path
 from typing import Dict, Optional
 
-results: Dict[str, Optional[Exception]] = {}
-all_ok = True
+log = logging.getLogger(__name__)
+log.setLevel(logging.INFO)
+log.addHandler(logging.StreamHandler())
 
-for loader, module_name, is_pkg in pkgutil.walk_packages(__path__):
-    module_ = loader.find_module(module_name).load_module(module_name)
-    testfunc = getattr(module_, "tests")
-    print(f"Testing {module_.__name__}…")
-    try:
-        testfunc()
-        results[module_name] = None
-    except AssertionError as e:
-        results[module_name] = e
-        all_ok = False
+RESULT_OK = "OK"
+RESULT_FAIL = "FAIL"
+MAX_RESULT_LENGTH = max(len(RESULT_OK), len(RESULT_FAIL))
 
 
-sorted_results = sorted(results.items(), key=lambda x: x is None)
-for module_name, error in sorted_results:
-    result_code = "OK" if error is None else "FAIL"
-    print(f"[{result_code}] {module_name}")
+def log_result_message(result: str, message: str):
+    return f"{result.ljust(MAX_RESULT_LENGTH)} {message}"
 
-    if error:
-        print(f"- {error}")
 
-if not all_ok:
-    sys.exit(1)
+def result_ok(message: str):
+    return log.info(log_result_message(RESULT_OK, message))
+
+
+def result_fail(message: str):
+    return log.warning(log_result_message(RESULT_FAIL, message))
+
+
+def run_tests():
+    results: Dict[str, Optional[Exception]] = {}
+    all_ok = True
+    for loader, module_name, is_pkg in pkgutil.walk_packages(__path__):
+        _loader = importlib.machinery.SourceFileLoader(
+            module_name, str(Path(loader.path) / f"{module_name}.py")
+        )
+        spec = importlib.util.spec_from_loader(module_name, _loader)
+
+        module = importlib.util.module_from_spec(spec)
+        _loader.exec_module(module)
+
+        for name, obj in module.__dict__.items():
+            if callable(obj) and name.startswith("test_"):
+                fullname = f"{module_name}.{obj.__name__}"
+                try:
+                    obj()
+                    result_ok(fullname)
+                except AssertionError as e:
+                    result_fail(fullname)
+                    results[fullname] = e
+                    all_ok = False
+
+    if not all_ok:
+        log.error("\nExceptions:\n")
+        for module, exception in results.items():
+            log.error(f"{module}:\n{exception}\n\n")
+
+        sys.exit(1)
+
+
+run_tests()
