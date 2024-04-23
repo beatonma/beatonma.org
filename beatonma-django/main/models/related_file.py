@@ -14,7 +14,6 @@ class RelatedFile(UploadedMediaMixin, GenericFkMixin, ApiModel, ApiEditable, Bas
     description_max_length = 140
 
     file = SanitizedFileField(
-        blank=True,
         upload_to="related/%Y/",
         filename_attrs=["description"],
     )
