@@ -43,6 +43,10 @@ def assert_status_ignored(url: str):
     expect_status_code(url, 444)
 
 
+def assert_status_notfound(url: str):
+    expect_status_code(url, 404)
+
+
 def test_intended_endpoints_ok():
     assert_status_ok("/health-check/")
     assert_status_ok("/")
@@ -58,3 +62,10 @@ def test_suspicious_extensions_ignored():
 def test_unknown_subdomains_ignored():
     assert_status_ignored("http://prefix.nginx-server-tests/ping/")
     assert_status_ignored("http://sub.nginx-server-tests/")
+
+
+def test_resource_extensions():
+    assert_status_notfound("/static/file.js")
+    assert_status_notfound("/media/file.js")
+
+    assert_status_ignored("/static/file.exe")

@@ -10,6 +10,7 @@ location /static {
     add_header Cache-Control "public";
 }
 
+# Server resources that are bundled alongside a webapp.
 location ~ ^/webapp/.+?/.+$ {
     rewrite ^/webapp/(.+?)/(.+) /media/webapps/$1/$2 permanent;
 }

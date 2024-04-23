@@ -5,6 +5,10 @@ upstream django {
 # Rate limiting 'zone' definition (~cache)
 limit_req_zone $request_uri zone=by_uri:10m rate=15r/s;
 
+# Additional content types which may not be included in default /etc/nginx/mime.types.
+types {
+    text/markdown md;
+}
 
 server {
     listen 80;
@@ -62,10 +66,6 @@ server {
     listen [::]:80;
 
     server_name localhost nginx-server-tests;
-
-    if ($host !~* ^(localhost|nginx-server-tests)$) {
-        return 444;
-    }
 
     client_max_body_size 8M;
     client_body_timeout 5s;
