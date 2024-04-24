@@ -1,3 +1,5 @@
+import re
+
 from common.models import ApiModel, BaseModel
 from common.models.api import ApiEditable
 from common.models.generic import GenericFkMixin
@@ -5,7 +7,32 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from main.forms import SanitizedFileField
 from main.models.mixins.media_upload import UploadedMediaMixin
-from main.util import get_media_type_description, to_absolute_url
+from main.util import to_absolute_url
+
+VIDEO_PATTERN = re.compile(r".*\.(mp4|webm)$")
+AUDIO_PATTERN = re.compile(r".*\.(mp3|wav)$")
+IMAGE_PATTERN = re.compile(r".*\.(jpe?g|png|svg|webp)$")
+TEXT_PATTERN = re.compile(r".*\.(md|txt)$")
+
+
+class MediaType(models.TextChoices):
+    Audio = "audio"
+    Video = "video"
+    Image = "image"
+    Text = "text"
+    Unknown = "unknown"
+
+    @classmethod
+    def from_filename(cls, filename: str) -> "MediaType":
+        if IMAGE_PATTERN.match(filename):
+            return MediaType.Image
+        if VIDEO_PATTERN.match(filename):
+            return MediaType.Video
+        if AUDIO_PATTERN.match(filename):
+            return MediaType.Audio
+        if TEXT_PATTERN.match(filename):
+            return MediaType.Text
+        return MediaType.Unknown
 
 
 class RelatedFile(UploadedMediaMixin, GenericFkMixin, ApiModel, ApiEditable, BaseModel):
@@ -22,6 +49,11 @@ class RelatedFile(UploadedMediaMixin, GenericFkMixin, ApiModel, ApiEditable, Bas
         editable=False,
         null=True,
     )
+    type = models.CharField(
+        max_length=10,
+        choices=MediaType,
+        default=MediaType.Unknown,
+    )
 
     description = models.CharField(
         max_length=description_max_length,
@@ -37,7 +69,7 @@ class RelatedFile(UploadedMediaMixin, GenericFkMixin, ApiModel, ApiEditable, Bas
         return {
             "url": to_absolute_url(self.file.url),
             "description": self.description,
-            "type": get_media_type_description(self),
+            "type": self.type,
         }
 
     def save(
@@ -50,6 +82,7 @@ class RelatedFile(UploadedMediaMixin, GenericFkMixin, ApiModel, ApiEditable, Bas
         if not self.original_filename:
             self.original_filename = self.file.name
 
+        self.type = MediaType.from_filename(self.file.name)
         super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):

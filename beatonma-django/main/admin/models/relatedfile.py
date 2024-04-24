@@ -23,6 +23,7 @@ class RelatedFileInline(GenericTabularInline):
 class RelatedFileAdmin(BaseAdmin):
     readonly_fields = [
         "original_filename",
+        "type",
         "content_type",
         "object_id",
         "file_preview",
@@ -46,6 +47,7 @@ class RelatedFileAdmin(BaseAdmin):
 
     list_display = [
         "filename",
+        "type",
         "target_object",
         "created_at",
     ]
@@ -61,6 +63,7 @@ class RelatedFileAdmin(BaseAdmin):
     fields = (
         "file_preview",
         "file",
+        "type",
         "description",
         "original_filename",
         "target_object",

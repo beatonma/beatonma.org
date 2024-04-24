@@ -4,7 +4,6 @@ from typing import Union
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.views.generic.base import View
 from main.models.related_file import RelatedFilesMixin
-from main.util import get_media_type_description
 from mentions.models.mixins import MentionableMixin
 from mentions.resolution import get_model_for_url
 
@@ -35,7 +34,7 @@ class RelatedFilesJsonView(View):
             {
                 "url": related_file.file.url,
                 "description": related_file.description,
-                "type": get_media_type_description(related_file),
+                "type": related_file.type,
             }
             for related_file in related_files
         ]

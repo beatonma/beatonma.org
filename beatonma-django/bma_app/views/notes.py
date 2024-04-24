@@ -4,7 +4,6 @@ from bma_app.views.serializers import ApiSerializer
 from common.models.generic import generic_fk
 from django.http import HttpResponse
 from main.models import Note, RelatedFile
-from main.util import get_media_type_description
 from rest_framework import serializers, status
 from rest_framework.decorators import action
 from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
@@ -21,7 +20,7 @@ class MediaSerializer(ApiSerializer):
     type = serializers.SerializerMethodField()
 
     def get_type(self, file: RelatedFile):
-        return get_media_type_description(file)
+        return file.type
 
     class Meta:
         model = RelatedFile
