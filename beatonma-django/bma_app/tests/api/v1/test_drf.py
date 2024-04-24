@@ -1,15 +1,16 @@
 import json
 
 from basetest.testcase import LocalTestCase
+from bma_app import auth
 from bma_app.models import ApiToken
-from bma_app.views.api import HEADER_TOKEN, TOKEN_KEY, ApiTokenPermission
+from bma_app.views.api import ApiTokenPermission
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.urls import reverse
 from rest_framework import status
 
 
-class DrfTestCase(LocalTestCase):
+class Depr__DrfTestCase(LocalTestCase):
     def setUp(self):
         super().setUp()
         self.staff_user = User.objects.create_user(
@@ -71,16 +72,16 @@ class DrfTestCase(LocalTestCase):
     ) -> HttpResponse:
         if not headers:
             headers = {}
-        headers[HEADER_TOKEN] = self.token
+        headers[auth.HEADER_TOKEN] = self.token
 
         return method(url, data=data, headers=headers, **kwargs)
 
 
-class ApiRootPermissionsTests(DrfTestCase):
+class ApiRootPermissionsTests(Depr__DrfTestCase):
     view_name = "api:api-root"
 
     def _get(self, token, headers=None):
-        data = {TOKEN_KEY: token} if token else None
+        data = {auth.TOKEN_KEY: token} if token else None
         return self.client.get(reverse(self.view_name), data=data, headers=headers)
 
     def test_root_accessible_to_staff(self):
@@ -109,11 +110,11 @@ class ApiRootPermissionsTests(DrfTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_root_accessible_with_key_in_headers(self):
-        response = self._get(token=None, headers={HEADER_TOKEN: self.token})
+        response = self._get(token=None, headers={auth.HEADER_TOKEN: self.token})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class ApiRouterTests(DrfTestCase):
+class ApiRouterTests(Depr__DrfTestCase):
     def test_viewsets_have_required_permissions(self):
         from bma_app.urls import router
 

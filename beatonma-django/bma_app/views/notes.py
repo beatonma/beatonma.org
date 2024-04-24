@@ -17,11 +17,6 @@ def bad_request(reason: str = None):
 
 
 class MediaSerializer(ApiSerializer):
-    type = serializers.SerializerMethodField()
-
-    def get_type(self, file: RelatedFile):
-        return file.type
-
     class Meta:
         model = RelatedFile
         fields = [

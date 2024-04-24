@@ -1,5 +1,6 @@
 import logging
 
+from beatonma.settings.app_settings import *  # noqa
 from beatonma.settings.defaults import *  # noqa
 from beatonma.settings.installed_apps import INSTALLED_APPS  # noqa
 from beatonma.settings.internationalization import LANGUAGE_CODE  # noqa

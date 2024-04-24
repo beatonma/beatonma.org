@@ -2,8 +2,8 @@ import re
 import uuid
 from datetime import datetime
 
-from bma_app.tests.test_drf import DrfTestCase
-from bma_app.views.api import TOKEN_KEY
+from bma_app.auth import TOKEN_KEY
+from bma_app.tests.api.v1.test_drf import Depr__DrfTestCase
 from common.models.generic import generic_fk
 from common.util.time import tzdatetime
 from django.core.files import File
@@ -14,7 +14,7 @@ from main.models import Note, RelatedFile
 from rest_framework import status
 
 
-class NoteGetTests(DrfTestCase):
+class DeprNoteGetTests(Depr__DrfTestCase):
     def test_note_structure_is_correct(self):
         note = Note.objects.create(content="This is content")
         file = RelatedFile.objects.create(
@@ -22,7 +22,7 @@ class NoteGetTests(DrfTestCase):
         )
 
         response = self.get_with_api_token(reverse("api:note-list"))
-        data = response.json()[0]
+        data = response.json()["results"][0]
 
         match data:
             case {
@@ -54,7 +54,7 @@ class NoteGetTests(DrfTestCase):
         self.assertEqual(data["media"][0]["id"], str(file.api_id))
 
 
-class DrfCreateNoteTests(DrfTestCase):
+class DrfCreateNoteTests(Depr__DrfTestCase):
     def post_request(
         self,
         content: str = None,
@@ -168,7 +168,7 @@ class DrfCreateNoteTests(DrfTestCase):
             note.refresh_from_db()
 
 
-class DrfNoteMediaTests(DrfTestCase):
+class DrfNoteMediaTests(Depr__DrfTestCase):
     def test_append_media_to_existing_note(self):
         note = Note.objects.create(content="Hello")
 

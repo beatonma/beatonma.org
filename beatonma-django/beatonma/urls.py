@@ -1,6 +1,8 @@
 """beatonma URL Configuration."""
+
 from typing import Any
 
+from bma_app.api import api as bma_app_api
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -62,7 +64,8 @@ errors = [
 urlpatterns = (
     [
         path("", include("main.urls")),
-        path("api/", include("bma_app.urls")),
+        path("api/v2/", bma_app_api.urls),
+        path("api/v1/", include("bma_app.urls")),
         path("webmention/", include("mentions.urls")),
         path("contact/", include("contact.urls")),
         path("webmentions_tester/", include("webmentions_tester.urls")),
