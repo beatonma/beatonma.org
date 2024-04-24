@@ -16,6 +16,12 @@ class Note(ApiModel, BasePost):
     content = models.CharField(max_length=max_length, default="", blank=True)
     slug = models.SlugField(unique=True, max_length=7, editable=False)
 
+    def is_publishable(self) -> bool:
+        # Don't show notes that have neither text content nor media.
+        return (
+            not (self.content.strip() == "" and self.related_files.all().count() == 0)
+        ) and super().is_publishable()
+
     def build_slug(self):
         return uuid.uuid4().hex[:7]
 
