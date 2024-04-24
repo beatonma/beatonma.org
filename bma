@@ -140,6 +140,7 @@ dev() {
       docker_compose "$@"
       ;;
     "build")
+      shift
       docker_compose_build "$@"
       ;;
     *)
