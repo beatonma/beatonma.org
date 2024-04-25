@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from typing import Any, List
 
 from django.db.models import QuerySet
