@@ -35,18 +35,6 @@ class ApiTestCase(LocalTestCase):
             self.client.post, url, data, headers, **kwargs
         )
 
-    def put_with_api_token(
-        self, url: str, data: dict, headers: dict | None = None, **kwargs
-    ):
-        return self._client_method_with_api_token(
-            self.client.put,
-            url,
-            json.dumps(data),
-            headers,
-            content_type="application/json",
-            **kwargs
-        )
-
     def patch_with_api_token(
         self, url: str, data: dict, headers: dict | None = None, **kwargs
     ):

@@ -1,9 +1,10 @@
 import time
 from enum import Enum
 from functools import partial, wraps
-from typing import List
+from typing import Any, List
 
 from django import db
+from django.http import HttpResponse
 
 FLOAT_PRECISION_DEFAULT = 2
 
@@ -39,12 +40,8 @@ def dump(
         if only_on_error is False or (
             only_on_error is True and caught_error is not None
         ):
-            print(
-                _function_as_string(
-                    func, *args, **kwargs, float_precision=float_precision
-                )
-            )
-            print(f"-> {result}")
+            print(_function_as_string(func, *args, **kwargs))
+            print(f"-> {_to_string(result)}")
             if queries:
                 print(f"~~ {db_queries_str()}")
 
@@ -103,7 +100,7 @@ def timer(func=None, scale: TimerScale = TimerScale.Microsecond):
 
         print(
             f"{_function_as_string(func, *args, **kwargs)} took "
-            f"{_float_to_string(scaled_duration)} {scale.name.lower()}s."
+            f"{_to_string(scaled_duration)} {scale.name.lower()}s."
         )
 
         return result
@@ -114,22 +111,25 @@ def timer(func=None, scale: TimerScale = TimerScale.Microsecond):
 def _function_as_string(
     func,
     *args,
-    float_precision: int = FLOAT_PRECISION_DEFAULT,
     **kwargs,
 ):
     def _dict_to_str(obj: dict) -> List[str]:
         return [f"{key}={value}" for key, value in obj.items()]
 
-    def _to_str(x) -> str:
-        if isinstance(x, float):
-            return _float_to_string(x, float_precision)
-        return str(x)
-
     all_args = filter(None, [*args, *_dict_to_str(kwargs)])
-    all_args = ", ".join([_to_str(x) for x in all_args])
+    all_args = ", ".join([_to_string(x) for x in all_args])
 
     return f"{func.__name__}({all_args})"
 
 
-def _float_to_string(value: float, precision: int = FLOAT_PRECISION_DEFAULT):
-    return f"{value:.{precision}f}"
+def _to_string(value: Any) -> str:
+    if isinstance(value, str):
+        return value
+    if isinstance(value, int):
+        return str(value)
+    if isinstance(value, float):
+        return f"{value:.{FLOAT_PRECISION_DEFAULT}f}"
+    if isinstance(value, HttpResponse):
+        return f"{value}: {value.content})"
+
+    return str(value)

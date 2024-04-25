@@ -10,6 +10,10 @@ from beatonma.settings.internationalization import USE_TZ  # noqa
 from beatonma.settings.middleware import MIDDLEWARE  # noqa
 from beatonma.settings.templates import TEMPLATES  # noqa
 
+# Transitional setting until Django 6.0
+FORMS_URLFIELD_ASSUME_HTTPS = True
+
+
 ALLOWED_HOSTS = ["localhost"]
 SITE_ID = 1
 

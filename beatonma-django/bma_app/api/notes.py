@@ -15,6 +15,10 @@ log = logging.getLogger(__name__)
 router = Router()
 
 
+class UploadFileSchema(Schema):
+    file_description: str = None
+
+
 class CreateNoteSchema(Schema):
     published_at: datetime = None
     content: str
@@ -27,9 +31,9 @@ class CreatedResponseSchema(Schema):
 
 
 class EditNoteSchema(Schema):
-    content: str
+    content: str | None = None
     is_published: bool
-    published_at: datetime | None
+    published_at: datetime | None = None
 
 
 @router.get("/", response=List[NoteSchema], url_name="get-notes")
@@ -43,7 +47,7 @@ def create_note(
     request,
     response: HttpResponse,
     form: Form[CreateNoteSchema],
-    file: File[UploadedFile],
+    file: File[UploadedFile] = None,
 ):
     note_kwargs = no_null_dict(
         content=form.content,
@@ -57,6 +61,20 @@ def create_note(
 
     response.headers["Location"] = note.get_absolute_url()
     return {"id": note.api_id}
+
+
+@router.post(
+    "/{uuid}/media/",
+    response={201: CreatedResponseSchema},
+    url_name="add-media-to-note",
+)
+def upload_media(
+    request, uuid: UUID, form: Form[UploadFileSchema], file: File[UploadedFile]
+):
+    note = Note.objects.get(api_id=uuid)
+    file = _create_related_file(note, form.file_description, file)
+
+    return {"id": file.api_id}
 
 
 @router.get("/{uuid}/", response=NoteSchema, url_name="get-note")
@@ -74,6 +92,12 @@ def update_note(request, uuid: UUID, changes: EditNoteSchema):
         ),
     )
     return note
+
+
+@router.delete("/{uuid}/", response={204: None}, url_name="delete-note")
+def delete_note(request, uuid: UUID):
+    Note.objects.get(api_id=uuid).delete()
+    return 204, None
 
 
 def _create_related_file(
