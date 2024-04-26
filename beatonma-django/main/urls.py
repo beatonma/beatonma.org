@@ -1,13 +1,10 @@
 from common.urls import path
-from django.urls import include
 from mentions.helpers import mentions_path
 
+from .api import public_api
 from .feeds import LatestUpdatesFeed
 from .views import view_names
 from .views.about import AboutView
-from .views.api.media import RelatedFilesJsonView
-from .views.api.search import SearchApiView, SearchSuggestionsView
-from .views.api.status import PingView
 from .views.app import AppView
 from .views.index import IndexView
 from .views.search import (
@@ -21,20 +18,6 @@ from .views.webapp import WebAppView
 from .views.webpost import ArticleView, BlogView, ChangelogView, NoteView
 
 api_urlpatterns = [
-    # Status check.
-    path("ping/", PingView, view_names.API_PING),
-    path(
-        "api/related_media/",
-        RelatedFilesJsonView,
-        view_names.API_RELATED_FILES,
-    ),
-    path("api/", include("github.urls")),
-    path("api/search/", SearchApiView),
-    path(
-        "api/search/suggestions/",
-        SearchSuggestionsView,
-        view_names.API_SEARCH_SUGGESTIONS,
-    ),
     # RSS feed
     path("feed/", LatestUpdatesFeed(), view_names.RSS_FEED),
 ]
@@ -89,6 +72,7 @@ article_urlpatterns = [
 
 site_functions_urlpatterns = [
     path("", IndexView, view_names.INDEX),
+    path("api/", public_api.urls),
     path("about/", AboutView, view_names.ABOUT),
     path("tag/<str:tag>/", TagView, view_names.TAGS),
     path("language/<str:language>/", LanguageView, view_names.LANGUAGES),

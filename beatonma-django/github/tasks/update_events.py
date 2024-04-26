@@ -5,7 +5,8 @@ from typing import Callable, Optional, TypeVar
 from celery import shared_task
 from django.conf import settings
 from django.db.models import Q
-from github import events, github_api
+from github import github_api
+from github.events import GithubEvent
 from github.models.api import GithubPollingEvent
 from github.models.events import (
     GithubCommit,
@@ -38,12 +39,13 @@ OWNER = settings.GITHUB_USERNAME
 
 
 SUPPORTED_EVENTS = [
-    events.CREATE_EVENT,
-    events.WIKI_EVENT,
-    events.ISSUES_EVENT,
-    events.PULL_REQUEST_EVENT,
-    events.PUSH_EVENT,
-    events.RELEASE_EVENT,
+    GithubEvent.CreateEvent,
+    GithubEvent.CreateEvent,
+    GithubEvent.WikiEvent,
+    GithubEvent.IssuesEvent,
+    GithubEvent.PullRequestEvent,
+    GithubEvent.PushEvent,
+    GithubEvent.ReleaseEvent,
 ]
 
 
@@ -180,27 +182,27 @@ def create_payload(
     func: Callable[[GithubUserEvent, T], None]
     payload: T
 
-    if event_type == events.CREATE_EVENT:
+    if event_type == GithubEvent.CreateEvent:
         payload = CreateEventPayload(**data)
         func = _create_create_payload
 
-    elif event_type == events.WIKI_EVENT:
+    elif event_type == GithubEvent.WikiEvent:
         payload = WikiEvent(**data)
         func = _create_wiki_payload
 
-    elif event_type == events.ISSUES_EVENT:
+    elif event_type == GithubEvent.IssuesEvent:
         payload = IssuesEvent(**data)
         func = _create_issues_payload
 
-    elif event_type == events.PULL_REQUEST_EVENT:
+    elif event_type == GithubEvent.PullRequestEvent:
         payload = PullRequestEvent(**data)
         func = _create_pullrequest_payload
 
-    elif event_type == events.PUSH_EVENT:
+    elif event_type == GithubEvent.PushEvent:
         payload = PushEvent(**data)
         func = _create_push_payload
 
-    elif event_type == events.RELEASE_EVENT:
+    elif event_type == GithubEvent.ReleaseEvent:
         payload = ReleaseEvent(**data)
         func = _create_release_event
 

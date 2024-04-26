@@ -38,13 +38,21 @@ class BasePost(
 
     links = GenericRelation(Link)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, update_fields=None, **kwargs):
         if not self.slug:
             self.slug = self.build_slug()
 
         self.save_text()
 
-        super().save(*args, **kwargs)
+        if (
+            update_fields
+            and "content" in update_fields
+            and "content_html" not in update_fields
+        ):
+            # Ensure that saving `content` field also updates saved value for `content_html`.
+            update_fields = [*update_fields, "content_html"]
+
+        super().save(*args, update_fields=update_fields, **kwargs)
 
         self._extract_tags()
 

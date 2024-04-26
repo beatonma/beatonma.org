@@ -1,14 +1,11 @@
 import logging
 
 from bma_app.models import ApiToken
-from bma_app.views.pagination import ApiPagination
+from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.http import HttpRequest
-from rest_framework.permissions import BasePermission
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 log = logging.getLogger(__name__)
-
 
 HEADER_TOKEN = "ApiToken"
 TOKEN_KEY = "token"
@@ -22,29 +19,16 @@ class BadApiToken(ApiTokenException):
     pass
 
 
-class ApiTokenPermission(BasePermission):
-    def has_permission(self, request, view):
-        return has_api_permission(request)
-
-    def has_object_permission(self, request, view, obj):
-        return has_api_permission(request)
-
-
-class ApiViewSet(GenericViewSet):
-    permission_classes = (ApiTokenPermission,)
-    pagination_class = ApiPagination
-
-
-class ApiModelViewSet(ApiViewSet, ModelViewSet):
-    pass
-
-
-def has_api_permission(request: HttpRequest) -> bool:
-    token = (
+def get_token(request: HttpRequest) -> str | None:
+    return (
         request.headers.get(HEADER_TOKEN)
         or request.GET.get(TOKEN_KEY)
         or request.POST.get(TOKEN_KEY)
     )
+
+
+def has_api_permission(request: HttpRequest) -> bool:
+    token = get_token(request)
 
     try:
         check_token(token)
@@ -59,7 +43,7 @@ def has_api_permission(request: HttpRequest) -> bool:
     return False
 
 
-def check_token(user_token: str) -> None:
+def check_token(user_token: str) -> AbstractUser:
     """Raises ApiTokenException if user_token does not map to a valid staff user."""
     if not user_token:
         raise ApiTokenException()
@@ -77,3 +61,5 @@ def check_token(user_token: str) -> None:
     if not token.user.is_staff:
         log.warning(f"Bad API token user: {token.user}")
         raise BadApiToken()
+
+    return token.user
