@@ -1,5 +1,4 @@
 from common.urls import path
-from django.urls import include
 from mentions.helpers import mentions_path
 
 from .api import public_api
@@ -19,7 +18,6 @@ from .views.webapp import WebAppView
 from .views.webpost import ArticleView, BlogView, ChangelogView, NoteView
 
 api_urlpatterns = [
-    path("api/", include("github.urls")),
     # RSS feed
     path("feed/", LatestUpdatesFeed(), view_names.RSS_FEED),
 ]

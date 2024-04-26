@@ -1,4 +1,4 @@
-from github import events as github_events
+from github.events import GithubEvent
 
 from . import environment
 
@@ -15,12 +15,12 @@ FCM_API_KEY = environment.FCM_API_KEY
 GITHUB_ACCESS_TOKEN = environment.GITHUB_ACCESS_TOKEN
 GITHUB_USERNAME = environment.GITHUB_USERNAME
 GITHUB_EVENTS = [
-    github_events.CREATE_EVENT,
-    github_events.ISSUES_EVENT,
-    github_events.PULL_REQUEST_EVENT,
-    github_events.PUSH_EVENT,
-    github_events.RELEASE_EVENT,
-    github_events.WIKI_EVENT,
+    GithubEvent.CreateEvent,
+    GithubEvent.IssuesEvent,
+    GithubEvent.PullRequestEvent,
+    GithubEvent.PushEvent,
+    GithubEvent.ReleaseEvent,
+    GithubEvent.WikiEvent,
 ]
 
 # mentions

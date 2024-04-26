@@ -1,13 +1,14 @@
+from datetime import datetime
 from typing import List, Optional, Set
 
 from celery import shared_task
 from common.models import ApiModel
 from django.conf import settings
 from django.db.models import QuerySet
-from django.utils.timezone import datetime, get_current_timezone
-from github import events
+from django.utils.timezone import get_current_timezone
 from github.models import CachedResponse, GithubEventUpdateCycle, GithubUserEvent
 
+from ..events import GithubEvent
 from .update_events import update_github_user_events
 from .update_repositories import update_github_repository_cache
 
@@ -58,7 +59,7 @@ class _PrivateEventsSummary(ApiModel):
 
 
 def _get_event_types():
-    return getattr(settings, "GITHUB_EVENTS", events.all_events())
+    return getattr(settings, "GITHUB_EVENTS", GithubEvent.values())
 
 
 def _aggregate_events_json(events: QuerySet[GithubUserEvent]) -> List[dict]:

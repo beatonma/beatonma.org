@@ -2,12 +2,12 @@ from common.models import ApiModel, BaseModel
 from django.conf import settings
 from django.db import models
 from django.db.models import QuerySet
-from github import events as github_events
+from github.events import GithubEvent
 from github.models.repository import GithubRepository, GithubUser
 
 
 def _get_event_types():
-    return getattr(settings, "GITHUB_EVENTS", github_events.all_events())
+    return getattr(settings, "GITHUB_EVENTS", GithubEvent.values())
 
 
 class GithubEventUpdateCycle(BaseModel):
@@ -51,22 +51,22 @@ class GithubUserEvent(ApiModel, BaseModel):
         return self.is_public and self.repository.is_published
 
     def payload(self):
-        if self.type == github_events.CREATE_EVENT:
+        if self.type == GithubEvent.CreateEvent:
             return self.create_event_data
 
-        elif self.type == github_events.PUSH_EVENT:
+        elif self.type == GithubEvent.PushEvent:
             return self.commits.all()
 
-        elif self.type == github_events.ISSUES_EVENT:
+        elif self.type == GithubEvent.IssuesEvent:
             return self.issue_closed_data
 
-        elif self.type == github_events.RELEASE_EVENT:
+        elif self.type == GithubEvent.ReleaseEvent:
             return self.release_data
 
-        elif self.type == github_events.WIKI_EVENT:
+        elif self.type == GithubEvent.WikiEvent:
             return self.wiki_changes.all()
 
-        elif self.type == github_events.PULL_REQUEST_EVENT:
+        elif self.type == GithubEvent.PullRequestEvent:
             return self.pull_merged_data
 
         else:

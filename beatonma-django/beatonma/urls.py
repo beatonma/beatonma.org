@@ -9,6 +9,7 @@ from django.contrib import admin
 from django.template.response import TemplateResponse
 from django.urls import include, path
 from django.views.generic import RedirectView
+from github.api import github_api
 
 
 def _redirect(url: str):
@@ -64,6 +65,7 @@ errors = [
 urlpatterns = (
     [
         path("", include("main.urls")),
+        path("api/github/", github_api.urls),
         path("api/v2/", bma_app_api.urls),
         path("webmention/", include("mentions.urls")),
         path("contact/", include("contact.urls")),
