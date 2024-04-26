@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 router = Router()
 
 
-@router.get("/{uuid}/", response=MediaSchema, url_name="get-media")
+@router.get("/{uuid}/", response=MediaSchema)
 def get_media(request: HttpRequest, uuid: UUID):
     return RelatedFile.objects.get(api_id=uuid)
 
@@ -20,14 +20,14 @@ class EditMediaSchema(Schema):
     description: str
 
 
-@router.patch("/{uuid}/", response=MediaSchema, url_name="update-media")
+@router.patch("/{uuid}/", response=MediaSchema)
 def update_media(request: HttpRequest, uuid: UUID, changes: EditMediaSchema):
     file = RelatedFile.objects.get(api_id=uuid)
     file.update(description=changes.description)
     return file
 
 
-@router.delete("/{uuid}/", response={204: None}, url_name="delete-media")
+@router.delete("/{uuid}/", response={204: None})
 def delete_media(request: HttpRequest, uuid: UUID):
     RelatedFile.objects.get(api_id=uuid).delete()
     return http.STATUS_204_NO_CONTENT, None

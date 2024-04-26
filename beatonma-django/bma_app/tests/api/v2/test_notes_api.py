@@ -16,19 +16,19 @@ from django.urls import reverse
 from main.models import Note, RelatedFile
 
 api_namespace = api.urls_namespace
-endpoint_notes = reverse(f"{api_namespace}:get-notes")
+endpoint_notes = reverse(f"{api_namespace}:get_notes")
 
 
 def endpoint_note(note_id: uuid.UUID):
-    return reverse(f"{api_namespace}:get-note", args=[note_id])
+    return reverse(f"{api_namespace}:get_note", args=[note_id])
 
 
 def endpoint_media(media_id: uuid.UUID):
-    return reverse(f"{api_namespace}:get-media", args=[media_id])
+    return reverse(f"{api_namespace}:get_media", args=[media_id])
 
 
 def endpoint_create_media_for_note(note_id: uuid.UUID):
-    return reverse(f"{api_namespace}:add-media-to-note", args=[note_id])
+    return reverse(f"{api_namespace}:add_media_to_note", args=[note_id])
 
 
 class GetNoteTests(ApiTestCase):

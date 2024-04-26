@@ -36,7 +36,7 @@ class EditNoteSchema(Schema):
     published_at: datetime | None = None
 
 
-@router.get("/", response=List[NoteSchema], url_name="get-notes")
+@router.get("/", response=List[NoteSchema])
 @paginate
 def get_notes(request):
     return Note.objects.sort_by_recent()
@@ -66,9 +66,8 @@ def create_note(
 @router.post(
     "/{uuid}/media/",
     response={201: CreatedResponseSchema},
-    url_name="add-media-to-note",
 )
-def upload_media(
+def add_media_to_note(
     request: HttpRequest,
     uuid: UUID,
     form: Form[UploadFileSchema],
@@ -80,12 +79,12 @@ def upload_media(
     return {"id": file.api_id}
 
 
-@router.get("/{uuid}/", response=NoteSchema, url_name="get-note")
+@router.get("/{uuid}/", response=NoteSchema)
 def get_note(request: HttpRequest, uuid: UUID):
     return Note.objects.get(api_id=uuid)
 
 
-@router.patch("/{uuid}/", response=NoteSchema, url_name="update-note")
+@router.patch("/{uuid}/", response=NoteSchema)
 def update_note(request: HttpRequest, uuid: UUID, changes: EditNoteSchema):
     note = Note.objects.get(api_id=uuid).update(
         **no_null_dict(
@@ -97,7 +96,7 @@ def update_note(request: HttpRequest, uuid: UUID, changes: EditNoteSchema):
     return note
 
 
-@router.delete("/{uuid}/", response={204: None}, url_name="delete-note")
+@router.delete("/{uuid}/", response={204: None})
 def delete_note(request: HttpRequest, uuid: UUID):
     Note.objects.get(api_id=uuid).delete()
     return 204, None

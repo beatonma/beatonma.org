@@ -7,7 +7,7 @@ from pydantic import IPvAnyAddress
 router = Router()
 
 
-@router.get("/ping/", url_name="ping")
+@router.get("/ping/")
 def ping(request: HttpRequest):
     return 200, "OK"
 
@@ -19,7 +19,7 @@ class WhoAmiISchema(Schema):
     browser: str
 
 
-@router.get("/whoami/", response=WhoAmiISchema, url_name="whoami")
+@router.get("/whoami/", response=WhoAmiISchema)
 def whoami(request: HttpRequest):
     ip = get_client_ip(request)
     ua = get_user_agent(request)
