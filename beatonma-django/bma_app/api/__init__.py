@@ -35,8 +35,8 @@ class TokenAuth(APIKeyBase):
 api = NinjaAPI(
     docs_url=None,
     openapi_url=None,
-    urls_namespace="api",
-    title="API",
+    urls_namespace="bma_management_api",
+    title="BMA Management API",
     version="2.0",
     default_router=RouterPaginated(),
     auth=TokenAuth(),
@@ -52,13 +52,4 @@ def on_bad_token(request, exception):
         request,
         {"detail": "Bad user or auth key."},
         status=http.STATUS_401_UNAUTHORIZED,
-    )
-
-
-@api.exception_handler(Exception)
-def on_bad_token(request, exception):
-    return api.create_response(
-        request,
-        {"detail": f"{exception}"},
-        status=http.STATUS_400_BAD_REQUEST,
     )

@@ -11,9 +11,7 @@ export const Api = {
             data => data.feed,
         ),
     searchSuggestions: () =>
-        loadJson<SuggestionResponse>("/api/search/suggestions/").then(
-            data => data.suggestions,
-        ),
+        loadJson<SuggestionResponse>("/api/search/suggestions/"),
 };
 
 export interface SearchSuggestion {
@@ -29,9 +27,7 @@ interface SearchResponse {
     feed: SearchSuggestion[];
 }
 
-interface SuggestionResponse {
-    suggestions: SearchSuggestion[];
-}
+type SuggestionResponse = SearchSuggestion[];
 
 interface GithubEventsResponse {
     events: Event[];

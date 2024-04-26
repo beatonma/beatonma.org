@@ -1,12 +1,12 @@
 from basetest.testcase import LocalTestCase
+from django.urls import reverse
 
 
-class ApiTest(LocalTestCase):
+class StatusTests(LocalTestCase):
     """Ensure that API endpoints are accessible."""
 
     def test_ping(self):
-        """/ping/ should confirm server is available."""
-        self.assert_status_ok("/ping/")
+        self.assert_status_ok(reverse("public_api:ping"))
 
     def test_whoami(self):
         headers = {
@@ -15,7 +15,7 @@ class ApiTest(LocalTestCase):
             "Chrome/111.0.0.0 Safari/537.36",
         }
         r = self.client.get(
-            "/whoami/",
+            reverse("public_api:whoami"),
             **headers,
         )
 

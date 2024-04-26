@@ -117,22 +117,6 @@ def get_apps(**filter_kwargs) -> PublishedQuerySet[App]:
     return App.objects.published().filter(**filter_kwargs)
 
 
-def get_articles(**filter_kwargs) -> PublishedQuerySet[Article]:
-    return Article.objects.published().filter(**filter_kwargs)
-
-
-def get_blogs(**filter_kwargs) -> PublishedQuerySet[Blog]:
-    return Blog.objects.published().filter(**filter_kwargs)
-
-
-def get_changelogs(**filter_kwargs) -> PublishedQuerySet[Changelog]:
-    return Changelog.objects.published().filter(**filter_kwargs)
-
-
-def get_notes(**filter_kwargs) -> PublishedQuerySet[Note]:
-    return Note.objects.published().filter(**filter_kwargs)
-
-
 def get_app_types(**filter_kwargs) -> QuerySet[AppType]:
     return AppType.objects.filter(**filter_kwargs)
 

@@ -6,7 +6,7 @@ from uuid import UUID
 from bma_app.api.schemas import NoteSchema
 from bma_app.api.util import no_null_dict
 from common.models.generic import generic_fk
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from main.models import Note, RelatedFile
 from ninja import File, Form, Router, Schema, UploadedFile
 from ninja.pagination import paginate
@@ -44,7 +44,7 @@ def get_notes(request):
 
 @router.post("/", response={201: CreatedResponseSchema})
 def create_note(
-    request,
+    request: HttpRequest,
     response: HttpResponse,
     form: Form[CreateNoteSchema],
     file: File[UploadedFile] = None,
@@ -69,7 +69,10 @@ def create_note(
     url_name="add-media-to-note",
 )
 def upload_media(
-    request, uuid: UUID, form: Form[UploadFileSchema], file: File[UploadedFile]
+    request: HttpRequest,
+    uuid: UUID,
+    form: Form[UploadFileSchema],
+    file: File[UploadedFile],
 ):
     note = Note.objects.get(api_id=uuid)
     file = _create_related_file(note, form.file_description, file)
@@ -78,12 +81,12 @@ def upload_media(
 
 
 @router.get("/{uuid}/", response=NoteSchema, url_name="get-note")
-def get_note(request, uuid: UUID):
+def get_note(request: HttpRequest, uuid: UUID):
     return Note.objects.get(api_id=uuid)
 
 
 @router.patch("/{uuid}/", response=NoteSchema, url_name="update-note")
-def update_note(request, uuid: UUID, changes: EditNoteSchema):
+def update_note(request: HttpRequest, uuid: UUID, changes: EditNoteSchema):
     note = Note.objects.get(api_id=uuid).update(
         **no_null_dict(
             content=changes.content,
@@ -95,7 +98,7 @@ def update_note(request, uuid: UUID, changes: EditNoteSchema):
 
 
 @router.delete("/{uuid}/", response={204: None}, url_name="delete-note")
-def delete_note(request, uuid: UUID):
+def delete_note(request: HttpRequest, uuid: UUID):
     Note.objects.get(api_id=uuid).delete()
     return 204, None
 

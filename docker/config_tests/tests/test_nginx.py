@@ -51,7 +51,7 @@ def test_intended_endpoints_ok():
     assert_status_ok("/health-check/")
     assert_status_ok("/")
     assert_status_ok("/about/")
-    assert_status_ok("/ping/")
+    assert_status_ok("/api/ping/")
 
 
 def test_suspicious_extensions_ignored():
@@ -60,7 +60,7 @@ def test_suspicious_extensions_ignored():
 
 
 def test_unknown_subdomains_ignored():
-    assert_status_ignored("http://prefix.nginx-server-tests/ping/")
+    assert_status_ignored("http://prefix.nginx-server-tests/api/ping/")
     assert_status_ignored("http://sub.nginx-server-tests/")
 
 

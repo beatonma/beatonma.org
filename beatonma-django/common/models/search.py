@@ -1,11 +1,11 @@
 import operator
-from dataclasses import dataclass
 from datetime import datetime
 from functools import reduce
 from typing import Callable, List, Optional
 
 from django.db import connection, models
 from django.db.models import Q, QuerySet
+from ninja import Schema
 
 _DB_VENDOR = connection.vendor
 _WORD_BOUNDARY_REGEX = {
@@ -95,22 +95,12 @@ class SearchQuerySet(QuerySet):
         return qs
 
 
-@dataclass
-class SearchResult:
+class SearchResult(Schema):
     name: str
     url: str
     timestamp: Optional[datetime] = None
     description: Optional[str] = None
     className: Optional[str] = None
-
-    def to_json(self):
-        return {
-            "name": self.name,
-            "url": self.url,
-            "timestamp": self.timestamp,
-            "description": self.description,
-            "className": self.className,
-        }
 
 
 class SearchMixin(models.Model):
