@@ -3,6 +3,7 @@ import uuid
 from datetime import datetime
 
 from bma_app import auth
+from bma_app.api import api
 from bma_app.api.util import no_null_dict
 from bma_app.tests.api.v2.test_api import ApiTestCase
 from common.models.generic import generic_fk
@@ -14,7 +15,7 @@ from django.http import HttpResponse
 from django.urls import reverse
 from main.models import Note, RelatedFile
 
-api_namespace = "ninja-api"
+api_namespace = api.urls_namespace
 endpoint_notes = reverse(f"{api_namespace}:get-notes")
 
 
@@ -104,9 +105,9 @@ class CreateNoteTests(ApiTestCase):
         self.assertEqual(response.status_code, http.STATUS_401_UNAUTHORIZED)
 
     def test_create_simple_note(self):
-        response = self.post_request(content="drf test")
+        response = self.post_request(content="api test")
         self.assertEqual(response.status_code, http.STATUS_201_CREATED)
-        self.assertIsNotNone(Note.objects.get(content="drf test"))
+        self.assertIsNotNone(Note.objects.get(content="api test"))
 
     def test_create_note_with_custom_published_at(self):
         response = self.post_request(
@@ -123,13 +124,13 @@ class CreateNoteTests(ApiTestCase):
 
     def test_create_note_with_media(self):
         response = self.post_request(
-            content="drf note with media",
+            content="api note with media",
             file=_file(),
             file_description="Drf description",
         )
 
         self.assertEqual(response.status_code, http.STATUS_201_CREATED)
-        note = Note.objects.get(content="drf note with media")
+        note = Note.objects.get(content="api note with media")
         file: RelatedFile = note.related_files.first()
 
         self.assertRegex(str(file.file), r"related/\d{4}/[-\w]+\.\w+$")

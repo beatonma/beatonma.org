@@ -35,7 +35,7 @@ class TokenAuth(APIKeyBase):
 api = NinjaAPI(
     docs_url=None,
     openapi_url=None,
-    urls_namespace="ninja-api",
+    urls_namespace="api",
     title="API",
     version="2.0",
     default_router=RouterPaginated(),

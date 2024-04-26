@@ -2,6 +2,7 @@ import json
 
 from basetest.testcase import LocalTestCase
 from bma_app import auth
+from bma_app.api import api
 from bma_app.models import ApiToken
 from common.util import http
 from django.contrib.auth.models import User
@@ -44,7 +45,7 @@ class ApiTestCase(LocalTestCase):
             json.dumps(data),
             headers,
             content_type="application/json",
-            **kwargs
+            **kwargs,
         )
 
     def delete_with_api_token(
@@ -65,7 +66,7 @@ class ApiTestCase(LocalTestCase):
 
 
 class ApiRootPermissionsTests(ApiTestCase):
-    view_name = "ninja-api:api-root"
+    view_name = f"{api.urls_namespace}:api-root"
 
     def _get(self, token, headers=None):
         data = {auth.TOKEN_KEY: token} if token else None

@@ -65,7 +65,6 @@ urlpatterns = (
     [
         path("", include("main.urls")),
         path("api/v2/", bma_app_api.urls),
-        path("api/v1/", include("bma_app.urls")),
         path("webmention/", include("mentions.urls")),
         path("contact/", include("contact.urls")),
         path("webmentions_tester/", include("webmentions_tester.urls")),

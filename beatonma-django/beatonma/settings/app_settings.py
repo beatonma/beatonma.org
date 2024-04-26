@@ -5,10 +5,6 @@ from . import environment
 # celery
 CELERY_BROKER_URL = environment.CELERY_BROKER_URL
 
-# DRF
-REST_FRAMEWORK = {
-    "PAGE_SIZE": 20,
-}
 # django-ninja
 NINJA_PAGINATION_CLASS = "bma_app.api.pagination.OffsetPagination"
 

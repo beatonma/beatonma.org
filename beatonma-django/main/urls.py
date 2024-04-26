@@ -7,7 +7,7 @@ from .views import view_names
 from .views.about import AboutView
 from .views.api.media import RelatedFilesJsonView
 from .views.api.search import SearchApiView, SearchSuggestionsView
-from .views.api.status import PingView
+from .views.api.status import PingView, WhoamiView
 from .views.app import AppView
 from .views.index import IndexView
 from .views.search import (
@@ -23,6 +23,7 @@ from .views.webpost import ArticleView, BlogView, ChangelogView, NoteView
 api_urlpatterns = [
     # Status check.
     path("ping/", PingView, view_names.API_PING),
+    path("whoami/", WhoamiView),
     path(
         "api/related_media/",
         RelatedFilesJsonView,
