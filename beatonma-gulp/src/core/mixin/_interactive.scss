@@ -29,8 +29,14 @@
   @extend %button;
   @extend %hover;
 
-  background: none;
+  background-color: transparent;
   color: var(--text-primary);
+  border: none;
+
+  &:hover,
+  &[data-selected="true"] {
+    color: var(--vibrant-high-contrast);
+  }
 }
 
 %button-solid {

@@ -9,9 +9,9 @@
 
 {% block main %}
   {% include "components/canary/canary.html" with condition=post.is_published|negate message="This post is not published." %}
+  {% include 'staff/edit-links.html' with target=post %}
 
   <section>
-    {% include 'staff/edit-links.html' with target=post %}
     <article class="h-entry webpost" data-type="{{ post|get_class|lower }}">
       {% block article %}
         {% block post_header %}{% endblock %}

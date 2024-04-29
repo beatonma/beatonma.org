@@ -2,29 +2,8 @@
 @use "../global/styles/objects/button";
 @forward "./theme-preview";
 
-.staff {
+.staff-toolbar {
   @include mixin.row($horizontal: flex-end, $gap: var(--space));
-
-  .staff-links {
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    > * {
-      @extend %button-transparent;
-
-      border: none;
-    }
-
-    @include mixin.on-medium-width {
-      display: none;
-    }
-  }
 
   .menu {
     position: relative;
@@ -77,5 +56,17 @@
       padding: 1px 2px;
       border-radius: 2px;
     }
+  }
+}
+
+.staff-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  > * {
+    @extend %button-transparent;
+    padding: 0.5em;
+    font-size: var(--fs-default);
   }
 }

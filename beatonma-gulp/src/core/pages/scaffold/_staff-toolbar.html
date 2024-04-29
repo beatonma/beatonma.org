@@ -1,5 +1,5 @@
 {% if user.is_superuser %}
-  <div class="staff">
+  <div class="staff-toolbar">
     <a title="Webmail" href="{% url 'admin:contact_webmailmessage_changelist' %}" class="tooltip unread-badge noanim">
       <span class="icon">mail</span>
       {% if unread_webmail %}<span>{{ unread_webmail|length }}</span>{% endif %}
