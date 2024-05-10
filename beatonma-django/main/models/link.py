@@ -32,19 +32,12 @@ class Link(GenericFkMixin, BaseModel):
         blank=True,
     )
 
-    def save(
-        self,
-        force_insert=False,
-        force_update=False,
-        using=None,
-        update_fields=None,
-    ):
+    def save(self, *args, **kwargs):
         if not self.pk:
             if "://" not in self.url:
                 self.url = f"https://{self.url}"
 
-            parsed = urlparse(self.url)
-            scheme, netloc, path, params, query, fragment = parsed
+            _, netloc, _, _, _, _ = urlparse(self.url)
 
             if netloc:
                 host, _ = Host.objects.get_or_create(
@@ -53,7 +46,7 @@ class Link(GenericFkMixin, BaseModel):
                 )
                 self.host = host
 
-        super().save(force_insert, force_update, using, update_fields)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.url
