@@ -115,21 +115,29 @@ class App(
         self.get_default_theme_from(self.app_type)
 
         if self.repository:
-            self.primary_language = self.repository.primary_language
-            self.description = self.repository.description
-
-            super().save(*args, **kwargs)
-
-            if self.repository.is_public():
-                Link.objects.update_or_create(
-                    url=self.repository.url,
-                    content_type=ContentType.objects.get_for_model(self),
-                    object_id=self.pk,
-                    defaults={"description": "source"},
-                )
+            self._update_from_repository(*args, **kwargs)
 
         else:
             super().save(*args, **kwargs)
+
+    def _update_from_repository(self, *save_args, **save_kwargs):
+        self.primary_language = self.repository.primary_language
+        super().save(*save_args, **save_kwargs)
+
+        content_type = ContentType.objects.get_for_model(self)
+        if self.repository.is_public():
+            Link.objects.update_or_create(
+                url=self.repository.url,
+                content_type=content_type,
+                object_id=self.pk,
+                defaults={"description": "source"},
+            )
+        else:
+            Link.objects.filter(
+                url=self.repository.url,
+                content_type=content_type,
+                object_id=self.pk,
+            ).delete()
 
     def resolve_icon_url(self) -> Optional[str]:
         try:
@@ -147,10 +155,17 @@ class App(
     def resolve_from_url_kwargs(cls, app_id, **url_kwargs) -> "App":
         return cls.objects.get(app_id=app_id)
 
+    def resolve_description(self):
+        if self.description:
+            return self.description
+
+        if self.repository:
+            return self.repository.description
+
     def to_search_result(self) -> SearchResult:
         return SearchResult(
             name=self.title,
-            description=self.description,
+            description=self.resolve_description(),
             timestamp=self.published_at,
             url=self.get_absolute_url(),
         )
@@ -161,7 +176,7 @@ class App(
             url=self.get_absolute_url(),
             date=self.published_at,
             type=self.__class__.__name__,
-            summary=self.description,
+            summary=self.resolve_description(),
             image_class="contain",
             image_url=self.resolve_icon_url(),
             themeable=self,

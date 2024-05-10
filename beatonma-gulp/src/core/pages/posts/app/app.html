@@ -6,7 +6,7 @@
   {% endblock %}
 
   {% block post_content %}
-    {{ post.description|default:"" }}
+    {{ post.resolve_description|default:"" }}
   {% endblock %}
 
   {% block additional_content %}
