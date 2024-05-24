@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# cd into location of script to ensure relative paths resolve correctly.
+cd "$(dirname "$0")" || exit 1
+
 FILE_PRODUCTION="./compose.production.yml"
 FILE_DEV="./compose.dev.yml"
 FILE_TEST="./compose.test.yml"
