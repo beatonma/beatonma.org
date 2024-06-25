@@ -72,8 +72,12 @@ export_data() {
   output_filename="archive-$(date +%F).tar.gz"
   docker_temp_db_path="/tmp/$ARCHIVE_DB"
 
+  # copy important files
   run_command mkdir -p "$local_temp_path/"
+  run_command cp -r "$KEYFILES_ROOT/." "$local_temp_path/keyfiles/"
   run_command cp -r "$MEDIA_ROOT/." "$local_temp_path/media/"
+
+  # dump database
   run_command docker exec "$DOCKER_CONTAINER_POSTGRES" \
     pg_dump --clean --create --no-owner \
     --format=custom \
@@ -81,8 +85,11 @@ export_data() {
     --file="$docker_temp_db_path" \
     "$POSTGRES_DB"
   run_command docker cp "${DOCKER_CONTAINER_POSTGRES}:$docker_temp_db_path" "$local_temp_path"
+
+  # build archive
   run_command tar -czvf "$output_filename" -C "/tmp" "$ARCHIVE_DIRNAME"
 
+  # cleanup
   run_command rm -r "$local_temp_path"
   run_command docker exec "$DOCKER_CONTAINER_POSTGRES" \
     rm "$docker_temp_db_path"
@@ -96,9 +103,16 @@ import_data() {
   local_temp_path="/tmp/$ARCHIVE_DIRNAME"
   docker_temp_db_path="/tmp/$ARCHIVE_DB"
 
-  run_command mkdir -p "$MEDIA_ROOT"
+  # extract archive
   run_command tar -xzvf "$archive_file" -C "/tmp"
+
+  # copy important files to correct location
+  run_command mkdir -p "$KEYFILES_ROOT"
+  run_command cp -r "$local_temp_path/keyfiles/." "$KEYFILES_ROOT"
+  run_command mkdir -p "$MEDIA_ROOT"
   run_command cp -r "$local_temp_path/media/." "$MEDIA_ROOT"
+
+  # restore database
   run_command docker cp "$local_temp_path/$ARCHIVE_DB" "$DOCKER_CONTAINER_POSTGRES:$docker_temp_db_path"
   run_command docker exec -i "$DOCKER_CONTAINER_POSTGRES" \
     pg_restore --clean \
@@ -108,6 +122,7 @@ import_data() {
     --dbname="$POSTGRES_DB" \
     "$docker_temp_db_path"
 
+  # cleanup
   run_command rm -r "$local_temp_path"
   run_command docker exec -i "$DOCKER_CONTAINER_POSTGRES" rm "$docker_temp_db_path"
 

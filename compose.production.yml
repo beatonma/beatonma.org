@@ -60,6 +60,7 @@ services:
     volumes:
       - /var/www/static:/var/www/static
       - /var/www/media:/var/www/media
+      - /var/www/beatonma:/var/www/beatonma:ro
 
   nginx:
     <<: *common-defaults

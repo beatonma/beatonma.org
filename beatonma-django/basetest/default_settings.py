@@ -36,7 +36,8 @@ CELERY_BROKER_URL = "fake-celery-broker-url"
 TAGGIT_CASE_INSENSITIVE = True
 
 # Remote services
-FCM_API_KEY = "fake-fcm-key"
+FCM_PROJECT_ID = "fake-project-id"
+FCM_SERVICE_ACCOUNT_FILE = "fake-file.json"
 GITHUB_ACCESS_TOKEN = "fake-github-token"
 GITHUB_USERNAME = "beatonma"
 GOOGLE_RECAPTCHA_SECRET = "fake-recaptcha-secret"

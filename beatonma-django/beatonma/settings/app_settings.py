@@ -9,7 +9,8 @@ CELERY_BROKER_URL = environment.CELERY_BROKER_URL
 NINJA_PAGINATION_CLASS = "bma_app.api.pagination.OffsetPagination"
 
 # notify
-FCM_API_KEY = environment.FCM_API_KEY
+FCM_PROJECT_ID = environment.FCM_PROJECT_ID
+FCM_SERVICE_ACCOUNT_FILE = environment.FCM_SERVICE_ACCOUNT_FILE
 
 # github
 GITHUB_ACCESS_TOKEN = environment.GITHUB_ACCESS_TOKEN
