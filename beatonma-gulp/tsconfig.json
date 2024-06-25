@@ -2,7 +2,7 @@
     "compilerOptions": {
         "allowSyntheticDefaultImports": true,
         "module": "es2020",
-        "target": "es2016",
+        "target": "es2020",
         "lib": ["es2020", "dom"],
         "allowJs": false,
         "jsx": "react",
