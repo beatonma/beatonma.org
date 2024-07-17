@@ -95,6 +95,8 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+    volumes:
+      - /var/www/beatonma:/var/www/beatonma:ro
 
   crontab:
     <<: *common-defaults
