@@ -28,7 +28,7 @@ ENTRYPOINT ["/bin/ash"]
 
 
 ################################################################################
-FROM python:${PYTHON_VERSION}-alpine as python
+FROM python:${PYTHON_VERSION}-alpine AS python
 ENV PYTHONBUFFERED 1
 
 
@@ -82,7 +82,7 @@ ENTRYPOINT ["celery", "-A", "beatonma", "worker", "-l", "info"]
 
 
 ################################################################################
-FROM app_core as crontab
+FROM app_core AS crontab
 LABEL description="Scheduled tasks."
 
 WORKDIR /cron/
@@ -104,7 +104,7 @@ EXPOSE 443
 
 
 ################################################################################
-FROM python as server_checks
+FROM python AS server_checks
 LABEL description="Basic tests to ensure server is up and accessible."
 
 RUN --mount=type=cache,target=/root/.cache/pip pip install requests
