@@ -40,7 +40,7 @@ class PullRequestPayload(PayloadSchema):
     url: str
     merged_at: str
     addition_count: int
-    deletion_count: int
+    deletions_count: int
     changed_files_count: int
 
 
@@ -63,7 +63,7 @@ class ReleasePayload(PayloadSchema):
     published_at: str
 
 
-class GithubEventSchema[Payload: PayloadSchema](Schema):
+class GithubEventSchema[Payload: PayloadSchema | List[PayloadSchema]](Schema):
     type: GithubEvent
     created_at: datetime
     id: int
