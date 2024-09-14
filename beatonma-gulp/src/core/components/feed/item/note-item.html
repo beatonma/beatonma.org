@@ -15,7 +15,7 @@
 
     {% include 'apps/media-viewer/media-container.html' with target=note style='preview' %}
 
-    <a title="" href="{{ note.get_absolute_url }}" class="canonical-url">
+    <a title="" href="{{ note.get_absolute_url }}" class="canonical-url u-url">
       {% include "components/datetime/date.html" with date=note.published_at %}
     </a>
   </article>
