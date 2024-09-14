@@ -65,6 +65,14 @@ production_build() {
     "$@"
 }
 
+docker_push() {
+  run_command docker push fallofmath/beatonma:crontab
+  run_command docker push fallofmath/beatonma:django
+  run_command docker push fallofmath/beatonma:celery
+  run_command docker push fallofmath/beatonma:nginx
+  run_command docker push fallofmath/beatonma:startup_checks
+}
+
 export_data() {
   source "$FILE_ENV"
 
@@ -136,6 +144,12 @@ production() {
   fi
 
   case "$1" in
+    "push")
+      shift
+      production_build
+      docker_push
+      exit 0
+      ;;
     "build")
       shift
       production_build "$@"

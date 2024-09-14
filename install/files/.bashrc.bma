@@ -1,6 +1,8 @@
 alias upd="sudo apt update && apt list --upgradeable"
 alias upg="sudo apt upgrade"
 
+alias bma="docker compose pull && docker compose up -d"
+
 # Enter a shell session for the specified container
 dockershell() {
     docker exec -it $1 sh

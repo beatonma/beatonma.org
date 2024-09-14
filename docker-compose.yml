@@ -1,3 +1,5 @@
+# Configuration for using images hosted on docker.io
+
 name: bma
 
 volumes:
@@ -42,12 +44,18 @@ services:
       test: pg_isready
       <<: *health
 
+  rabbitmq:
+    <<: *common-defaults
+    image: rabbitmq:3-alpine
+    container_name: rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      <<: *health
+    ports:
+      - "5672"
+
   django:
     <<: *common-defaults
-    build:
-      context: .
-      target: app
-      dockerfile: ./docker/Dockerfile
     image: fallofmath/beatonma:django
     container_name: django
     depends_on:
@@ -65,10 +73,6 @@ services:
 
   nginx:
     <<: *common-defaults
-    build:
-      context: .
-      target: server
-      dockerfile: ./docker/Dockerfile
     image: fallofmath/beatonma:nginx
     container_name: nginx
     depends_on:
@@ -89,10 +93,6 @@ services:
 
   celery:
     <<: *common-defaults
-    build:
-      context: .
-      target: celery
-      dockerfile: ./docker/Dockerfile
     image: fallofmath/beatonma:celery
     container_name: celery
     depends_on:
@@ -103,31 +103,13 @@ services:
 
   crontab:
     <<: *common-defaults
-    build:
-      context: .
-      target: crontab
-      dockerfile: ./docker/Dockerfile
     image: fallofmath/beatonma:crontab
     container_name: crontab
     depends_on:
       - django
     command: crond -f
 
-  rabbitmq:
-    <<: *common-defaults
-    image: rabbitmq:3-alpine
-    container_name: rabbitmq
-    healthcheck:
-      test: rabbitmq-diagnostics -q ping
-      <<: *health
-    ports:
-      - "5672"
-
   server_startup_checks:
-    build:
-      context: .
-      target: server_checks
-      dockerfile: ./docker/Dockerfile
     image: fallofmath/beatonma:startup_checks
     links:
       - "nginx:nginx-server-tests"
