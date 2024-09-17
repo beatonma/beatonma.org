@@ -78,7 +78,7 @@ class Article(ThemeableMixin, RichWebPost):
     def get_absolute_url(self):
         return reverse(view_names.ARTICLE, kwargs={"slug": self.slug})
 
-    def all_text(self):
+    def get_content_html(self):
         return f"{self.title} {self.abstract_html} {self.content_html}"
 
     def save_text(self):

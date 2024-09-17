@@ -72,11 +72,11 @@ class BasePost(
             f"{self.__class__.__name__} does not implement get_absolute_url()"
         )
 
-    def all_text(self):
+    def get_content_html(self):
         return self.content_html
 
     def raw_text(self):
-        return text_from_html(self.all_text())
+        return text_from_html(self.get_content_html())
 
     def to_search_result(self) -> SearchResult:
         return SearchResult(
@@ -120,7 +120,7 @@ class RichWebPost(FormatMixin, BasePost):
         if self.preview_text == "":
             autopreview = text_from_html(self.content_html)[:250]
             if len(autopreview) >= 250:
-                autopreview = autopreview + "…"
+                autopreview += "…"
             self.preview_text = autopreview
 
         self.content_html = Formats.to_html(self.format, self.content)
@@ -128,7 +128,7 @@ class RichWebPost(FormatMixin, BasePost):
     def build_slug(self):
         return slugify(f'{self.created_at.strftime("%y%m%d")}-{self.title}')
 
-    def all_text(self):
+    def get_content_html(self):
         return f"{self.title} {self.content_html}"
 
     def to_search_result(self) -> SearchResult:

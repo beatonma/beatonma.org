@@ -28,7 +28,7 @@ class Note(ApiModel, BasePost):
     def get_absolute_url(self):
         return reverse(view_names.NOTE, kwargs={"slug": self.slug})
 
-    def all_text(self):
+    def get_content_html(self):
         return self.content_html
 
     def save_text(self):
