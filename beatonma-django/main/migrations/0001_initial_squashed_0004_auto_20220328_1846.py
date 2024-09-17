@@ -3,13 +3,11 @@
 import colorfield.fields
 import django.db.models.deletion
 import django.utils.timezone
-import taggit.managers
-from django.db import migrations, models
-
-import main.models.app
 import main.models.mixins.styleable_svg
 import main.storage
 import main.util
+import taggit.managers
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):

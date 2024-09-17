@@ -1,7 +1,7 @@
 from common.models.search import SearchResult
 from django.db import models
 from django.utils.text import slugify
-from main.models import App
+from main.models.posts.app import App
 from main.models.posts.webpost import RichWebPost
 from main.view_adapters import FeedItemContext
 

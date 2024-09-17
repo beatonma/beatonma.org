@@ -9,7 +9,7 @@ from common.util.html import text_from_html
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils.text import slugify
-from main.models.app import Link
+from main.models.posts.app import Link
 from main.models.posts.formats import FormatMixin, Formats
 from main.models.related_file import RelatedFilesMixin
 from mentions.models.mixins.mentionable import MentionableMixin

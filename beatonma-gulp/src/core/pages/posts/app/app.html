@@ -1,37 +1,34 @@
 {% extends 'pages/posts/_post.html' %}
 
-{% with app=post %}
-  {% block titlebar %}
-    {% include "./_app-title-bar.html" with app=post %}
-  {% endblock %}
+{% block titlebar %}
+  {% include "./_app-title-bar.html" with app=post %}
+{% endblock %}
 
-  {% block post_content %}
-    {{ post.resolve_description|default:"" }}
-  {% endblock %}
+{% block post_content %}
+  {{ post.resolve_description|safe|default:"" }}
+{% endblock %}
 
-  {% block additional_content %}
-    {% if changelogs %}
-      <section>
-        <h3>Changelogs</h3>
+{% block additional_content %}
+  {% if changelogs %}
+    <section>
+      <h3>Changelogs</h3>
 
-        <div class="changelogs-nav-wrapper">
-          <div class="nav-card">
-            <nav class="changelog-versions">
-              <h1>Versions</h1>
-              <ul>
-                {% for changelog in changelogs %}
-                  <li><a href="#changelog_{{ changelog.version_name }}">{{ changelog.version_name }}</a></li>
-                {% endfor %}
-              </ul>
-            </nav>
-          </div>
+      <div class="changelogs-nav-wrapper">
+        <div class="nav-card">
+          <nav class="changelog-versions">
+            <h1>Versions</h1>
+            <ul>
+              {% for changelog in changelogs %}
+                <li><a href="#changelog_{{ changelog.version_name }}">{{ changelog.version_name }}</a></li>
+              {% endfor %}
+            </ul>
+          </nav>
         </div>
+      </div>
 
-        {% for changelog in changelogs %}
-          {% include "./_changelog.html" %}
-        {% endfor %}
-      </section>
-    {% endif %}
-  {% endblock %}
-{% endwith %}
-`
+      {% for changelog in changelogs %}
+        {% include "./_changelog.html" %}
+      {% endfor %}
+    </section>
+  {% endif %}
+{% endblock %}

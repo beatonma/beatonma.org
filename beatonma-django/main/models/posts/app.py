@@ -1,9 +1,8 @@
 import logging
 from typing import Optional
 
-from common.models import BaseModel, PublishedMixin, TaggableMixin
+from common.models import BaseModel
 from common.models.search import SearchResult
-from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
@@ -12,10 +11,10 @@ from main.forms import SanitizedFileField
 from main.models.link import Link
 from main.models.mixins.styleable_svg import StyleableSvgMixin
 from main.models.mixins.themeable import ThemeableMixin
-from main.models.related_file import RelatedFilesMixin
+from main.models.posts.formats import FormatMixin, Formats
+from main.models.posts.webpost import BasePost
 from main.view_adapters import FeedItemContext
 from main.views import view_names
-from mentions.models.mixins.mentionable import MentionableMixin
 
 log = logging.getLogger(__name__)
 
@@ -35,10 +34,8 @@ class AppType(ThemeableMixin, StyleableSvgMixin, BaseModel):
 
 
 class App(
-    PublishedMixin,
-    MentionableMixin,
-    RelatedFilesMixin,
-    TaggableMixin,
+    BasePost,
+    FormatMixin,
     ThemeableMixin,
     BaseModel,
 ):
@@ -49,13 +46,13 @@ class App(
         ("deprecated", "Deprecated"),
     )
 
-    search_fields = ["title", "description", "app_id", "tags__name"]
+    search_fields = ["title", "content", "app_id", "tags__name"]
 
     title = models.CharField(max_length=140)
-    description = models.TextField(blank=True, null=True)
     app_id = models.CharField(max_length=255, unique=True, help_text="Application ID")
     slug = models.SlugField(unique=True, max_length=255)
     tagline = models.CharField(max_length=140, blank=True)
+    status = models.CharField(max_length=16, choices=STATUS_OPTIONS, default="dev")
 
     icon = SanitizedFileField(
         blank=True,
@@ -92,18 +89,17 @@ class App(
         null=True,
     )
 
-    links = GenericRelation(Link)
-
-    status = models.CharField(max_length=16, choices=STATUS_OPTIONS, default="dev")
-
     class Meta:
         ordering = ["created_at"]
 
     def get_absolute_url(self):
         return reverse(view_names.APP, kwargs={"app_id": self.app_id})
 
-    def all_text(self) -> str:
-        return self.description
+    def get_content_html(self) -> str:
+        return self.content_html
+
+    def save_text(self):
+        self.content_html = Formats.to_html(self.format, self.content)
 
     def build_slug(self):
         return slugify(self.app_id.replace(".", "-"))
@@ -156,8 +152,17 @@ class App(
         return cls.objects.get(app_id=app_id)
 
     def resolve_description(self):
-        if self.description:
-            return self.description
+        if self.content_html:
+            return self.content_html
+
+        if self.repository:
+            return self.repository.description
+
+        log.info(self.content, self.content_html)
+
+    def resolve_short_description(self):
+        if self.tagline:
+            return self.tagline
 
         if self.repository:
             return self.repository.description
@@ -165,7 +170,7 @@ class App(
     def to_search_result(self) -> SearchResult:
         return SearchResult(
             name=self.title,
-            description=self.resolve_description(),
+            description=self.resolve_short_description(),
             timestamp=self.published_at,
             url=self.get_absolute_url(),
         )
@@ -176,7 +181,7 @@ class App(
             url=self.get_absolute_url(),
             date=self.published_at,
             type=self.__class__.__name__,
-            summary=self.resolve_description(),
+            summary=self.resolve_short_description(),
             image_class="contain",
             image_url=self.resolve_icon_url(),
             themeable=self,
