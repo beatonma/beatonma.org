@@ -158,8 +158,6 @@ class App(
         if self.repository:
             return self.repository.description
 
-        log.info(self.content, self.content_html)
-
     def resolve_short_description(self):
         if self.tagline:
             return self.tagline
