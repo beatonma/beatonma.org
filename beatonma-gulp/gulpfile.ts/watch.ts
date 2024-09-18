@@ -9,6 +9,10 @@ const initBrowserSync = async () =>
     browserSync.init({
         proxy: "django:8000",
         open: false,
+        middleware: (req, res, next) => {
+            res.setHeader("Access-Control-Allow-Origin", "*");
+            next();
+        },
     });
 const refreshBrowser = async () => {
     shellExec(`touch ${process.env.DJANGO_ROOT}beatonma/__init__.py`);
