@@ -56,7 +56,7 @@ STATICFILES_ROOT: str = _env_str("STATICFILES_ROOT", default=None)
 # Email
 SERVER_EMAIL: str = _env_str("SERVER_EMAIL")
 EMAIL_HOST: str = _env_str("EMAIL_HOST")
-EMAIL_PORT: int = _env_int("EMAIL_PORT")
+EMAIL_PORT: int = _env_int("EMAIL_PORT", -1)
 EMAIL_HOST_USER: str = _env_str("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD: str = _env_str("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS: bool = _env_bool("EMAIL_USE_TSL", True)
