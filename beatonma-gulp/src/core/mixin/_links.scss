@@ -24,11 +24,11 @@
   }
 
   a {
-    @extend %hover-underline;
-    @extend %padding-small-inline;
-
     display: inline-block;
     white-space: nowrap;
+
+    @extend %padding-small-inline;
+    @extend %hover-underline;
   }
 
   @include breakpoints.on-touchscreen {
@@ -81,8 +81,6 @@
 }
 
 %-animated-indent {
-  @include animation.transition-fast((transform));
-
   content: "";
   display: inline-block;
   width: 2px;
@@ -91,6 +89,7 @@
   transform: scaleY(1);
   transform-origin: bottom;
 
+  @include animation.transition-fast((transform));
   @include accessibility.reduced-motion {
     transform: none;
   }

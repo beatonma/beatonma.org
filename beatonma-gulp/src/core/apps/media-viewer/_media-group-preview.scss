@@ -28,6 +28,13 @@
     */
     position: relative;
 
+    grid-template-areas:
+      "a a b"
+      "a a c"
+      "a a d";
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+
     &::after {
       @extend %shape-small;
       @extend %scrim-colors;
@@ -39,13 +46,6 @@
       margin: var(--space);
       padding: var(--space);
     }
-
-    grid-template-areas:
-      "a a b"
-      "a a c"
-      "a a d";
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
 
     > :first-child {
       grid-area: a;

@@ -1,7 +1,6 @@
 @use "mixin";
 
 .loading--bar {
-  @include mixin.transition((background-color));
   $-duration: 1200ms;
 
   position: fixed;
@@ -12,6 +11,7 @@
   background-color: var(--vibrant);
   opacity: 0;
   z-index: var(--elevation-maxvalue);
+  @include mixin.transition((background-color));
 
   &[data-active="true"] {
     animation-name: loading-bar;

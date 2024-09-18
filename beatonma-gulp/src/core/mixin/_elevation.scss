@@ -10,9 +10,8 @@
 }
 
 %elevated {
-  @include animation.transition((box-shadow));
-
   box-shadow: rgb(0 0 0 / 4%) 0 3px 5px;
+  @include animation.transition((box-shadow));
 
   &:hover {
     box-shadow: rgb(0 0 0 / 16%) 0 1px 4px;

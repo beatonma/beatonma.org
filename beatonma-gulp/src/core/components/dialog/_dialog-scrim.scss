@@ -1,12 +1,12 @@
 @use "mixin";
 
 #dialog_scrim {
-  @include mixin.transition((opacity));
   @extend %scrim-colors;
 
   position: fixed;
   opacity: 0;
   z-index: 0;
+  @include mixin.transition((opacity));
 
   &[data-visible] {
     inset: 0;

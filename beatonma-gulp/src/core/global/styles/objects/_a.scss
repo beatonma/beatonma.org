@@ -2,11 +2,10 @@
 @use "./button";
 
 a {
-  @include mixin.transition-fast((color));
-
   text-decoration: none;
   color: var(--vibrant);
   width: fit-content;
+  @include mixin.transition-fast((color));
 
   &:hover {
     color: var(--vibrant-hover);

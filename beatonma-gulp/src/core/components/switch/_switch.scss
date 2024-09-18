@@ -24,32 +24,32 @@ $-radius: 0.1em;
   line-height: 1em;
 
   @mixin -common {
-    @include mixin.transition-fast(
-      (background-color, translate, width),
-      $easing: linear
-    );
     content: "";
     position: absolute;
     display: inline-block;
     left: 0;
     top: $-aligned-top;
     border-radius: $-radius;
+    @include mixin.transition-fast(
+      (background-color, translate, width),
+      $easing: linear
+    );
   }
 
   // Track
   &::before {
-    @include -common;
     height: $-height;
     width: $-width;
     background-color: var(--muted-low-contrast);
+    @include -common;
   }
 
   // Thumb
   &::after {
-    @include -common;
     width: $-size;
     height: $-size;
     background-color: var(--on-muted-low-contrast);
+    @include -common;
   }
 }
 

@@ -3,11 +3,11 @@
 
 %-carousel-nav-button {
   @extend %scrim-colors;
-  @include mixin.transition((filter));
 
   margin: var(--space);
   aspect-ratio: 1;
   filter: brightness(0.85);
+  @include mixin.transition((filter));
 
   &:focus-visible {
     outline-color: var(--vibrant);
@@ -47,10 +47,9 @@
       @extend %fill;
 
       .media {
-        @include mixin.transition-fast((opacity));
         @extend %fill;
-
         object-fit: contain;
+        @include mixin.transition-fast((opacity));
       }
 
       [data-visible="true"] {

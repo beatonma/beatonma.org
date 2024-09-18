@@ -3,7 +3,6 @@
 
 %-main-header-row {
   @extend %nolinks;
-
   color: var(--text-primary);
 }
 
@@ -26,10 +25,6 @@
     @include mixin.row($horizontal: flex-end);
 
     order: 1;
-  }
-
-  h1 {
-    margin-top: 8px;
   }
 
   @media (width < search.$show-search-max-width) {

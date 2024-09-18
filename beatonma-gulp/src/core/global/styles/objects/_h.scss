@@ -32,12 +32,12 @@ h5,
 h6 {
   @extend %nolinks;
   @extend %textbox;
-  @include mixin.transition((font-size));
 
   overflow-y: hidden;
   font-weight: normal;
   margin: 0;
 
+  @include mixin.transition((font-size));
   @include mixin.on-medium-width {
     margin-inline: auto;
     text-align: center;

@@ -28,9 +28,8 @@ $-contrast-levels:
 @mixin -hover($-color) {
   &-hover {
     @include -foreground-color($-color);
-    @include animation.transition((background-color color));
-
     background-color: var(--#{$-color});
+    @include animation.transition((background-color color));
 
     &:hover {
       @include -foreground-color(#{$-color}-hover);

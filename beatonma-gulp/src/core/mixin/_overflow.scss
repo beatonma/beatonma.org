@@ -11,16 +11,15 @@ $-scrollbar-thickness-nested: 6px;
 }
 
 %scroll-inline {
-  @include scrollbar-size($-scrollbar-thickness-nested);
-
   overflow-x: auto;
   flex-wrap: nowrap;
   padding-bottom: 8px;
 
-  @include breakpoints.on-touchscreen {
-    @include scrollbar-size(0);
+  @include scrollbar-size($-scrollbar-thickness-nested);
 
+  @include breakpoints.on-touchscreen {
     padding-right: 25%; // Extra space to show end of scrollable content.
+    @include scrollbar-size(0);
   }
 }
 

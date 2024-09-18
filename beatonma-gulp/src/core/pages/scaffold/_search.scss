@@ -26,18 +26,16 @@ $-preferred-ui-width: 320px;
     font-size: var(--fs-h6);
   }
   .search_wrapper {
-    @include mixin.transition((opacity));
-
     max-width: 0;
     overflow-x: hidden;
     opacity: 0;
     width: var(--search-ui-width);
+    @include mixin.transition((opacity));
   }
 
   #search_results {
     @extend %card;
     @extend %padding-small;
-    @include mixin.transition((opacity));
 
     display: none;
     position: absolute;
@@ -46,6 +44,7 @@ $-preferred-ui-width: 320px;
     opacity: 0;
     width: var(--search-ui-width);
     box-sizing: border-box;
+    @include mixin.transition((opacity));
   }
 
   #search {
