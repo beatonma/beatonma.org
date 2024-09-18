@@ -140,12 +140,12 @@
 @mixin force-color($color: var(--text-primary)) {
   a,
   button {
-    &,
+    color: $color;
+
     &:active,
     &:hover,
     &:link,
-    &:visited,
-    &:visited:hover {
+    &:visited {
       color: $color;
     }
   }
