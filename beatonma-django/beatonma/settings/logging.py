@@ -1,7 +1,7 @@
 import logging
 import os
 
-from .environment import DJANGO_LOGGING_DIR
+from .environment import DEBUG, DJANGO_LOGGING_DIR
 
 default_loglevel = logging.INFO
 
@@ -38,8 +38,16 @@ def _file_handler(name: str, level=default_loglevel) -> dict:
 
 
 def _logger(*handlers: str, level=default_loglevel) -> dict:
+    _handlers = [
+        *handlers,
+        "file",
+        "console",
+    ]
+    if not DEBUG:
+        _handlers.append("mail_admins")
+
     return {
-        "handlers": [*handlers, "file", "console", "mail_admins"],
+        "handlers": _handlers,
         "level": level,
     }
 
