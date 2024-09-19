@@ -1,25 +1,14 @@
-{% extends "components/title-bar/title-bar.html" %}
-{% block inline_image %}
-  {% with icon_url=app.resolve_icon_url %}
-    {% if icon_url %}
-      <img src="{{ icon_url }}" loading="lazy" alt="Icon for {{ app.title }}"/>
-    {% endif %}
-  {% endwith %}
-{% endblock %}
+{% extends "../_post-title-bar.html" %}
+{% with post=app %}
+  {% block inline_image %}
+    {% with icon_url=app.resolve_icon_url %}
+      {% if icon_url %}
+        <img src="{{ icon_url }}" loading="lazy" alt="Icon for {{ app.title }}"/>
+      {% endif %}
+    {% endwith %}
+  {% endblock %}
 
-{% block title %}
-  <h2 class="p-name">{{ app.title }}</h2>
-{% endblock %}
-
-{% block labels %}
-  {% include "./_app_type.html" with app_type=app.app_type %}
-{% endblock %}
-
-{% block trailing %}
-  {% include "components/datetime/date.html" with date=app.published_at %}
-{% endblock %}
-
-{% block subtitle %}
-  <div class="tagline p-summary">{{ app.tagline|default:'' }}</div>
-  {% include "../_related-links.html" with links=app.links.all tags=app.tags.all %}
-{% endblock %}
+  {% block labels %}
+    {% include "./_app_type.html" with app_type=app.app_type %}
+  {% endblock %}
+{% endwith %}

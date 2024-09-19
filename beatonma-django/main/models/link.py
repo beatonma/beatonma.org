@@ -13,9 +13,27 @@ DESCRIPTION_CHOICES = (
     ("webapp", "Webapp"),
     ("link", "Link"),
 )
+_description_sort_order = {
+    "source": -1,
+    "install": 1,
+    "download": 1,
+    "webapp": 1,
+    "link": 4,
+}
+
+
+class LinkQuerySet(models.QuerySet):
+    def sorted_by_type(self):
+        links = self.all()
+
+        return sorted(
+            links,
+            key=lambda link: _description_sort_order.get(link.description, 1000),
+        )
 
 
 class Link(GenericFkMixin, BaseModel):
+    objects = LinkQuerySet.as_manager()
     url = models.URLField(max_length=512)
     description = models.CharField(
         max_length=128,
@@ -42,7 +60,7 @@ class Link(GenericFkMixin, BaseModel):
             if netloc:
                 host, _ = Host.objects.get_or_create(
                     domain=netloc,
-                    defaults={"name": netloc},
+                    defaults={"name": netloc.removeprefix("www.")},
                 )
                 self.host = host
 
