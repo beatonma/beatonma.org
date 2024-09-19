@@ -13,23 +13,30 @@
 }
 
 .changelogs-nav-wrapper {
-  @include mixin.sticky;
+  $-min-width: 24ch;
+
+  @include mixin.on-three-column {
+    @include mixin.sticky;
+  }
 
   .nav-card {
     @extend %card;
-    @extend %fade-in;
-
-    display: none;
-    position: absolute;
-    left: calc(-24ch - var(--space-4x));
-    width: 24ch;
+    width: fit-content;
+    min-width: $-min-width;
 
     @include mixin.on-three-column {
       display: block;
+      position: absolute;
+      left: calc(-#{$-min-width} - var(--space-4x));
     }
 
     nav {
       @extend %card-content;
+
+      ul {
+        margin: 0;
+        padding: 0;
+      }
     }
   }
 }
