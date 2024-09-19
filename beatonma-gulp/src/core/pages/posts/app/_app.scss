@@ -1,21 +1,6 @@
 @use "mixin";
 @use "components/card";
 
-#app {
-  --preview-image-size: 300px;
-
-  .app-image {
-    @extend %center;
-    @extend %margin-large-block;
-
-    width: min-content;
-  }
-
-  .e-content:not(:empty) {
-    @extend %margin-large-block;
-  }
-}
-
 .app-type {
   @include mixin.size(1em);
   font-size: var(--fs-h6);
@@ -24,5 +9,27 @@
 
   > svg {
     @include mixin.size(1em);
+  }
+}
+
+.changelogs-nav-wrapper {
+  @include mixin.sticky;
+
+  .nav-card {
+    @extend %card;
+    @extend %fade-in;
+
+    display: none;
+    position: absolute;
+    left: calc(-24ch - var(--space-4x));
+    width: 24ch;
+
+    @include mixin.on-three-column {
+      display: block;
+    }
+
+    nav {
+      @extend %card-content;
+    }
   }
 }

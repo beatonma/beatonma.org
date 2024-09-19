@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block post_content %}
-  {{ post.resolve_description|safe|default:"" }}
+  {% with description=post.resolve_description %}
+  {% if description %}{{ description|safe }}{% endif %}
+  {% endwith %}
 {% endblock %}
 
 {% block additional_content %}

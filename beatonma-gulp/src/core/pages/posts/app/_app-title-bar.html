@@ -1,4 +1,11 @@
 {% extends "components/title-bar/title-bar.html" %}
+{% block inline_image %}
+  {% with icon_url=app.resolve_icon_url %}
+    {% if icon_url %}
+      <img src="{{ icon_url }}" loading="lazy" alt="Icon for {{ app.title }}"/>
+    {% endif %}
+  {% endwith %}
+{% endblock %}
 
 {% block title %}
   <h2 class="p-name">{{ app.title }}</h2>

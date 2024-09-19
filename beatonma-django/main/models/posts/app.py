@@ -135,13 +135,13 @@ class App(
                 object_id=self.pk,
             ).delete()
 
-    def resolve_icon_url(self) -> Optional[str]:
+    def resolve_icon_url(self) -> str | None:
         try:
             return self.icon.url
         except (AttributeError, ValueError):
             pass
 
-    def resolve_icon_svg(self) -> Optional[str]:
+    def resolve_icon_svg(self) -> str | None:
         try:
             return self.app_type.icon_svg
         except (AttributeError, ValueError):
@@ -151,14 +151,14 @@ class App(
     def resolve_from_url_kwargs(cls, app_id, **url_kwargs) -> "App":
         return cls.objects.get(app_id=app_id)
 
-    def resolve_description(self):
+    def resolve_description(self) -> str | None:
         if self.content_html:
             return self.content_html
 
         if self.repository:
             return self.repository.description
 
-    def resolve_short_description(self):
+    def resolve_short_description(self) -> str | None:
         if self.tagline:
             return self.tagline
 
