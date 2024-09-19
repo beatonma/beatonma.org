@@ -22,10 +22,23 @@ article.webpost {
   }
 
   .related {
-    @extend %link-buttons-row;
+    @include mixin.row($wrap: wrap, $column-gap: var(--space-2x));
 
-    .related__description {
+    .related--group {
+      @extend %link-buttons-row;
+      flex-wrap: wrap;
+
+      &.tags {
+        --vibrant: var(--muted);
+      }
+    }
+
+    .related--description {
       color: var(--vibrant);
+
+      &::after {
+        content: ":";
+      }
     }
   }
 

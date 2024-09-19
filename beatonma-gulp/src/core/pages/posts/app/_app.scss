@@ -30,6 +30,10 @@
       left: calc(-#{$-min-width} - var(--space-4x));
     }
 
+    @include mixin.on-medium-width {
+      width: auto;
+    }
+
     nav {
       @extend %card-content;
 
