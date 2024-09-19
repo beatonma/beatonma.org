@@ -23,9 +23,11 @@ article.webpost {
 
   .related {
     @include mixin.row($wrap: wrap, $column-gap: var(--space-2x));
+    @extend %margin-small-block;
 
     .related--group {
       @extend %link-buttons-row;
+      margin-block: 0;
       flex-wrap: wrap;
 
       &.tags {
