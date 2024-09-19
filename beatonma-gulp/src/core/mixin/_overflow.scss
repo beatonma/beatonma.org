@@ -3,7 +3,13 @@
 $scrollbar-thickness: 10px;
 $-scrollbar-thickness-nested: 6px;
 
+:root {
+  --scrollbar-thickness: #{$scrollbar-thickness};
+}
+
 @mixin scrollbar-size($size: $scrollbar-thickness) {
+  --scrollbar-thickness: #{$size};
+
   &::-webkit-scrollbar {
     width: $size;
     height: $size;

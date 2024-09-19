@@ -1,7 +1,6 @@
 @use "mixin";
 
 #webmentions_testing_tool {
-  @extend %center-column;
   @extend %bottom-gap;
 
   form {

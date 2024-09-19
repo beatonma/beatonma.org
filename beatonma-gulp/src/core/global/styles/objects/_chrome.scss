@@ -1,13 +1,11 @@
-@use "mixin";
+::-webkit-scrollbar {
+  width: var(--scrollbar-thickness);
+  height: var(--scrollbar-thickness);
+}
 
 ::selection {
   color: var(--background);
   background-color: var(--on-background);
-}
-
-::-webkit-scrollbar {
-  width: mixin.$scrollbar-thickness;
-  height: mixin.$scrollbar-thickness;
 }
 
 ::-webkit-scrollbar-thumb {

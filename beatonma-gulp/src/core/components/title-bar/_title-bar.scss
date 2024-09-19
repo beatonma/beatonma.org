@@ -1,25 +1,44 @@
+@use "global";
 @use "mixin";
 @use "components/card";
-@use "global";
 
 .title-bar {
-  @extend %stretch-width;
+  @include mixin.row(
+    $horizontal: flex-start,
+    $vertical: center,
+    $gap: 1rem,
+    $wrap: nowrap
+  );
+  width: var(--content-width);
+
+  &__inline-image {
+    img:not(img[src=""]) {
+      aspect-ratio: 1;
+      width: var(--preview-image-size);
+      object-position: center;
+      object-fit: contain;
+    }
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  &__text-wrapper {
+    @extend %stretch-width;
+    overflow: auto;
+  }
 
   &__primary {
     @extend %stretch-width;
-
     @include mixin.row(
       $horizontal: flex-start,
       $vertical: baseline,
       $gap: 1rem,
-      $wrap: nowrap
+      $wrap: wrap
     );
 
-    align-items: baseline;
-    gap: var(--space-2x);
-
     .title-bar__title {
-      @extend %readable-text;
       @extend %textbox;
 
       letter-spacing: 0.1ch;
@@ -27,7 +46,7 @@
 
     .title-bar__labels {
       font-size: var(--fs-smallest);
-      flex-grow: 10;
+      flex: 1 1;
     }
 
     .title-bar__trailing {
@@ -40,26 +59,7 @@
   }
 
   @include mixin.on-medium-width {
-    &__primary,
-    &__secondary {
-      margin-block: var(--space);
-      flex-direction: column;
-      gap: 0;
-      margin-inline: auto;
-      text-align: center;
-
-      @include global.headers {
-        text-align: center;
-      }
-      .title-bar__title {
-        margin-inline: auto;
-        text-align: center;
-      }
-
-      .title-bar__trailing {
-        margin-inline: auto;
-        text-align: center;
-      }
-    }
+    flex-direction: column;
+    justify-content: center;
   }
 }

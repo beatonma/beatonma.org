@@ -21,6 +21,7 @@ $-spacing: (
 
 :root {
   @include -spacing(8px);
+  --space-char: 0.5ch;
 }
 
 @mixin -generate-spacing($property) {

@@ -81,10 +81,12 @@
 }
 
 %-animated-indent {
+  $-indent-width: 2px;
   content: "";
   display: inline-block;
-  width: 2px;
+  width: $-indent-width;
   height: 1em;
+  flex: 0 0 $-indent-width;
   background-color: var(--vibrant);
   transform: scaleY(1);
   transform-origin: bottom;

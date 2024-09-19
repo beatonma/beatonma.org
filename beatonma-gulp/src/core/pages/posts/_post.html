@@ -18,9 +18,9 @@
 
         {% block titlebar %}{% include "./_post-title-bar.html" %}{% endblock %}
 
-        <div class="e-content">
+        <div class="e-content">{% spaceless %}
           {% block post_content %}{{ post.content_html|safe }}{% endblock %}
-        </div>
+        {% endspaceless %}</div>
       {% endblock %}
 
       {% include 'apps/media-viewer/media-container.html' with target=post style="carousel" %}

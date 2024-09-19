@@ -1,6 +1,7 @@
 @use "./breakpoints";
 @use "./typography";
 @use "./space";
+@use "./constants";
 
 $margin-comfy: 32px;
 $margin-small: 8px;
@@ -13,7 +14,7 @@ $margin-minimal: 4px;
     "content"
     "footer";
   grid-template-rows: auto 1fr auto;
-  grid-template-columns: 100%;
+  grid-template-columns: auto;
   max-width: 100%;
   min-height: 100svh;
 
@@ -33,15 +34,17 @@ $margin-minimal: 4px;
   > footer,
   > #content_wrapper {
     @extend %-content_margins;
-  }
 
-  #webmentions {
-    @extend %center-column;
+    --content-width: min(
+      calc(100svw - var(--scrollbar-thickness) - (var(--content-margin) * 2)),
+      #{constants.$readable-text-width}
+    );
   }
 }
 
 %-content_margins {
   --content-margin: #{$margin-comfy};
+
   padding-inline: var(--content-margin);
 
   @include breakpoints.on-medium-width {
@@ -58,7 +61,23 @@ $margin-minimal: 4px;
   margin-inline: calc(-1 * var(--content-margin));
 }
 
-%center-column {
-  @extend %readable-text;
-  @extend %center;
+#content {
+  display: grid;
+  grid-template-areas: "sidebar-left content sidebar-right";
+  grid-template-columns: 1fr var(--content-width) 1fr;
+
+  main {
+    grid-area: content;
+  }
+
+  nav {
+    h1 {
+      @extend %text-large;
+    }
+
+    ul {
+      list-style-position: inside;
+      padding-inline-start: 0;
+    }
+  }
 }

@@ -13,7 +13,7 @@
       {% if item.image_url|endswith:".svg" %}
         <div class="svg" style="-webkit-mask-image: url('{{ item.image_url }}')"></div>
       {% else %}
-        <img src="{{ item.image_url }}" alt="" />
+        <img src="{{ item.image_url }}" alt="" loading="lazy" />
       {% endif %}
     </div>
 {% else %}

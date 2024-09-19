@@ -2,8 +2,6 @@
 @use "components/card";
 
 #contact {
-  @extend %center-column;
-
   input[type="text"] {
     @extend %stretch-width;
   }

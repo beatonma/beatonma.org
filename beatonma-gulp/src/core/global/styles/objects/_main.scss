@@ -3,9 +3,4 @@
 main {
   @extend %stretch-width;
   @extend %bottom-gap;
-
-  > article,
-  > form {
-    @extend %center-column;
-  }
 }

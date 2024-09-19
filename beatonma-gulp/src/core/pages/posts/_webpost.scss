@@ -1,18 +1,12 @@
 @use "mixin";
-@use "components/card";
 
 #content.webpost {
-  @extend %center-column;
+  display: grid;
+  grid-template-areas: ". content .";
+  grid-auto-columns: 1fr var(--content-width) 1fr;
 
-  nav {
-    h1 {
-      @extend %text-large;
-    }
-
-    ul {
-      list-style-position: inside;
-      padding-inline-start: 0;
-    }
+  article {
+    grid-area: content;
   }
 }
 
@@ -43,27 +37,9 @@ article.webpost {
     :last-child {
       margin-bottom: 0;
     }
-  }
-}
 
-.changelogs-nav-wrapper {
-  @include mixin.sticky;
-
-  .nav-card {
-    @extend %card;
-    @extend %fade-in;
-
-    display: none;
-    position: absolute;
-    left: calc(-24ch - var(--space-4x));
-    width: 24ch;
-
-    @include mixin.on-three-column {
-      display: block;
-    }
-
-    nav {
-      @extend %card-content;
+    &:empty {
+      display: none;
     }
   }
 }
