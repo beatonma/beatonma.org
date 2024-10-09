@@ -14,4 +14,4 @@ export type BuildStream = (
 ) => () => NodeJS.ReadWriteStream;
 
 export type DjangoApp = string;
-export type StaticResourceType = "js" | "css" | "webapp" | undefined;
+export type StaticResourceType = "js" | "css" | undefined | null;

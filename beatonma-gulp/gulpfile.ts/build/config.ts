@@ -15,7 +15,6 @@ interface BuildOptions {
     clean: boolean;
 }
 export interface BuildOptionsFactory {
-    buildWebapps?: boolean;
     buildCss?: boolean;
     buildJs?: boolean;
     buildTemplates?: boolean;
