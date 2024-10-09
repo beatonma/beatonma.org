@@ -1,6 +1,36 @@
 import { classes } from "../../util/transform";
 import React, { HTMLProps } from "react";
 
+/**
+ * Icons currently available in /static/fonts/AppIcons.woff2.
+ * See /static/fonts/README.md if you need to add more.
+ */
+type AvailableIcon =
+    | "add"
+    | "alternate_email"
+    | "arrow_drop_down"
+    | "check"
+    | "close"
+    | "contrast"
+    | "dashboard"
+    | "done"
+    | "edit"
+    | "edit_note"
+    | "first_page"
+    | "fork_right"
+    | "last_page"
+    | "link"
+    | "lock"
+    | "mail"
+    | "merge"
+    | "navigate_before"
+    | "navigate_next"
+    | "new_releases"
+    | "palette"
+    | "refresh"
+    | "search"
+    | "shield";
+
 export enum AppIcon {
     Add = "add",
     ArrowLeft = "navigate_before",
@@ -20,7 +50,7 @@ export enum AppIcon {
 }
 
 export interface IconProps {
-    icon: AppIcon;
+    icon: AvailableIcon;
     iconClick?: {
         href?: string;
         title: string;

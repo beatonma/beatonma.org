@@ -31,11 +31,15 @@
 
 @font-face {
   font-family: Roboto;
-  src: url("/static/fonts/Roboto-Regular.ttf");
+  src: url("/static/fonts/Roboto-Regular.ttf") format("truetype");
 }
 @font-face {
   font-family: Roboto-Mono;
-  src: url("/static/fonts/RobotoMono-Regular.ttf");
+  src: url("/static/fonts/RobotoMono-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Material Symbols Outlined";
+  src: url("/static/fonts/AppIcons.woff2") format("woff2");
 }
 
 %textbox {

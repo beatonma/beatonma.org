@@ -153,9 +153,7 @@ const Mention = (props: MentionProps) => {
                         <Url href={source.href} className="wm-source">
                             {source.hostname}
                         </Url>{" "}
-                        <span className="material-symbols-outlined">
-                            keyboard_arrow_right
-                        </span>{" "}
+                        <span className="icon">keyboard_arrow_right</span>{" "}
                         <Url href={target.href} className="wm-target">
                             {target.pathname}
                         </Url>
