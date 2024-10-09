@@ -1,10 +1,7 @@
 import { SpecialPath } from "../paths";
 import { getEnvironment } from "./config";
 import { DjangoApp, StaticResourceType } from "./types";
-import fs from "fs";
-import * as glob from "glob";
 import gulpRename, { ParsedPath } from "gulp-rename";
-import path from "path";
 
 /**
  * Redirect the file to the correct output path, based on its type and location
@@ -25,7 +22,6 @@ const mapFileOutput = (path: ParsedPath, filename: string) => {
 
     const djangoAppMap: Record<string, DjangoApp> = {
         [SpecialPath.SourceRoot.Core]: "main",
-        [SpecialPath.SourceRoot.WebApps]: "main",
         [SpecialPath.SourceRoot.Static]: "main",
         [SpecialPath.SourceRoot.DjangoApps]: splitDirPath[1],
     };
@@ -83,19 +79,6 @@ const mapStaticFile = (path: ParsedPath, app: DjangoApp, extension: string) => {
     path.dirname = `${SpecialPath.Outputs.djangoStatic(app, resourceType)}/${
         path.dirname
     }`;
-};
-
-const importWebappArtifact = (sourceFile: string) => {
-    const filename = path.basename(sourceFile);
-    const webappDir = SpecialPath.Outputs.djangoWebapp;
-    fs.mkdirSync(webappDir, { recursive: true });
-    fs.copyFileSync(sourceFile, path.join(webappDir, filename));
-};
-
-export const includeWebappArtifacts = (webappDir: string) => {
-    glob.sync(path.join(webappDir, "dist/**/*"))
-        .map(it => path.resolve(it))
-        .forEach(distFile => importWebappArtifact(distFile));
 };
 
 const injectGitHash = (filename: string): string =>

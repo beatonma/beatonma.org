@@ -59,8 +59,6 @@ const ExpectedTemplates: Globs = [
     "webmentions_tester/templates/webmentions_tester.html",
 ];
 
-const ExpectedWebapps: Globs = [];
-
 /**
  * Files that are only required in production.
  */
@@ -77,7 +75,6 @@ const getExpectedFiles = () => {
     if (options.buildStatic) expected.push(...ExpectedStatic);
     if (options.buildJs) expected.push(...ExpectedJs);
     if (options.buildTemplates) expected.push(...ExpectedTemplates);
-    if (options.buildWebapps) expected.push(...ExpectedWebapps);
 
     return expected;
 };

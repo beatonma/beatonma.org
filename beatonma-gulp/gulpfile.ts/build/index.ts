@@ -4,9 +4,8 @@ import { buildCss } from "./build-css";
 import { buildJs } from "./build-js";
 import { buildStatic } from "./build-static";
 import { buildTemplates } from "./build-templates";
-import { buildWebapps } from "./build-webapps";
 import { getBuildOptions, getEnvironment, isProductionBuild } from "./config";
-import { includeWebappArtifacts, mapToOutput } from "./output-mapping";
+import { mapToOutput } from "./output-mapping";
 import { ignore } from "./transforms";
 import { Env, StreamWrapper } from "./types";
 import * as fs from "fs";
@@ -70,7 +69,6 @@ const buildTasks = (callback: () => void) => {
         options.buildJs ? buildJs(streamWrapper) : null,
         options.buildStatic ? buildStatic(streamWrapper) : null,
         options.buildTemplates ? buildTemplates(streamWrapper) : null,
-        options.buildWebapps ? buildWebapps(includeWebappArtifacts) : null,
     ].filter(Boolean);
 
     if (tasks.length === 0)

@@ -3,6 +3,7 @@ import { srcPath } from "./paths";
 import { create as browserSyncCreate } from "browser-sync";
 import { exec as shellExec } from "child_process";
 import gulp, { series } from "gulp";
+import path from "path";
 
 const browserSync = browserSyncCreate();
 const initBrowserSync = async () =>
@@ -15,7 +16,9 @@ const initBrowserSync = async () =>
         },
     });
 const refreshBrowser = async () => {
-    shellExec(`touch ${process.env.DJANGO_ROOT}beatonma/__init__.py`);
+    shellExec(
+        `touch ${path.join(process.env.DJANGO_ROOT, "beatonma/__init__.py")}`,
+    );
     browserSync.reload();
 };
 

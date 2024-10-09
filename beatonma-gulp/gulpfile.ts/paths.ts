@@ -64,10 +64,6 @@ export const SpecialPath = {
          */
         DjangoApps: "django_apps",
         /**
-         * Name of the root directory of standalone webapps.
-         */
-        WebApps: "webapp",
-        /**
          * Name of the root directory of generic static files.
          */
         Static: "static",
@@ -76,9 +72,5 @@ export const SpecialPath = {
     Outputs: {
         djangoTemplate: djangoTemplate,
         djangoStatic: djangoStatic,
-        djangoWebapp: path.join(
-            absoluteDistPath,
-            djangoStatic("main", "webapp"),
-        ),
     },
 };

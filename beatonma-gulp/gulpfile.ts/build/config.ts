@@ -8,7 +8,6 @@ enum BuildMode {
     Test = "test",
 }
 interface BuildOptions {
-    buildWebapps: boolean;
     buildCss: boolean;
     buildJs: boolean;
     buildTemplates: boolean;
@@ -45,7 +44,6 @@ export const initProduction = async () => init(BuildMode.Production);
 const init = async (mode: BuildMode, options?: BuildOptionsFactory) => {
     buildMode = mode;
     buildOptions = {
-        buildWebapps: options?.buildWebapps ?? true,
         buildCss: options?.buildCss ?? true,
         buildJs: options?.buildJs ?? true,
         buildTemplates: options?.buildTemplates ?? true,
