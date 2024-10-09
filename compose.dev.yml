@@ -36,7 +36,7 @@ services:
       - "3000:3000"
       - "3001:3001"
     healthcheck:
-      test: curl --fail http://localhost:3001 || exit 1
+      test: curl --header --fail http://localhost:3001 || exit 1
       <<: *health
       start_period: 120s
     volumes:
