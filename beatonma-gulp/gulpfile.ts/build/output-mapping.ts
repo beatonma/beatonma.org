@@ -2,6 +2,7 @@ import { SpecialPath } from "../paths";
 import { getEnvironment } from "./config";
 import { DjangoApp, StaticResourceType } from "./types";
 import gulpRename, { ParsedPath } from "gulp-rename";
+import { join as joinPath } from "path";
 
 /**
  * Redirect the file to the correct output path, based on its type and location
@@ -38,7 +39,7 @@ const mapTemplate = (path: ParsedPath, app: DjangoApp) => {
     );
 
     if (relPath.startsWith(SpecialPath.Templates.FlatPages)) {
-        path.dirname = "templates/flatpages/";
+        path.dirname = joinPath("templates", "flatpages");
         return;
     }
 
@@ -76,9 +77,10 @@ const mapStaticFile = (path: ParsedPath, app: DjangoApp, extension: string) => {
         return;
     }
 
-    path.dirname = `${SpecialPath.Outputs.djangoStatic(app, resourceType)}/${
-        path.dirname
-    }`;
+    path.dirname = joinPath(
+        SpecialPath.Outputs.djangoStatic(app, null),
+        path.dirname,
+    );
 };
 
 const injectGitHash = (filename: string): string =>

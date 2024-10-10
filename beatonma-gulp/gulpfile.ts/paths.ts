@@ -4,34 +4,31 @@
  * If any of these paths change in the filetree they must also be updated here!
  */
 import { DjangoApp, StaticResourceType } from "./build/types";
-import * as path from "path";
+import { join as joinPath } from "path";
 
-const _distPath = process.env.GULP_OUTPUT_ROOT ?? "dist/";
-const absoluteDistPath = _distPath.startsWith("/")
-    ? _distPath
-    : path.join(path.resolve("."), _distPath);
+const gulpDistPath = process.env.GULP_OUTPUT_ROOT ?? "dist/";
 
 /**
  * Build a path relative to the root source directory.
  */
 export const srcPath = (_path?: string) =>
-    path.join(SpecialPath.Gulp.Source, _path ?? "");
+    joinPath(SpecialPath.Gulp.Source, _path ?? "");
 
 /**
  * Build a path relative to the root output directory.
  */
 export const distPath = (_path?: string) =>
-    path.join(SpecialPath.Gulp.Dist, _path ?? "");
+    joinPath(SpecialPath.Gulp.Dist, _path ?? "");
 
 const djangoStatic = (appName: DjangoApp, type: StaticResourceType): string => {
-    const root = `${appName}/static/${appName}`;
-    if (type) return `${root}/${type}/`;
+    const root = joinPath(appName, "static", appName);
+    if (type) return joinPath(root, type);
     return root;
 };
 
 const djangoTemplate = (appName: DjangoApp, path: string) => {
-    if (appName) return `${appName}/templates/${path}`;
-    return `templates/${path}`;
+    if (appName) return joinPath(appName, "templates", path);
+    return joinPath("templates", path);
 };
 
 /**
@@ -43,7 +40,7 @@ const djangoTemplate = (appName: DjangoApp, path: string) => {
 export const SpecialPath = {
     Gulp: {
         Source: "src/",
-        Dist: _distPath,
+        Dist: gulpDistPath,
     },
 
     Templates: {
@@ -72,5 +69,6 @@ export const SpecialPath = {
     Outputs: {
         djangoTemplate: djangoTemplate,
         djangoStatic: djangoStatic,
+        Static: "static",
     },
 };
