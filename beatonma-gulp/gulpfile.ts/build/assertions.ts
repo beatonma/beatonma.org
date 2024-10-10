@@ -24,11 +24,12 @@ export const assertOutputCorrect = async () => {
 };
 
 const ExpectedStatic: Globs = [
-    "main/static/main/icon/github.svg",
-    "main/static/main/favicon/",
-    "main/static/main/fonts/RobotoMono-Regular.ttf",
-    "main/static/main/fonts/Roboto-Regular.ttf",
-    "main/static/main/images/mb.png",
+    "static/icon/github.svg",
+    "static/favicon/",
+    "static/fonts/AppIcons.woff2",
+    "static/fonts/RobotoMono-Regular.ttf",
+    "static/fonts/Roboto-Regular.ttf",
+    "static/images/mb.png",
 ];
 
 const ExpectedCss: Globs = [

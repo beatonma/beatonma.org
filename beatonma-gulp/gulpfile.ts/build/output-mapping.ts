@@ -19,11 +19,14 @@ const mapFileOutput = (path: ParsedPath, filename: string) => {
     const splitDirPath = path.dirname.split("/");
     const baseDirName = splitDirPath[0];
 
+    if (baseDirName === SpecialPath.SourceRoot.Static) {
+        return mapStaticFile(path, null, extension);
+    }
+
     path.dirname = splitDirPath.slice(1).join("/");
 
     const djangoAppMap: Record<string, DjangoApp> = {
         [SpecialPath.SourceRoot.Core]: "main",
-        [SpecialPath.SourceRoot.Static]: "main",
         [SpecialPath.SourceRoot.DjangoApps]: splitDirPath[1],
     };
     const djangoAppName: DjangoApp = djangoAppMap[baseDirName];
@@ -61,7 +64,15 @@ const mapTemplate = (path: ParsedPath, app: DjangoApp) => {
  *
  * For other files, directory structure will be maintained from the source.
  */
-const mapStaticFile = (path: ParsedPath, app: DjangoApp, extension: string) => {
+const mapStaticFile = (
+    path: ParsedPath,
+    app: DjangoApp | null,
+    extension: string,
+) => {
+    if (app == null) {
+        // Keep root-level /static files in root-level /static output directory.
+        return;
+    }
     const StaticResourceMap: Record<string, StaticResourceType> = {
         css: "css",
         "css.map": "css",
