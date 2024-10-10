@@ -1,11 +1,11 @@
 location /media {
-    alias /var/www/media/;
+    alias /var/www/media;
     expires 1y;
     add_header Cache-Control "public";
 }
 
 location /static {
-    alias /var/www/static/;
+    alias /var/www/static;
     expires 1y;
     add_header Cache-Control "public";
 }
