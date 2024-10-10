@@ -155,7 +155,12 @@ production() {
       production_build "$@"
       exit 0
       ;;
-    "up" | "down" | "--")
+    "up" | "down")
+      docker_compose "$@"
+      exit 0
+      ;;
+    "--")
+      shift
       docker_compose "$@"
       exit 0
       ;;
@@ -168,12 +173,16 @@ production() {
 
 dev() {
   case "$1" in
-    "up" | "down" | "--")
-      docker_compose "$@"
-      ;;
     "build")
       shift
       docker_compose_build "$@"
+      ;;
+    "up" | "down")
+      docker_compose "$@"
+      ;;
+    "--")
+      shift
+      docker_compose "$@"
       ;;
     *)
       docker_compose_build "$@"
