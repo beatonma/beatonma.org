@@ -38,16 +38,6 @@ redirects = [
         ),
     ),
     path(
-        "playstore/",
-        _redirect(
-            "https://play.google.com/store/apps/developer?id=Michael+Beaton",
-        ),
-    ),
-    path(
-        "starcraft/",
-        _redirect("https://starcraft2.com/en-gb/profile/2/1/2784180"),
-    ),
-    path(
         "youtube/",
         _redirect("https://www.youtube.com/@fallofmath"),
     ),
