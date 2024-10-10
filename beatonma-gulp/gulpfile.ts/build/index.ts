@@ -12,6 +12,7 @@ import * as fs from "fs";
 import { dest, parallel, series } from "gulp";
 import gulpIf from "gulp-if";
 import gulpReplace from "gulp-replace";
+import Vinyl from "vinyl";
 
 /**
  * HTML elements that are targets for Cypress tests are tagged with `data-cy`
@@ -46,10 +47,16 @@ const includeEnv = () => {
     });
 };
 
+/**
+ * Remove empty directories from output.
+ */
 const filterUnwanted = ignore(file => {
-    if (file.path.includes("node_modules")) return true;
     return file.isDirectory() && fs.readdirSync(file.path).length === 0;
 });
+
+const isTextFile = (file: Vinyl): boolean => {
+    return [".txt", ".md", ".html", ".js", ".css"].includes(file.extname);
+};
 
 /**
  * Apply common transforms to all build artifacts.
@@ -57,8 +64,8 @@ const filterUnwanted = ignore(file => {
 const streamWrapper: StreamWrapper = stream =>
     stream
         .pipe(filterUnwanted())
-        .pipe(includeEnv())
-        .pipe(removeCypressTags())
+        .pipe(gulpIf(isTextFile, includeEnv()))
+        .pipe(gulpIf(isTextFile, removeCypressTags()))
         .pipe(mapToOutput())
         .pipe(dest(distPath()));
 

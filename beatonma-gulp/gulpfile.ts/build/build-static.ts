@@ -4,5 +4,5 @@ import { src } from "gulp";
 
 export const buildStatic: BuildStream = (wrapper: StreamWrapper) =>
     function collectStatic() {
-        return wrapper(src(srcPath("**/static/**")));
+        return wrapper(src(srcPath("**/static/**"), { encoding: false }));
     };
