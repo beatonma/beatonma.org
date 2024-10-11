@@ -9,4 +9,7 @@ module.exports = async () => ({
         "src/webapp/",
     ],
     testEnvironment: "jsdom",
+    transform: {
+        "^.+\\.(t|j)sx?$": "@swc/jest",
+    },
 });
