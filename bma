@@ -12,6 +12,7 @@ FILE_ENV="./.env"
 ARCHIVE_DIRNAME="data-archive"
 ARCHIVE_DB="backup.sql"
 DOCKER_CONTAINER_POSTGRES="postgres"
+DOCKER_REMOTE_CONTEXT="bma"  # Requires config via `docker context create bma...`
 
 compose_file=""
 context="$1"
@@ -71,6 +72,8 @@ docker_push() {
   run_command docker push fallofmath/beatonma:celery
   run_command docker push fallofmath/beatonma:nginx
   run_command docker push fallofmath/beatonma:startup_checks
+  run_command docker --context "$DOCKER_REMOTE_CONTEXT" compose pull
+  run_command docker --context "$DOCKER_REMOTE_CONTEXT" compose up -d
 }
 
 export_data() {
