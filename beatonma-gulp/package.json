@@ -68,7 +68,6 @@
     "css-loader": "^7.1",
     "cssnano": "^7.0",
     "cypress": "^13.14",
-    "del": "^6.1",
     "gulp": "^5.0",
     "gulp-if": "^3.0",
     "gulp-postcss": "^10.0",

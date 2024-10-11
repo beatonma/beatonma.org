@@ -1,12 +1,14 @@
 import { distPath } from "../paths";
 import { Env } from "./types";
-import { sync as deleteSync } from "del";
+import * as fs from "node:fs";
+import { join as joinPath } from "path";
 
 enum BuildMode {
     Development = "development",
     Production = "production",
     Test = "test",
 }
+
 interface BuildOptions {
     buildCss: boolean;
     buildJs: boolean;
@@ -14,6 +16,7 @@ interface BuildOptions {
     buildStatic: boolean;
     clean: boolean;
 }
+
 export interface BuildOptionsFactory {
     buildCss?: boolean;
     buildJs?: boolean;
@@ -21,6 +24,7 @@ export interface BuildOptionsFactory {
     buildStatic?: boolean;
     clean?: boolean;
 }
+
 let buildMode: BuildMode = null;
 let environment: Env = null;
 let buildOptions: BuildOptions = null;
@@ -62,7 +66,29 @@ const init = async (mode: BuildMode, options?: BuildOptionsFactory) => {
     printConfig();
 };
 
-const clean = () => deleteSync([distPath("**")], { force: true });
+const clean = () => {
+    const cwd = process.cwd();
+    const absPath = joinPath(cwd, distPath());
+    if (absPath === cwd) {
+        throw `Output path is the current working directory! ${absPath}`;
+    }
+    if (cwd.startsWith(absPath)) {
+        throw `Output path is a parent of the current working directory! ${absPath}`;
+    }
+    if (!fs.existsSync(absPath)) {
+        // Nothing to delete
+        return;
+    }
+
+    fs.readdirSync(absPath).forEach(file => {
+        const targetFile = joinPath(absPath, file);
+        if (!fs.existsSync(targetFile)) {
+            throw `Failed to resolve for deletion '${targetFile}'`;
+        }
+        fs.rmSync(targetFile, { recursive: true });
+    });
+};
+
 const printConfig = () => {
     const stringify = (obj: any) =>
         JSON.stringify(obj, null, 1).replace(/"/g, "");
