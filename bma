@@ -212,6 +212,7 @@ runtests() {
       docker_compose "$@"
       ;;
     *)
+      docker_compose_build
       docker_compose up --abort-on-container-exit "$@"
       ;;
   esac
