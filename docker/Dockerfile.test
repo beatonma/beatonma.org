@@ -56,7 +56,7 @@ ENTRYPOINT ["/entrypoint.dev.sh"]
 
 
 ################################################################################
-FROM cypress/included as cypress
+FROM cypress/included AS cypress
 
 WORKDIR /cypress
 COPY ./docker/cypress/entrypoint-cypress.dev.sh /entrypoint.dev.sh
