@@ -13,28 +13,34 @@ LANGUAGES = [
 _sample_repo_id: int = 1
 
 
+def __sample_repo_id() -> int:
+    global _sample_repo_id
+    _sample_repo_id += 1
+    return _sample_repo_id
+
+
 def create_sample_repository(
     name: str,
     is_private: bool,
     is_published: bool,
     description: str = None,
 ):
-    global _sample_repo_id
-    repo = GithubRepository.objects.create(
-        id=_sample_repo_id,
-        url="https://fake-github.com/beatonma/my-repo",
-        updated_at=timezone.now(),
+    repo, _ = GithubRepository.objects.get_or_create(
         name=name,
-        full_name=name,
-        description=description,
-        size_kb=random.randint(1, 20480),
-        is_private=is_private,
-        is_published=is_published,
-        primary_language=create_sample_language(),
-        license=generate_sample_license(),
-        owner=generate_sample_user(),
+        defaults={
+            "id": __sample_repo_id(),  # Field is retrieved from API, not auto-incremented.
+            "url": "https://fake-github.com/beatonma/my-repo",
+            "full_name": name,
+            "description": description,
+            "is_private": is_private,
+            "is_published": is_published,
+            "updated_at": timezone.now(),
+            "size_kb": random.randint(1, 20480),
+            "primary_language": create_sample_language(),
+            "license": generate_sample_license(),
+            "owner": generate_sample_user(),
+        },
     )
-    _sample_repo_id += 1
 
     return repo
 
