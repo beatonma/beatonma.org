@@ -72,18 +72,12 @@ class RelatedFile(UploadedMediaMixin, GenericFkMixin, ApiModel, ApiEditable, Bas
             "type": self.type,
         }
 
-    def save(
-        self,
-        force_insert=False,
-        force_update=False,
-        using=None,
-        update_fields=None,
-    ):
+    def save(self, **kwargs):
         if not self.original_filename:
             self.original_filename = self.file.name
 
         self.type = MediaType.from_filename(self.file.name)
-        super().save(force_insert, force_update, using, update_fields)
+        super().save(**kwargs)
 
     def __str__(self):
         if self.description:
