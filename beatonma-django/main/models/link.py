@@ -1,3 +1,4 @@
+from typing import Iterable
 from urllib.parse import urlparse
 
 from common.models import BaseModel
@@ -22,14 +23,18 @@ _description_sort_order = {
 }
 
 
+def sort_links(links: Iterable["Link"]):
+    return sorted(
+        links,
+        key=lambda link: _description_sort_order.get(link.description, 1000),
+    )
+
+
 class LinkQuerySet(models.QuerySet):
     def sorted_by_type(self):
         links = self.all()
 
-        return sorted(
-            links,
-            key=lambda link: _description_sort_order.get(link.description, 1000),
-        )
+        return sort_links(links)
 
 
 class Link(GenericFkMixin, BaseModel):
