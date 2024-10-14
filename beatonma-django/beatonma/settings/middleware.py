@@ -1,3 +1,5 @@
+from . import environment
+
 _DJANGO_MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -15,4 +17,14 @@ _PROJECT_MIDDLEWARE = [
     "mentions.middleware.WebmentionHeadMiddleware",
     "main.middleware.redirect.QueryableRedirectFallbackMiddleware",
 ]
+_DEBUG_MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+]
 MIDDLEWARE = _DJANGO_MIDDLEWARE + _THIRD_PARTY_MIDDLEWARE + _PROJECT_MIDDLEWARE
+if environment.DEBUG and not environment.TESTING:
+    MIDDLEWARE.insert(
+        MIDDLEWARE.index(
+            "django.contrib.flatpages.middleware.FlatpageFallbackMiddleware"
+        ),
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+    )

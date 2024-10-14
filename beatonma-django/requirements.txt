@@ -1,6 +1,7 @@
 # Dev tools
 black
 isort
+django-debug-toolbar>=4.4.6
 
 # Build
 wheel

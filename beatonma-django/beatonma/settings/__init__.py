@@ -21,6 +21,7 @@ from .environment import (
     GIT_HASH,
     SECRET_KEY,
     SITE_NAME,
+    TESTING,
 )
 from .google import GOOGLE_RECAPTCHA_SECRET
 from .installed_apps import INSTALLED_APPS

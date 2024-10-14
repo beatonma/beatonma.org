@@ -1,3 +1,5 @@
+from . import environment
+
 _DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -30,4 +32,9 @@ _PROJECT_APPS = [
     "webmentions_tester",
     "webapp.wurdle",
 ]
+_DEBUG_APPS = [
+    "debug_toolbar",
+]
 INSTALLED_APPS = _DJANGO_APPS + _THIRD_PARTY_APPS + _FIRST_PARTY_APPS + _PROJECT_APPS
+if environment.DEBUG and not environment.TESTING:
+    INSTALLED_APPS += _DEBUG_APPS

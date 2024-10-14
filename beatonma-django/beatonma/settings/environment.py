@@ -5,12 +5,12 @@ from typing import Optional
 
 log = logging.getLogger(__name__)
 
-__TESTING = "test" in sys.argv
+TESTING = "test" in sys.argv
 
 
 def _env_str(key: str, default: Optional[str] = None) -> Optional[str]:
     value = os.environ.get(key, default)
-    if value is None and not __TESTING and default is not None:
+    if value is None and not TESTING and default is not None:
         log.warning(f"No value for environment.{key}")
     return value
 
@@ -23,7 +23,7 @@ def _env_int(key: str, default: Optional[int] = None) -> Optional[int]:
     try:
         return int(_env_str(key, str(default)))
     except ValueError:
-        if not __TESTING:
+        if not TESTING:
             log.error(f"Expected int value for environment key '{key}'")
 
 

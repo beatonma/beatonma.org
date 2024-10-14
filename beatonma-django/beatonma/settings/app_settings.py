@@ -1,3 +1,4 @@
+from django.http import HttpRequest
 from github.events import GithubEvent
 
 from . import environment
@@ -5,8 +6,22 @@ from . import environment
 # celery
 CELERY_BROKER_URL = environment.CELERY_BROKER_URL
 
+
+# django-debug-toolbar
+def _should_show_debug_toolbar(request: HttpRequest) -> bool:
+    from django.conf import settings
+
+    return settings.DEBUG and not settings.TESTING
+
+
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": _should_show_debug_toolbar,
+}
+
+
 # django-ninja
 NINJA_PAGINATION_CLASS = "bma_app.api.pagination.OffsetPagination"
+
 
 # notify
 FCM_PROJECT_ID = environment.FCM_PROJECT_ID
