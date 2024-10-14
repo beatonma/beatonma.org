@@ -15,7 +15,7 @@ from main.views import reverse
 from main.views.util import pluralize
 from taggit.models import Tag
 
-Feed = List[PublishedMixin]
+type Feed = List[PublishedMixin]
 
 _searchable_models: List[Type[PublishedMixin]] = list(
     filter(lambda Model: Model.search_enabled, implementations_of(PublishedMixin))

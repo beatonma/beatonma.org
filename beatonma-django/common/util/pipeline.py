@@ -1,20 +1,19 @@
 from functools import reduce
-from typing import Callable, Dict, List, Tuple, TypeVar, Union
+from typing import Callable, Dict, List, Tuple, Union
 
-T = TypeVar("T")
-PipelineFunc = Union[
+type PipelineFunc[T] = Union[
     Callable[[T], T],  # Single argument function
     Callable[[T, ...], T],  # Multi argument function
 ]
-PipelineItem = Union[
-    PipelineFunc,
-    Tuple[PipelineFunc, List],  # args
-    Tuple[PipelineFunc, List, Dict],  # args, kwargs
+type PipelineItem[T] = Union[
+    PipelineFunc[T],
+    Tuple[PipelineFunc[T], List],  # args
+    Tuple[PipelineFunc[T], List, Dict],  # args, kwargs
 ]
-Pipeline = List[PipelineItem]
+type Pipeline = List[PipelineItem]
 
 
-def apply_pipeline(receiver: T, pipeline: Pipeline) -> T:
+def apply_pipeline[T](receiver: T, pipeline: Pipeline) -> T:
     """Apply each function from the pipeline to the receiver and return the final result.
 
     Each item in the pipeline may be either:
