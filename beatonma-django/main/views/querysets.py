@@ -1,7 +1,7 @@
 import random
 from dataclasses import dataclass
 from itertools import chain
-from typing import Callable, List, Optional, Type
+from typing import Callable, Dict, List, Optional, Type
 
 from common.models import PublishedMixin
 from common.models.published import PublishedQuerySet
@@ -10,16 +10,26 @@ from common.models.util import implementations_of
 from django.conf import settings
 from django.db.models import QuerySet
 from github.models import GithubLanguage, GithubRepository
-from main.models import App, AppType, Article, Blog, Changelog, Note
+from main.models import App, AppType, Article, Changelog
 from main.views import reverse
 from main.views.util import pluralize
 from taggit.models import Tag
 
 Feed = List[PublishedMixin]
 
-_searchable_models: List[PublishedMixin] = list(
+_searchable_models: List[Type[PublishedMixin]] = list(
     filter(lambda Model: Model.search_enabled, implementations_of(PublishedMixin))
 )
+
+_prefetch_fields: Dict[Type[PublishedMixin], List[str]] = {
+    Model: ["related_files"]
+    for Model in _searchable_models
+    if hasattr(Model, "related_files")
+}
+_prefetch_fields[Article] += ["apps"]
+_select_fields: Dict[Type[PublishedMixin], List[str]] = {
+    Changelog: ["app"],
+}
 
 
 def get_main_feed() -> Feed:
@@ -137,11 +147,22 @@ def _build_feed(
     queryset_method: Callable[[Type[PublishedQuerySet]], QuerySet] = None,
     **kwargs,
 ) -> Feed:
+    def _query(M):
+        qs = M.objects.published().filter(**kwargs)
+
+        if prefetch_fields := _prefetch_fields.get(M):
+            qs = qs.prefetch_related(*prefetch_fields)
+
+        if select_fields := _select_fields.get(M):
+            qs = qs.select_related(*select_fields)
+
+        return qs.order_by("-published_at")
+
     if queryset_method:
-        results = [queryset_method(M.objects.published()) for M in _searchable_models]
+        results = [queryset_method(_query(M)) for M in _searchable_models]
 
     else:
-        results = [M.objects.published().filter(**kwargs) for M in _searchable_models]
+        results = [_query(M) for M in _searchable_models]
 
     return _build_feed_from(*results)
 
