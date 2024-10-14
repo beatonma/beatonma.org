@@ -13,7 +13,7 @@ class IndexView(LoggedView):
     def get(self, request, *args, **kwargs):
         motd = MessageOfTheDay.objects.get_current()
         feed = get_main_feed()
-        paginated_context = paginate(request, feed).as_context()
+        paginated_context = paginate(request, feed)
 
         return render(
             request,

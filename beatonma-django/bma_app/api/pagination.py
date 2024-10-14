@@ -1,12 +1,13 @@
 from typing import Any, List
 
+from django.conf import settings
 from django.db.models import QuerySet
 from ninja import Schema
 from ninja.pagination import PaginationBase
 
 
 class OffsetPagination(PaginationBase):
-    page_size: int = 10
+    page_size: int = settings.BMA_FEED_ITEMS_PER_PAGE
     items_attribute: str = "results"
 
     class Input(Schema):

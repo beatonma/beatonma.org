@@ -99,7 +99,7 @@ def _render_results(
     results: Iterable[SearchMixin],
     filters: Optional[List[Union[str, SearchResult]]] = None,
 ):
-    paginated_context = paginate(request, results).as_context()
+    paginated_context = paginate(request, results)
 
     return render(
         request,
