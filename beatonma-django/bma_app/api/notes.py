@@ -1,18 +1,28 @@
 import logging
 from datetime import datetime
-from typing import List
+from typing import Annotated, List
 from uuid import UUID
 
 from bma_app.api.schemas import NoteSchema
 from bma_app.api.util import no_null_dict
 from common.models.generic import generic_fk
+from common.util.time import coerce_tzdatetime
 from django.http import HttpRequest, HttpResponse
 from main.models import Note, RelatedFile
 from ninja import File, Form, Router, Schema, UploadedFile
 from ninja.pagination import paginate
+from pydantic import AfterValidator
 
 log = logging.getLogger(__name__)
 router = Router()
+
+
+def _tz(dt):
+    print(f"{dt} -> {coerce_tzdatetime(dt)}")
+    return coerce_tzdatetime(dt)
+
+
+TimezoneAwareDatetime = Annotated[datetime | None, AfterValidator(_tz)]
 
 
 class UploadFileSchema(Schema):
@@ -20,7 +30,7 @@ class UploadFileSchema(Schema):
 
 
 class CreateNoteSchema(Schema):
-    published_at: datetime = None
+    published_at: TimezoneAwareDatetime = None
     content: str
     is_published: bool
     file_description: str = None
@@ -33,7 +43,7 @@ class CreatedResponseSchema(Schema):
 class EditNoteSchema(Schema):
     content: str | None = None
     is_published: bool
-    published_at: datetime | None = None
+    published_at: TimezoneAwareDatetime = None
 
 
 @router.get("/", response=List[NoteSchema])

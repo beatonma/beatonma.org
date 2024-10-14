@@ -1,16 +1,16 @@
 from datetime import datetime
 
-from django.utils.timezone import get_current_timezone
+from django.utils import timezone
 
 
 def tzdatetime(
-    year,
-    month=None,
-    day=None,
-    hour=0,
-    minute=0,
-    second=0,
-    microsecond=0,
+    year: int,
+    month: int,
+    day: int,
+    hour: int = 0,
+    minute: int = 0,
+    second: int = 0,
+    microsecond: int = 0,
 ) -> datetime:
     return datetime(
         year,
@@ -20,5 +20,15 @@ def tzdatetime(
         minute,
         second,
         microsecond,
-        tzinfo=get_current_timezone(),
+        tzinfo=timezone.get_current_timezone(),
     )
+
+
+def coerce_tzdatetime(dt: datetime | None) -> datetime | None:
+    if dt is None:
+        return None
+    if not isinstance(dt, datetime):
+        return None
+    if timezone.is_naive(dt):
+        return timezone.make_aware(dt, timezone.get_current_timezone())
+    return dt

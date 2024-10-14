@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from common.models import BaseModel
+from common.util.time import coerce_tzdatetime
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
@@ -19,14 +20,7 @@ def _submission_time() -> timezone.datetime:
 def _expiration_time() -> timezone.datetime:
     dt = timezone.now() + timedelta(minutes=get_temp_webmention_time_to_live())
 
-    return _coerce_tz_aware(dt)
-
-
-def _coerce_tz_aware(dt: timezone.datetime) -> timezone.datetime:
-    if timezone.is_aware(dt):
-        return dt
-    else:
-        return timezone.make_aware(dt)
+    return coerce_tzdatetime(dt)
 
 
 class TemporaryMention(BaseModel):
@@ -45,7 +39,7 @@ class TemporaryMention(BaseModel):
 
     def is_expired(self, now=None):
         if now is None:
-            now = _coerce_tz_aware(timezone.datetime.now())
+            now = timezone.now()
 
         return self.expiration_time < now
 
