@@ -243,6 +243,7 @@ certbot_renew() {
     --entrypoint "" \
     certbot/certbot:latest \
     sh -c "certbot certonly --webroot -w /var/www/letsencrypt $*"
+    run_command docker container restart nginx
 }
 
 certbot() {
