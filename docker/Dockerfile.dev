@@ -11,9 +11,7 @@ WORKDIR /app
 EXPOSE 3000
 
 ARG task="watch"
-RUN echo "task=$task"
-RUN { echo "npm install"; echo "npm run gulp -- $task"; } > /tmp/entrypoint.dev.sh
-RUN chmod 764 /tmp/entrypoint.dev.sh
+RUN { echo "npm run gulp -- $task"; } > /tmp/entrypoint.dev.sh && chmod 764 /tmp/entrypoint.dev.sh
 
 ENTRYPOINT /tmp/entrypoint.dev.sh
 CMD ["$task"]
