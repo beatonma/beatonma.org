@@ -1,46 +1,46 @@
-# Installing on a new Ubuntu instance.
+# Installation
 
-1. ```bash
-   sudo apt update
-   sudo apt upgrade
-   sudo do-release-upgrade
-   ```
+## Ubuntu
 
-2. ```bash
-    git clone https://github.com/beatonma/beatonma.org beatonma.org/
-    git remote rename origin github
-    git submodule init
-    ```
+### Create system user
+```bash
+# Create user, if required
+adduser $username
+usermod -aG sudo $username
+# Login as this user before continuing
+```
 
-3. [Configure SSH for private Github repositories](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+### Clone repository
+```bash
+git clone https://github.com/beatonma/beatonma.org beatonma.org/
+```
 
-4. Create and populate `.env` file in `install/` directory.
-5. Create and populate `.env` file in project directory.
+### Install and configure
+Create and populate `.env` file in `install/` directory.
+```bash
+cd beatonma.org/install
+cp example.env .env && nano .env
+python3 install.py  # Install docker
+sudo reboot now
 
-6. Run `python3 install.py`
-   > Installs `docker`.
+cd beatonma.org/install
+python3.install.py  # Install other required system components
+sudo reboot now
 
-7. Restart the system then run `python3 install.py` again.
-   > Installs and configures the required environment for our Docker project.
-   
-8. Update DNS records and ensure ports 80 and 443 are open.
+cd beatonma.org
+cp example.env .env && nano .env
+./bma certbot init
 
-9. Initialize `certbot`:  
-   ```bash
-   ./bma certbot init
-   ```
+docker login
+```
 
-10. Build server images:  
-   ```bash
-   eval $(ssh-agent -s) && ssh-add
-   ./bma pull
-   ./bma production build
-   ```
+### From the user machine
+```bash
+ssh-copy-id username@host  # Share SSH key for passwordless ssh login and allow docker context to authenticate.
+docker context create contextname --docker "host=ssh://username@host:/run/user/1000/docker.sock"
+docker --context contextname ps  # Check that docker context works correctly
+./bma production push
 
-11. Start the server:  
-   ```bash
-   ./bma production up -d
-   ```
-
-12. Copy your archived `tar.gz` data to the server and restore it:  
-   ```./bma import FILENAME.```
+scp archive-file.tar.gz username@host:/home/username/beatonma.org  # Copy previous backup to server
+./bma import archive-file.tar.gz
+```

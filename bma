@@ -39,7 +39,7 @@ show_help() {
   log 'bma (dev | production | test | certbot | pull | export | import)'
   log ''
   log 'dev (up|down) [CONTAINER]'
-  log 'production (up|down|build) [CONTAINER]'
+  log 'production (up|down|build|push) [CONTAINER]'
   log 'test'
   log 'certbot (init|renew)'
   log 'pull'
