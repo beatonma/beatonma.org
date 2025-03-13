@@ -63,6 +63,8 @@ class RelatedFileAdmin(BaseAdmin):
     fields = (
         "file_preview",
         "file",
+        "thumbnail",
+        "fit",
         "type",
         "description",
         "original_filename",
