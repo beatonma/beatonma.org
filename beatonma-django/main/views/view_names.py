@@ -13,5 +13,6 @@ WEBAPP = "webapp"
 ARTICLE = "article"
 BLOG = "blog"
 NOTE = "note"
+POST = "post"
 
 RSS_FEED = "rss_latest_updates"

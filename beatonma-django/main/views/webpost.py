@@ -5,7 +5,7 @@ from common.views.logged import LoggedView
 from common.views.mentionable import MentionableView
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from main.models import Article, Blog, Changelog, Note
+from main.models import Article, Blog, Changelog, Note, Post
 
 from ..models.link import sort_links
 from . import view_names
@@ -18,6 +18,17 @@ _prefetch_fields = [
     "related_files",
     "tags",
 ]
+
+
+class PostView(MentionableView):
+    def get(self, request, slug: str):
+        post = get_object_or_404(Post, slug=slug)
+
+        return render(
+            request,
+            "post.html",
+            {"post": post},
+        )
 
 
 class ArticleView(MentionableView, LoggedView):

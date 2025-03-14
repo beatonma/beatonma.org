@@ -27,6 +27,9 @@ class UploadedMediaMixin(models.Model):
         super().delete(*args, **kwargs)
 
     def delete_file(self):
+        if not self.file:
+            log.warning(f"No file associated with model {self}")
+            return
         if os.path.exists(self.file.path):
             os.remove(self.file.path)
             log.warning(f"Deleted file {self.file.path}")

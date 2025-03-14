@@ -5,10 +5,11 @@ at upload time.
 Based on ResizedImageField from django_resized:
   https://github.com/un1t/django-resized/blob/master/django_resized/forms.py
 """
+
 import re
 from io import BytesIO
 from pathlib import Path
-from typing import List, Optional, Tuple, Union
+from typing import Callable
 
 from django.conf import settings
 from django.core.files.base import ContentFile, File
@@ -25,10 +26,10 @@ DEFAULT_QUALITY = getattr(settings, "UPLOAD_DEFAULT_QUALITY", 75)
 
 def rescale_image(
     content: File,
-    size: Tuple[int, int] = None,
+    size: tuple[int, int] = None,
     quality: int = DEFAULT_QUALITY,
-    outfile: Union[str, Path] = None,
-) -> Optional[File]:
+    outfile: str | Path = None,
+) -> File | None:
     if size is None:
         size = DEFAULT_SIZE
 
@@ -76,25 +77,25 @@ class SanitizedFileField(FileField):
     A FileField that strips image metadata and mangles filenames on upload.
 
     Attributes:
-        filename_literals:  List of literal string values to include at
+        filename_literals:  list of literal string values to include at
                             start of randomized filename. Helps with sorting/
                             identifying files in filesystem.
-        filename_attrs:     List of attributes of the model which should be
+        filename_attrs:     list of attributes of the model which should be
                             used to build the randomized filename. Helps with
                             sorting/identifying files in filesystem.
     """
 
     attr_class = ResizeFieldFile
-    size: Tuple[int, int]
+    size: tuple[int, int]
     quality: int
 
     def __init__(
         self,
         verbose_name=None,
         name=None,
-        upload_to: str = "",
-        filename_literals: List[str] = None,
-        filename_attrs: List[str] = None,
+        upload_to: str | Callable = "",
+        filename_literals: list[str] = None,
+        filename_attrs: list[str] = None,
         storage=None,
         **kwargs,
     ):

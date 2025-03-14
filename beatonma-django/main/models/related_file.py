@@ -7,6 +7,7 @@ from common.models.generic import GenericFkMixin
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
+from django.utils import timezone
 from main.forms import SanitizedFileField
 from main.models.mixins.media_upload import UploadedMediaMixin
 from main.util import to_absolute_url
@@ -40,28 +41,37 @@ class MediaType(models.TextChoices):
         return MediaType.Unknown
 
 
-class RelatedFile(UploadedMediaMixin, GenericFkMixin, ApiModel, ApiEditable, BaseModel):
-    """Files that are uploaded"""
+def default_upload_to(instance: "BaseUploadedFile", filename):
+    upload_to = instance.__class__.upload_to
+    year = timezone.now().strftime("%Y")
+    return f"{upload_to}/{year}/{filename}"
+
+
+class BaseUploadedFile(UploadedMediaMixin, ApiEditable, BaseModel):
+    class Meta:
+        abstract = True
+
+    upload_to: str
 
     class ImageFit(models.TextChoices):
         Cover = "cover"
         Container = "contain"
 
-    description_max_length = 140
-
     file = SanitizedFileField(
-        upload_to="related/%Y/",
+        upload_to=default_upload_to,
         filename_attrs=["description"],
     )
     thumbnail = SanitizedFileField(
-        upload_to="related/%Y/",
-        filename_literals=["thumb"],
+        upload_to=default_upload_to,
         filename_attrs=["description"],
+        filename_literals=["thumb"],
         size=THUMBNAIL_SIZE,
         blank=True,
         null=True,
     )
+
     fit = models.CharField(
+        max_length=32,
         choices=ImageFit.choices,
         blank=True,
         null=True,
@@ -78,30 +88,31 @@ class RelatedFile(UploadedMediaMixin, GenericFkMixin, ApiModel, ApiEditable, Bas
     )
 
     description = models.CharField(
-        max_length=description_max_length,
+        max_length=255,
         blank=True,
         default="",
         help_text="File content description",
     )
 
+    def file_or_none(self):
+        if self.file:
+            return self.file
+
+    def thumbnail_or_none(self):
+        if self.thumbnail:
+            return self.thumbnail
+
     def url(self):
         return self.file.url
-
-    def to_json(self) -> dict:
-        return {
-            "url": to_absolute_url(self.file.url),
-            "description": self.description,
-            "type": self.type,
-        }
 
     def save(self, **kwargs):
         if not self.original_filename:
             self.original_filename = self.file.name
 
+        self.type = MediaType.from_filename(self.file.name)
+
         if not self.thumbnail:
             self.generate_thumbnail(THUMBNAIL_SIZE)
-
-        self.type = MediaType.from_filename(self.file.name)
         super().save(**kwargs)
 
     def generate_thumbnail(self, size: tuple[int, int] | None = None):
@@ -131,6 +142,23 @@ class RelatedFile(UploadedMediaMixin, GenericFkMixin, ApiModel, ApiEditable, Bas
             return f'{self.file} | "{self.description}"'
 
         return self.file.name
+
+
+class UploadedFile(BaseUploadedFile):
+    upload_to = "uploads"
+
+
+class RelatedFile(GenericFkMixin, ApiModel, BaseUploadedFile):
+    """Files that are uploaded"""
+
+    upload_to = "related"
+
+    def to_json(self) -> dict:
+        return {
+            "url": to_absolute_url(self.file.url),
+            "description": self.description,
+            "type": self.type,
+        }
 
 
 class RelatedFilesMixin(models.Model):

@@ -34,7 +34,7 @@ class PublishedQuerySet(SearchQuerySet):
 class PublishedMixin(SearchMixin, models.Model):
     class Meta:
         abstract = True
-        ordering = "-published_at"
+        ordering = ("-published_at",)
 
     objects = PublishedQuerySet.as_manager()
 

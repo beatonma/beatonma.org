@@ -1,0 +1,55 @@
+<html lang="en">
+<head>
+  <link rel="webmention" href="/webmention/" />
+  <title>{{ post.title }}</title>
+  <style>
+      body {
+          font-family: sans-serif;
+      }
+
+      main {
+          max-width: 80ch;
+          margin-inline: auto;
+          overflow: hidden;
+      }
+
+      img {
+          max-width: 100%;
+          max-height: 50vh;
+          aspect-ratio: 4/3;
+          margin-inline: auto;
+          object-fit: contain;
+      }
+  </style>
+</head>
+<body>
+<main>
+  <article>
+    <header>
+      {{ post.hero_html|safe }}
+      {% if post.hero_image %}
+        <img src="{{ post.hero_image.file.url }}" />
+      {% endif %}
+      <h1>{{ post.title }}</h1>
+      <h2>{{ post.subtitle }}</h2>
+      <time datetime="{{ post.published_at }}">{{ post.published_at }}</time>
+      <div>
+        {% for tag in post.tags.all %}
+          <span>#{{ tag.name }}</span>
+        {% endfor %}
+      </div>
+      <div>
+        {% for link in post.links.all %}
+          <a href="{{ link.url }}">{{ link.url }}</a>
+        {% endfor %}
+      </div>
+      {% if post.app %}
+        <div><a href="{{ post.app.get_absolute_url }}">{{ post.app.title }}</a></div>
+      {% endif %}
+    </header>
+    {{ post.content_html|safe }}
+  </article>
+</main>
+{{ post.content_script|safe }}
+</body>
+</html>

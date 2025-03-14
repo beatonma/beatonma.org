@@ -6,12 +6,14 @@ from common.admin import BaseAdmin
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericTabularInline
 from django.utils.html import format_html
-from main.models import RelatedFile
+from main.models.related_file import (
+    IMAGE_PATTERN,
+    VIDEO_PATTERN,
+    RelatedFile,
+    UploadedFile,
+)
 
 log = logging.getLogger(__name__)
-
-IMAGE_PATTERN = re.compile(r".*\.(jpg|jpeg|png|webp|svg)")
-VIDEO_PATTERN = re.compile(r".*\.(mp4|webm)")
 
 
 class RelatedFileInline(GenericTabularInline):
@@ -72,3 +74,8 @@ class RelatedFileAdmin(BaseAdmin):
         "content_type",
         "object_id",
     )
+
+
+@admin.register(UploadedFile)
+class UploadedFileAdmin(BaseAdmin):
+    pass

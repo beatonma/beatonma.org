@@ -293,6 +293,11 @@ case $context in
     compose_file=$FILE_DEV
     dev "$@"
     ;;
+  "shell")
+    compose_file=$FILE_DEV
+    docker_compose --profile manage run --rm "$@" django_manage
+    exit 0
+    ;;
   "test")
     compose_file=$FILE_TEST
     runtests "$@"

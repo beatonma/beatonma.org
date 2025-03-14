@@ -1,8 +1,7 @@
 import os
 import uuid
-from typing import List, Optional
+from typing import Callable
 
-from django.utils import timezone
 from django.utils.deconstruct import deconstructible
 from django.utils.text import slugify
 
@@ -11,19 +10,19 @@ from django.utils.text import slugify
 class RandomFilename:
     def __init__(
         self,
-        path: str,
-        filename_literals: List[str],
-        filename_attrs: List[str],
+        upload_to: str | Callable,
+        filename_literals: list[str] = None,
+        filename_attrs: list[str] = None,
     ):
-        self.directory = timezone.now().strftime(path)
-        self.filename_attrs = filename_attrs
-        self.filename_literals = filename_literals
+        self.upload_to = upload_to
+        self.filename_attrs = filename_attrs or []
+        self.filename_literals = filename_literals or []
 
     def __call__(self, instance, original_filename) -> str:
         parts = original_filename.split(".")
         ext = parts[-1]
 
-        chunks: List[str] = ["-".join(self.filename_literals)]
+        chunks: list[str] = ["-".join(self.filename_literals)]
 
         if not instance:
             # No instance attributes if instance is null
@@ -31,9 +30,7 @@ class RandomFilename:
 
         elif self.filename_attrs:
             attrs = [getattr(instance, attr, None) for attr in self.filename_attrs]
-            attrs = [x for x in attrs if x]
-
-            chunks.append("-".join(attrs))
+            chunks += [x for x in attrs if x]
 
         else:
             slug = _get_slug(instance)
@@ -44,18 +41,30 @@ class RandomFilename:
         chunks.append(uid)
         basename = "-".join(chunk for chunk in chunks if chunk)
         basename = slugify(basename[:30])
+        filename = f"{basename}.{ext}"
 
-        return os.path.join(self.directory, f"{basename}.{ext}")
+        if callable(self.upload_to):
+            return self.upload_to(instance, filename)
 
-    def __eq__(self, other):
+        return os.path.join(self.upload_to, filename)
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, self.__class__):
+            return False
+        if callable(self.upload_to) and callable(other.upload_to):
+            if self.upload_to.__name__ != other.upload_to.__name__:
+                return False
+
+        elif self.upload_to != other.upload_to:
+            return False
+
         return (
-            self.directory == other.directory
-            and self.filename_attrs == other.filename_attrs
+            self.filename_attrs == other.filename_attrs
             and self.filename_literals == other.filename_literals
         )
 
 
-def _get_slug(instance) -> Optional[str]:
+def _get_slug(instance) -> str | None:
     slug = getattr(instance, "slug", None)
     if slug:
         return slug

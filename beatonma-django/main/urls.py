@@ -15,7 +15,7 @@ from .views.search import (
     TagView,
 )
 from .views.webapp import WebAppView
-from .views.webpost import ArticleView, BlogView, ChangelogView, NoteView
+from .views.webpost import ArticleView, BlogView, ChangelogView, NoteView, PostView
 
 api_urlpatterns = [
     # RSS feed
@@ -68,6 +68,16 @@ article_urlpatterns = [
         name=view_names.NOTE,
         model_class="main.Note",
     ),
+]
+
+
+frontend_paths = [
+    mentions_path(
+        "post/<slug:slug>/",
+        PostView.as_view(),
+        name=view_names.POST,
+        model_class="main.Post",
+    )
 ]
 
 site_functions_urlpatterns = [
