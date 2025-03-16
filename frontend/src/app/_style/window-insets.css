@@ -1,0 +1,39 @@
+/**
+ * Utilities to apply standard edge-of-window content padding.
+ * These utilities will only applied once in a node tree, i.e. if
+ * an element uses px-edge and an ancestor element has already used
+ * px-edge, no further padding will be applied..
+ */
+:root {
+  --_spacing-window-inset-x: 8px;
+  --_spacing-window-inset-y: 8px;
+  @media (width >= 40rem) {
+    --_spacing-window-inset-x: 16px;
+    --_spacing-window-inset-y: 16px;
+  }
+}
+@utility px-edge {
+  padding-inline: var(--_spacing-window-inset-x);
+}
+@utility py-edge {
+  padding-block: var(--_spacing-window-inset-y);
+}
+@utility p-edge {
+  @apply px-edge py-edge;
+}
+
+@layer components {
+  .p-edge .p-edge,
+  .p-edge .px-edge,
+  .px-edge .px-edge,
+  .px-edge .p-edge {
+    --_spacing-window-inset-x: 0;
+  }
+
+  .p-edge .p-edge,
+  .p-edge .py-edge,
+  .py-edge .py-edge,
+  .py-edge .p-edge {
+    --_spacing-window-inset-y: 0;
+  }
+}

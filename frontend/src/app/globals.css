@@ -1,0 +1,142 @@
+@import "tailwindcss";
+@import "./_style/window-insets.css";
+
+@custom-variant touch (@media(pointer: coarse));
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    &:where([data-theme="system"], [data-theme="system"] *) {
+      @slot;
+    }
+  }
+}
+
+@utility colorscheme-light {
+  --background: #ffffff;
+  --on_background: #171717;
+  --surface: var(--color-stone-50);
+  --on_surface: var(--color-stone-950);
+  --vibrant: var(--color-green-700);
+  --on_vibrant: var(--color-green-100);
+  --muted: var(--color-slate-600);
+  --on_muted: var(--color-slate-900);
+}
+@utility colorscheme-dark {
+  --background: #0a0a0a;
+  --on_background: #ededed;
+  --surface: var(--color-stone-800);
+  --on_surface: var(--color-stone-100);
+  --vibrant: var(--color-green-700);
+  --on_vibrant: var(--color-green-100);
+  --muted: var(--color-slate-600);
+  --on_muted: var(--color-slate-900);
+}
+
+:root {
+  @media (prefers-color-scheme: light) {
+    @apply colorscheme-light;
+  }
+  @media (prefers-color-scheme: dark) or (prefers-color-scheme: no-preference) {
+    @apply colorscheme-dark;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-on_background: var(--on_background);
+
+  --color-surface: var(--surface);
+  --color-on_surface: var(--on_surface);
+
+  --color-vibrant: var(--vibrant);
+  --color-on_vibrant: var(--on_vibrant);
+  --color-muted: var(--muted);
+  --color-on_muted: var(--on_muted);
+  --color-hover: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--surface), var(--vibrant));
+  color: var(--on_vibrant);
+}
+
+@layer base {
+  body {
+    background: var(--background);
+    color: var(--on_background);
+    font-family: Arial, Helvetica, sans-serif;
+
+    &[data-theme="light"] {
+      @apply colorscheme-light;
+    }
+
+    &[data-theme="dark"] {
+      @apply colorscheme-dark;
+    }
+  }
+
+  img {
+    @apply object-cover;
+  }
+
+  address {
+    @apply not-italic;
+  }
+
+  h1 {
+    @apply text-4xl;
+  }
+  h2 {
+    @apply text-3xl;
+  }
+  h3 {
+    @apply text-2xl;
+  }
+  h4 {
+    @apply text-xl;
+  }
+}
+
+@layer components {
+  .row {
+    @apply flex flex-row items-center;
+  }
+
+  .column {
+    @apply flex flex-col;
+  }
+
+  .readable {
+    @apply w-full max-w-prose;
+  }
+}
+
+@layer components {
+  .overflow-auto,
+  .overflow-x-auto,
+  .overflow-y-auto {
+    @media (pointer: coarse) {
+      scrollbar-width: none;
+    }
+    @media (pointer: fine) {
+      scrollbar-width: thin;
+    }
+
+    ::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+  }
+}
+
+@utility surface {
+  @apply bg-surface text-on_surface fill-on_surface;
+}
+@utility card {
+  @apply outline-1 sm:rounded-md;
+}
+@utility card-content {
+  @apply px-4 py-2;
+}

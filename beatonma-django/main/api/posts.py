@@ -5,17 +5,16 @@ from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from main.models import Post
 from main.models.related_file import MediaType
-from main.util import to_absolute_url
 from main.views.querysets import get_main_feed
 from ninja import Field, Router, Schema
 from ninja.pagination import paginate
-from pydantic import AfterValidator, BeforeValidator
+from pydantic import BeforeValidator
 
 router = Router(tags=["Posts"])
 
 # TODO 98 items in feed
 
-type AbsoluteUrl = Annotated[str, AfterValidator(to_absolute_url)]
+type UrlPath = str
 
 
 class Theme(Schema):
@@ -24,7 +23,7 @@ class Theme(Schema):
 
 
 class Image(Schema):
-    url: AbsoluteUrl = Field(alias="thumbnail_or_none.url")
+    url: UrlPath = Field(alias="thumbnail_or_none.url")
     type: MediaType
     description: str | None
 
@@ -35,7 +34,7 @@ type ImageOrNone = Annotated[
 
 
 class File(Schema):
-    url: AbsoluteUrl = Field(alias="file_or_none.url")
+    url: UrlPath = Field(alias="file_or_none.url")
     type: MediaType
     description: str | None
 
@@ -44,7 +43,7 @@ class Link(Schema):
     url: str
     description: str | None = None
     host: str | None = Field(alias="host.name", default=None)
-    icon: AbsoluteUrl | None = Field(alias="host.icon_file", default=None)
+    icon: UrlPath | None = Field(alias="host.icon_file", default=None)
 
 
 class App(Schema):
@@ -81,7 +80,7 @@ class PostDetail(Schema):
 
 @router.get("/", response=list[PostPreview])
 @paginate
-def post_feed(request: HttpRequest):
+def post_feed(request: HttpRequest, query: str = None):
     return Post.objects.all()
     # return get_main_feed()
 

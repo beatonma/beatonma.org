@@ -2,19 +2,18 @@ ARG NODE_VERSION=22
 ARG PYTHON_VERSION=3.12
 
 ################################################################################
-FROM node:${NODE_VERSION}-alpine AS gulp_watch
+FROM node:${NODE_VERSION}-alpine AS frontend
 
-RUN apk add \
-    curl
+RUN apk add curl
+RUN adduser -u 1001 -s /bin/sh -D app
+USER app
 
 WORKDIR /app
-EXPOSE 3000
+COPY --chown=app:app ./frontend/package.json ./frontend/package-lock.json /app/
+RUN npm install
 
-ARG task="watch"
-RUN { echo "npm run gulp -- $task"; } > /tmp/entrypoint.dev.sh && chmod 764 /tmp/entrypoint.dev.sh
-
-ENTRYPOINT /tmp/entrypoint.dev.sh
-CMD ["$task"]
+COPY --chown=app:app ./frontend /app
+#EXPOSE 3000
 
 
 ################################################################################
@@ -25,12 +24,13 @@ RUN apk add \
     curl \
     openssh-client \
     git \
-    build-base
+    build-base \
+    libwebp
 
 # Install private libraries from github.
 RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 RUN --mount=type=ssh pip install git+ssh://git@github.com/beatonma/bmanotify.git
-RUN --mount=type=ssh pip install git+ssh://git@github.com/beatonma/bmanotify-django.git
+RUN --mount=type=ssh pip install git+ssh://git@github.com/beatonma/bmanotify-django.git --force-reinstall
 
 WORKDIR /var/log/beatonma
 WORKDIR /django
@@ -46,3 +46,10 @@ COPY ./docker/django/entrypoint.dev.sh /
 
 EXPOSE 8000
 ENTRYPOINT ["/entrypoint.dev.sh"]
+
+################################################################################
+FROM nginx:latest AS nginx
+
+COPY ./docker/nginx/nginx.dev.conf /etc/nginx/nginx.conf
+
+EXPOSE 80

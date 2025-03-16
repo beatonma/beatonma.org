@@ -90,5 +90,9 @@ site_functions_urlpatterns = [
 ]
 
 urlpatterns = (
-    api_urlpatterns + app_urlpatterns + article_urlpatterns + site_functions_urlpatterns
+    api_urlpatterns
+    + frontend_paths
+    + app_urlpatterns
+    + article_urlpatterns
+    + site_functions_urlpatterns
 )

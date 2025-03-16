@@ -26,26 +26,16 @@ services:
       test: pg_isready
       <<: *health
 
-  gulp:
+  db_admin:
     <<: *common
-    build:
-      dockerfile: ./docker/Dockerfile.dev
-      target: gulp_watch
-      context: .
+    image: dpage/pgadmin4
     ports:
-      - "3000:3000"
-      - "3001:3001"
-    healthcheck:
-      test: curl --header --fail http://localhost:3001 || exit 1
-      <<: *health
-      start_period: 120s
-    volumes:
-      - generated:/generated
-      - ./beatonma-django:/django:ro
-      - ./beatonma-gulp:/app:ro
+      - "8081:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${POSTGRES_USER}@beatonma.org
+      PGADMIN_DEFAULT_PASSWORD: $POSTGRES_PASSWORD
 
-
-  django:
+  django: &django
     <<: *common
     build:
       dockerfile: ./docker/Dockerfile.dev
@@ -56,12 +46,72 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      gulp:
-        condition: service_healthy
     ports:
-      - "8000"
+      - "8001:8000"
     volumes:
       - generated:/generated:ro
       - ./beatonma-django:/django:ro
       - /var/www/static:/var/www/static
       - /var/www/media:/var/www/media
+
+  django_manage:
+    <<: *django
+    container_name: django_manage
+    profiles:
+      - "manage"
+    ports: []
+    volumes:
+      - generated:/generated:ro
+      - ./beatonma-django:/django:rw
+      - /var/www/static:/var/www/static
+      - /var/www/media:/var/www/media
+    healthcheck:
+      test: [ "NONE" ]
+    entrypoint: [ "sh" ]
+
+  next:
+    <<: *common
+    container_name: next
+    build:
+      dockerfile: ./docker/Dockerfile.dev
+      target: frontend
+      context: .
+    depends_on:
+      django:
+          condition: service_healthy
+    healthcheck:
+      test: curl --header --fail http://localhost:3000/ || exit 1
+    ports:
+      - "3001:3000"
+    command: npm run dev
+    environment:
+      API_BASE_URL: http://django:8000
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./frontend/package.json
+
+  nginx:
+    <<: *common
+    build:
+      context: .
+      target: nginx
+      dockerfile: ./docker/Dockerfile.dev
+    depends_on:
+      django:
+          condition: service_healthy
+      next:
+          condition: service_healthy
+    healthcheck:
+      test: curl --header --fail http://localhost/health-check/ || exit 1
+      <<: *health
+    volumes:
+      - /var/www/static:/var/www/static
+      - /var/www/media:/var/www/media
+    ports:
+      - "80:80"

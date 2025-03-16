@@ -1,0 +1,18 @@
+import { MaybeString } from "@/types";
+
+export const classes = (...classNames: (string | undefined | null)[]) =>
+  classNames.filter(Boolean).join(" ");
+
+/**
+ * Returns a copy of props with extraClasses appended to its className attribute.
+ */
+export const addClass = <T extends { className?: string }>(
+  props: T,
+  ...extraClasses: string[]
+) => ({
+  ...props,
+  className: classes(props.className, extraClasses.join(" ")),
+});
+
+export const capitalize = (value: MaybeString | null): string | null =>
+  value ? value.slice(0, 1).toUpperCase() + value.slice(1) : null;

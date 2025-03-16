@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Annotated, List
 from uuid import UUID
 
+from bma_app.api.pagination import OffsetPagination
 from bma_app.api.schemas import NoteSchema
 from bma_app.api.util import no_null_dict
 from common.models.generic import generic_fk
@@ -47,7 +48,7 @@ class EditNoteSchema(Schema):
 
 
 @router.get("/", response=List[NoteSchema])
-@paginate
+@paginate(OffsetPagination)
 def get_notes(request):
     return Note.objects.sort_by_recent()
 

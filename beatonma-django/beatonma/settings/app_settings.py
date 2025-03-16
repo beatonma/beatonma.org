@@ -20,7 +20,8 @@ DEBUG_TOOLBAR_CONFIG = {
 
 
 # django-ninja
-NINJA_PAGINATION_CLASS = "bma_app.api.pagination.OffsetPagination"
+NINJA_PAGINATION_PER_PAGE = 24
+NINJA_PAGINATION_CLASS = "main.api.pagination.LimitOffsetPagination"
 
 
 # notify
