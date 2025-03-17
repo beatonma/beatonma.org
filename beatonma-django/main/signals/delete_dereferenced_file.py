@@ -14,7 +14,7 @@ def delete_dereferenced_file(sender, instance, **kwargs):
     if not isinstance(instance, UploadedMediaMixin):
         return
 
-    instance.delete_file()
+    instance.delete_uploaded_files()
 
 
 @receiver(post_delete)

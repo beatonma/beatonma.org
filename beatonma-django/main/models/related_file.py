@@ -52,6 +52,7 @@ class BaseUploadedFile(UploadedMediaMixin, ApiEditable, BaseModel):
         abstract = True
 
     upload_to: str
+    uploaded_file_fields = ("file", "thumbnail")
 
     class ImageFit(models.TextChoices):
         Cover = "cover"
