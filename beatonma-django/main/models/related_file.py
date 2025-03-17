@@ -56,7 +56,7 @@ class BaseUploadedFile(UploadedMediaMixin, ApiEditable, BaseModel):
 
     class ImageFit(models.TextChoices):
         Cover = "cover"
-        Container = "contain"
+        Contain = "contain"
 
     file = SanitizedFileField(
         upload_to=default_upload_to,
