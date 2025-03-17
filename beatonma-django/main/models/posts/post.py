@@ -50,7 +50,7 @@ class Post(
     )
 
     slug = models.SlugField(unique=True, max_length=255, editable=False)
-    old_slug = models.SlugField(unique=True, max_length=255, editable=False)
+    old_slug = models.SlugField(unique=True, max_length=255, editable=False, null=True)
 
     title = models.CharField(max_length=255, blank=True, null=True)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
