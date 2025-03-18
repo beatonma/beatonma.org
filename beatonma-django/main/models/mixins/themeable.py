@@ -5,12 +5,8 @@ from django.db import models
 
 
 class ThemeableMixin(models.Model):
-    # CSS class names applied to content that appears in front
-    # of the accent color
-    TEXT_COLOR_OPTIONS = (
-        ("light", "light"),
-        ("dark", "dark"),
-    )
+    class Meta:
+        abstract = True
 
     SAMPLE_COLORS = [
         ("#ee4545", "#ee4545"),
@@ -50,9 +46,6 @@ class ThemeableMixin(models.Model):
         ("#90b77d", "#90b77d"),
         ("#d2d79f", "#d2d79f"),
     ]
-
-    class Meta:
-        abstract = True
 
     color_muted = ColorField(blank=True, samples=SAMPLE_COLORS)
     color_vibrant = ColorField(blank=True, samples=SAMPLE_COLORS)

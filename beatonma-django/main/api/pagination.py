@@ -54,7 +54,6 @@ def _get_next_previous(
         _next = None
 
     _previous = max(0, offset - limit)
-    print(_previous, offset)
     if _previous == offset:
         _previous = None
 

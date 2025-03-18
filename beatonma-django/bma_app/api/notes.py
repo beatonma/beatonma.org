@@ -19,7 +19,6 @@ router = Router()
 
 
 def _tz(dt):
-    print(f"{dt} -> {coerce_tzdatetime(dt)}")
     return coerce_tzdatetime(dt)
 
 
