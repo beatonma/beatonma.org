@@ -19,6 +19,7 @@
   --background: var(--color-stone-200);
   --on_background: var(--color-stone-950);
   --surface: var(--color-stone-50);
+  --surface_alt: var(--color-stone-200);
   --on_surface: var(--color-stone-950);
   --vibrant: var(--color-green-700);
   --on_vibrant: var(--color-green-100);
@@ -29,6 +30,7 @@
   --background: #252225;
   --on_background: #f1edf1;
   --surface: #4b495c;
+  --surface_alt: #26252c;
   --on_surface: #efeef9;
   --vibrant: #55c191;
   --on_vibrant: #0c1e16;
@@ -43,10 +45,13 @@
   @media (prefers-color-scheme: dark) or (prefers-color-scheme: no-preference) {
     @apply colorscheme-dark;
   }
+
+  --max-width: 100vw;
+  --max-height: 100vh;
 }
 
 @theme {
-  --color-scrim: rgb(0 0 0 / 0.5);
+  --color-scrim: rgb(0 0 0 / 0.7);
   --color-on_scrim: rgb(250 250 250);
   --spacing-em: 1em;
   --spacing-readable: 80ch;
@@ -57,6 +62,7 @@
   --color-on_background: var(--on_background);
 
   --color-surface: var(--surface);
+  --color-surface_alt: var(--surface_alt);
   --color-on_surface: var(--on_surface);
 
   --color-vibrant: var(--vibrant);
@@ -64,11 +70,6 @@
   --color-muted: var(--muted);
   --color-on_muted: var(--on_muted);
   --color-hover: color-mix(in srgb, currentColor 10%, transparent);
-  --color-hover_surface: color-mix(
-    in srgb,
-    var(--surface) 85%,
-    var(--on_surface)
-  );
 }
 
 ::selection {
@@ -148,11 +149,17 @@
     @media (pointer: coarse) {
       scrollbar-width: thin;
     }
+    @media (pointer: fine) {
+      scrollbar-width: auto;
+    }
   }
 }
 
 @utility surface {
   @apply bg-surface text-on_surface fill-on_surface;
+}
+@utility surface-alt {
+  @apply bg-surface_alt text-on_surface fill-on_surface;
 }
 @utility scrim {
   @apply bg-scrim text-on_scrim fill-on_scrim;

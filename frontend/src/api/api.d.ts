@@ -135,6 +135,8 @@ export interface components {
             url: components["schemas"]["Url"];
             thumbnail_url?: components["schemas"]["Url"];
             type: components["schemas"]["MediaType"];
+            /** Name */
+            name?: string | null;
             /** Description */
             description: string | null;
             fit: components["schemas"]["ImageFit"] | null;

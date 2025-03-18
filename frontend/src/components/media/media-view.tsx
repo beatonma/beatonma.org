@@ -1,8 +1,15 @@
-import Image from "next/image";
 import { ReactNode, useContext } from "react";
+import Icon, { AppIcon } from "@/components/icon";
 import { MediaFile, OnClickMediaContext } from "@/components/media/common";
-import { DivPropsNoChildren } from "@/types/react";
+import { DivProps, DivPropsNoChildren } from "@/types/react";
+import { onlyIf } from "@/util/optional";
 import { addClass } from "@/util/transforms";
+
+interface MediaViewProps {
+  media: MediaFile;
+  className?: string;
+  onClick?: () => void;
+}
 
 interface ImageProps {
   image?: {
@@ -11,15 +18,12 @@ interface ImageProps {
   };
 }
 
-interface MediaViewProps {
-  media: MediaFile;
-  className?: string;
-}
-
 export default function MediaView(
-  props: { media: MediaFile } & ImageProps & Omit<DivPropsNoChildren, "onLoad">,
+  props: MediaViewProps &
+    ImageProps &
+    Omit<DivPropsNoChildren, keyof MediaViewProps>,
 ) {
-  const { image, ...rest } = props;
+  const { image, ...rest } = addClass(props, "relative");
 
   const views: Record<MediaFile["type"], () => ReactNode> = {
     image: () => <ImageView image={image} {...rest} />,
@@ -31,10 +35,22 @@ export default function MediaView(
   return views[props.media.type]();
 }
 export const MediaThumbnail = (
-  props: { media: MediaFile } & ImageProps & Omit<DivPropsNoChildren, "onLoad">,
+  props: MediaViewProps &
+    ImageProps &
+    Omit<DivPropsNoChildren, keyof MediaViewProps>,
 ) => {
   const { media, ...rest } = addClass(props, "size-full");
   const onClickMedia = useContext(OnClickMediaContext);
+
+  if (!media.thumbnail_url) {
+    return (
+      <Placeholder
+        media={media}
+        onClick={() => onClickMedia?.(props.media)}
+        {...rest}
+      />
+    );
+  }
 
   return (
     <ImageView
@@ -49,8 +65,9 @@ export const MediaThumbnail = (
 const ImageView = (props: MediaViewProps & ImageProps) => {
   const { media, image, ...rest } = props;
   const useThumbnail = image?.useThumbnail ?? false;
+
   if (useThumbnail && !media.thumbnail_url) {
-    return <div {...rest}>No thumbnail placeholder {media.url}</div>;
+    return <Placeholder media={media} {...rest} />;
   }
 
   const src = (useThumbnail ? media.thumbnail_url : media.url) ?? "#";
@@ -61,24 +78,61 @@ const ImageView = (props: MediaViewProps & ImageProps) => {
   }[image?.fit ?? media.fit ?? "cover"];
 
   return (
-    <Image
+    <img
       src={src}
       alt={media.description ?? ""}
-      width={1440}
-      height={1440}
       {...addClass(rest, fitStyle)}
     />
   );
 };
 
-const VideoView = ({ media, ...rest }: MediaViewProps) => {
+const VideoView = (props: MediaViewProps) => {
+  const { media, ...rest } = props;
   return <video src={media.url} muted controls {...rest} />;
 };
 
-const AudioView = ({ media, ...rest }: MediaViewProps) => {
-  return <audio src={media.url} {...rest} />;
+const AudioView = (props: MediaViewProps) => {
+  const { media, ...rest } = props;
+  return (
+    <div {...rest}>
+      <audio src={media.url} />
+    </div>
+  );
 };
 
-const TextView = ({ media, ...rest }: MediaViewProps) => {
-  return <div {...rest}>TODO: TextView {media.url}</div>;
+const TextView = (props: MediaViewProps) => {
+  const { media, ...rest } = props;
+  return (
+    <a href={media.url} download {...rest}>
+      <Placeholder media={media}>
+        {onlyIf(media.name, (name) => (
+          <h3>{name}</h3>
+        ))}
+        <p>Download</p>
+      </Placeholder>
+    </a>
+  );
+};
+
+const Placeholder = (props: { media: MediaFile } & DivProps) => {
+  const { media, children, ...rest } = addClass(
+    props,
+    "column items-center justify-center @container aspect-square",
+  );
+  const views: Record<MediaFile["type"], [AppIcon, string]> = {
+    image: ["Image", "bg-amber-400 fill-amber-900"],
+    audio: ["Audio", "bg-cyan-400 fill-cyan-900"],
+    text: ["Text", "bg-neutral-200 fill-neutral-900"],
+    video: ["PlayArrow", "bg-rose-700 fill-rose-50"],
+    unknown: ["Attachment", "bg-emerald-800 fill-emerald-50"],
+  };
+
+  const [icon, className] = views[media.type];
+
+  return (
+    <div {...addClass(rest, className)}>
+      <Icon icon={icon} className="size-1/3" />
+      {children}
+    </div>
+  );
 };

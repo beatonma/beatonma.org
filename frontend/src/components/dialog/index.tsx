@@ -1,5 +1,5 @@
-import { ComponentPropsWithoutRef } from "react";
-import { TintedButton } from "@/components/button";
+import { ComponentPropsWithoutRef, useCallback, useEffect } from "react";
+import { Button } from "@/components/button";
 import { DivProps } from "@/types/react";
 import { addClass } from "@/util/transforms";
 import "./dialog.css";
@@ -14,20 +14,50 @@ export default function Dialog(
 ) {
   const { isOpen, onClose, children, ...rest } = props;
 
+  const keyboardController = useCallback((ev: KeyboardEvent) => {
+    if (ev.code === "Escape") {
+      onClose();
+      ev.preventDefault();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      window.addEventListener("keydown", keyboardController);
+    }
+
+    return () => window.removeEventListener("keydown", keyboardController);
+  }, [isOpen]);
+
   return (
     <>
-      <Scrim data-is-open={isOpen} onClick={() => onClose()}>
+      <Scrim
+        data-is-open={isOpen}
+        onClick={() => onClose()}
+        className="flex justify-center items-center overflow-hidden"
+      >
         <dialog
           open={isOpen}
+          onClick={(ev) => {
+            ev.stopPropagation();
+          }}
           {...addClass(
             rest,
-            "bg-transparent column items-center max-h-[95vh] gap-4",
+            "[--max-width:95vw] [--max-height:95vh] max-h-(--max-height) max-w-(--max-width)",
+            "surface-alt column gap-4 overflow-hidden justify-self-center rounded-md",
           )}
         >
           {children}
-          <TintedButton icon="Close" onClick={() => onClose()} className="m-4">
-            Close
-          </TintedButton>
+
+          <div className="p-4 self-end w-fit">
+            <Button
+              icon="Close"
+              onClick={() => onClose()}
+              className="text-vibrant"
+            >
+              Close
+            </Button>
+          </div>
         </dialog>
       </Scrim>
     </>
@@ -38,7 +68,7 @@ const Scrim = (props: DivProps) => {
   const { ...rest } = addClass(
     props,
     "dialog-scrim",
-    "fixed inset-0 bg-scrim z-100 flex justify-center items-center",
+    "fixed inset-0 bg-scrim z-100",
   );
 
   return <div {...rest} />;

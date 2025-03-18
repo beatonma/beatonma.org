@@ -40,12 +40,14 @@ export const Icons = () => {
     <Section>
       <div className="card card-content surface grid grid-cols-[repeat(auto-fit,96px)] gap-2">
         {icons.map((icon) => (
-          <div
-            key={icon}
-            className="relative aspect-square text-[96px] border-1 border-dashed border-current"
-          >
-            <div className="absolute inset-0 m-[8px] border-dashed border-1 border-vibrant" />
-            <Icon icon={icon} />
+          <div key={icon} title={icon}>
+            <div className="relative aspect-square text-[96px] border-1 border-dashed border-current">
+              <div className="absolute inset-0 m-[8px] border-dashed border-1 border-vibrant" />
+              <Icon icon={icon} />
+            </div>
+            <div className="text-xs font-mono overflow-ellipsis w-full overflow-hidden text-center p-1">
+              {icon}
+            </div>
           </div>
         ))}
       </div>

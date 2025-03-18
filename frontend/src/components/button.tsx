@@ -27,7 +27,7 @@ export const Button = (props: ButtonProps) => {
     props,
     "rounded-md px-2 py-1 min-w-[2em] min-h-[2em]",
     "font-bold transition-colors",
-    "hover:bg-hover_surface",
+    "hover:bg-hover",
   );
 
   return <BaseButton {...rest} />;
@@ -99,7 +99,7 @@ const BaseButton = (props: ButtonProps) => {
   const isIconOnly = icon && React.Children.count(children) === 0;
   const content = (
     <>
-      <span className="absolute size-full touch-target pointer:hidden bg-red-500/50" />
+      <span className="absolute size-full touch-target pointer:hidden" />
       {isIconOnly ? (
         <ButtonIcon icon={icon} />
       ) : (

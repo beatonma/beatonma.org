@@ -24,6 +24,7 @@ class File(Schema):
     url: Url = Field(alias="file_or_none.url")
     thumbnail_url: Url = Field(alias="thumbnail_or_none.url", default=None)
     type: MediaType
+    name: str | None = Field(alias="original_filename", default=None)
     description: str | None
     fit: BaseUploadedFile.ImageFit | None
 

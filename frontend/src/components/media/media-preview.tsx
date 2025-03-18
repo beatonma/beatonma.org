@@ -78,7 +78,8 @@ const MiniThumbnailOverlay = (props: DivProps) => {
 };
 
 const PreviewOne = (
-  props: { media: MediaFile } & DivPropsNoChildren & PreviewProps,
+  props: { media: MediaFile } & Omit<DivPropsNoChildren, "onClick"> &
+    PreviewProps,
 ) => {
   const { media, onClickMedia, ...rest } = props;
   return <MediaThumbnail media={media} {...rest} />;

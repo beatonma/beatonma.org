@@ -1,8 +1,9 @@
 export const onlyIf = <T, R>(
   value: T | null | undefined,
-  block: R | ((value: T) => R),
+  block?: R | ((value: T) => R),
 ): R | undefined => {
   if (isTruthy(value)) {
+    if (block == null) return value as any as R;
     return isFunction(block) ? block(value) : block;
   }
 };
