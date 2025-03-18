@@ -18,7 +18,7 @@ _PROJECT_MIDDLEWARE = [
     "main.middleware.redirect.QueryableRedirectFallbackMiddleware",
 ]
 _DEBUG_MIDDLEWARE = [
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "bma_dev.middleware.cors_middleware",
 ]
 MIDDLEWARE = _DJANGO_MIDDLEWARE + _THIRD_PARTY_MIDDLEWARE + _PROJECT_MIDDLEWARE
 if environment.DEBUG and not environment.TESTING:
@@ -28,3 +28,4 @@ if environment.DEBUG and not environment.TESTING:
         ),
         "debug_toolbar.middleware.DebugToolbarMiddleware",
     )
+    MIDDLEWARE += _DEBUG_MIDDLEWARE
