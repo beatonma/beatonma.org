@@ -154,6 +154,8 @@ class RelatedFile(GenericFkMixin, ApiModel, BaseUploadedFile):
 
     upload_to = "related"
 
+    sort_order = models.PositiveSmallIntegerField(default=0)
+
     def to_json(self) -> dict:
         return {
             "url": to_absolute_url(self.file.url),
