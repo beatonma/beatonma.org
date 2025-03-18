@@ -2,7 +2,7 @@
 
 import React, { ReactNode, useEffect, useRef } from "react";
 import { Paged } from "@/api";
-import { TextButton, TintedButton } from "@/components/button";
+import { InlineButton, TintedButton } from "@/components/button";
 import { PaginatedPostsProps } from "@/components/data/paginated-posts";
 import { Post } from "@/components/data/post";
 import { PostPreview } from "@/components/data/types";
@@ -41,26 +41,27 @@ export default function InfinitePosts(props: InfinitePostsProps) {
           <Row className="gap-8 justify-between w-full">
             <Row className="gap-2">
               {onlyIf(paged.href.previous, (prev) => (
-                <TextButton
+                <InlineButton
                   href={navigationHref("posts", { offset: prev })}
                   icon="ChevronLeft"
                 >
                   Previous
-                </TextButton>
+                </InlineButton>
               ))}
             </Row>
             <Row className="gap-2">
               {onlyIf(paged.href.next, (next) => (
-                <TextButton
+                <InlineButton
                   href={navigationHref("posts", { offset: next })}
                   icon="ChevronRight"
                 >
                   Next
-                </TextButton>
+                </InlineButton>
               ))}
             </Row>
           </Row>
         </noscript>
+
         <Client>
           <TintedButton onClick={paged.loadNext} className="my-16">
             Load more

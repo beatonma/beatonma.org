@@ -1,8 +1,10 @@
 type SearchParams = Record<string, string | number>;
 
 const Navigation = {
+  home: () => "/",
   posts: (params?: SearchParams) => `/${searchParams(params)}`,
   post: (slug: string) => `/post/${slug}/`,
+  contact: () => `/contact/`,
 };
 type Navigable = keyof typeof Navigation;
 export type NavDestination = {

@@ -4,393 +4,405 @@
  */
 
 export interface paths {
-  "/api/posts/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/posts/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Post Feed */
+        get: operations["main_api_posts_post_feed"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Post Feed */
-    get: operations["main_api_posts_post_feed"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/posts/{slug}/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/posts/{slug}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Post */
+        get: operations["main_api_posts_post"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Post Feed */
-    get: operations["main_api_posts_post_feed"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/search/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/search/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Search */
+        get: operations["main_api_search_search"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Search */
-    get: operations["main_api_search_search"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/search/suggestions/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/search/suggestions/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Suggestions */
+        get: operations["main_api_search_suggestions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Suggestions */
-    get: operations["main_api_search_suggestions"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/ping/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/ping/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ping */
+        get: operations["main_api_status_ping"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Ping */
-    get: operations["main_api_status_ping"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/whoami/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/whoami/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Whoami */
+        get: operations["main_api_status_whoami"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Whoami */
-    get: operations["main_api_status_whoami"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    /** Input */
-    Input: {
-      /**
-       * Limit
-       * @default 24
-       */
-      limit: number;
-      /**
-       * Offset
-       * @default 0
-       */
-      offset: number;
+    schemas: {
+        /** Input */
+        Input: {
+            /**
+             * Limit
+             * @default 24
+             */
+            limit: number;
+            /**
+             * Offset
+             * @default 0
+             */
+            offset: number;
+        };
+        /** App */
+        App: {
+            /** Title */
+            title: string;
+            /** Url */
+            url: string;
+        };
+        /** File */
+        File: {
+            url: components["schemas"]["Url"];
+            thumbnail_url?: components["schemas"]["Url"];
+            type: components["schemas"]["MediaType"];
+            /** Description */
+            description: string | null;
+            fit: components["schemas"]["ImageFit"] | null;
+        };
+        /**
+         * ImageFit
+         * @enum {string}
+         */
+        ImageFit: "cover" | "contain";
+        /** Link */
+        Link: {
+            /** Url */
+            url: string;
+            /** Description */
+            description?: string | null;
+            /** Host */
+            host?: string | null;
+            icon?: components["schemas"]["Url"] | null;
+        };
+        /**
+         * MediaType
+         * @enum {string}
+         */
+        MediaType: "audio" | "video" | "image" | "text" | "unknown";
+        /** PagedPostPreview */
+        PagedPostPreview: {
+            /** Items */
+            items: components["schemas"]["PostPreview"][];
+            /** Count */
+            count: number;
+            /** Page Size */
+            page_size: number;
+            /** Previous */
+            previous: number | null;
+            /** Next */
+            next: number | null;
+        };
+        /** PostPreview */
+        PostPreview: {
+            /** Title */
+            title: string | null;
+            /** Url */
+            url: string | null;
+            /** Is Published */
+            is_published: boolean;
+            /**
+             * Published At
+             * Format: date-time
+             */
+            published_at: string;
+            theme?: components["schemas"]["Theme"] | null;
+            app: components["schemas"]["App"] | null;
+            hero_image: components["schemas"]["File"] | null;
+            /** Content Html */
+            content_html: string | null;
+            /** Links */
+            links: components["schemas"]["Link"][];
+            /** Files */
+            files: components["schemas"]["File"][];
+            /** Dev Admin */
+            dev_admin: string;
+            /** Is Preview */
+            is_preview: boolean;
+        };
+        /** Theme */
+        Theme: {
+            /** Muted */
+            muted?: string | null;
+            /** Vibrant */
+            vibrant?: string | null;
+        };
+        Url: string;
+        /** PostDetail */
+        PostDetail: {
+            /** Title */
+            title: string | null;
+            /** Url */
+            url: string | null;
+            /** Is Published */
+            is_published: boolean;
+            /**
+             * Published At
+             * Format: date-time
+             */
+            published_at: string;
+            theme?: components["schemas"]["Theme"] | null;
+            app: components["schemas"]["App"] | null;
+            hero_image: components["schemas"]["File"] | null;
+            /** Content Html */
+            content_html: string | null;
+            /** Links */
+            links: components["schemas"]["Link"][];
+            /** Files */
+            files: components["schemas"]["File"][];
+            /** Dev Admin */
+            dev_admin: string;
+            /** Subtitle */
+            subtitle?: string | null;
+            /** Hero Html */
+            hero_html: string | null;
+        };
+        /** SearchResponseSchema */
+        SearchResponseSchema: {
+            /** Query */
+            query: string;
+            /** Feed */
+            feed: components["schemas"]["SearchResult"][];
+        };
+        /** SearchResult */
+        SearchResult: {
+            /** Name */
+            name: string;
+            /** Url */
+            url: string;
+            /** Timestamp */
+            timestamp?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Classname */
+            className?: string | null;
+        };
+        /** WhoAmiISchema */
+        WhoAmiISchema: {
+            /**
+             * Ip
+             * Format: ipvanyaddress
+             */
+            ip: string;
+            /** Device */
+            device: string;
+            /** Os */
+            os: string;
+            /** Browser */
+            browser: string;
+        };
     };
-    AbsoluteUrl: string;
-    /** App */
-    App: {
-      /** Title */
-      title: string;
-      /** Url */
-      url: string;
-    };
-    /** File */
-    File: {
-      url: components["schemas"]["AbsoluteUrl"];
-      type: components["schemas"]["MediaType"];
-      /** Description */
-      description: string | null;
-    };
-    /** Image */
-    Image: {
-      url: components["schemas"]["AbsoluteUrl"];
-      type: components["schemas"]["MediaType"];
-      /** Description */
-      description: string | null;
-    };
-    ImageOrNone: components["schemas"]["Image"] | null;
-    /** Link */
-    Link: {
-      /** Url */
-      url: string;
-      /** Description */
-      description?: string | null;
-      /** Host */
-      host?: string | null;
-      icon?: components["schemas"]["AbsoluteUrl"] | null;
-    };
-    /**
-     * MediaType
-     * @enum {string}
-     */
-    MediaType: "audio" | "video" | "image" | "text" | "unknown";
-    /** PagedPostPreview */
-    PagedPostPreview: {
-      /** Items */
-      items: components["schemas"]["PostPreview"][];
-      /** Count */
-      count: number;
-      /** Page Size */
-      page_size: number;
-      /** Previous */
-      previous: number | null;
-      /** Next */
-      next: number | null;
-    };
-    /** PostPreview */
-    PostPreview: {
-      /** Title */
-      title: string | null;
-      /** Preview Text */
-      preview_text: string | null;
-      /** Url */
-      url: string | null;
-      image?: components["schemas"]["ImageOrNone"];
-      /**
-       * Published At
-       * Format: date-time
-       */
-      published_at: string;
-      /** Is Published */
-      is_published: boolean;
-      /** Content Html */
-      content_html: string | null;
-      app: components["schemas"]["App"] | null;
-      /** Files */
-      files?: components["schemas"]["File"][];
-      /** Links */
-      links?: components["schemas"]["Link"][];
-    };
-    /** PostDetail */
-    PostDetail: {
-      /** Title */
-      title: string | null;
-      /** Subtitle */
-      subtitle?: string | null;
-      /** Url */
-      url: string | null;
-      hero_image: components["schemas"]["ImageOrNone"];
-      /** Hero Html */
-      hero_html: string | null;
-      /**
-       * Published At
-       * Format: date-time
-       */
-      published_at: string;
-      /** Is Published */
-      is_published: boolean;
-      /** Content Html */
-      content_html: string | null;
-      app: components["schemas"]["App"] | null;
-      /** Files */
-      files?: components["schemas"]["File"][];
-      /** Links */
-      links?: components["schemas"]["Link"][];
-    };
-    /** SearchResponseSchema */
-    SearchResponseSchema: {
-      /** Query */
-      query: string;
-      /** Feed */
-      feed: components["schemas"]["SearchResult"][];
-    };
-    /** SearchResult */
-    SearchResult: {
-      /** Name */
-      name: string;
-      /** Url */
-      url: string;
-      /** Timestamp */
-      timestamp?: string | null;
-      /** Description */
-      description?: string | null;
-      /** Classname */
-      className?: string | null;
-    };
-    /** WhoAmiISchema */
-    WhoAmiISchema: {
-      /**
-       * Ip
-       * Format: ipvanyaddress
-       */
-      ip: string;
-      /** Device */
-      device: string;
-      /** Os */
-      os: string;
-      /** Browser */
-      browser: string;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  main_api_posts_post_feed: {
-    parameters: {
-      query?: {
-        query?: string;
-        limit?: number;
-        offset?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    main_api_posts_post_feed: {
+        parameters: {
+            query?: {
+                query?: string;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["PagedPostPreview"];
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PagedPostPreview"];
+                };
+            };
         };
-      };
     };
-  };
-  main_api_posts_post_feed: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        slug: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    main_api_posts_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["PostDetail"];
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostDetail"];
+                };
+            };
         };
-      };
     };
-  };
-  main_api_search_search: {
-    parameters: {
-      query: {
-        query: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    main_api_search_search: {
+        parameters: {
+            query: {
+                query: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["SearchResponseSchema"];
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchResponseSchema"];
+                };
+            };
         };
-      };
     };
-  };
-  main_api_search_suggestions: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    main_api_search_suggestions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["SearchResult"][];
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchResult"][];
+                };
+            };
         };
-      };
     };
-  };
-  main_api_status_ping: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    main_api_status_ping: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-    };
-  };
-  main_api_status_whoami: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-        content: {
-          "application/json": components["schemas"]["WhoAmiISchema"];
-        };
-      };
     };
-  };
+    main_api_status_whoami: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WhoAmiISchema"];
+                };
+            };
+        };
+    };
 }

@@ -2,12 +2,13 @@
 @import "./_style/window-insets.css";
 
 @custom-variant touch (@media(pointer: coarse));
+@custom-variant pointer (@media(pointer: fine));
 @custom-variant dark {
   &:where([data-theme="dark"], [data-theme="dark"] *) {
     @slot;
   }
 
-  @media (prefers-color-scheme: dark) {
+  @media (prefers-color-scheme: dark) or (prefers-color-scheme: no-preference) {
     &:where([data-theme="system"], [data-theme="system"] *) {
       @slot;
     }
@@ -15,8 +16,8 @@
 }
 
 @utility colorscheme-light {
-  --background: #ffffff;
-  --on_background: #171717;
+  --background: var(--color-stone-200);
+  --on_background: var(--color-stone-950);
   --surface: var(--color-stone-50);
   --on_surface: var(--color-stone-950);
   --vibrant: var(--color-green-700);
@@ -25,13 +26,13 @@
   --on_muted: var(--color-slate-900);
 }
 @utility colorscheme-dark {
-  --background: #0a0a0a;
-  --on_background: #ededed;
-  --surface: var(--color-stone-800);
-  --on_surface: var(--color-stone-100);
-  --vibrant: var(--color-green-700);
-  --on_vibrant: var(--color-green-100);
-  --muted: var(--color-slate-600);
+  --background: #252225;
+  --on_background: #f1edf1;
+  --surface: #4b495c;
+  --on_surface: #efeef9;
+  --vibrant: #55c191;
+  --on_vibrant: #0c1e16;
+  --muted: var(--color-slate-500);
   --on_muted: var(--color-slate-900);
 }
 
@@ -42,6 +43,13 @@
   @media (prefers-color-scheme: dark) or (prefers-color-scheme: no-preference) {
     @apply colorscheme-dark;
   }
+}
+
+@theme {
+  --color-scrim: rgb(0 0 0 / 0.5);
+  --color-on_scrim: rgb(250 250 250);
+  --spacing-em: 1em;
+  --spacing-readable: 80ch;
 }
 
 @theme inline {
@@ -56,6 +64,11 @@
   --color-muted: var(--muted);
   --color-on_muted: var(--on_muted);
   --color-hover: color-mix(in srgb, currentColor 10%, transparent);
+  --color-hover_surface: color-mix(
+    in srgb,
+    var(--surface) 85%,
+    var(--on_surface)
+  );
 }
 
 ::selection {
@@ -64,6 +77,9 @@
 }
 
 @layer base {
+  html {
+    scrollbar-width: thin;
+  }
   body {
     background: var(--background);
     color: var(--on_background);
@@ -79,11 +95,7 @@
   }
 
   img {
-    @apply object-cover;
-  }
-
-  address {
-    @apply not-italic;
+    @apply overflow-hidden object-cover;
   }
 
   h1 {
@@ -110,11 +122,13 @@
   }
 
   .readable {
-    @apply w-full max-w-prose;
+    @apply max-w-readable w-full;
   }
-}
 
-@layer components {
+  .touch-target {
+    @apply min-h-12 min-w-12;
+  }
+
   .overflow-auto,
   .overflow-x-auto,
   .overflow-y-auto {
@@ -129,14 +143,29 @@
       background-color: transparent;
     }
   }
+
+  .scrollbar {
+    @media (pointer: coarse) {
+      scrollbar-width: thin;
+    }
+  }
 }
 
 @utility surface {
   @apply bg-surface text-on_surface fill-on_surface;
 }
+@utility scrim {
+  @apply bg-scrim text-on_scrim fill-on_scrim;
+}
 @utility card {
-  @apply outline-1 sm:rounded-md;
+  @apply overflow-hidden shadow-sm sm:rounded-md;
 }
 @utility card-content {
-  @apply px-4 py-2;
+  @apply px-4 py-2 sm:px-8 sm:py-4;
+}
+@utility chip {
+  @apply rounded-lg select-none;
+}
+@utility chip-content {
+  @apply px-2 py-1;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { ComponentProps, useEffect, useMemo, useRef, useState } from "react";
-import { TextButton } from "@/components/button";
+import { Button } from "@/components/button";
 import { AppIcon } from "@/components/icon";
 
 const StorageKey = "theme";
@@ -35,7 +35,7 @@ const ThemeController = (
   }, [mode]);
 
   return (
-    <TextButton
+    <Button
       icon={icon}
       onClick={() => setMode(nextTheme(mode) ?? "system")}
       title={`Cycle theme (${mode})`}

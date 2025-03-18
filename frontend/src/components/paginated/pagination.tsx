@@ -8,7 +8,6 @@ import {
   type Query,
   getPaginated,
 } from "@/api";
-import { navigationHref } from "@/navigation";
 
 interface AdjacentPages {
   next: number | null;

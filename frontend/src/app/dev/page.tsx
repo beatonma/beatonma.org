@@ -1,18 +1,21 @@
 import { Row } from "@/components/layout";
 import ThemeController from "@/components/themed/light-dark";
-import { Buttons, Icons, Loaders } from "./components";
+import * as Preview from "./_components";
 
 export default function Page() {
   return (
-    <main className="readable mx-auto column gap-16">
-      <Row className="justify-between">
-        <h1>Components overview</h1>
-        <ThemeController />
-      </Row>
+    <main className="mx-auto column gap-16 mb-16 items-center">
+      <div className="readable">
+        <Row className="justify-between">
+          <h1>Components overview</h1>
+          <ThemeController />
+        </Row>
 
-      <Buttons />
-      <Icons />
-      <Loaders />
+        <Preview.Buttons />
+        <Preview.Icons />
+        <Preview.Loaders />
+      </div>
+      <Preview.Media />
     </main>
   );
 }

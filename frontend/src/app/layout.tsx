@@ -32,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-background text-on_background fill-on_background">
+      <body className="bg-background text-on_background fill-on_background overflow-x-hidden size-full">
         {children}
       </body>
     </html>

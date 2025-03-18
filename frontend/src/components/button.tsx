@@ -3,29 +3,38 @@
 import Link from "next/link";
 import React, { ComponentPropsWithoutRef } from "react";
 import Icon, { type AppIcon } from "@/components/icon";
-import { ChildrenProps } from "@/types/react";
+import { ChildrenProps, ClassNameProps } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
-export const TextButton = (props: ButtonProps) => {
+/**
+ * A button with no padding.
+ */
+export const InlineButton = (props: ButtonProps) => {
   const { children, ...rest } = addClass(
     props,
     "relative rounded-sm font-bold tracking-tight hover:[&_.outofbounds]:bg-hover",
   );
   return (
     <BaseButton {...rest}>
-      <div className="absolute -inset-1/6 pointer-events-none outofbounds rounded-lg transition-colors" />
+      <div className="absolute -inset-x-2 -inset-y-1 pointer-events-none outofbounds rounded-lg transition-colors" />
       {children}
     </BaseButton>
   );
 };
 
-export const TintedButton = (props: ButtonProps) => {
-  const { style, ...rest } = addClass(
+export const Button = (props: ButtonProps) => {
+  const { ...rest } = addClass(
     props,
     "rounded-md px-2 py-1 min-w-[2em] min-h-[2em]",
-    "surface font-bold transition-colors",
-    "hover:bg-[color-mix(in_srgb,var(--surface)_90%,var(--on_surface))]",
+    "font-bold transition-colors",
+    "hover:bg-hover_surface",
   );
+
+  return <BaseButton {...rest} />;
+};
+
+export const TintedButton = (props: ButtonProps) => {
+  const { style, ...rest } = addClass(props, "surface");
 
   const themedStyle = {
     ...style,
@@ -33,7 +42,7 @@ export const TintedButton = (props: ButtonProps) => {
     "--on_surface": "var(--on_vibrant)",
   };
 
-  return <BaseButton style={themedStyle} {...rest} />;
+  return <Button style={themedStyle} {...rest} />;
 };
 
 interface ButtonContentProps {
@@ -70,28 +79,33 @@ const ButtonContent = (props: ButtonContentProps & ChildrenProps) => {
     return <ButtonIcon icon={icon} />;
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1 overflow-hidden *:shrink-0">
       <ButtonIcon icon={icon} />
       {children}
     </div>
   );
 };
 
-const ButtonIcon = (props: ButtonContentProps) => (
-  <Icon className="fill-current/90" {...props} />
+const ButtonIcon = (props: ButtonContentProps & ClassNameProps) => (
+  <Icon {...addClass(props, "fill-current/90")} />
 );
 
 const BaseButton = (props: ButtonProps) => {
   const { icon, children, ..._rest } = addClass(
     props,
-    "inline-flex items-center justify-center hover:cursor-pointer transition-all touch-target select-none",
+    "relative inline-flex items-center justify-center hover:cursor-pointer transition-all select-none",
   );
 
   const isIconOnly = icon && React.Children.count(children) === 0;
-  const content = isIconOnly ? (
-    <ButtonIcon icon={icon} />
-  ) : (
-    <ButtonContent icon={icon}>{children}</ButtonContent>
+  const content = (
+    <>
+      <span className="absolute size-full touch-target pointer:hidden bg-red-500/50" />
+      {isIconOnly ? (
+        <ButtonIcon icon={icon} />
+      ) : (
+        <ButtonContent icon={icon}>{children}</ButtonContent>
+      )}
+    </>
   );
 
   const rest = isIconOnly ? addClass(_rest, "aspect-square") : _rest;

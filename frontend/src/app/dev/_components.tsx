@@ -1,10 +1,12 @@
 "use client";
 
 import { ComponentPropsWithoutRef } from "react";
-import { TextButton, TintedButton } from "@/components/button";
+import { SampleMedia } from "@/app/dev/_sample";
+import { Button, InlineButton, TintedButton } from "@/components/button";
 import Icon, { _private as Icon_private } from "@/components/icon";
 import { Row } from "@/components/layout";
 import Loading, { LoadingBar } from "@/components/loading";
+import MediaCarousel from "@/components/media/media-carousel";
 import { addClass } from "@/util/transforms";
 
 const Section = (props: ComponentPropsWithoutRef<"section">) => (
@@ -13,9 +15,21 @@ const Section = (props: ComponentPropsWithoutRef<"section">) => (
 
 export const Buttons = () => (
   <Section>
-    <Row className="gap-4">
-      <TextButton href="#">TextButton</TextButton>
+    <Row className="gap-4 flex-wrap">
+      <InlineButton href="#">InlineButton</InlineButton>
+      <InlineButton onClick={() => console.log("click")} icon="MB">
+        InlineButton
+      </InlineButton>
+
       <TintedButton href="#">TintedButton</TintedButton>
+      <TintedButton onClick={() => console.log("click")} icon="MB">
+        TintedButton
+      </TintedButton>
+
+      <Button href="#">Button</Button>
+      <Button onClick={() => console.log("click")} icon="MB">
+        Button
+      </Button>
     </Row>
   </Section>
 );
@@ -45,3 +59,5 @@ export const Loaders = () => (
     <LoadingBar />
   </Section>
 );
+
+export const Media = () => <MediaCarousel media={SampleMedia} />;

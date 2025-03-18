@@ -14,6 +14,7 @@ const isTruthy = <T>(
   if (value == null) return false;
   if (condition) return condition(value);
   if (value === false) return false;
+  if (typeof value === "string") return !!value;
   if (Array.isArray(value) && value.length === 0) return false;
 
   return true;

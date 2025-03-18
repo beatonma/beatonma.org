@@ -4,11 +4,11 @@ type ThreeChannel = [number, number, number];
 
 const WcagContrast = 8; // https://www.w3.org/TR/WCAG21/#contrast-minimum
 
-export const getOnColor = (
-  backgroundColor: MaybeString,
-  foregroundColor?: MaybeString,
+export default function getForegroundColor(
+  backgroundColor: string | Nullish,
+  foregroundColor?: string | Nullish,
   element?: HTMLElement | Nullish,
-): MaybeString => {
+): MaybeString {
   if (!backgroundColor) return undefined;
 
   const resolvedBg = resolveToRgb(backgroundColor, element);
@@ -19,10 +19,10 @@ export const getOnColor = (
 
   const [r, g, b] = adjustForegroundContrast(resolvedBg, resolvedFg);
   return `rgb(${r}, ${g}, ${b})`;
-};
+}
 
 const resolveToRgb = (
-  color: MaybeString,
+  color: string | Nullish,
   element?: HTMLElement | Nullish,
 ): ThreeChannel | undefined => {
   if (!color) return undefined;
@@ -49,19 +49,6 @@ const adjustForegroundContrast = (
 
   // Try and find a suitable contrast by adjusting towards black
   let adjusted: ThreeChannel = [...foreground];
-  // console.log(`original: ${adjusted}`);
-  // if (
-  //   adjust(backgroundLuminance, adjusted, (it) => Math.max(0, it - step), 0)
-  // ) {
-  //   console.log(`towards black: ${adjusted}`);
-  //   return adjusted;
-  // }
-  //
-  // // Try and find a suitable contrast by adjusting towards white
-  // adjusted = [...foreground];
-  // adjust(backgroundLuminance, adjusted, (it) => Math.min(255, it + step), 255);
-  // console.log(`towards white: ${adjusted}`);
-  // return adjusted;
 
   for (let i = 0; i < 100; i++) {
     if (
@@ -108,32 +95,6 @@ const adjustForegroundContrast = (
     ];
   }
   return adjusted;
-};
-
-const adjust = (
-  backgroundLuminance: number,
-  adjusted: ThreeChannel,
-  _adjust: (component: number) => number,
-  limit: number,
-): ThreeChannel | undefined => {
-  for (let i = 0; i < 100; i++) {
-    if (
-      getContrastRatio(backgroundLuminance, getLuminance(adjusted)) >
-      WcagContrast
-    ) {
-      // Suitable contrast found.
-      return adjusted;
-    }
-
-    if (adjusted.every((it) => it === limit)) {
-      // Limit reached on all components.
-      break;
-    }
-
-    adjusted[0] = _adjust(adjusted[0]);
-    adjusted[1] = _adjust(adjusted[1]);
-    adjusted[2] = _adjust(adjusted[2]);
-  }
 };
 
 const getLuminance = (rgb: ThreeChannel): number => {
