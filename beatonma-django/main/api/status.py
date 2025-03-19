@@ -12,6 +12,11 @@ def ping(request: HttpRequest):
     return 200, "OK"
 
 
+@router.api_operation(["HEAD"], "/ping/", response={204: None})
+def ping(request: HttpRequest):
+    return 204, None
+
+
 class WhoAmiISchema(Schema):
     ip: IPvAnyAddress
     device: str
