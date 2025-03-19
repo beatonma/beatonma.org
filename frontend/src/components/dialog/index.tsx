@@ -68,7 +68,7 @@ const Scrim = (props: DivProps) => {
   const { ...rest } = addClass(
     props,
     "dialog-scrim",
-    "fixed inset-0 bg-scrim z-100",
+    "fixed inset-0 surface-scrim z-100",
   );
 
   return <div {...rest} />;

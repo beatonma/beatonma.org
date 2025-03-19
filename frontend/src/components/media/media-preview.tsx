@@ -150,7 +150,7 @@ const PreviewMany = (
 
   return (
     <PreviewFour media={media.slice(0, 4) as MediaGroup<4>} {...rest}>
-      <div className="absolute scrim chip chip-content bottom-0 right-0 m-2">
+      <div className="absolute surface-scrim chip chip-content bottom-0 right-0 m-2">
         +{media.length - 4}
       </div>
     </PreviewFour>

@@ -39,7 +39,7 @@ export const TintedButton = (props: ButtonProps) => {
   const themedStyle = {
     ...style,
     "--surface": "var(--vibrant)",
-    "--on_surface": "var(--on_vibrant)",
+    "--on-surface": "var(--on-vibrant)",
   };
 
   return <Button style={themedStyle} {...rest} />;

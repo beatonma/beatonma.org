@@ -130,11 +130,11 @@ const Placeholder = (props: { media: MediaFile } & DivProps) => {
     "column items-center justify-center p-4 gap-1",
   );
   const views: Record<MediaFile["type"], [AppIcon, string]> = {
-    image: ["Image", "bg-amber-400 text-amber-900 fill-amber-900"],
-    audio: ["Audio", "bg-cyan-400 text-cyan-900 fill-cyan-900"],
-    text: ["Text", "bg-neutral-200 text-neutral-900 fill-neutral-900"],
-    video: ["PlayArrow", "bg-rose-700 text-rose-50 fill-rose-50"],
-    unknown: ["Attachment", "bg-emerald-800 text-emerald-50 fill-emerald-50"],
+    image: ["Image", "surface-media-image"],
+    audio: ["Audio", "surface-media-audio"],
+    text: ["Text", "surface-media-text"],
+    video: ["PlayArrow", "surface-media-video"],
+    unknown: ["Attachment", "surface-media-unknown"],
   };
 
   const [icon, className] = views[media.type];

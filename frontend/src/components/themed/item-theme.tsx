@@ -9,9 +9,9 @@ interface Themed {
 }
 interface ThemeCss extends CSSProperties {
   "--vibrant"?: string | Nullish;
-  "--on_vibrant"?: string | Nullish;
+  "--on-vibrant"?: string | Nullish;
   "--muted"?: string | Nullish;
-  "--on_muted"?: string | Nullish;
+  "--on-muted"?: string | Nullish;
 }
 
 export default function itemTheme(obj: Themed): ThemeCss {
@@ -20,8 +20,8 @@ export default function itemTheme(obj: Themed): ThemeCss {
 
   return {
     "--vibrant": vibrant,
-    "--on_vibrant": getForegroundColor(vibrant),
+    "--on-vibrant": getForegroundColor(vibrant),
     "--muted": muted,
-    "--on_muted": getForegroundColor(muted),
+    "--on-muted": getForegroundColor(muted),
   };
 }
