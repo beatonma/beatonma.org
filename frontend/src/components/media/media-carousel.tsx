@@ -24,7 +24,7 @@ export default function MediaCarousel(
         <CarouselItem
           key={item.url}
           media={item}
-          className="max-h-[80vh] max-w-(--max-width)"
+          className="[--max-height:80vh] max-h-(--max-height) max-w-(--max-width)"
           isFocussed={index === focusIndex}
         />
       ))}
@@ -54,26 +54,26 @@ const CarouselItem = (
   }, [isFocussed]);
 
   return (
-    <div
+    <figure
       ref={onlyIf(isFocussed, ref)}
       {...addClass(
         rest,
-        "card grid grid-rows-[1fr_auto] grid-cols-1 justify-center w-fit bg-neutral-900",
+        "card grid grid-rows-[1fr_auto] grid-cols-1 justify-center w-fit bg-neutral-900/50",
       )}
     >
       <MediaView
         media={media}
         image={{ fit: "contain" }}
-        className="max-h-full self-center"
+        className="max-h-full min-w-64 self-center size-full"
       />
 
       {onlyIf(media.description, (description) => (
-        <div className="surface  max-h-[5em] p-4">
+        <figcaption className="surface max-h-[5em] p-4">
           <p className="font-bold text-lg readable overflow-y-auto scrollbar">
             {description}
           </p>
-        </div>
+        </figcaption>
       ))}
-    </div>
+    </figure>
   );
 };

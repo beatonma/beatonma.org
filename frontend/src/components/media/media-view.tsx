@@ -30,7 +30,7 @@ export default function MediaView(
     video: () => <VideoView {...rest} />,
     audio: () => <AudioView {...rest} />,
     text: () => <TextView {...rest} />,
-    unknown: () => null,
+    unknown: () => <BlobDownloadView {...rest} />,
   };
   return views[props.media.type]();
 }
@@ -95,20 +95,30 @@ const AudioView = (props: MediaViewProps) => {
   const { media, ...rest } = props;
   return (
     <div {...rest}>
-      <audio src={media.url} />
+      <Placeholder media={media} className="size-full">
+        {onlyIf(media.name, (name) => (
+          <h3 className="text-sm">{name}</h3>
+        ))}
+        <audio src={media.url} controls className="block mt-4" />
+      </Placeholder>
     </div>
   );
 };
 
-const TextView = (props: MediaViewProps) => {
-  const { media, ...rest } = props;
+const TextView = (props: MediaViewProps) => <BlobDownloadView {...props} />;
+
+const BlobDownloadView = (props: MediaViewProps) => {
+  const { media, ...rest } = addClass(props, "block");
+
   return (
     <a href={media.url} download {...rest}>
-      <Placeholder media={media}>
-        {onlyIf(media.name, (name) => (
-          <h3>{name}</h3>
-        ))}
-        <p>Download</p>
+      <Placeholder media={media} className="size-full">
+        <div className="column items-center">
+          {onlyIf(media.name, (name) => (
+            <h3>{name}</h3>
+          ))}
+          <p>Click to download</p>
+        </div>
       </Placeholder>
     </a>
   );
@@ -117,21 +127,24 @@ const TextView = (props: MediaViewProps) => {
 const Placeholder = (props: { media: MediaFile } & DivProps) => {
   const { media, children, ...rest } = addClass(
     props,
-    "column items-center justify-center @container aspect-square",
+    "column items-center justify-center p-4 gap-1",
   );
   const views: Record<MediaFile["type"], [AppIcon, string]> = {
-    image: ["Image", "bg-amber-400 fill-amber-900"],
-    audio: ["Audio", "bg-cyan-400 fill-cyan-900"],
-    text: ["Text", "bg-neutral-200 fill-neutral-900"],
-    video: ["PlayArrow", "bg-rose-700 fill-rose-50"],
-    unknown: ["Attachment", "bg-emerald-800 fill-emerald-50"],
+    image: ["Image", "bg-amber-400 text-amber-900 fill-amber-900"],
+    audio: ["Audio", "bg-cyan-400 text-cyan-900 fill-cyan-900"],
+    text: ["Text", "bg-neutral-200 text-neutral-900 fill-neutral-900"],
+    video: ["PlayArrow", "bg-rose-700 text-rose-50 fill-rose-50"],
+    unknown: ["Attachment", "bg-emerald-800 text-emerald-50 fill-emerald-50"],
   };
 
   const [icon, className] = views[media.type];
 
   return (
     <div {...addClass(rest, className)}>
-      <Icon icon={icon} className="size-1/3" />
+      <Icon
+        icon={icon}
+        className="max-w-1/3 max-h-1/3 w-16 h-auto aspect-square"
+      />
       {children}
     </div>
   );

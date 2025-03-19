@@ -127,7 +127,7 @@ const PreviewFour = (
 ) => {
   const { media, onClickMedia, children, ...rest } = addClass(
     props,
-    "grid grid-cols-2 grid-rows-2",
+    "grid grid-cols-2 grid-rows-2 *:aspect-square",
   );
 
   const [one, two, three, four] = media;
