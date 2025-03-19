@@ -17,6 +17,10 @@ export default function RootLayout({
             <Link href={navigationHref("home")}>{process.env.SITE_NAME}</Link>
           </h1>
           <Row className="gap-4">
+            <Button icon="Dev" href="/dev/">
+              Components
+            </Button>
+            <Separator />
             <Button href={navigationHref("contact")}>Contact</Button>
             <ThemeController />
           </Row>
