@@ -68,8 +68,8 @@ const CarouselItem = (
       />
 
       {onlyIf(media.description, (description) => (
-        <figcaption className="surface max-h-[5em] p-4">
-          <p className="font-bold text-lg readable overflow-y-auto scrollbar">
+        <figcaption className="surface p-4 self-justify-center">
+          <p className="font-bold text-lg readable max-h-[3lh] overflow-y-auto scrollbar mx-auto">
             {description}
           </p>
         </figcaption>
