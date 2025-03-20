@@ -58,7 +58,7 @@ const CarouselItem = (
       ref={onlyIf(isFocussed, ref)}
       {...addClass(
         rest,
-        "card grid grid-rows-[1fr_auto] grid-cols-1 justify-center w-fit bg-neutral-900/50",
+        "card grid grid-rows-[1fr_auto] grid-cols-1 justify-center bg-neutral-900/50 overflow-hidden",
       )}
     >
       <MediaView

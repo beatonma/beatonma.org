@@ -3,13 +3,12 @@ import Icon, { AppIcon } from "@/components/icon";
 import { MediaFile, OnClickMediaContext } from "@/components/media/common";
 import { DivProps, DivPropsNoChildren } from "@/types/react";
 import { onlyIf } from "@/util/optional";
-import { addClass } from "@/util/transforms";
+import { addClass, classes } from "@/util/transforms";
 
-interface MediaViewProps {
+interface MediaProps {
   media: MediaFile;
-  className?: string;
-  onClick?: () => void;
 }
+type MediaViewProps = MediaProps & DivPropsNoChildren;
 
 interface ImageProps {
   image?: {
@@ -18,11 +17,7 @@ interface ImageProps {
   };
 }
 
-export default function MediaView(
-  props: MediaViewProps &
-    ImageProps &
-    Omit<DivPropsNoChildren, keyof MediaViewProps>,
-) {
+export default function MediaView(props: MediaViewProps & ImageProps) {
   const { image, ...rest } = addClass(props, "relative");
 
   const views: Record<MediaFile["type"], () => ReactNode> = {
@@ -34,11 +29,7 @@ export default function MediaView(
   };
   return views[props.media.type]();
 }
-export const MediaThumbnail = (
-  props: MediaViewProps &
-    ImageProps &
-    Omit<DivPropsNoChildren, keyof MediaViewProps>,
-) => {
+export const MediaThumbnail = (props: MediaViewProps & ImageProps) => {
   const { media, ...rest } = addClass(props, "size-full");
   const onClickMedia = useContext(OnClickMediaContext);
 
@@ -78,17 +69,27 @@ const ImageView = (props: MediaViewProps & ImageProps) => {
   }[image?.fit ?? media.fit ?? "cover"];
 
   return (
-    <img
-      src={src}
-      alt={media.description ?? ""}
-      {...addClass(rest, fitStyle)}
-    />
+    <MediaWrapper {...rest}>
+      <img
+        src={src}
+        alt={media.description ?? ""}
+        className={classes(fitStyle, "size-full")}
+      />
+    </MediaWrapper>
   );
 };
 
 const VideoView = (props: MediaViewProps) => {
   const { media, ...rest } = props;
-  return <video src={media.url} muted controls {...rest} />;
+  return (
+    <MediaWrapper {...rest}>
+      <video className="size-full" src={media.url} muted controls />
+    </MediaWrapper>
+  );
+};
+
+const MediaWrapper = (props: DivPropsNoChildren) => {
+  return <div {...addClass(props, "size-full overflow-hidden")} />;
 };
 
 const AudioView = (props: MediaViewProps) => {
@@ -111,16 +112,18 @@ const BlobDownloadView = (props: MediaViewProps) => {
   const { media, ...rest } = addClass(props, "block");
 
   return (
-    <a href={media.url} download {...rest}>
-      <Placeholder media={media} className="size-full">
-        <div className="column items-center">
-          {onlyIf(media.name, (name) => (
-            <h3>{name}</h3>
-          ))}
-          <p>Click to download</p>
-        </div>
-      </Placeholder>
-    </a>
+    <div {...rest}>
+      <a href={media.url} download>
+        <Placeholder media={media} className="size-full">
+          <div className="column items-center">
+            {onlyIf(media.name, (name) => (
+              <h3>{name}</h3>
+            ))}
+            <p>Click to download</p>
+          </div>
+        </Placeholder>
+      </a>
+    </div>
   );
 };
 
