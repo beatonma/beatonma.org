@@ -320,12 +320,12 @@ def generate_webmentions_for(
             sent_by=hcard.homepage,
             approved=True,
             validated=True,
-            hcard=hcard
-            if force_hcard or random.random() > 0.3
-            else None,  # Sometimes no hcard
+            hcard=(
+                hcard if force_hcard or random.random() > 0.3 else None
+            ),  # Sometimes no hcard
             target_url=target.get_absolute_url(),
             source_url=urljoin(hcard.homepage, samples.any_urlpath()),
-            post_type=random.choice(IncomingMentionType.serialized_names()),
+            post_type=random.choice([x.value for x in IncomingMentionType]),
             target_object=target,
             quote=quote,
         )

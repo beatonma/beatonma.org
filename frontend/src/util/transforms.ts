@@ -1,4 +1,4 @@
-import { MaybeString } from "@/types";
+import { MaybeString, Nullish } from "@/types";
 
 export const classes = (...classNames: (string | undefined | null)[]) =>
   classNames.filter(Boolean).join(" ") || undefined;
@@ -8,7 +8,7 @@ export const classes = (...classNames: (string | undefined | null)[]) =>
  */
 export const addClass = <T extends { className?: string }>(
   props: T,
-  ...extraClasses: string[]
+  ...extraClasses: (string | Nullish)[]
 ) => ({
   ...props,
   className: classes(props.className, ...extraClasses),
@@ -16,3 +16,8 @@ export const addClass = <T extends { className?: string }>(
 
 export const capitalize = (value: MaybeString | null): string | null =>
   value ? value.slice(0, 1).toUpperCase() + value.slice(1) : null;
+
+export const formatUrl = (url: string): string => {
+  const _url = new URL(url);
+  return _url.hostname.replace("www.", "");
+};

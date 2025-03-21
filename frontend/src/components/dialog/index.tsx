@@ -1,25 +1,33 @@
-import { ComponentPropsWithoutRef, useCallback, useEffect } from "react";
+"use client";
+
+import {
+  ComponentPropsWithoutRef,
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
+import { createPortal } from "react-dom";
 import { Button } from "@/components/button";
+import { useClient } from "@/components/environment";
 import { DivProps } from "@/types/react";
 import { addClass } from "@/util/transforms";
 import "./dialog.css";
+
+const DialogPortalContainerId = "dialog_portal_container";
 
 interface DialogProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
 export default function Dialog(
   props: DialogProps &
     Omit<ComponentPropsWithoutRef<"dialog">, keyof DialogProps | "onClick">,
 ) {
   const { isOpen, onClose, children, ...rest } = props;
-
-  const keyboardController = useCallback((ev: KeyboardEvent) => {
-    if (ev.code === "Escape") {
-      onClose();
-      ev.preventDefault();
-    }
-  }, []);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const isMounted = useClient();
 
   useEffect(() => {
     if (isOpen) {
@@ -29,13 +37,35 @@ export default function Dialog(
     return () => window.removeEventListener("keydown", keyboardController);
   }, [isOpen]);
 
-  return (
-    <>
-      <Scrim
-        data-is-open={isOpen}
-        onClick={() => onClose()}
-        className="flex justify-center items-center overflow-hidden"
-      >
+  useEffect(() => {
+    containerRef.current = document.getElementById(
+      DialogPortalContainerId,
+    ) as HTMLDivElement;
+  }, []);
+
+  const keyboardController = useCallback((ev: KeyboardEvent) => {
+    if (ev.code === "Escape") {
+      onClose();
+      ev.preventDefault();
+    }
+  }, []);
+  const onClickClose = useCallback(
+    (ev: MouseEvent) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      onClose();
+    },
+    [onClose],
+  );
+
+  if (!isMounted) return null;
+  return createPortal(
+    <Scrim
+      data-is-open={isOpen}
+      onClick={onClickClose}
+      className="flex justify-center items-center overflow-hidden"
+    >
+      {isOpen && (
         <dialog
           open={isOpen}
           onClick={(ev) => {
@@ -48,21 +78,58 @@ export default function Dialog(
           )}
         >
           {children}
-
           <div className="p-4 self-end w-fit">
             <Button
               icon="Close"
-              onClick={() => onClose()}
+              onClick={onClickClose}
               className="text-vibrant"
             >
               Close
             </Button>
           </div>
         </dialog>
-      </Scrim>
-    </>
+      )}
+    </Scrim>,
+    containerRef.current!,
   );
 }
+
+// return (
+//   <>
+//     <Scrim
+//       data-is-open={isOpen}
+//       onClick={onClickClose}
+//       className="flex justify-center items-center overflow-hidden"
+//     >
+//       {isOpen && (
+//         <dialog
+//           open={isOpen}
+//           onClick={(ev) => {
+//             ev.stopPropagation();
+//           }}
+//           {...addClass(
+//             rest,
+//             "[--max-width:95vw] [--max-height:95vh] max-h-(--max-height) max-w-(--max-width)",
+//             "surface-alt column gap-4 overflow-hidden justify-self-center rounded-md",
+//           )}
+//         >
+//           {children}
+//
+//           <div className="p-4 self-end w-fit">
+//             <Button
+//               icon="Close"
+//               onClick={onClickClose}
+//               className="text-vibrant"
+//             >
+//               Close
+//             </Button>
+//           </div>
+//         </dialog>
+//       )}
+//     </Scrim>
+//   </>
+// );
+// }
 
 const Scrim = (props: DivProps) => {
   const { ...rest } = addClass(

@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import React, { ComponentPropsWithoutRef } from "react";
+import React, { ComponentPropsWithoutRef, ReactNode } from "react";
 import Icon, { type AppIcon } from "@/components/icon";
 import { ChildrenProps, ClassNameProps } from "@/types/react";
-import { addClass } from "@/util/transforms";
+import { addClass, formatUrl } from "@/util/transforms";
 
 /**
  * A button with no padding.
@@ -23,18 +23,26 @@ export const InlineButton = (props: ButtonProps) => {
 };
 
 export const Button = (props: ButtonProps) => {
-  const { ...rest } = addClass(
-    props,
-    "rounded-md px-2 py-1 min-w-[2em] min-h-[2em]",
-    "font-bold transition-colors",
-    "hover:bg-hover",
+  return (
+    <BaseButton
+      {...addClass(
+        props,
+        "rounded-md px-2 py-1 min-w-[2em] min-h-[2em]",
+        "font-bold transition-colors",
+        "hover:bg-hover",
+      )}
+    />
   );
-
-  return <BaseButton {...rest} />;
 };
 
 export const TintedButton = (props: ButtonProps) => {
-  const { style, ...rest } = addClass(props, "surface");
+  const { style, ...rest } = addClass(
+    props,
+    "surface",
+    "rounded-md px-2 py-1 min-w-[2em] min-h-[2em]",
+    "font-bold transition-colors",
+    "hover:bg-[color-mix(in_srgb,var(--surface)_85%,currentColor)]",
+  );
 
   const themedStyle = {
     ...style,
@@ -42,11 +50,26 @@ export const TintedButton = (props: ButtonProps) => {
     "--on-surface": "var(--on-vibrant)",
   };
 
-  return <Button style={themedStyle} {...rest} />;
+  return <BaseButton style={themedStyle} {...rest} />;
+};
+
+export const InlineLink = (props: Omit<ButtonLinkProps, "children">) => {
+  const { href, icon, ...rest } = addClass(props, "hover:underline");
+  if (!href) return null;
+
+  return (
+    <BaseButton
+      href={href}
+      icon={icon === null ? null : (icon ?? "Link")}
+      {...rest}
+    >
+      {formatUrl(href)}
+    </BaseButton>
+  );
 };
 
 interface ButtonContentProps {
-  icon?: AppIcon;
+  icon?: AppIcon | ReactNode;
 }
 
 export type ButtonLinkProps = {
@@ -79,16 +102,26 @@ const ButtonContent = (props: ButtonContentProps & ChildrenProps) => {
     return <ButtonIcon icon={icon} />;
 
   return (
-    <div className="flex items-center gap-1 overflow-hidden *:shrink-0">
+    <div className="grid grid-cols-[auto_1fr] items-center gap-1 overflow-hidden">
       <ButtonIcon icon={icon} />
-      {children}
+      <div className="col-start-2 overflow-hidden overflow-ellipsis">
+        {children}
+      </div>
     </div>
   );
 };
 
-const ButtonIcon = (props: ButtonContentProps & ClassNameProps) => (
-  <Icon {...addClass(props, "fill-current/90")} />
-);
+const ButtonIcon = (props: ButtonContentProps & ClassNameProps) => {
+  const { icon, ...rest } = addClass(props, "fill-current/90");
+
+  if (!icon) return null;
+
+  if (typeof icon === "string") {
+    return <Icon icon={icon as AppIcon} {...rest} />;
+  }
+
+  return <div {...addClass(rest, "size-em overflow-hidden")}>{icon}</div>;
+};
 
 const BaseButton = (props: ButtonProps) => {
   const { icon, children, ..._rest } = addClass(

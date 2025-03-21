@@ -305,6 +305,9 @@ case $context in
   "certbot")
     certbot "$@"
     ;;
+  "openapi")
+    npx openapi-typescript http://localhost:8001/api/openapi.json -o frontend/src/api/api.d.ts
+    ;;
   *)
     log "Unhandled context '$context'"
     exit 1

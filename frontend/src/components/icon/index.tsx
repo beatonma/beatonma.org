@@ -1,5 +1,7 @@
 import { ComponentPropsWithoutRef } from "react";
 import { Nullish } from "@/types";
+import { DivPropsNoChildren } from "@/types/react";
+import { addClass } from "@/util/transforms";
 import BlueSky from "./svg/external/ic_bluesky.svg";
 import Facebook from "./svg/external/ic_facebook.svg";
 import Github from "./svg/external/ic_github.svg";
@@ -18,6 +20,7 @@ import Code from "./svg/material/code.svg";
 import Audio from "./svg/material/headphones.svg";
 import Home from "./svg/material/home.svg";
 import Image from "./svg/material/image.svg";
+import Link from "./svg/material/link.svg";
 import Email from "./svg/material/mail.svg";
 import PlayArrow from "./svg/material/play_arrow.svg";
 import QuestionMark from "./svg/material/questionmark.svg";
@@ -61,6 +64,7 @@ const Icons = {
   Dev: Code,
   Email,
   Home,
+  Link,
   QuestionMark,
 };
 export type AppIcon = keyof typeof Icons;
@@ -78,6 +82,19 @@ export default function Icon(props: IconProps) {
 
   return <Element {...rest} />;
 }
+
+interface RemoteIconProps {
+  src: string;
+}
+export const RemoteIcon = (props: RemoteIconProps & DivPropsNoChildren) => {
+  const { src, style, ...rest } = addClass(props, "size-em bg-current");
+  return (
+    <div
+      style={{ ...style, maskImage: `url('${src}')`, maskSize: "1em" }}
+      {...rest}
+    />
+  );
+};
 
 export const _private = {
   Icons: Object.keys(Icons) as AppIcon[],

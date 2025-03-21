@@ -46,13 +46,25 @@ class App(
         ("deprecated", "Deprecated"),
     )
 
+    class StatusOptions(models.TextChoices):
+        dev = "dev"
+        test = "public"
+        public = "published"
+        deprecated = "deprecated"
+
     search_fields = ["title", "content", "app_id", "tags__name"]
 
     title = models.CharField(max_length=140)
     app_id = models.CharField(max_length=255, unique=True, help_text="Application ID")
     slug = models.SlugField(unique=True, max_length=255)
     tagline = models.CharField(max_length=140, blank=True)
-    status = models.CharField(max_length=16, choices=STATUS_OPTIONS, default="dev")
+    status = models.CharField(
+        max_length=16,
+        choices=StatusOptions.choices,
+        default="dev",
+        blank=True,
+        null=True,
+    )
 
     icon = SanitizedFileField(
         blank=True,

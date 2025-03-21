@@ -73,7 +73,7 @@ article_urlpatterns = [
 
 frontend_paths = [
     mentions_path(
-        "post/<slug:slug>/",
+        "posts/<slug:slug>/",
         PostView.as_view(),
         name=view_names.POST,
         model_class="main.Post",

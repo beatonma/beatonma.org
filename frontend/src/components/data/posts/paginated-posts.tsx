@@ -1,6 +1,6 @@
 import { Query, client } from "@/api";
-import InfinitePosts from "@/components/data/infinite-posts";
 import { DivPropsNoChildren } from "@/types/react";
+import InfinitePosts from "./infinite-posts";
 
 export interface PaginatedPostsProps {
   query?: Query<"/api/posts/">;

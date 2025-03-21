@@ -85,7 +85,8 @@ export interface paths {
         post?: never;
         delete?: never;
         options?: never;
-        head?: never;
+        /** Ping */
+        head: operations["main_api_status_ping"];
         patch?: never;
         trace?: never;
     };
@@ -129,6 +130,7 @@ export interface components {
             title: string;
             /** Url */
             url: string;
+            status: components["schemas"]["StatusOptions"];
         };
         /** File */
         File: {
@@ -179,7 +181,7 @@ export interface components {
             /** Title */
             title: string | null;
             /** Url */
-            url: string | null;
+            url: string;
             /** Is Published */
             is_published: boolean;
             /**
@@ -192,14 +194,28 @@ export interface components {
             hero_image: components["schemas"]["File"] | null;
             /** Content Html */
             content_html: string | null;
+            /** Content Script */
+            content_script: string | null;
             /** Links */
             links: components["schemas"]["Link"][];
             /** Files */
             files: components["schemas"]["File"][];
+            /** Tags */
+            tags: components["schemas"]["Tag"][];
             /** Dev Admin */
             dev_admin: string;
             /** Is Preview */
             is_preview: boolean;
+        };
+        /**
+         * StatusOptions
+         * @enum {string}
+         */
+        StatusOptions: "dev" | "public" | "published" | "deprecated";
+        /** Tag */
+        Tag: {
+            /** Name */
+            name: string;
         };
         /** Theme */
         Theme: {
@@ -209,12 +225,45 @@ export interface components {
             vibrant?: string | null;
         };
         Url: string;
+        /** HCard */
+        HCard: {
+            /** Name */
+            name: string | null;
+            /** Avatar */
+            avatar?: string | null;
+            /** Homepage */
+            homepage: string | null;
+        };
+        /**
+         * IncomingMentionType
+         * @description Properties that describe the context of the incoming webmention.
+         *
+         *     See: https://microformats.org/wiki/h-entry
+         * @enum {string}
+         */
+        IncomingMentionType: "u-bookmark-of" | "u-like-of" | "u-listen-of" | "u-in-reply-to" | "u-repost-of" | "u-translation-of" | "u-watch-of";
+        /** Mention */
+        Mention: {
+            /** Source Url */
+            source_url: string;
+            hcard: components["schemas"]["HCard"] | null;
+            /** Quote */
+            quote: string | null;
+            type?: components["schemas"]["IncomingMentionType"] | null;
+            /**
+             * Date
+             * Format: date-time
+             */
+            date: string;
+            /** Dev Admin */
+            dev_admin: string;
+        };
         /** PostDetail */
         PostDetail: {
             /** Title */
             title: string | null;
             /** Url */
-            url: string | null;
+            url: string;
             /** Is Published */
             is_published: boolean;
             /**
@@ -227,16 +276,22 @@ export interface components {
             hero_image: components["schemas"]["File"] | null;
             /** Content Html */
             content_html: string | null;
+            /** Content Script */
+            content_script: string | null;
             /** Links */
             links: components["schemas"]["Link"][];
             /** Files */
             files: components["schemas"]["File"][];
+            /** Tags */
+            tags: components["schemas"]["Tag"][];
             /** Dev Admin */
             dev_admin: string;
             /** Subtitle */
             subtitle?: string | null;
             /** Hero Html */
             hero_html: string | null;
+            /** Mentions */
+            mentions: components["schemas"]["Mention"][];
         };
         /** SearchResponseSchema */
         SearchResponseSchema: {
@@ -380,6 +435,24 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    main_api_status_ping: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };

@@ -2,7 +2,12 @@
 
 import { ComponentPropsWithoutRef } from "react";
 import { SampleMedia } from "@/app/dev/_sample";
-import { Button, InlineButton, TintedButton } from "@/components/button";
+import {
+  Button,
+  InlineButton,
+  InlineLink,
+  TintedButton,
+} from "@/components/button";
 import Icon, { _private as Icon_private } from "@/components/icon";
 import { Row } from "@/components/layout";
 import Loading, { LoadingBar } from "@/components/loading";
@@ -14,22 +19,34 @@ const Section = (props: ComponentPropsWithoutRef<"section">) => (
 );
 
 export const Buttons = () => (
-  <Section>
+  <Section className="space-y-2">
     <Row className="gap-4 flex-wrap">
+      <InlineButton icon="MB" href="#" />
       <InlineButton href="#">InlineButton</InlineButton>
       <InlineButton onClick={() => console.log("click")} icon="MB">
         InlineButton
       </InlineButton>
+    </Row>
 
+    <Row className="gap-4 flex-wrap">
+      <TintedButton icon="MB" href="#" />
       <TintedButton href="#">TintedButton</TintedButton>
       <TintedButton onClick={() => console.log("click")} icon="MB">
         TintedButton
       </TintedButton>
+    </Row>
 
+    <Row className="gap-4 flex-wrap">
+      <Button icon="MB" href="#" />
       <Button href="#">Button</Button>
       <Button onClick={() => console.log("click")} icon="MB">
         Button
       </Button>
+    </Row>
+
+    <Row className="gap-4 flex-wrap">
+      <InlineLink icon="MB" href="https://beatonma.org" />
+      <InlineLink href="https://beatonma.org" />
     </Row>
   </Section>
 );

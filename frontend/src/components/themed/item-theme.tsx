@@ -14,7 +14,10 @@ interface ThemeCss extends CSSProperties {
   "--on-muted"?: string | Nullish;
 }
 
-export default function itemTheme(obj: Themed): ThemeCss {
+export default function itemTheme(
+  obj: Themed,
+  mergeInto?: CSSProperties,
+): ThemeCss {
   if (!obj.theme) return {};
   const { vibrant, muted } = obj.theme;
 
@@ -23,5 +26,6 @@ export default function itemTheme(obj: Themed): ThemeCss {
     "--on-vibrant": getForegroundColor(vibrant),
     "--muted": muted,
     "--on-muted": getForegroundColor(muted),
+    ...(mergeInto ?? {}),
   };
 }

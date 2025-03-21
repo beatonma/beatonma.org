@@ -112,7 +112,6 @@ class Post(
 
     def get_absolute_url(self) -> str:
         return reverse("post", kwargs={"slug": self.slug})
-        # return f"/posts/{self.slug}"
 
     def _extract_tags(self):
         """Generate tags from any #hashtags found in the text."""

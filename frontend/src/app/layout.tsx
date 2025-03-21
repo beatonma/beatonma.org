@@ -31,8 +31,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="size-full">
       <body className="surface-background overflow-x-hidden size-full">
+        <div id="dialog_portal_container" />
         {children}
       </body>
     </html>

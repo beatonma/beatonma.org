@@ -1,5 +1,8 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 @import "./_style/window-insets.css";
+@import "./_style/code-syntax-highlighting.css";
+@config "./_style/tailwind-prose.config.js";
 
 @custom-variant touch (@media(pointer: coarse));
 @custom-variant pointer (@media(pointer: fine));
@@ -14,13 +17,25 @@
     }
   }
 }
+@custom-variant light {
+  &:where([data-theme="light"], [data-theme="light"] *) {
+    @slot;
+  }
+
+  @media (prefers-color-scheme: light) {
+    &:where([data-theme="system"], [data-theme="system"] *) {
+      @slot;
+    }
+  }
+}
 
 @utility colorscheme-light {
   --background: var(--color-stone-200);
   --on-background: var(--color-stone-950);
   --surface: var(--color-stone-50);
-  --surface-alt: var(--color-stone-200);
   --on-surface: var(--color-stone-950);
+  --alt: var(--color-stone-800);
+  --on-alt: var(--color-stone-200);
   --vibrant: var(--color-green-700);
   --on-vibrant: var(--color-green-100);
   --muted: var(--color-slate-600);
@@ -30,15 +45,32 @@
   --background: #252225;
   --on-background: #f1edf1;
   --surface: #4b495c;
-  --surface-alt: #26252c;
   --on-surface: #efeef9;
+  --alt: #26252c;
+  --on-alt: #dddbea;
   --vibrant: #55c191;
   --on-vibrant: #0c1e16;
   --muted: var(--color-slate-500);
   --on-muted: var(--color-slate-900);
 }
 
+/* Common colours for content. */
+@utility palette {
+  --white: var(--color-white);
+  --black: var(--color-black);
+  --grey: var(--color-neutral-700);
+  --red: var(--color-rose-700);
+  --green: var(--color-green-600);
+  --blue: var(--color-sky-600);
+  --cyan: var(--color-cyan-400);
+  --yellow: var(--color-yellow-400);
+  --orange: var(--color-orange-600);
+  --purple: var(--color-purple-700);
+  --pink: var(--color-pink-600);
+}
+
 :root {
+  @apply palette;
   @media (prefers-color-scheme: light) {
     @apply colorscheme-light;
   }
@@ -46,6 +78,9 @@
     @apply colorscheme-dark;
   }
 
+  --bg: var(--background);
+  --fg: var(--on-background);
+  accent-color: var(--vibrant);
   --max-width: 100vw;
   --max-height: 100vh;
 }
@@ -75,9 +110,9 @@
   --color-on-background: var(--on-background);
 
   --color-surface: var(--surface);
-  --color-surface-alt: var(--surface-alt);
   --color-on-surface: var(--on-surface);
-
+  --color-alt: var(--alt);
+  --color-on-alt: var(--on-alt);
   --color-vibrant: var(--vibrant);
   --color-on-vibrant: var(--on-vibrant);
   --color-muted: var(--muted);
@@ -85,17 +120,12 @@
   --color-hover: color-mix(in srgb, currentColor 10%, transparent);
 }
 
-::selection {
-  background-color: color-mix(in srgb, var(--surface), var(--vibrant));
-  color: var(--on-vibrant);
-}
-
 @layer base {
   html {
     scrollbar-width: thin;
   }
   body {
-    font-family: Arial, Helvetica, sans-serif;
+    @apply font-sans;
 
     &[data-theme="light"] {
       @apply colorscheme-light;
@@ -126,6 +156,15 @@
   audio::-webkit-media-controls-enclosure {
     @apply rounded-md;
   }
+
+  *:focus-visible {
+    @apply outline-2 outline-current outline-dashed;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--bg), var(--vibrant) 70%);
+    color: var(--on-vibrant);
+  }
 }
 
 @layer components {
@@ -135,10 +174,6 @@
 
   .column {
     @apply flex flex-col;
-  }
-
-  .readable {
-    @apply max-w-readable w-full;
   }
 
   .touch-target {
@@ -172,20 +207,29 @@
 
 @utility surface {
   @apply bg-surface text-on-surface fill-on-surface;
+  --bg: var(--surface);
+  --fg: var(--on-surface);
 }
-@utility surface-alt {
-  @apply bg-surface-alt text-on-surface fill-on-surface;
-}
+/*@utility surface-alt {*/
+/*  @apply bg-surface-alt text-on-surface fill-on-surface;*/
+/*  --bg: var(--surface-alt);*/
+/*  --fg: var(--on-surface);*/
+/*}*/
 
 /* prettier-ignore */
 @utility surface-* {
   background-color: --value(--color-*);
   color: --value(--color-on-*);
   fill: --value(--color-on-*);
+  --bg: --value(--*);
+  --fg: --value(--on-*);
 }
 
 @utility card {
   @apply overflow-hidden shadow-sm sm:rounded-md;
+}
+@utility card-hover {
+  @apply card transition-all not-motion-reduce:hover:scale-[101%];
 }
 @utility card-content {
   @apply px-4 py-2 sm:px-8 sm:py-4;
@@ -195,4 +239,8 @@
 }
 @utility chip-content {
   @apply px-2 py-1;
+}
+@utility readable {
+  @apply max-w-readable px-edge w-full;
+  --max-width: var(--spacing-readable);
 }

@@ -5,13 +5,9 @@ import { MediaThumbnail } from "@/components/media/media-view";
 import { TupleOf } from "@/types";
 import { DivProps, DivPropsNoChildren } from "@/types/react";
 import { addClass } from "@/util/transforms";
-import { type MediaFile, OnClickMedia, OnClickMediaContext } from "./common";
+import { type MediaFile, OnClickMediaContext } from "./common";
 
 type MediaGroup<N extends number> = TupleOf<MediaFile, N>;
-
-interface PreviewProps {
-  onClickMedia?: OnClickMedia;
-}
 
 const PreviewMiniStyle = "aspect-square rounded-md border-2 border-current";
 
@@ -27,37 +23,15 @@ export default function MediaPreview(
 
   const view = {
     0: () => null,
-    1: () => (
-      <PreviewOne media={media[0]} onClickMedia={onClickMedia} {...rest} />
-    ),
-    2: () => (
-      <PreviewTwo
-        media={media as MediaGroup<2>}
-        onClickMedia={onClickMedia}
-        {...rest}
-      />
-    ),
-    3: () => (
-      <PreviewThree
-        media={media as MediaGroup<3>}
-        onClickMedia={onClickMedia}
-        {...rest}
-      />
-    ),
-    4: () => (
-      <PreviewFour
-        media={media as MediaGroup<4>}
-        onClickMedia={onClickMedia}
-        {...rest}
-      />
-    ),
+    1: () => <PreviewOne media={media[0]} {...rest} />,
+    2: () => <PreviewTwo media={media as MediaGroup<2>} {...rest} />,
+    3: () => <PreviewThree media={media as MediaGroup<3>} {...rest} />,
+    4: () => <PreviewFour media={media as MediaGroup<4>} {...rest} />,
   }[media.length];
 
   return (
     <OnClickMediaContext.Provider value={onClickMedia}>
-      {view?.() ?? (
-        <PreviewMany media={media} onClickMedia={onClickMedia} {...rest} />
-      )}
+      {view?.() ?? <PreviewMany media={media} {...rest} />}
 
       <Dialog
         isOpen={fileIndex !== undefined}
@@ -78,17 +52,14 @@ const MiniThumbnailOverlay = (props: DivProps) => {
 };
 
 const PreviewOne = (
-  props: { media: MediaFile } & Omit<DivPropsNoChildren, "onClick"> &
-    PreviewProps,
+  props: { media: MediaFile } & Omit<DivPropsNoChildren, "onClick">,
 ) => {
-  const { media, onClickMedia, ...rest } = props;
+  const { media, ...rest } = props;
   return <MediaThumbnail media={media} {...rest} />;
 };
 
-const PreviewTwo = (
-  props: { media: MediaGroup<2> } & DivPropsNoChildren & PreviewProps,
-) => {
-  const { media, onClickMedia, ...rest } = addClass(props, "relative");
+const PreviewTwo = (props: { media: MediaGroup<2> } & DivPropsNoChildren) => {
+  const { media, ...rest } = addClass(props, "relative");
 
   const [one, two] = media;
 
@@ -103,10 +74,8 @@ const PreviewTwo = (
   );
 };
 
-const PreviewThree = (
-  props: { media: MediaGroup<3> } & DivPropsNoChildren & PreviewProps,
-) => {
-  const { media, onClickMedia, ...rest } = addClass(props, "relative");
+const PreviewThree = (props: { media: MediaGroup<3> } & DivPropsNoChildren) => {
+  const { media, ...rest } = addClass(props, "relative");
 
   const [one, two, three] = media;
 
@@ -122,10 +91,8 @@ const PreviewThree = (
   );
 };
 
-const PreviewFour = (
-  props: { media: MediaGroup<4> } & DivProps & PreviewProps,
-) => {
-  const { media, onClickMedia, children, ...rest } = addClass(
+const PreviewFour = (props: { media: MediaGroup<4> } & DivProps) => {
+  const { media, children, ...rest } = addClass(
     props,
     "grid grid-cols-2 grid-rows-2 *:aspect-square",
   );
@@ -143,9 +110,7 @@ const PreviewFour = (
   );
 };
 
-const PreviewMany = (
-  props: { media: MediaFile[] } & DivPropsNoChildren & PreviewProps,
-) => {
+const PreviewMany = (props: { media: MediaFile[] } & DivPropsNoChildren) => {
   const { media, ...rest } = addClass(props, "relative");
 
   return (

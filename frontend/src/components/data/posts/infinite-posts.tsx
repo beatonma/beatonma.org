@@ -3,8 +3,6 @@
 import React, { ReactNode, useEffect, useRef } from "react";
 import { Paged } from "@/api";
 import { InlineButton, TintedButton } from "@/components/button";
-import { PaginatedPostsProps } from "@/components/data/paginated-posts";
-import { Post } from "@/components/data/post";
 import { PostPreview } from "@/components/data/types";
 import { Client } from "@/components/environment";
 import { GridSpan } from "@/components/grid";
@@ -13,6 +11,8 @@ import Loading from "@/components/loading";
 import usePagination, { Paginated } from "@/components/paginated";
 import { navigationHref } from "@/navigation";
 import { onlyIf } from "@/util/optional";
+import { PaginatedPostsProps } from "./paginated-posts";
+import Post from "./post";
 
 interface InfinitePostsProps extends PaginatedPostsProps {
   init: Paged<PostPreview>;

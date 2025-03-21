@@ -1,14 +1,19 @@
+import logging
 from datetime import datetime
 
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
+from main.models import App as DbApp
 from main.models import Post
 from main.models.mixins import ThemeableMixin
 from main.models.related_file import BaseUploadedFile, MediaType
 from main.views.querysets import get_main_feed
+from mentions.models.mixins import IncomingMentionType
 from ninja import Field, Router, Schema
 from ninja.pagination import paginate
 
+log = logging.getLogger(__name__)
 router = Router(tags=["Posts"])
 
 # TODO 98 items in feed
@@ -39,11 +44,16 @@ class Link(Schema):
 class App(Schema):
     title: str
     url: str = Field(alias="get_absolute_url")
+    status: DbApp.StatusOptions
+
+
+class Tag(Schema):
+    name: str
 
 
 class BasePost(Schema):
     title: str | None
-    url: str | None = Field(alias="get_absolute_url")
+    url: str = Field(alias="get_absolute_url")
     is_published: bool
     published_at: datetime
     theme: Theme | None = None
@@ -52,6 +62,7 @@ class BasePost(Schema):
     links: list[Link] = Field(default_factory=list)
     hero_image: File | None
     content_html: str | None
+    content_script: str | None
     links: list[Link]
     files: list[File]
 
@@ -83,6 +94,7 @@ class PostPreview(BasePost):
 class PostDetail(BasePost):
     subtitle: str | None = None
     hero_html: str | None
+    mentions: list[Mention] = Field(alias="get_mentions")
 
 
 @router.get("/", response=list[PostPreview])
@@ -94,4 +106,5 @@ def post_feed(request: HttpRequest, query: str = None):
 
 @router.get("/{slug}/", response=PostDetail)
 def post(request: HttpRequest, slug: str):
+    log.info(f"SLUG '{slug}'")
     return get_object_or_404(Post, slug=slug)

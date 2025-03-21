@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef } from "react";
 import { MediaFile } from "@/components/media/common";
 import MediaView from "@/components/media/media-view";
@@ -13,6 +15,9 @@ export default function MediaCarousel(
   props: MediaCarouselProps & DivPropsNoChildren,
 ) {
   const { media, focusIndex, ...rest } = props;
+
+  if (!media.length) return null;
+
   return (
     <div
       {...addClass(

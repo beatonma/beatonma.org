@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
 import { ChildrenProps } from "@/types/react";
 
+export const useClient = () => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  return isMounted;
+};
+
 export const Client = (props: ChildrenProps) => {
   const [isClient, setIsClient] = useState(false);
 

@@ -1,4 +1,9 @@
-import { ReactNode, useContext } from "react";
+import {
+  ComponentPropsWithoutRef,
+  MouseEvent,
+  ReactNode,
+  useContext,
+} from "react";
 import Icon, { AppIcon } from "@/components/icon";
 import { MediaFile, OnClickMediaContext } from "@/components/media/common";
 import { DivProps, DivPropsNoChildren } from "@/types/react";
@@ -16,13 +21,22 @@ interface ImageProps {
     fit?: MediaFile["fit"];
   };
 }
+type VideoOptions = Pick<
+  ComponentPropsWithoutRef<"video">,
+  "autoPlay" | "loop"
+>;
+interface VideoProps {
+  video?: VideoOptions;
+}
 
-export default function MediaView(props: MediaViewProps & ImageProps) {
-  const { image, ...rest } = addClass(props, "relative");
+export default function MediaView(
+  props: MediaViewProps & ImageProps & VideoProps,
+) {
+  const { image, video, ...rest } = addClass(props, "relative");
 
   const views: Record<MediaFile["type"], () => ReactNode> = {
     image: () => <ImageView image={image} {...rest} />,
-    video: () => <VideoView {...rest} />,
+    video: () => <VideoView video={video} {...rest} />,
     audio: () => <AudioView {...rest} />,
     text: () => <TextView {...rest} />,
     unknown: () => <BlobDownloadView {...rest} />,
@@ -32,22 +46,21 @@ export default function MediaView(props: MediaViewProps & ImageProps) {
 export const MediaThumbnail = (props: MediaViewProps & ImageProps) => {
   const { media, ...rest } = addClass(props, "size-full");
   const onClickMedia = useContext(OnClickMediaContext);
+  const onClick = onlyIf(onClickMedia, (handler) => (ev: MouseEvent) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    handler(media);
+  });
 
   if (!media.thumbnail_url) {
-    return (
-      <Placeholder
-        media={media}
-        onClick={() => onClickMedia?.(props.media)}
-        {...rest}
-      />
-    );
+    return <Placeholder media={media} onClick={onClick} {...rest} />;
   }
 
   return (
     <ImageView
       media={props.media}
       image={{ useThumbnail: true }}
-      onClick={() => onClickMedia?.(props.media)}
+      onClick={onClick}
       {...rest}
     />
   );
@@ -79,11 +92,11 @@ const ImageView = (props: MediaViewProps & ImageProps) => {
   );
 };
 
-const VideoView = (props: MediaViewProps) => {
-  const { media, ...rest } = props;
+const VideoView = (props: MediaViewProps & VideoProps) => {
+  const { media, video, ...rest } = props;
   return (
     <MediaWrapper {...rest}>
-      <video className="size-full" src={media.url} muted controls />
+      <video className="size-full" src={media.url} muted controls {...video} />
     </MediaWrapper>
   );
 };

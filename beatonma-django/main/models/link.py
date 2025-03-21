@@ -86,7 +86,7 @@ class Link(GenericFkMixin, BaseModel):
 class Host(StyleableSvgMixin, BaseModel):
     """Used to show a download/installation/source link."""
 
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=255)
     domain = models.CharField(
         max_length=100,
         unique=True,
