@@ -50,9 +50,6 @@ module.exports = {
             "a:hover": {
               textDecoration: "underline",
             },
-            h1: {
-              marginBottom: "0",
-            },
           },
         },
       }),

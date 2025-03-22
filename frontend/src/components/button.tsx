@@ -12,7 +12,7 @@ import { addClass, formatUrl } from "@/util/transforms";
 export const InlineButton = (props: ButtonProps) => {
   const { children, ...rest } = addClass(
     props,
-    "relative rounded-sm font-bold tracking-tight hover:[&_.outofbounds]:bg-hover",
+    "relative select-none rounded-sm font-bold tracking-tight hover:[&_.outofbounds]:bg-hover",
   );
   return (
     <BaseButton {...rest}>
@@ -28,7 +28,7 @@ export const Button = (props: ButtonProps) => {
       {...addClass(
         props,
         "rounded-md px-2 py-1 min-w-[2em] min-h-[2em]",
-        "font-bold transition-colors",
+        "select-none font-bold transition-colors",
         "hover:bg-hover",
       )}
     />
@@ -40,7 +40,7 @@ export const TintedButton = (props: ButtonProps) => {
     props,
     "surface",
     "rounded-md px-2 py-1 min-w-[2em] min-h-[2em]",
-    "font-bold transition-colors",
+    "select-none font-bold transition-colors",
     "hover:bg-[color-mix(in_srgb,var(--surface)_85%,currentColor)]",
   );
 
@@ -53,8 +53,8 @@ export const TintedButton = (props: ButtonProps) => {
   return <BaseButton style={themedStyle} {...rest} />;
 };
 
-export const InlineLink = (props: Omit<ButtonLinkProps, "children">) => {
-  const { href, icon, ...rest } = addClass(props, "hover:underline");
+export const InlineLink = (props: ButtonLinkProps) => {
+  const { href, children, icon, ...rest } = addClass(props, "hover:underline");
   if (!href) return null;
 
   return (
@@ -63,7 +63,7 @@ export const InlineLink = (props: Omit<ButtonLinkProps, "children">) => {
       icon={icon === null ? null : (icon ?? "Link")}
       {...rest}
     >
-      {formatUrl(href)}
+      {children ?? formatUrl(href)}
     </BaseButton>
   );
 };
@@ -104,7 +104,7 @@ const ButtonContent = (props: ButtonContentProps & ChildrenProps) => {
   return (
     <div className="grid grid-cols-[auto_1fr] items-center gap-1 overflow-hidden">
       <ButtonIcon icon={icon} />
-      <div className="col-start-2 overflow-hidden overflow-ellipsis">
+      <div className="col-start-2 overflow-hidden overflow-ellipsis line-clamp-1">
         {children}
       </div>
     </div>
@@ -126,7 +126,7 @@ const ButtonIcon = (props: ButtonContentProps & ClassNameProps) => {
 const BaseButton = (props: ButtonProps) => {
   const { icon, children, ..._rest } = addClass(
     props,
-    "relative inline-flex items-center justify-center hover:cursor-pointer transition-all select-none",
+    "relative inline-flex items-center justify-center hover:cursor-pointer transition-all",
   );
 
   const isIconOnly = icon && React.Children.count(children) === 0;

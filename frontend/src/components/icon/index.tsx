@@ -24,6 +24,7 @@ import Link from "./svg/material/link.svg";
 import Email from "./svg/material/mail.svg";
 import PlayArrow from "./svg/material/play_arrow.svg";
 import QuestionMark from "./svg/material/questionmark.svg";
+import Tag from "./svg/material/tag.svg";
 import Text from "./svg/material/text.svg";
 import ThemeDarkMode from "./svg/material/theme_darkmode.svg";
 import ThemeSystemDefault from "./svg/material/theme_default.svg";
@@ -66,6 +67,7 @@ const Icons = {
   Home,
   Link,
   QuestionMark,
+  Tag,
 };
 export type AppIcon = keyof typeof Icons;
 

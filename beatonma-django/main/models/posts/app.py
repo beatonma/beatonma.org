@@ -39,16 +39,9 @@ class App(
     ThemeableMixin,
     BaseModel,
 ):
-    STATUS_OPTIONS = (
-        ("dev", "In development"),
-        ("test", "Public testing"),
-        ("public", "Published"),
-        ("deprecated", "Deprecated"),
-    )
-
     class StatusOptions(models.TextChoices):
         dev = "dev"
-        test = "public"
+        test = "test"
         public = "published"
         deprecated = "deprecated"
 

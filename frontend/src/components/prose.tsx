@@ -7,7 +7,7 @@ export default function Prose<T extends keyof JSX.IntrinsicElements>(
 ) {
   const { ...rest } = addClass(
     props,
-    "prose light:prose prose-invert lg:prose-lg light:lg:prose-lg readable!",
+    "prose light:prose prose-invert lg:prose-lg light:lg:prose-lg readable! px-edge",
   );
   return <CustomElement {...rest} />;
 }
