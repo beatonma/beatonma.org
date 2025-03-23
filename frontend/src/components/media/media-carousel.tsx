@@ -22,7 +22,7 @@ export default function MediaCarousel(
     <div
       {...addClass(
         rest,
-        "grid grid-flow-col grid-rows-1 auto-cols-max sm:px-4 gap-4 overflow-x-auto scrollbar py-4 max-w-full relative",
+        "grid grid-flow-col grid-rows-1 auto-cols-max gap-4 overflow-x-auto scrollbar max-w-full relative",
       )}
     >
       {media.map((item, index) => (

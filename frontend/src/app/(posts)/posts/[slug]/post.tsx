@@ -1,6 +1,4 @@
-import Link from "next/link";
-import { ComponentPropsWithoutRef } from "react";
-import { InlineButton, InlineLink, TintedButton } from "@/components/button";
+import { InlineLink, TintedButton } from "@/components/button";
 import { HtmlContent, PublishingStatus } from "@/components/data/post";
 import { PostDetail } from "@/components/data/types";
 import Webmentions from "@/components/data/webmentions";
@@ -10,12 +8,13 @@ import { RemoteIcon } from "@/components/icon";
 import MediaCarousel from "@/components/media/media-carousel";
 import MediaView from "@/components/media/media-view";
 import Optional from "@/components/optional";
-import Prose from "@/components/prose";
+import Prose, { ProseClassName } from "@/components/prose";
 import itemTheme from "@/components/themed/item-theme";
 import { navigationHref } from "@/navigation";
 import { DivPropsNoChildren } from "@/types/react";
 import { onlyIf } from "@/util/optional";
-import { addClass } from "@/util/transforms";
+import { addClass, classes } from "@/util/transforms";
+import styles from "./post.module.css";
 
 export default function PostPage({ post }: PostProps) {
   return (
@@ -26,29 +25,48 @@ export default function PostPage({ post }: PostProps) {
 
       <article
         style={itemTheme(post)}
-        className='mb-48 grid gap-x-8
-        [grid-template-areas:"hero"_"title"_"info"_"content"]
-        lg:[grid-template-areas:"._hero_hero_."_"._title_._."_"._content_info_."]
-        lg:grid-cols-[1fr_auto_300px_1fr]
-        '
+        className={classes(
+          styles.postGridAreas,
+          "mb-48 px-edge lg:px-0 grid gap-x-8 gap-y-8 justify-center",
+          "grid-cols-[min(100%,var(--spacing-readable))]",
+          "lg:grid-cols-[1fr_var(--spacing-readable)_240px_1fr]",
+        )}
       >
-        <Hero post={post} className="mb-8 [grid-area:hero]" />
+        <DangerousHtml
+          html={post.hero_html}
+          className="col-start-1 col-span-full row-start-1"
+        />
+        <Optional
+          value={post.hero_image}
+          also={!post.hero_html}
+          block={(hero) => (
+            <MediaView
+              media={hero}
+              video={{ autoPlay: true, loop: true }}
+              className="[grid-area:hero] card max-h-[50vh] readable"
+            />
+          )}
+        />
 
         <PostTitle post={post} className="[grid-area:title]" />
-        <PostInfo post={post} className="text-sm [grid-area:info] px-edge" />
+        <PostInfo post={post} className="[grid-area:info] text-sm" />
 
-        <div className="readable [grid-area:content] space-y-16">
-          <Prose elementName="div">
-            <HtmlContent post={post} className="e-content" />
-          </Prose>
+        <HtmlContent
+          post={post}
+          className={
+            `[grid-area:content] ${ProseClassName} e-content
+          [&_section]:first:*:first:mt-0` /* Remove margin from first item in first section, override for tailwind-prose */
+          }
+        />
 
-          <MediaCarousel media={post.files} className="h-[50vh]" />
+        <MediaCarousel
+          media={post.files}
+          className="[grid-area:media] h-[50vh] -px-prose"
+        />
 
-          <PostWebmentions post={post} className="px-edge" />
-        </div>
-
-        <DangerousHtml html={post.content_script} className="hidden" />
+        <PostWebmentions post={post} className="[grid-area:mentions]" />
       </article>
+      <DangerousHtml html={post.content_script} className="hidden" />
     </main>
   );
 }
@@ -56,52 +74,17 @@ export default function PostPage({ post }: PostProps) {
 interface PostProps {
   post: PostDetail;
 }
-// const Post = (props: PostProps & ComponentPropsWithoutRef<"article">) => {
-//   const { post, style, ...rest } = props;
-//
-//   return (
-//     <div {...rest}>
-//       <PostTitle post={post} />
-//       <PostInfo post={post} className="text-sm" />
-//
-//       <Prose elementName="div">
-//         <HtmlContent post={post} className="e-content" />
-//       </Prose>
-//
-//       <MediaCarousel media={post.files} className="h-[50vh]" />
-//
-//       <PostWebmentions post={post} className="px-edge" />
-//
-//       <DangerousHtml html={post.content_script} className="hidden" />
-//     </div>
-//   );
-// };
-
-const Hero = (props: PostProps & DivPropsNoChildren) => {
-  const { post, ...rest } = props;
-
-  if (post.hero_image) {
-    return (
-      <MediaView
-        media={post.hero_image}
-        video={{ autoPlay: true, loop: true }}
-        {...addClass(rest, "card max-h-[50vh] readable")}
-      />
-    );
-  }
-
-  if (post.hero_html) {
-    return <DangerousHtml html={post.hero_html} {...rest} />;
-  }
-};
-
 const PostTitle = (props: PostProps & DivPropsNoChildren) => {
-  const { post, ...rest } = props;
+  const { post, ...rest } = addClass(props, "pretty-prose");
   return (
-    <Prose elementName="div" {...rest}>
+    <Prose {...rest}>
       <Optional
         value={post.title}
-        block={(title) => <h1 className="p-name">{title}</h1>}
+        block={(title) => (
+          <h1 className="p-name" style={{ marginBottom: "0" }}>
+            {title}
+          </h1>
+        )}
       />
       <Optional
         value={post.subtitle}
@@ -117,12 +100,12 @@ const PostInfo = (props: PostProps & DivPropsNoChildren) => {
   const { post, ...rest } = props;
   return (
     <div {...rest}>
-      <span className="text-current/80">
+      <span className="text-current/80 lg:block lg:mb-2">
         Published <Date date={post.published_at} />
       </span>
 
-      <PostLinks post={post} className="row gap-2 flex-wrap" />
-      <PostTags post={post} className="row gap-2 flex-wrap" />
+      <PostLinks post={post} className="row gap-x-2 flex-wrap" />
+      <PostTags post={post} className="row gap-x-2 flex-wrap" />
     </div>
   );
 };
