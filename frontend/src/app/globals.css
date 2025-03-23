@@ -269,3 +269,8 @@
   @apply max-w-readable w-full;
   --max-width: min(100%, var(--spacing-readable));
 }
+
+/* Make a subgrid that completely fills its parent grid. Useful for sharing named grid areas. */
+@utility subgrid-span-full {
+  @apply col-span-full col-start-1 row-span-full row-start-1 grid-cols-subgrid grid-rows-subgrid;
+}

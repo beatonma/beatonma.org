@@ -16,58 +16,73 @@ import { onlyIf } from "@/util/optional";
 import { addClass, classes } from "@/util/transforms";
 import styles from "./post.module.css";
 
+const Insets = "px-edge lg:px-0";
+
 export default function PostPage({ post }: PostProps) {
   return (
-    <main className="h-entry">
-      <TintedButton href={post.dev_admin} icon="MB" />
+    <div>
       <PublishingStatus post={post} />
-      <InvisiblePostMetadata post={post} />
 
-      <article
-        style={itemTheme(post)}
+      <main
         className={classes(
+          "h-entry mb-48",
           styles.postGridAreas,
-          "mb-48 px-edge lg:px-0 grid gap-x-8 gap-y-8 justify-center",
+          "grid gap-x-8 gap-y-8 justify-center",
           "grid-cols-[min(100%,var(--spacing-readable))]",
           "lg:grid-cols-[1fr_var(--spacing-readable)_240px_1fr]",
         )}
       >
-        <DangerousHtml
-          html={post.hero_html}
-          className="col-start-1 col-span-full row-start-1"
-        />
-        <Optional
-          value={post.hero_image}
-          also={!post.hero_html}
-          block={(hero) => (
-            <MediaView
-              media={hero}
-              video={{ autoPlay: true, loop: true }}
-              className="[grid-area:hero] card max-h-[50vh] readable"
-            />
+        <article
+          style={itemTheme(post)}
+          className={classes(
+            "grid subgrid-span-full",
+            styles.postGridAreas,
+            Insets,
           )}
-        />
+        >
+          <DangerousHtml
+            html={post.hero_html}
+            className="col-start-1 col-span-full row-start-1"
+          />
+          <Optional
+            value={post.hero_image}
+            also={!post.hero_html}
+            block={(hero) => (
+              <MediaView
+                media={hero}
+                video={{ autoPlay: true, loop: true }}
+                className="[grid-area:hero] card max-h-[50vh] readable"
+              />
+            )}
+          />
 
-        <PostTitle post={post} className="[grid-area:title]" />
-        <PostInfo post={post} className="[grid-area:info] text-sm" />
+          <PostTitle post={post} className="[grid-area:title]" />
+          <PostInfo post={post} className="[grid-area:info] text-sm" />
 
-        <HtmlContent
+          <HtmlContent
+            post={post}
+            className={classes(
+              "[grid-area:content]",
+              ProseClassName,
+              "e-content",
+              "[&_section]:first:*:first:mt-0" /* Remove margin from first item in first section, override for tailwind-prose */,
+            )}
+          />
+
+          <MediaCarousel
+            media={post.files}
+            className="[grid-area:media] h-[50vh]"
+          />
+        </article>
+
+        <PostWebmentions
           post={post}
-          className={
-            `[grid-area:content] ${ProseClassName} e-content
-          [&_section]:first:*:first:mt-0` /* Remove margin from first item in first section, override for tailwind-prose */
-          }
+          className={classes("[grid-area:mentions]", Insets)}
         />
+      </main>
 
-        <MediaCarousel
-          media={post.files}
-          className="[grid-area:media] h-[50vh] -px-prose"
-        />
-
-        <PostWebmentions post={post} className="[grid-area:mentions]" />
-      </article>
       <DangerousHtml html={post.content_script} className="hidden" />
-    </main>
+    </div>
   );
 }
 
@@ -106,6 +121,7 @@ const PostInfo = (props: PostProps & DivPropsNoChildren) => {
 
       <PostLinks post={post} className="row gap-x-2 flex-wrap" />
       <PostTags post={post} className="row gap-x-2 flex-wrap" />
+      <InvisiblePostMetadata post={post} />
     </div>
   );
 };
@@ -155,15 +171,16 @@ const InvisiblePostMetadata = ({ post }: PostProps) => {
 };
 
 const PostWebmentions = (props: PostProps & DivPropsNoChildren) => {
-  const { post, ...rest } = props;
+  const { post, ...rest } = addClass(props);
   return (
     <Optional
       value={post.mentions}
       block={(mentions) => (
-        <div {...rest}>
+        <aside {...rest}>
           <h3>Webmentions</h3>
+
           <Webmentions mentions={mentions} />
-        </div>
+        </aside>
       )}
     />
   );

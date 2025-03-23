@@ -88,7 +88,9 @@ const HCardLinkedName = (props: HCardProps & DivPropsNoChildren) => {
   return (
     <div {...rest}>
       {hcard.homepage ? (
-        <a href={hcard.homepage}>{hcard.name ?? formatUrl(hcard.homepage)}</a>
+        <InlineLink icon={null} href={hcard.homepage}>
+          {hcard.name ?? formatUrl(hcard.homepage)}
+        </InlineLink>
       ) : (
         hcard.name
       )}
