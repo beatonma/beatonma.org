@@ -12,7 +12,8 @@ import { addClass, formatUrl } from "@/util/transforms";
 export const InlineButton = (props: ButtonProps) => {
   const { children, ...rest } = addClass(
     props,
-    "relative select-none rounded-sm font-bold tracking-tight hover:[&_.outofbounds]:bg-hover",
+    "relative select-none rounded-sm font-bold tracking-tight hover:not-disabled:[&_.outofbounds]:bg-hover",
+    "disabled:text-current/70 disabled:fill-current/70",
   );
   return (
     <BaseButton {...rest}>
@@ -29,7 +30,8 @@ export const Button = (props: ButtonProps) => {
         props,
         "rounded-md px-2 py-1 min-w-[2em] min-h-[2em]",
         "select-none font-bold transition-colors",
-        "hover:bg-hover",
+        "hover:not-disabled:bg-hover",
+        "disabled:text-current/70 disabled:fill-current/70",
       )}
     />
   );
@@ -41,7 +43,8 @@ export const TintedButton = (props: ButtonProps) => {
     "surface",
     "rounded-md px-2 py-1 min-w-[2em] min-h-[2em]",
     "select-none font-bold transition-colors",
-    "hover:bg-[color-mix(in_srgb,var(--surface)_85%,currentColor)]",
+    "hover:not-disabled:bg-[color-mix(in_srgb,var(--surface)_85%,currentColor)]",
+    "disabled:grayscale-75",
   );
 
   const themedStyle = {
@@ -102,9 +105,9 @@ const ButtonContent = (props: ButtonContentProps & ChildrenProps) => {
     return <ButtonIcon icon={icon} />;
 
   return (
-    <div className="grid grid-cols-[auto_1fr] items-center gap-1 overflow-hidden">
-      <ButtonIcon icon={icon} />
-      <div className="col-start-2 overflow-hidden overflow-ellipsis line-clamp-1">
+    <div className="grid grid-cols-[auto_1fr] items-center overflow-hidden">
+      <ButtonIcon icon={icon} className="me-1" />
+      <div className="col-start-2 overflow-hidden overflow-ellipsis line-clamp-1 break-all">
         {children}
       </div>
     </div>
@@ -126,7 +129,8 @@ const ButtonIcon = (props: ButtonContentProps & ClassNameProps) => {
 const BaseButton = (props: ButtonProps) => {
   const { icon, children, ..._rest } = addClass(
     props,
-    "relative inline-flex items-center justify-center hover:cursor-pointer transition-all",
+    "relative inline-flex items-center justify-center hover:not-disabled:cursor-pointer transition-all",
+    "disabled:cursor-not-allowed",
   );
 
   const isIconOnly = icon && React.Children.count(children) === 0;
