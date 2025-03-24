@@ -73,9 +73,10 @@ export const Icons = () => {
 };
 
 export const Loaders = () => (
-  <Section>
+  <Section className="space-y-2">
     <Loading />
     <LoadingBar />
+    <LoadingBar progress={64} />
   </Section>
 );
 

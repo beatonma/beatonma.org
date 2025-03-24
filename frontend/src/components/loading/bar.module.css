@@ -1,0 +1,66 @@
+.loadingBar {
+  min-height: 2px;
+}
+.loadingBarAnim {
+  background-size: 200% 200%;
+  animation-duration: 2200ms;
+  animation-iteration-count: infinite;
+  animation-direction: normal;
+  animation-timing-function: ease-in-out;
+  min-height: 2px;
+}
+
+.loadingBarIndeterminate {
+  composes: loadingBar loadingBarAnim;
+  background-image: linear-gradient(
+    110deg,
+    var(--surface),
+    var(--muted),
+    var(--muted),
+    var(--vibrant)
+  );
+  animation-name: loadingBarIndeterminateKeyframes;
+  animation-duration: 2200ms;
+}
+
+@keyframes loadingBarIndeterminateKeyframes {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 100% 33%;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.loadingBarProgress {
+  composes: loadingBar;
+  background-color: var(--surface);
+
+  .loadingBarAnim {
+    background-image: linear-gradient(
+      90deg,
+      var(--surface) 5%,
+      var(--muted),
+      var(--muted)
+    );
+    animation-name: loadingBarProgressKeyframes;
+    animation-duration: 2200ms;
+    min-width: 2%;
+    transition: width 600ms;
+
+    &[data-finished="true"] {
+      animation-iteration-count: 1;
+    }
+  }
+}
+@keyframes loadingBarProgressKeyframes {
+  0% {
+    background-position: 200% 33%;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}

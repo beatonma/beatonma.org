@@ -1,24 +1,40 @@
-.dialog-scrim {
+.dialogScrim {
   animation-duration: 220ms;
   animation-iteration-count: 1;
   animation-fill-mode: both;
 
   &[data-is-open="true"] {
-    animation-name: dialog-scrim-open;
+    animation-name: dialogScrimOpen;
   }
   &[data-is-open="false"] {
-    animation-name: dialog-scrim-close;
+    animation-name: dialogScrimClose;
   }
 }
 
-dialog {
+.dialogScrim > dialog {
   display: none;
 }
-dialog[open] {
+.dialogScrim > dialog[open] {
   display: flex;
+  animation-name: dialogOpen;
+  animation-duration: 500ms;
 }
 
-@keyframes dialog-scrim-open {
+@keyframes dialogOpen {
+  0% {
+    translate: 0 4rem;
+    opacity: 0;
+    scale: 98%;
+  }
+  /* Allow a few moments for the dialog content to load before making it visible */
+  25% {
+    translate: 0 4rem;
+    opacity: 0;
+    scale: 98%;
+  }
+}
+
+@keyframes dialogScrimOpen {
   0% {
     scale: 0;
     opacity: 0;
@@ -34,7 +50,7 @@ dialog[open] {
   }
 }
 
-@keyframes dialog-scrim-close {
+@keyframes dialogScrimClose {
   0% {
     scale: 1;
     opacity: 1;

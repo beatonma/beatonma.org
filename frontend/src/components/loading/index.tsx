@@ -1,13 +1,5 @@
-import Icon from "@/components/icon";
-import { DivPropsNoChildren } from "@/types/react";
-import "./loading.css";
+import { default as Loading } from "./spinner";
 
-export { LoadingBar } from "./loading-bar";
+export { default as LoadingBar } from "./bar";
 
-export default function Loading(props: DivPropsNoChildren) {
-  return (
-    <div className="loading" {...props}>
-      <Icon icon="MB" />
-    </div>
-  );
-}
+export default Loading;

@@ -1,0 +1,49 @@
+.loading {
+  --_size: 64px;
+  --_translation: 80%;
+  --_interpolation: ease-in;
+
+  position: relative;
+  display: flex;
+  width: var(--_size);
+  height: var(--_size);
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  justify-self: center;
+  font-size: var(--_size);
+
+  .loadingChild {
+    position: absolute;
+    animation-duration: 2000ms;
+    animation-iteration-count: infinite;
+    animation-fill-mode: both;
+    animation-name: loadingAnimation;
+    fill: currentColor;
+    stroke: currentColor;
+    stroke-width: 0;
+    justify-self: center;
+  }
+}
+
+@keyframes loadingAnimation {
+  0% {
+    opacity: 0;
+    translate: calc(-1 * var(--_translation));
+    fill: transparent;
+    stroke-width: 1px;
+  }
+  40%,
+  60% {
+    opacity: 1;
+    translate: 0;
+    fill: currentColor;
+    stroke-width: 0;
+  }
+  100% {
+    translate: var(--_translation);
+    opacity: 0;
+    fill: transparent;
+    stroke-width: 1px;
+  }
+}

@@ -12,7 +12,7 @@ import { Button } from "@/components/button";
 import { useClient } from "@/components/environment";
 import { DivProps } from "@/types/react";
 import { addClass } from "@/util/transforms";
-import "./dialog.css";
+import styles from "./dialog.module.css";
 
 const DialogPortalContainerId = "dialog_portal_container";
 
@@ -94,47 +94,10 @@ export default function Dialog(
   );
 }
 
-// return (
-//   <>
-//     <Scrim
-//       data-is-open={isOpen}
-//       onClick={onClickClose}
-//       className="flex justify-center items-center overflow-hidden"
-//     >
-//       {isOpen && (
-//         <dialog
-//           open={isOpen}
-//           onClick={(ev) => {
-//             ev.stopPropagation();
-//           }}
-//           {...addClass(
-//             rest,
-//             "[--max-width:95vw] [--max-height:95vh] max-h-(--max-height) max-w-(--max-width)",
-//             "surface-alt column gap-4 overflow-hidden justify-self-center rounded-md",
-//           )}
-//         >
-//           {children}
-//
-//           <div className="p-4 self-end w-fit">
-//             <Button
-//               icon="Close"
-//               onClick={onClickClose}
-//               className="text-vibrant"
-//             >
-//               Close
-//             </Button>
-//           </div>
-//         </dialog>
-//       )}
-//     </Scrim>
-//   </>
-// );
-// }
-
 const Scrim = (props: DivProps) => {
   const { ...rest } = addClass(
     props,
-    "dialog-scrim",
+    styles.dialogScrim,
     "fixed inset-0 surface-scrim z-100",
   );
 

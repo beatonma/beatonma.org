@@ -3,29 +3,24 @@
 import { useEffect, useState } from "react";
 import { DivPropsNoChildren } from "@/types/react";
 import { addClass } from "@/util/transforms";
+import styles from "./bar.module.css";
 
-export const LoadingBar = (
-  props: { progress?: number } & DivPropsNoChildren,
-) => {
+export default function Bar(props: { progress?: number } & DivPropsNoChildren) {
   const { progress, ...rest } = props;
 
   if (progress == null) return <IndeterminateLoadingBar {...rest} />;
   return <ProgressLoadingBar progress={progress} {...rest} />;
-};
+}
+
 const IndeterminateLoadingBar = (props: DivPropsNoChildren) => {
-  const { ...rest } = addClass(
-    props,
-    "loadingbar loadingbar-anim loadingbar--indeterminate",
-  );
+  const { ...rest } = addClass(props, styles.loadingBarIndeterminate);
   return <div {...rest} />;
 };
+
 const ProgressLoadingBar = (
   props: { progress: number } & DivPropsNoChildren,
 ) => {
-  const { progress, ...rest } = addClass(
-    props,
-    "loadingbar loadingbar--progress",
-  );
+  const { progress, ...rest } = addClass(props, styles.loadingBarProgress);
   const [isVisible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -45,7 +40,7 @@ const ProgressLoadingBar = (
   return (
     <div {...rest}>
       <div
-        className="loadingbar-anim"
+        className={styles.loadingBarAnim}
         data-finished={progress >= 100}
         style={{ width: `${progress}%` }}
       />
