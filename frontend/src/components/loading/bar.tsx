@@ -20,7 +20,7 @@ const IndeterminateLoadingBar = (props: DivPropsNoChildren) => {
 const ProgressLoadingBar = (
   props: { progress: number } & DivPropsNoChildren,
 ) => {
-  const { progress, ...rest } = addClass(props, styles.loadingBarProgress);
+  const { progress, ...rest } = addClass(props, styles.loadingBarDeterminate);
   const [isVisible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const ProgressLoadingBar = (
   return (
     <div {...rest}>
       <div
-        className={styles.loadingBarAnim}
+        className={styles.loadingBarDeterminateProgress}
         data-finished={progress >= 100}
         style={{ width: `${progress}%` }}
       />

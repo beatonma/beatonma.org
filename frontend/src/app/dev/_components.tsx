@@ -10,7 +10,7 @@ import {
 } from "@/components/button";
 import Icon, { _private as Icon_private } from "@/components/icon";
 import { Row } from "@/components/layout";
-import Loading, { LoadingBar } from "@/components/loading";
+import Loading, { LoadingBar, LoadingSkeleton } from "@/components/loading";
 import MediaCarousel from "@/components/media/media-carousel";
 import { addClass } from "@/util/transforms";
 
@@ -26,6 +26,9 @@ export const Buttons = () => (
       <InlineButton onClick={() => console.log("click")} icon="MB">
         InlineButton
       </InlineButton>
+      <InlineButton disabled onClick={() => console.log("click")} icon="MB">
+        disabled
+      </InlineButton>
     </Row>
 
     <Row className="gap-4 flex-wrap">
@@ -34,6 +37,9 @@ export const Buttons = () => (
       <TintedButton onClick={() => console.log("click")} icon="MB">
         TintedButton
       </TintedButton>
+      <TintedButton disabled onClick={() => console.log("click")} icon="MB">
+        disabled
+      </TintedButton>
     </Row>
 
     <Row className="gap-4 flex-wrap">
@@ -41,6 +47,9 @@ export const Buttons = () => (
       <Button href="#">Button</Button>
       <Button onClick={() => console.log("click")} icon="MB">
         Button
+      </Button>
+      <Button disabled onClick={() => console.log("click")} icon="MB">
+        disabled
       </Button>
     </Row>
 
@@ -77,6 +86,7 @@ export const Loaders = () => (
     <Loading />
     <LoadingBar />
     <LoadingBar progress={64} />
+    <LoadingSkeleton className="min-h-[100px]" />
   </Section>
 );
 

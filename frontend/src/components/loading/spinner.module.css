@@ -3,7 +3,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-block: 2rem;
 
   --_duration: 2000ms;
   --_item-size: 0.5em;

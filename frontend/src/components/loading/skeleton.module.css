@@ -1,0 +1,6 @@
+@value indeterminate from "./common.module.css";
+
+.skeleton {
+  composes: indeterminate;
+  opacity: 10%;
+}
