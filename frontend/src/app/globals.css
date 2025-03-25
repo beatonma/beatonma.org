@@ -139,10 +139,14 @@
   --color-on-vibrant: var(--on-vibrant);
   --color-muted: var(--muted);
   --color-on-muted: var(--on-muted);
-  --color-hover: color-mix(in srgb, currentColor 10%, transparent);
+  --color-hover: color-mix(in srgb, var(--fg) 10%, transparent);
 }
 
 @layer base {
+  *:focus-visible {
+    @apply outline-2 outline-current outline-dashed;
+  }
+
   html {
     scrollbar-width: thin;
   }
@@ -158,10 +162,6 @@
     }
   }
 
-  img {
-    @apply overflow-hidden object-cover;
-  }
-
   h1 {
     @apply text-4xl;
   }
@@ -175,6 +175,10 @@
     @apply text-xl;
   }
 
+  img {
+    @apply overflow-hidden object-cover;
+  }
+
   ul,
   ol {
     @apply space-y-1;
@@ -183,12 +187,17 @@
     list-style: square;
   }
 
-  audio::-webkit-media-controls-enclosure {
-    @apply rounded-md;
+  input,
+  textarea {
+    @apply surface-alt chip chip-content;
+
+    &:focus-visible {
+      @apply outline-1 outline-current outline-solid;
+    }
   }
 
-  *:focus-visible {
-    @apply outline-2 outline-current outline-dashed;
+  audio::-webkit-media-controls-enclosure {
+    @apply rounded-md;
   }
 
   ::selection {

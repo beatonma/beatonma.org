@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/button";
-import { Row } from "@/components/layout";
+import { Row, Separator } from "@/components/layout";
 import ThemeController from "@/components/themed/light-dark";
 import { navigationHref } from "@/navigation";
 
@@ -10,7 +10,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="grid grid-rows-[min-content_1fr_min-content] grid-cols-1 h-full">
+    <div className="grid grid-rows-[min-content_1fr_min-content] grid-cols-1 h-full items-start">
       <header className="p-edge max-xl:mb-16">
         <Row className="gap-8 justify-between flex-wrap">
           <h1 className="line-clamp-1">

@@ -5,40 +5,9 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 from django.conf import settings
 from django.core.mail import send_mail
-from django.http import QueryDict
-from main.views.decorators import recaptcha
 
 django_log = logging.getLogger(__name__)
 task_log = get_task_logger(f"{__name__}.tasks")
-
-
-def send_email(http_post: QueryDict):
-    name = http_post.get("name", "No name given")
-    contact = http_post.get("contact_method", "No contact info given")
-    subject = http_post.get("subject", "beatonma.org webmail")
-    message_body = http_post.get("message", "No message given")
-    tags = http_post.get("tags", "beatonma.org,important")
-    color = http_post.get("color", "#ff4081")
-
-    if getattr(settings, "CELERY_DISABLED", False):
-        django_log.warning(
-            f"[send_email | celery is disabled] name='{name}', "
-            f"contact='{contact}', message_body='{message_body}"
-        )
-        return
-
-    try:
-        _send_email.delay(
-            http_post=http_post,
-            name=name,
-            contact=contact,
-            subject=subject,
-            message_body=message_body,
-            tags=tags,
-            color=color,
-        )
-    except Exception as e:
-        django_log.error(f"send_email error: {e}")
 
 
 def send_notification(
@@ -70,23 +39,21 @@ def send_notification(
 
 
 @shared_task
-@recaptcha
-def _send_email(
-    http_post: QueryDict,  # noqa Required for @recaptcha
+def send_webmail(
     name: str,
-    contact: str,
-    subject: str,
-    message_body: str,
-    tags: str,
-    color: str,
+    contact_info: str,
+    message: str,
+    subject: str = "beatonma webmail",
+    tags: str = "beatonma.org,important",
+    color: str = "#ff4081",
 ):
     message = (
         f"Name: '{name}'\n"
-        f"Contact info: '{contact}'\n\n"
+        f"Contact info: '{contact_info}'\n\n"
         f"Subject: '{subject}'\n"
         f"Message:"
         f"\n```\n"
-        f"{message_body}\n"
+        f"{message}\n"
         "```\n"
     )
 
@@ -101,7 +68,7 @@ def _send_email(
 
     _send_notification(
         subject,
-        f"From '{name}': {message_body}",
+        f"From '{name}': {message}",
         tags=tags,
         color=color,
         important=True,

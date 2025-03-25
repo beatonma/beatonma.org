@@ -1,1 +1,1 @@
-from .contact import send_email, send_notification
+from .contact import send_notification, send_webmail

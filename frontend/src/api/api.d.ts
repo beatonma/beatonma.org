@@ -107,6 +107,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/contact/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send Mail */
+        post: operations["contact_api_send_mail"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -211,7 +228,7 @@ export interface components {
          * StatusOptions
          * @enum {string}
          */
-        StatusOptions: "dev" | "public" | "published" | "deprecated";
+        StatusOptions: "dev" | "test" | "published" | "deprecated";
         /** Tag */
         Tag: {
             /** Name */
@@ -326,6 +343,17 @@ export interface components {
             os: string;
             /** Browser */
             browser: string;
+        };
+        /** ContactForm */
+        ContactForm: {
+            /** Name */
+            name: string;
+            /** Contact Info */
+            contact_info: string;
+            /** Message */
+            message: string;
+            /** Recaptcha Token */
+            recaptcha_token: string;
         };
     };
     responses: never;
@@ -477,6 +505,35 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["WhoAmiISchema"];
                 };
+            };
+        };
+    };
+    contact_api_send_mail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContactForm"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

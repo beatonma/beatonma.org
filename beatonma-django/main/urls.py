@@ -1,7 +1,6 @@
 from common.urls import path
 from mentions.helpers import mentions_path
 
-from .api import public_api
 from .feeds import LatestUpdatesFeed
 from .views import view_names
 from .views.about import AboutView
@@ -82,7 +81,6 @@ frontend_paths = [
 
 site_functions_urlpatterns = [
     path("", IndexView, view_names.INDEX),
-    path("api/", public_api.urls),
     path("about/", AboutView, view_names.ABOUT),
     path("tag/<str:tag>/", TagView, view_names.TAGS),
     path("language/<str:language>/", LanguageView, view_names.LANGUAGES),

@@ -3,6 +3,7 @@
 from typing import Any
 
 from bma_app.api import api as bma_app_api
+from contact.api import router as contact_router
 from debug_toolbar.toolbar import debug_toolbar_urls
 from django.conf import settings
 from django.conf.urls.static import static
@@ -11,6 +12,7 @@ from django.template.response import TemplateResponse
 from django.urls import include, path
 from django.views.generic import RedirectView
 from github.api import github_api
+from main.api import public_api
 
 
 def _redirect(url: str):
@@ -52,16 +54,17 @@ errors = [
     path("500/", _root_template(500)),
 ]
 
+public_api.add_router("contact/", contact_router)
 
 urlpatterns = (
     [
-        path("", include("main.urls")),
+        path("api/", public_api.urls),
         path("api/github/", github_api.urls),
-        path("api/v2/", bma_app_api.urls),
-        path("webmention/", include("mentions.urls")),
-        path("contact/", include("contact.urls")),
+        path("api/webmention/", include("mentions.urls")),
         path("webmentions_tester/", include("webmentions_tester.urls")),
-        path("wurdle/", include("webapp.wurdle.urls")),
+        path("api/v2/", bma_app_api.urls),
+        # path("wurdle/", include("webapp.wurdle.urls")),
+        path("", include("main.urls")),
         path("", include("bma_dev.urls")),
     ]
     + redirects
