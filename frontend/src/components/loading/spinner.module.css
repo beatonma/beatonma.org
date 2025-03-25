@@ -1,49 +1,79 @@
-.loading {
-  --_size: 64px;
-  --_translation: 80%;
-  --_interpolation: ease-in;
-
-  position: relative;
+.spinner {
   display: flex;
-  width: var(--_size);
-  height: var(--_size);
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  align-self: center;
-  justify-self: center;
-  font-size: var(--_size);
+  margin-block: 2rem;
 
-  .loadingChild {
-    position: absolute;
-    animation-duration: 2000ms;
+  --_duration: 2000ms;
+  --_item-size: 0.5em;
+  --_total-size: calc(5 * var(--_item-size));
+  --_center: calc((var(--_total-size) - var(--_item-size)) / 2);
+  --_item-offset: calc(var(--_center) - (var(--_item-size) / 2));
+
+  .anim {
     animation-iteration-count: infinite;
-    animation-fill-mode: both;
-    animation-name: loadingAnimation;
-    fill: currentColor;
-    stroke: currentColor;
-    stroke-width: 0;
-    justify-self: center;
+    animation-direction: normal;
+  }
+
+  .spinnerWrapper {
+    position: relative;
+    width: var(--_total-size);
+    height: var(--_total-size);
+    animation-timing-function: linear;
+    animation-name: spinner;
+    animation-duration: var(--_duration);
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+
+    --_animation-factor: 0.7;
+
+    @media (prefers-reduced-motion: reduce) {
+      --_animation-factor: 0.9;
+      animation-name: none;
+    }
+  }
+
+  .spinnerChild {
+    position: absolute;
+    background-color: currentColor;
+    animation-name: spinner-item;
+    animation-duration: calc(var(--_duration) * 0.6);
+    animation-timing-function: ease-out;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    border-radius: calc(var(--_item-size) / 4);
+    width: var(--_item-size);
+    height: var(--_item-size);
+    left: var(--_center);
+    top: var(--_center);
+    transform-origin: center;
+    transform: rotate(calc(var(--_index) * 120deg))
+      translateY(calc(-1 * var(--_item-offset)));
+
+    &:nth-child(1) {
+      --_index: 0;
+    }
+
+    &:nth-child(2) {
+      --_index: 1;
+    }
+
+    &:nth-child(3) {
+      --_index: 2;
+    }
   }
 }
 
-@keyframes loadingAnimation {
-  0% {
-    opacity: 0;
-    translate: calc(-1 * var(--_translation));
-    fill: transparent;
-    stroke-width: 1px;
+@keyframes spinner-item {
+  50% {
+    transform: rotate(calc(var(--_index) * 120deg))
+      translateY(calc(-1 * var(--_item-offset) * var(--_animation-factor)));
   }
-  40%,
-  60% {
-    opacity: 1;
-    translate: 0;
-    fill: currentColor;
-    stroke-width: 0;
-  }
+}
+
+@keyframes spinner {
   100% {
-    translate: var(--_translation);
-    opacity: 0;
-    fill: transparent;
-    stroke-width: 1px;
+    transform: rotate(360deg);
   }
 }
