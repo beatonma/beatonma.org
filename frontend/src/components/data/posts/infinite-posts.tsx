@@ -3,6 +3,7 @@
 import React, { ReactNode, useEffect, useRef } from "react";
 import { Paged } from "@/api";
 import { InlineButton, TintedButton } from "@/components/button";
+import Callout from "@/components/callout";
 import { PostPreview } from "@/components/data/types";
 import { Client } from "@/components/environment";
 import { GridSpan } from "@/components/grid";
@@ -81,6 +82,7 @@ const LoadNext = <T,>(props: {
   const infiniteScrollingRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (pagination.error) return;
     const target = infiniteScrollingRef.current;
     const observer = new IntersectionObserver(
       (entries) => {
@@ -106,7 +108,14 @@ const LoadNext = <T,>(props: {
   }, [pagination, infiniteScrollingRef]);
 
   let content;
-  if (!pagination.hasMore) content = endOfContent;
+  if (pagination.error) {
+    content = (
+      <Callout level="warn">
+        <div className="font-bold">Loading error</div>
+        <p>{pagination.error}</p>
+      </Callout>
+    );
+  } else if (!pagination.hasMore) content = endOfContent;
   else if (pagination.isLoading) content = <Loading />;
   else if (pagination.loadNext) content = children;
   else content = null;

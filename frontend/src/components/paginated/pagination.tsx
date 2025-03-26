@@ -30,16 +30,26 @@ export const usePagination = <P extends PathWithPagination>(
   query?: Query<P> | undefined,
 ): Paginated<PageItemType<P>> => {
   const [items, setItems] = useState<PageItemType<P>[]>(init?.items ?? []);
-  const [error, setError] = useState<any>();
   const totalItemsAvailable = useRef(init?.count ?? -1);
   const offset = useRef(init?.items?.length ?? 0);
-  const [isLoading, setIsLoading] = useState(false);
-  const loadingRef = useRef(false);
   const isInitialised = useRef(false);
   const [adjacentPages, setAdjacentPages] = useState<AdjacentPages>({
     next: init?.next ?? null,
     previous: init?.previous ?? null,
   });
+  const [isLoading, _setIsLoading] = useState(false);
+  const loadingRef = useRef(false);
+  const [error, _setError] = useState<any>();
+  const errorRef = useRef(false);
+
+  const setIsLoading = useCallback((value: boolean) => {
+    loadingRef.current = value;
+    _setIsLoading(value);
+  }, []);
+  const setError = useCallback((value: unknown) => {
+    errorRef.current = !!value;
+    _setError(value);
+  }, []);
 
   const reset = useCallback(async () => {
     setItems([]);
@@ -47,20 +57,18 @@ export const usePagination = <P extends PathWithPagination>(
     setIsLoading(false);
     totalItemsAvailable.current = -1;
     offset.current = 0;
-    loadingRef.current = false;
   }, []);
 
   const loadNext = useCallback(async () => {
-    if (loadingRef.current) return;
+    if (loadingRef.current || errorRef.current) return;
     if (
       totalItemsAvailable.current >= 0 &&
       offset.current >= totalItemsAvailable.current
-    )
+    ) {
       return;
+    }
 
-    loadingRef.current = true;
     setIsLoading(true);
-    setError(undefined);
 
     try {
       const fullQuery: Query<P> = {
@@ -75,7 +83,7 @@ export const usePagination = <P extends PathWithPagination>(
 
       if (err || !data) {
         console.error(err);
-        setError(err);
+        setError(`${response.status}: ${response.url}`);
         return;
       }
 
@@ -90,7 +98,6 @@ export const usePagination = <P extends PathWithPagination>(
       setError(e);
     } finally {
       setIsLoading(false);
-      loadingRef.current = false;
     }
   }, [path, query]);
 
