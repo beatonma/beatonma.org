@@ -6,7 +6,7 @@ cd "$(dirname "$0")" || exit 1
 FILE_PRODUCTION="./compose.production.yml"
 FILE_DEV="./compose.dev.yml"
 FILE_TEST="./compose.test.yml"
-FILE_ENV="./.env"
+FILE_ENV="./.env.production"
 
 # Data import/export
 ARCHIVE_DIRNAME="data-archive"

@@ -17,10 +17,10 @@ log = get_logger(__name__)
 DOTENV_KEYS = ["HOST_USERNAME", "HOST_SAMBA_PASSWORD"]
 
 os.chdir(installer_root)
-DOTENV_FILE = Path.cwd() / ".env"
+DOTENV_FILE = Path.cwd() / ".env.production"
 
 if not DOTENV_FILE.exists():
-    raise EnvironmentError(".env file not found in 'install' directory")
+    raise EnvironmentError(".env.production file not found in 'install' directory")
 
 _env = {}
 with open(DOTENV_FILE, "r") as dotenv:

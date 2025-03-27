@@ -20,7 +20,7 @@ volumes:
 # Common settings for all services
 x-common: &common-defaults
   env_file:
-    - "./.env"
+    - "./.env.production"
   restart: unless-stopped
   tty: true
 
