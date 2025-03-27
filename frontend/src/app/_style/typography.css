@@ -1,0 +1,429 @@
+/*
+* **Heavily** inspired by tailwindcss-typography
+* https://github.com/tailwindlabs/tailwindcss-typography
+*
+* Essentially a simplified clone of those styles, defined internally so they
+* are easier to tweak.
+*
+* All styles are defined with in terms of `.prose-*` (global classname)
+* and `.prose *` (.prose wrapper class), so any style can be
+* used in a 'standalone' way by just using the global classname on an element.
+*/
+
+@layer components {
+  .prose {
+    overflow-x: hidden;
+    color: var(--typography-body);
+    font-size: 16px;
+    line-height: 1.75;
+
+    > :first-child {
+      margin-top: 0;
+    }
+
+    > :last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  h1 {
+    color: var(--typography-headings);
+    font-weight: 800;
+    font-size: 2.25em;
+  }
+
+  h2 {
+    color: var(--typography-headings);
+    font-weight: 700;
+    font-size: 1.5em;
+  }
+
+  h3 {
+    color: var(--typography-headings);
+    font-weight: 600;
+    font-size: 1.25em;
+  }
+
+  h4 {
+    color: var(--typography-headings);
+    font-weight: 600;
+  }
+
+  @media (width >= 64rem) {
+    .prose {
+      font-size: 18px;
+    }
+
+    h1 {
+      font-size: 2.67em;
+      line-height: 1;
+    }
+
+    h2 {
+      font-size: 1.67em;
+      line-height: 1.33;
+    }
+
+    h3 {
+      font-size: 1.33em;
+      line-height: 1.5;
+    }
+  }
+
+  .prose-h1,
+  .prose h1 {
+    color: var(--typography-headings);
+    font-weight: 800;
+    font-size: 2.25em;
+    margin-top: 0;
+    margin-bottom: 0.9em;
+    line-height: 1.1;
+  }
+
+  .prose-h2,
+  .prose h2 {
+    color: var(--typography-headings);
+    font-weight: 700;
+    font-size: 1.5em;
+    margin-top: 2em;
+    margin-bottom: 1em;
+    line-height: 1.3;
+  }
+
+  .prose-h3,
+  .prose h3 {
+    color: var(--typography-headings);
+    font-weight: 600;
+    font-size: 1.25em;
+    margin-top: 1.6em;
+    margin-bottom: 0.6em;
+    line-height: 1.6;
+  }
+
+  .prose-h4,
+  .prose h4 {
+    color: var(--typography-headings);
+    font-weight: 600;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    line-height: 1.5;
+  }
+
+  .prose-lead,
+  .prose .lead {
+    font-size: 1.25em;
+    line-height: 1.6;
+  }
+
+  .prose-p,
+  .prose p {
+    margin-block: 1.25em;
+
+    &.lead {
+      margin-block: 1.2em;
+    }
+  }
+
+  .prose-img,
+  .prose img {
+    margin-block: 2em;
+  }
+
+  .prose-picture,
+  .prose picture {
+    margin-block: 2em;
+
+    > img: {
+      margin-block: 0;
+    }
+  }
+
+  .prose-video,
+  .prose video {
+    margin-top: 2em;
+    margin-bottom: 2em;
+  }
+
+  .prose-code,
+  .prose code {
+    color: var(--typography-code);
+    font-weight: 600;
+    font-size: 0.875em;
+
+    &::before,
+    &::after {
+      content: "`";
+    }
+  }
+
+  .prose-pre,
+  .prose pre {
+    --fg: var(--typography-pre-code);
+    --bg: var(--typography-pre-bg);
+
+    overflow-x: auto;
+    color: var(--fg);
+    background-color: var(--bg);
+    font-weight: 400;
+    font-size: 0.875em;
+    border-radius: 0.3rem;
+    line-height: 1.7;
+    margin-block: 1.7em;
+    padding-block: 0.85em;
+    padding-inline: 1.15em;
+
+    code {
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      font-weight: inherit;
+      color: inherit;
+      font-size: inherit;
+      font-family: inherit;
+      line-height: inherit;
+
+      &::before,
+      &::after {
+        content: none;
+      }
+    }
+  }
+
+  .prose-li,
+  .prose li {
+    margin-block: 0.5em;
+  }
+
+  .prose-ol,
+  .prose ol {
+    list-style-type: decimal;
+    margin-block: 1.25em;
+    padding-inline-start: 1.625em;
+
+    > li {
+      padding-inline-start: 0.375em;
+    }
+
+    > li::marker {
+      font-weight: 400;
+      color: var(--typography-counters);
+    }
+  }
+
+  .prose-ul,
+  .prose ul {
+    list-style-type: square;
+    margin-block: 1.25em;
+    padding-inline-start: 1.625em;
+
+    > li {
+      padding-inline-start: 0.375em;
+    }
+
+    > li::marker {
+      color: var(--typography-bullets);
+    }
+  }
+
+  .prose > ul > li p {
+    margin-block: 0.75em;
+  }
+
+  .prose > ul > li > p:first-child {
+    margin-top: 1.25em;
+  }
+
+  .prose > ul > li > p:last-child {
+    margin-bottom: 1.25em;
+  }
+
+  .prose > ol > li > p:first-child {
+    margin-top: 1.25em;
+  }
+
+  .prose > ol > li > p:last-child {
+    margin-bottom: 1.25em;
+  }
+
+  .prose ul ul,
+  .prose ul ol,
+  .prose ol ul,
+  .prose ol ol {
+    margin-block: 0.75em;
+  }
+
+  .prose-dl,
+  .prose dl {
+    margin-block: 1.25em;
+  }
+
+  .prose-dt,
+  .prose dt {
+    color: var(--typography-headings);
+    font-weight: 600;
+    margin-top: 1.25em;
+  }
+
+  .prose-dd,
+  .prose dd {
+    margin-top: 0.5em;
+    padding-inline-start: 1.625em;
+  }
+
+  .prose-a,
+  .prose a {
+    color: var(--typography-links);
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .prose-hr,
+  .prose hr {
+    border: 1px solid var(--typography-hr);
+    margin-block: 3em;
+  }
+
+  .prose-blockquote,
+  .prose blockquote {
+    font-weight: 500;
+    font-style: italic;
+    color: var(--typography-quotes);
+    border-inline-start: 0.25rem solid var(--typography-quote-borders);
+    margin-top: 1.6em;
+    margin-bottom: 1.6em;
+    padding-inline-start: 1em;
+
+    p:first-of-type::before {
+      content: open-quote;
+    }
+
+    p:last-of-type::after {
+      content: close-quote;
+    }
+  }
+
+  .prose-table,
+  .prose table {
+    width: 100%;
+    table-layout: auto;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    font-size: 0.875em;
+    line-height: 1.7;
+
+    th,
+    td {
+      text-align: start;
+    }
+
+    thead {
+      border-bottom: 1px solid var(--typography-th-borders);
+
+      th {
+        color: var(--typography-headings);
+        font-weight: 600;
+        vertical-align: bottom;
+        padding-inline-end: 0.6em;
+        padding-bottom: 0.6em;
+        padding-inline-start: 0.6em;
+
+        :first-child {
+          padding-inline-start: 0;
+        }
+
+        :last-child {
+          padding-inline-end: 0;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1px solid var(--typography-td-borders);
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+
+      td {
+        vertical-align: baseline;
+      }
+    }
+
+    tfoot td {
+      vertical-align: top;
+    }
+
+    tbody td,
+    tfoot td {
+      padding-block: 0.6em;
+      padding-inline: 0.6em;
+
+      &:first-child {
+        padding-inline-start: 0;
+      }
+
+      &:last-child {
+        padding-inline-end: 0;
+      }
+    }
+  }
+
+  .prose-figure,
+  .prose figure {
+    margin-block: 2em;
+
+    > * {
+      margin-block: 0;
+    }
+  }
+
+  .prose-figcaption,
+  .prose figcaption {
+    color: var(--typography-captions);
+    font-size: 0.875em;
+    line-height: 1.4;
+    margin-top: 0.85em;
+  }
+
+  .prose-kbd,
+  .prose kbd {
+    font-weight: 500;
+    font-family: inherit;
+    color: var(--typography-kbd);
+    box-shadow:
+      0 0 0 1px rgb(var(--typography-kbd-shadows) / 10%),
+      0 3px 0 rgb(var(--typography-kbd-shadows) / 10%);
+    font-size: 0.875em;
+    border-radius: 0.3rem;
+    padding-top: 0.1875em;
+    padding-inline-end: 0.375em;
+    padding-bottom: 0.1875em;
+    padding-inline-start: 0.375em;
+  }
+
+  .prose-h1 + *,
+  .prose h1 + *,
+  .prose-h2 + *,
+  .prose h2 + *,
+  .prose-h3 + *,
+  .prose h3 + *,
+  .prose-h4 + *,
+  .prose h4 + *,
+  .prose-hr + *,
+  .prose hr + * {
+    margin-top: 0;
+  }
+
+  .prose section:first-child > *:first-child {
+    margin-top: 0;
+  }
+
+  .prose section:last-child > *:last-child {
+    margin-bottom: 0;
+  }
+}

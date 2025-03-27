@@ -13,6 +13,8 @@ export const InlineButton = (props: ButtonProps) => {
   const { children, ...rest } = addClass(
     props,
     "relative select-none rounded-sm font-bold tracking-tight hover:not-disabled:[&_.outofbounds]:bg-hover",
+    "relative select-none no-underline! rounded-sm font-bold tracking-tight",
+    "hover:not-disabled:[&_.outofbounds]:bg-hover",
     "disabled:text-current/70 disabled:fill-current/70",
   );
   return (
@@ -29,7 +31,7 @@ export const Button = (props: ButtonProps) => {
       {...addClass(
         props,
         "rounded-md px-2 py-1 min-w-[2em] min-h-[2em]",
-        "select-none font-bold transition-colors",
+        "select-none font-bold transition-colors no-underline!",
         "hover:not-disabled:bg-hover",
         "disabled:text-current/70 disabled:fill-current/70",
       )}
@@ -42,7 +44,7 @@ export const TintedButton = (props: ButtonProps) => {
     props,
     "surface",
     "rounded-md px-2 py-1 min-w-[2em] min-h-[2em]",
-    "select-none font-bold transition-colors",
+    "select-none font-bold transition-colors no-underline!",
     "hover:not-disabled:bg-[color-mix(in_srgb,var(--surface)_85%,currentColor)]",
     "disabled:grayscale-75",
   );

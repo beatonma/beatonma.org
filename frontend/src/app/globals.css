@@ -1,8 +1,7 @@
 @import "tailwindcss";
-@plugin "@tailwindcss/typography";
 @import "./_style/window-insets.css";
 @import "./_style/code-syntax-highlighting.css";
-@config "./_style/tailwind-prose.config.js";
+@import "./_style/typography.css";
 
 @custom-variant touch (@media(pointer: coarse));
 @custom-variant pointer (@media(pointer: fine));
@@ -40,6 +39,25 @@
   --on-vibrant: var(--on-vibrant-light);
   --muted: var(--muted-light);
   --on-muted: var(--on-muted-light);
+
+  --typography-body: var(--color-stone-800);
+  --typography-headings: var(--color-stone-900);
+  --typography-lead: var(--color-stone-700);
+  --typography-links: var(--vibrant);
+  --typography-bold: var(--color-stone-900);
+  --typography-counters: var(--color-stone-700);
+  --typography-bullets: var(--vibrant);
+  --typography-hr: var(--vibrant);
+  --typography-quotes: var(--color-stone-900);
+  --typography-quote-borders: var(--vibrant);
+  --typography-captions: var(--color-stone-600);
+  --typography-code: var(--color-stone-900);
+  --typography-pre-code: var(--color-stone-100);
+  --typography-pre-bg: var(--color-stone-900);
+  --typography-th-borders: color-mix(in srgb, var(--bg) 80%, var(--vibrant));
+  --typography-td-borders: var(--color-stone-300);
+  --typography-kbd: var(--color-stone-900);
+  --typography-kbd-shadows: var(--color-stone-900);
 }
 @utility colorscheme-dark {
   --background: var(--background-dark);
@@ -52,6 +70,25 @@
   --on-vibrant: var(--on-vibrant-dark);
   --muted: var(--muted-dark);
   --on-muted: var(--on-muted-dark);
+
+  --typography-body: var(--color-slate-200);
+  --typography-headings: var(--color-slate-100);
+  --typography-lead: var(--color-slate-300);
+  --typography-links: var(--vibrant);
+  --typography-bold: var(--color-slate-100);
+  --typography-counters: var(--color-slate-300);
+  --typography-bullets: var(--vibrant);
+  --typography-hr: var(--vibrant);
+  --typography-quotes: var(--color-slate-100);
+  --typography-quote-borders: var(--vibrant);
+  --typography-captions: var(--color-slate-300);
+  --typography-code: var(--color-slate-100);
+  --typography-pre-code: var(--color-slate-100);
+  --typography-pre-bg: var(--color-slate-950);
+  --typography-th-borders: color-mix(in srgb, var(--bg) 80%, var(--vibrant));
+  --typography-td-borders: var(--color-slate-800);
+  --typography-kbd: var(--color-slate-900);
+  --typography-kbd-shadows: var(--color-slate-900);
 }
 
 /* Common colours for content. */
@@ -100,11 +137,17 @@
     @apply colorscheme-dark;
   }
 
+  /* Values updated by surface-* utility - should always contain location-specific colors */
   --bg: var(--background);
   --fg: var(--on-background);
   accent-color: var(--vibrant);
   --max-width: 100vw;
   --max-height: 100vh;
+}
+
+::selection {
+  background-color: var(--fg);
+  color: var(--bg);
 }
 
 @theme {
@@ -169,34 +212,17 @@
     }
   }
 
-  h1 {
-    @apply text-4xl;
-  }
-  h2 {
-    @apply text-3xl;
-  }
-  h3 {
-    @apply text-2xl;
-  }
-  h4 {
-    @apply text-xl;
+  a:hover {
+    @apply underline;
   }
 
   img {
     @apply overflow-hidden object-cover;
   }
 
-  ul,
-  ol {
-    @apply space-y-1;
-  }
-  li {
-    list-style: square;
-  }
-
   input,
   textarea {
-    @apply surface-alt chip chip-content;
+    @apply surface-alt rounded-lg px-2 py-1;
 
     &:focus-visible {
       @apply outline-1 outline-current outline-solid;
@@ -205,11 +231,6 @@
 
   audio::-webkit-media-controls-enclosure {
     @apply rounded-md;
-  }
-
-  ::selection {
-    background-color: color-mix(in srgb, var(--bg), var(--vibrant) 70%);
-    color: var(--on-vibrant);
   }
 }
 
@@ -262,15 +283,15 @@
   background-color: --value(--color-*);
   color: --value(--color-on-*);
   fill: --value(--color-on-*);
-  --bg: --value(--*);
-  --fg: --value(--on-*);
+  --bg: --value(--color-*);
+  --fg: --value(--color-on-*);
 }
 
 @utility card {
   @apply overflow-hidden shadow-sm sm:rounded-md;
 }
 @utility card-hover {
-  @apply card transition-all not-motion-reduce:hover:scale-[101%];
+  @apply card shadow-md transition-shadow;
 }
 @utility card-content {
   @apply px-4 py-2 sm:px-8 sm:py-4;

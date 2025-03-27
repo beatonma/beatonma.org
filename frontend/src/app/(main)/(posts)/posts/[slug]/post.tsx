@@ -8,7 +8,7 @@ import { RemoteIcon } from "@/components/icon";
 import MediaCarousel from "@/components/media/media-carousel";
 import MediaView from "@/components/media/media-view";
 import Optional from "@/components/optional";
-import Prose, { ProseClassName } from "@/components/prose";
+import { ProseClassName } from "@/components/prose";
 import itemTheme from "@/components/themed/item-theme";
 import { navigationHref } from "@/navigation";
 import { DivPropsNoChildren } from "@/types/react";
@@ -65,7 +65,6 @@ export default function PostPage({ post }: PostProps) {
               "[grid-area:content]",
               ProseClassName,
               "e-content",
-              "[&_section]:first:*:first:mt-0" /* Remove margin from first item in first section, override for tailwind-prose */,
             )}
           />
 
@@ -90,24 +89,18 @@ interface PostProps {
   post: PostDetail;
 }
 const PostTitle = (props: PostProps & DivPropsNoChildren) => {
-  const { post, ...rest } = addClass(props, "pretty-prose");
+  const { post, ...rest } = props;
   return (
-    <Prose {...rest}>
+    <div {...rest}>
       <Optional
         value={post.title}
-        block={(title) => (
-          <h1 className="p-name" style={{ marginBottom: "0" }}>
-            {title}
-          </h1>
-        )}
+        block={(title) => <h1 className="p-name">{title}</h1>}
       />
       <Optional
         value={post.subtitle}
-        block={(subtitle) => (
-          <div className="p-summary prose-lead">{subtitle}</div>
-        )}
+        block={(subtitle) => <p className="p-summary prose-lead">{subtitle}</p>}
       />
-    </Prose>
+    </div>
   );
 };
 
@@ -119,9 +112,12 @@ const PostInfo = (props: PostProps & DivPropsNoChildren) => {
         Published <Date date={post.published_at} />
       </span>
 
-      <PostLinks post={post} className="row gap-x-2 flex-wrap" />
-      <PostTags post={post} className="row gap-x-2 flex-wrap" />
-      <InvisiblePostMetadata post={post} />
+      <PostLinks post={post} className="row gap-x-2 flex-wrap empty:hidden" />
+      <PostTags post={post} className="row gap-x-2 flex-wrap empty:hidden" />
+
+      <div className="hidden">
+        <a className="u-url" href={post.url} />
+      </div>
     </div>
   );
 };
@@ -161,14 +157,6 @@ const Tag = ({ tag }: { tag: PostDetail["tags"][number] }) => (
     {tag.name}
   </InlineLink>
 );
-
-const InvisiblePostMetadata = ({ post }: PostProps) => {
-  return (
-    <div className="hidden">
-      <a className="u-url" href={post.url} />
-    </div>
-  );
-};
 
 const PostWebmentions = (props: PostProps & DivPropsNoChildren) => {
   const { post, ...rest } = addClass(props);

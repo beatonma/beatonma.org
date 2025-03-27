@@ -13,7 +13,7 @@ export default function RootLayout({
     <div className="grid grid-rows-[min-content_1fr_min-content] grid-cols-1 h-full items-start">
       <header className="p-edge max-xl:mb-16">
         <Row className="gap-8 justify-between flex-wrap">
-          <h1 className="line-clamp-1">
+          <h1 className="line-clamp-1 font-normal">
             <Link href={navigationHref("home")}>{process.env.SITE_NAME}</Link>
           </h1>
 
