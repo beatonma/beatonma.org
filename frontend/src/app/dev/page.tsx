@@ -12,6 +12,7 @@ export default function Page() {
         </Row>
         <Preview.Buttons />
         <Preview.Icons />
+        <Preview.Callouts />
         <Preview.Loaders />
         <Preview.Media />
       </div>

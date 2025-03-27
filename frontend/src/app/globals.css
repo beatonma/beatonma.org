@@ -122,6 +122,13 @@
   --color-media-unknown: var(--color-emerald-800);
   --color-on-media-unknown: var(--color-emerald-50);
 
+  --color-callout-info: var(--color-blue-200);
+  --color-on-callout-info: var(--color-blue-950);
+  --color-callout-tip: var(--color-green-200);
+  --color-on-callout-tip: var(--color-green-950);
+  --color-callout-warn: var(--color-red-200);
+  --color-on-callout-warn: var(--color-red-950);
+
   --spacing-em: 1em;
   --spacing-lh: 1lh;
   --spacing-readable: 80ch;

@@ -8,6 +8,7 @@ import {
   InlineLink,
   TintedButton,
 } from "@/components/button";
+import Callout from "@/components/callout";
 import Icon, { _private as Icon_private } from "@/components/icon";
 import { Row } from "@/components/layout";
 import Loading, { LoadingBar, LoadingSkeleton } from "@/components/loading";
@@ -87,6 +88,14 @@ export const Loaders = () => (
     <LoadingBar />
     <LoadingBar progress={64} />
     <LoadingSkeleton className="min-h-[100px]" />
+  </Section>
+);
+
+export const Callouts = () => (
+  <Section>
+    <Callout level="tip">tip</Callout>
+    <Callout level="info">info</Callout>
+    <Callout level="warn">warn</Callout>
   </Section>
 );
 
