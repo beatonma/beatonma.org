@@ -14,11 +14,9 @@ def _action_make_public(modeladmin, request, queryset):
 
 
 class GithubAdmin(BaseAdmin):
-    def __init__(self, model, admin_site):
-        super().__init__(model, admin_site)
-
-        fields = [x.name for x in self.get_model_fields(model)]
-        self.readonly_fields = [x for x in fields if x != "is_published"]
+    editable_fields = [
+        "is_published",
+    ]
 
 
 @admin.register(GithubRepository)
