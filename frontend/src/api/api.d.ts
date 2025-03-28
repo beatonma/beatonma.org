@@ -141,14 +141,6 @@ export interface components {
              */
             offset: number;
         };
-        /** App */
-        App: {
-            /** Title */
-            title: string;
-            /** Url */
-            url: string;
-            status: components["schemas"]["StatusOptions"];
-        };
         /** File */
         File: {
             url: components["schemas"]["Url"];
@@ -195,6 +187,7 @@ export interface components {
         };
         /** PostPreview */
         PostPreview: {
+            post_type: components["schemas"]["PostType"];
             /** Title */
             title: string | null;
             /** Url */
@@ -207,7 +200,6 @@ export interface components {
              */
             published_at: string;
             theme?: components["schemas"]["Theme"] | null;
-            app: components["schemas"]["App"] | null;
             hero_image: components["schemas"]["File"] | null;
             /** Content Html */
             content_html: string | null;
@@ -219,16 +211,11 @@ export interface components {
             files: components["schemas"]["File"][];
             /** Tags */
             tags: components["schemas"]["Tag"][];
-            /** Dev Admin */
-            dev_admin: string;
             /** Is Preview */
             is_preview: boolean;
         };
-        /**
-         * StatusOptions
-         * @enum {string}
-         */
-        StatusOptions: "dev" | "test" | "published" | "deprecated";
+        /** @enum {string} */
+        PostType: "post" | "app" | "changelog";
         /** Tag */
         Tag: {
             /** Name */
@@ -242,6 +229,82 @@ export interface components {
             vibrant?: string | null;
         };
         Url: string;
+        /** AppDetail */
+        AppDetail: {
+            /** @default app */
+            post_type: components["schemas"]["PostType"];
+            /** Title */
+            title: string | null;
+            /** Url */
+            url: string;
+            /** Is Published */
+            is_published: boolean;
+            /**
+             * Published At
+             * Format: date-time
+             */
+            published_at: string;
+            theme?: components["schemas"]["Theme"] | null;
+            hero_image: components["schemas"]["File"] | null;
+            /** Content Html */
+            content_html: string | null;
+            /** Content Script */
+            content_script: string | null;
+            /** Links */
+            links: components["schemas"]["Link"][];
+            /** Files */
+            files: components["schemas"]["File"][];
+            /** Tags */
+            tags: components["schemas"]["Tag"][];
+            /** Subtitle */
+            subtitle?: string | null;
+            /** Hero Html */
+            hero_html: string | null;
+            /** Mentions */
+            mentions: components["schemas"]["Mention"][];
+            /** Changelog */
+            changelog: components["schemas"]["ChangelogDetail"][];
+            /** Icon */
+            icon: string | null;
+            /** Script */
+            script: string | null;
+        };
+        /** ChangelogDetail */
+        ChangelogDetail: {
+            /** @default changelog */
+            post_type: components["schemas"]["PostType"];
+            /** Title */
+            title: string | null;
+            /** Url */
+            url: string;
+            /** Is Published */
+            is_published: boolean;
+            /**
+             * Published At
+             * Format: date-time
+             */
+            published_at: string;
+            theme?: components["schemas"]["Theme"] | null;
+            hero_image: components["schemas"]["File"] | null;
+            /** Content Html */
+            content_html: string | null;
+            /** Content Script */
+            content_script: string | null;
+            /** Links */
+            links: components["schemas"]["Link"][];
+            /** Files */
+            files: components["schemas"]["File"][];
+            /** Tags */
+            tags: components["schemas"]["Tag"][];
+            /** Subtitle */
+            subtitle?: string | null;
+            /** Hero Html */
+            hero_html: string | null;
+            /** Mentions */
+            mentions: components["schemas"]["Mention"][];
+            /** Version */
+            version: string;
+        };
         /** HCard */
         HCard: {
             /** Name */
@@ -277,6 +340,8 @@ export interface components {
         };
         /** PostDetail */
         PostDetail: {
+            /** @default post */
+            post_type: components["schemas"]["PostType"];
             /** Title */
             title: string | null;
             /** Url */
@@ -289,7 +354,6 @@ export interface components {
              */
             published_at: string;
             theme?: components["schemas"]["Theme"] | null;
-            app: components["schemas"]["App"] | null;
             hero_image: components["schemas"]["File"] | null;
             /** Content Html */
             content_html: string | null;
@@ -301,8 +365,6 @@ export interface components {
             files: components["schemas"]["File"][];
             /** Tags */
             tags: components["schemas"]["Tag"][];
-            /** Dev Admin */
-            dev_admin: string;
             /** Subtitle */
             subtitle?: string | null;
             /** Hero Html */
@@ -355,6 +417,44 @@ export interface components {
             /** Recaptcha Token */
             recaptcha_token: string;
         };
+        /** TempMention */
+        TempMention: {
+            /** Url */
+            url: string;
+            /**
+             * Submitted At
+             * Format: date-time
+             */
+            submitted_at: string;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            status: components["schemas"]["TempMentionStatus"] | null;
+        };
+        /** TempMentionStatus */
+        TempMentionStatus: {
+            /** Successful */
+            successful: boolean;
+            /** Status Code */
+            status_code: number;
+            /** Message */
+            message: string;
+            /** Source Url */
+            source_url: string;
+            /** Target Url */
+            target_url: string;
+            /** Endpoint */
+            endpoint: string | null;
+        };
+        /** WebmentionTesterSchema */
+        WebmentionTesterSchema: {
+            /** Temporary Outgoing Mentions */
+            temporary_outgoing_mentions: components["schemas"]["TempMention"][];
+            /** Mentions */
+            mentions: components["schemas"]["Mention"][];
+        };
     };
     responses: never;
     parameters: never;
@@ -368,6 +468,7 @@ export interface operations {
         parameters: {
             query?: {
                 query?: string;
+                tag?: string;
                 limit?: number;
                 offset?: number;
             };
@@ -405,7 +506,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PostDetail"];
+                    "application/json": components["schemas"]["PostDetail"] | components["schemas"]["AppDetail"] | components["schemas"]["ChangelogDetail"];
                 };
             };
         };
@@ -530,6 +631,51 @@ export interface operations {
             };
             /** @description Bad Request */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webmentions_tester_api_get_temporary_webmentions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebmentionTesterSchema"];
+                };
+            };
+        };
+    };
+    webmentions_tester_api_post_webmention: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": {
+                    /** Url */
+                    url: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };

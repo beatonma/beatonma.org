@@ -4,9 +4,11 @@ import uuid
 from common.models import BaseModel, PublishedMixin, TaggableMixin
 from common.models.api import ApiEditable
 from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Manager
 from django.urls import reverse
+from django.utils.text import slugify
 from main.models import Link
 from main.models.mixins import ThemeableMixin
 from main.models.posts.formats import FormatMixin, Formats
@@ -18,7 +20,7 @@ HASHTAG_REGEX = re.compile(
 )
 
 
-class Post(
+class BasePost(
     PublishedMixin,
     MentionableMixin,
     TaggableMixin,
@@ -28,7 +30,11 @@ class Post(
     ApiEditable,
     BaseModel,
 ):
-    search_enabled = False
+    class Meta:
+        abstract = True
+        ordering = ("-published_at",)
+
+    search_enabled = True
     search_fields = ("title", "content", "tags__name")
 
     # At least one of the listed fields must have useful content before publishing.
@@ -61,15 +67,11 @@ class Post(
 
     content_script = models.TextField(blank=True, null=True)
 
-    app = models.ForeignKey(
-        "main.App",
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True,
-    )
     links = GenericRelation(Link)
 
     def save_text(self):
+        if not self.content:
+            self.content = ""
         self.content_html = Formats.to_html(self.format, self.content)
 
     def save(self, *args, update_fields=None, **kwargs):
@@ -121,3 +123,7 @@ class Post(
 
     def __str__(self):
         return f"Post: {self.title or self.content[:64] or self.slug}"
+
+
+class Post(BasePost):
+    pass

@@ -6,12 +6,29 @@ from django.contrib.sites.models import Site
 from django.core.files.base import ContentFile
 from django.core.management import BaseCommand
 from django.db import models, transaction
-from main.models import Article, Blog, Link, Note, Post, RelatedFile, UploadedFile
+from main.models import (
+    App,
+    AppPost,
+    Article,
+    Blog,
+    ChangelogPost,
+    Link,
+    Note,
+    Post,
+    RelatedFile,
+    UploadedFile,
+    WebApp,
+)
+from main.models.rewrite.app import AppResource
 from mentions.models import SimpleMention, Webmention
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        Post.objects.all().delete()
+        AppPost.objects.all().delete()
+        ChangelogPost.objects.all().delete()
+
         migrate_posts()
 
 
@@ -19,10 +36,13 @@ def migrate_posts():
     migrate_notes()
     migrate_blogs()
     migrate_articles()
+    migrate_apps()
+    migrate_webapps()
 
 
 def migrate_blogs():
     for blog in Blog.objects.all():
+        print(f"Blog: {blog}")
         with transaction.atomic():
             post = Post.objects.create(
                 created_at=blog.created_at,
@@ -45,10 +65,10 @@ def migrate_blogs():
 def clone_related(old_post, post):
     site = Site.objects.first()
 
-    Redirect.objects.create(
+    Redirect.objects.update_or_create(
         old_path=old_post.get_absolute_url(),
-        new_path=post.get_absolute_url(),
         site=site,
+        defaults={"new_path": post.get_absolute_url()},
     )
 
     post.tags.add(*list(old_post.tags.all().values_list("name", flat=True)))
@@ -59,6 +79,7 @@ def clone_related(old_post, post):
 
 def migrate_articles():
     for article in Article.objects.all():
+        print(f"Article: {article}")
         with transaction.atomic():
             post = Post.objects.create(
                 created_at=article.created_at,
@@ -77,10 +98,9 @@ def migrate_articles():
                 is_published=article.is_published,
                 published_at=article.published_at,
                 content_script=article.content_script,
-                app=article.apps.first(),
                 hero_image=(
-                    UploadedFile.objects.create(file=clone_file(article.hero_image))
-                    if article.hero_image
+                    UploadedFile.objects.create(file=cloned)
+                    if (cloned := clone_file(article.hero_image))
                     else None
                 ),
                 hero_html=article.hero_html,
@@ -92,6 +112,7 @@ def migrate_articles():
 
 def migrate_notes():
     for note in Note.objects.all():
+        print(f"Note: {note}")
         with transaction.atomic():
             post = Post.objects.create(
                 created_at=note.created_at,
@@ -104,6 +125,85 @@ def migrate_notes():
                 published_at=note.published_at,
             )
             clone_related(note, post)
+
+
+def migrate_apps():
+    apps = App.objects.all()
+
+    for app in apps:
+        print(f"App: {app}")
+        with transaction.atomic():
+            post = AppPost.objects.create(
+                created_at=app.created_at,
+                modified_at=app.modified_at,
+                old_slug=app.slug,
+                api_id=app.api_id,
+                content=app.content,
+                content_html=app.content_html,
+                is_published=app.is_published,
+                published_at=app.published_at,
+                color_muted=app.color_muted,
+                color_vibrant=app.color_vibrant,
+                title=app.title,
+                subtitle=app.tagline,
+                preview_text=app.tagline,
+                repository=app.repository,
+                codename=app.app_id,
+                icon=(
+                    UploadedFile.objects.create(file=cloned)
+                    if (cloned := clone_file(app.icon))
+                    else None
+                ),
+            )
+            clone_related(app, post)
+            migrate_changelogs(app, post)
+
+
+def migrate_webapps():
+    webapps = WebApp.objects.all()
+
+    for app in webapps:
+        print(f"WebApp: {app}")
+        with transaction.atomic():
+            post = AppPost.objects.create(
+                created_at=app.created_at,
+                modified_at=app.modified_at,
+                is_published=True,
+                published_at=app.created_at,
+                old_slug=f"webapp-{app.slug}",
+                slug=f"webapp-{app.slug}",
+                codename=f"webapp-{app.slug}",
+                title=app.title,
+                preview_text=app.description,
+                content_html=app.description,
+                content_script=app.content_html,
+            )
+
+            AppResource.objects.create(app=post, file=clone_file(app.file))
+            for res in app.resources.all():
+                if cloned := clone_file(res.file):
+                    AppResource.objects.create(app=post, file=cloned)
+
+
+def migrate_changelogs(source: App, target: AppPost):
+    for change in source.changelogs.all():
+        print(f"Changelog: {change}")
+        post = ChangelogPost.objects.create(
+            created_at=change.created_at,
+            modified_at=change.modified_at,
+            old_slug=change.slug,
+            api_id=change.api_id,
+            content=change.content,
+            content_html=change.content_html,
+            is_published=change.is_published,
+            published_at=change.published_at,
+            app=target,
+            title=change.title,
+            version=change.version_name,
+            subtitle=change.tagline,
+            preview_text=change.preview_text,
+        )
+        clone_related(change, post)
 
 
 def clone_related_files(source, target):
@@ -129,8 +229,12 @@ def clone_file(file: models.FileField | None) -> ContentFile | None:
         return None
 
     name = os.path.basename(source)
-    with file.storage.open(source, "rb") as f:
-        data = f.read()
+    try:
+        with file.storage.open(source, "rb") as f:
+            data = f.read()
+    except FileNotFoundError:
+        print(f"  [ERROR] File not found: {source}")
+        return None
 
     return ContentFile(data, name=name)
 
@@ -139,11 +243,13 @@ def clone_links(source, target):
     source_gfk, target_gfk = genericforeignkey(source, target)
 
     for link in Link.objects.filter(**source_gfk):
-        Link.objects.create(
+        Link.objects.update_or_create(
             **target_gfk,
             url=link.url,
-            description=link.description,
-            host=link.host,
+            defaults={
+                "description": link.description,
+                "host": link.host,
+            },
         )
 
 

@@ -1,6 +1,8 @@
 import re
 from io import BytesIO
+from typing import Callable, Self
 
+import PIL
 from common.models import ApiModel, BaseModel
 from common.models.api import ApiEditable
 from common.models.generic import GenericFkMixin
@@ -41,8 +43,12 @@ class MediaType(models.TextChoices):
         return MediaType.Unknown
 
 
-def default_upload_to(instance: "BaseUploadedFile", filename):
+def default_upload_to(instance: "BaseUploadedFile", filename) -> str:
     upload_to = instance.__class__.upload_to
+
+    if callable(upload_to):
+        return upload_to(instance, filename)
+
     year = timezone.now().strftime("%Y")
     return f"{upload_to}/{year}/{filename}"
 
@@ -51,7 +57,7 @@ class BaseUploadedFile(UploadedMediaMixin, ApiEditable, BaseModel):
     class Meta:
         abstract = True
 
-    upload_to: str
+    upload_to: str | Callable[[Self, str], str]
     uploaded_file_fields = ("file", "thumbnail")
 
     class ImageFit(models.TextChoices):
@@ -106,7 +112,7 @@ class BaseUploadedFile(UploadedMediaMixin, ApiEditable, BaseModel):
     def url(self):
         return self.file.url
 
-    def save(self, **kwargs):
+    def save(self, *args, **kwargs):
         if not self.original_filename:
             self.original_filename = self.file.name
 
@@ -114,29 +120,33 @@ class BaseUploadedFile(UploadedMediaMixin, ApiEditable, BaseModel):
 
         if not self.thumbnail:
             self.generate_thumbnail(THUMBNAIL_SIZE)
-        super().save(**kwargs)
+        super().save(*args, **kwargs)
 
     def generate_thumbnail(self, size: tuple[int, int] | None = None):
         if not self.file or self.type != MediaType.Image:
             return
 
-        with Image.open(self.file) as img:
-            img.thumbnail(size or THUMBNAIL_SIZE)
+        try:
+            with Image.open(self.file) as img:
+                img.thumbnail(size or THUMBNAIL_SIZE)
 
-            thumb_bytes = BytesIO()
-            img.save(thumb_bytes, format="webp")
+                thumb_bytes = BytesIO()
+                img.save(thumb_bytes, format="webp")
+        except PIL.UnidentifiedImageError:
+            # Vector images or otherwise unsupported files.
+            return
 
-            thumb_name = self.file.name.split(".")[0] + "-thumb.webp"
-            thumb_file = InMemoryUploadedFile(
-                thumb_bytes,
-                field_name=None,
-                name=thumb_name,
-                content_type="image/webp",
-                size=thumb_bytes.tell,
-                charset=None,
-            )
+        thumb_name = self.file.name.split(".")[0] + "-thumb.webp"
+        thumb_file = InMemoryUploadedFile(
+            thumb_bytes,
+            field_name=None,
+            name=thumb_name,
+            content_type="image/webp",
+            size=thumb_bytes.tell,
+            charset=None,
+        )
 
-            self.thumbnail.save(thumb_name, thumb_file, save=False)
+        self.thumbnail.save(thumb_name, thumb_file, save=False)
 
     def __str__(self):
         if self.description:

@@ -31,9 +31,6 @@ services:
     image: dpage/pgadmin4
     ports:
       - "8081:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${POSTGRES_USER}@beatonma.org
-      PGADMIN_DEFAULT_PASSWORD: $POSTGRES_PASSWORD
 
   django: &django
     <<: *common

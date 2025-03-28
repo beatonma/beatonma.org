@@ -74,9 +74,15 @@ frontend_paths = [
     mentions_path(
         "posts/<slug:slug>/",
         PostView.as_view(),
-        name=view_names.POST,
+        name="post",
         model_class="main.Post",
-    )
+    ),
+    mentions_path(
+        "apps/<slug:slug>/",
+        PostView.as_view(),
+        name="app_post",
+        model_class="main.AppPost",
+    ),
 ]
 
 site_functions_urlpatterns = [

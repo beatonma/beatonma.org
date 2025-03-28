@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     // This is unhinged, but it seems to be the only way to set a 'nonstandard' link.
     other: {
       rel: "webmention",
-      url: "/webmention/",
+      url: "/api/webmention/",
     },
   },
 };
