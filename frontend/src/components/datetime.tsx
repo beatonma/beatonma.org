@@ -4,7 +4,7 @@ import { DivPropsNoChildren } from "@/types/react";
 import { addClass, capitalize } from "@/util/transforms";
 
 type ParseableDate = Date | string | number | Nullish;
-const Locale = "en-gb";
+const Locale = undefined;
 
 export namespace DateFormat {
   export const YearMonth: Intl.DateTimeFormatOptions = {
@@ -94,6 +94,7 @@ export const Date = (
     <time
       dateTime={parsed.toDateString()}
       title={parsed.toDateString()}
+      suppressHydrationWarning
       {...rest}
     >
       {formatDate(parsed, dateFormat)}
