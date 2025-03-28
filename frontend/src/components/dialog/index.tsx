@@ -6,10 +6,10 @@ import {
   useCallback,
   useEffect,
   useRef,
+  useState,
 } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/button";
-import { useClient } from "@/components/environment";
 import { DivProps } from "@/types/react";
 import { addClass } from "@/util/transforms";
 import styles from "./dialog.module.css";
@@ -27,10 +27,11 @@ export default function Dialog(
 ) {
   const { isOpen, onClose, children, ...rest } = props;
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const isMounted = useClient();
+  const [hasOpened, setHasOpened] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
+      setHasOpened(true);
       window.addEventListener("keydown", keyboardController);
     }
 
@@ -58,7 +59,9 @@ export default function Dialog(
     [onClose],
   );
 
-  if (!isMounted) return null;
+  // Don't render anything until dialog has been requested.
+  if (!hasOpened) return null;
+
   return createPortal(
     <Scrim
       data-is-open={isOpen}
