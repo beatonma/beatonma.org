@@ -12,14 +12,17 @@ import { addClass, formatUrl } from "@/util/transforms";
 export const InlineButton = (props: ButtonProps) => {
   const { children, ...rest } = addClass(
     props,
-    "relative select-none rounded-sm font-bold tracking-tight hover:not-disabled:[&_.outofbounds]:bg-hover",
     "relative select-none no-underline! rounded-sm font-bold tracking-tight",
     "hover:not-disabled:[&_.outofbounds]:bg-hover",
     "disabled:text-current/70 disabled:fill-current/70",
   );
   return (
-    <BaseButton {...rest}>
-      <div className="absolute -inset-x-2 -inset-y-1 pointer-events-none outofbounds rounded-lg transition-colors" />
+    <BaseButton
+      background={
+        <div className="absolute -inset-x-2 -inset-y-1 pointer-events-none outofbounds rounded-lg transition-colors" />
+      }
+      {...rest}
+    >
       {children}
     </BaseButton>
   );
@@ -46,7 +49,7 @@ export const TintedButton = (props: ButtonProps) => {
     "rounded-md px-2 py-1 min-w-[2em] min-h-[2em]",
     "select-none font-bold transition-colors no-underline!",
     "hover:not-disabled:bg-[color-mix(in_srgb,var(--surface)_85%,currentColor)]",
-    "disabled:grayscale-75",
+    "disabled:grayscale-75 disabled:text-on-vibrant/50 disabled:fill-on-vibrant/50",
   );
 
   const themedStyle = {
@@ -128,8 +131,8 @@ const ButtonIcon = (props: ButtonContentProps & ClassNameProps) => {
   return <div {...addClass(rest, "size-em overflow-hidden")}>{icon}</div>;
 };
 
-const BaseButton = (props: ButtonProps) => {
-  const { icon, children, ..._rest } = addClass(
+const BaseButton = (props: ButtonProps & { background?: ReactNode }) => {
+  const { icon, background, children, ..._rest } = addClass(
     props,
     "relative inline-flex items-center justify-center hover:not-disabled:cursor-pointer transition-all",
     "disabled:cursor-not-allowed",
@@ -139,6 +142,7 @@ const BaseButton = (props: ButtonProps) => {
   const content = (
     <>
       <span className="absolute size-full touch-target pointer:hidden" />
+      {background}
       {isIconOnly ? (
         <ButtonIcon icon={icon} />
       ) : (
