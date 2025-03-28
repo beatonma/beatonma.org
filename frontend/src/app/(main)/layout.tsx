@@ -14,7 +14,9 @@ export default function RootLayout({
       <header className="p-edge max-xl:mb-16">
         <Row className="gap-8 justify-between flex-wrap">
           <h1 className="line-clamp-1 font-normal">
-            <Link href={navigationHref("home")}>{process.env.SITE_NAME}</Link>
+            <Link href={navigationHref("home")} className="no-underline">
+              {process.env.SITE_NAME}
+            </Link>
           </h1>
 
           <Row className="gap-4">
