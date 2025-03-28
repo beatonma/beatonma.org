@@ -291,7 +291,7 @@
   @apply overflow-hidden shadow-sm sm:rounded-md;
 }
 @utility card-hover {
-  @apply card shadow-md transition-shadow;
+  @apply card transition-shadow hover:shadow-md;
 }
 @utility card-content {
   @apply px-4 py-2 sm:px-8 sm:py-4;

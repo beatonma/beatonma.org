@@ -1,9 +1,12 @@
 import { ComponentPropsWithRef, useId } from "react";
+import { InlineButton } from "@/components/button";
 import { HtmlContent, PublishingStatus } from "@/components/data/post";
 import { PostPreview } from "@/components/data/types";
 import { Date } from "@/components/datetime";
+import { Row } from "@/components/layout";
 import MediaPreview from "@/components/media/media-preview";
 import Optional from "@/components/optional";
+import { ProseClassName } from "@/components/prose";
 import itemTheme from "@/components/themed/item-theme";
 import { onlyIf } from "@/util/optional";
 import { addClass } from "@/util/transforms";
@@ -17,11 +20,7 @@ export default function Post(
 
   return (
     <article style={themedStyle} {...rest}>
-      <a
-        href={post.url}
-        aria-labelledby={labelId}
-        className="card-hover surface block"
-      >
+      <div className="card-hover surface">
         <PublishingStatus post={post} />
         <PostMediaPreview post={post} />
 
@@ -30,7 +29,7 @@ export default function Post(
             value={post.title}
             block={(title) => (
               <h2 className="p-name" id={labelId}>
-                {title}
+                <a href={post.url}>{title}</a>
               </h2>
             )}
           />
@@ -38,15 +37,32 @@ export default function Post(
           <HtmlContent
             post={post}
             id={onlyIf(!post.title, labelId)}
-            className={post.is_preview ? "p-summary" : "text-lg e-content"}
+            className={
+              post.is_preview
+                ? "p-summary"
+                : `text-lg e-content ${ProseClassName}`
+            }
           />
 
-          <Date
-            date={post.published_at}
-            className="text-sm text-current/60 self-end"
-          />
+          <Row className="justify-between mt-4">
+            {post.is_preview ? (
+              <InlineButton href={post.url}>Read more</InlineButton>
+            ) : (
+              <InlineButton
+                href={post.url}
+                icon="Link"
+                title="Link to this post"
+              />
+            )}
+
+            <Date
+              date={post.published_at}
+              className="text-sm text-current/60 self-end"
+            />
+          </Row>
         </div>
-      </a>
+      </div>
+
       <a href={post.dev_admin}>admin</a>
     </article>
   );
