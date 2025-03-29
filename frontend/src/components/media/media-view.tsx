@@ -5,7 +5,11 @@ import {
   useContext,
 } from "react";
 import Icon, { AppIcon } from "@/components/icon";
-import { MediaFile, OnClickMediaContext } from "@/components/media/common";
+import {
+  MediaFile,
+  OnClickMedia,
+  OnClickMediaContext,
+} from "@/components/media/common";
 import { DivProps, DivPropsNoChildren } from "@/types/react";
 import { onlyIf } from "@/util/optional";
 import { addClass, classes } from "@/util/transforms";
@@ -44,13 +48,19 @@ export default function MediaView(
   return views[props.media.type]();
 }
 export const MediaThumbnail = (props: MediaViewProps & ImageProps) => {
-  const { media, ...rest } = addClass(props, "size-full");
+  const {
+    media,
+    onClick: propsOnClick,
+    ...rest
+  } = addClass(props, "size-full");
   const onClickMedia = useContext(OnClickMediaContext);
-  const onClick = onlyIf(onClickMedia, (handler) => (ev: MouseEvent) => {
-    ev.preventDefault();
-    ev.stopPropagation();
-    handler(media);
-  });
+  const onClick =
+    propsOnClick ??
+    onlyIf(onClickMedia, (handler: OnClickMedia) => (ev: MouseEvent) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      handler(media);
+    });
 
   if (!media.thumbnail_url) {
     return <Placeholder media={media} onClick={onClick} {...rest} />;

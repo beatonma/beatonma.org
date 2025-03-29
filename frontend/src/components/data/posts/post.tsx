@@ -23,7 +23,7 @@ export default function Post(
     <article style={themedStyle} {...rest}>
       <div className="card-hover surface">
         <PublishingStatus post={post} />
-        <PostMediaPreview post={post} />
+        <PostMediaPreview post={post} className="max-h-[60vh]" />
 
         <div className="card-content column gap-1">
           <Optional
@@ -42,8 +42,8 @@ export default function Post(
             id={onlyIf(!post.title, labelId)}
             className={
               post.is_preview
-                ? "p-summary"
-                : `text-lg e-content ${ProseClassName}`
+                ? "text-lg! p-summary"
+                : `text-xl! e-content ${ProseClassName}`
             }
           />
 
@@ -86,16 +86,8 @@ const PostMediaPreview = (
   const { post, ...rest } = addClass(props, "bg-muted");
   if (!post.hero_image && !post.files.length) return null;
 
-  return (
-    <div {...rest}>
-      {onlyIf(post.hero_image, (hero) => (
-        <MediaPreview media={[hero]} />
-      ))}
-
-      {onlyIf(
-        !post.hero_image && !post.is_preview,
-        <MediaPreview media={post.files} />,
-      )}
-    </div>
-  );
+  if (post.hero_image) {
+    return <MediaPreview media={[post.hero_image]} {...rest} />;
+  }
+  return <MediaPreview media={post.files} {...rest} />;
 };

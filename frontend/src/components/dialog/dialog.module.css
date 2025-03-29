@@ -15,7 +15,7 @@
   display: none;
 }
 .dialogScrim > dialog[open] {
-  display: flex;
+  display: grid;
   animation-name: dialogOpen;
   animation-duration: 500ms;
 }

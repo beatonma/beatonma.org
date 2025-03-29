@@ -1,4 +1,4 @@
-import { InlineLink, TintedButton } from "@/components/button";
+import { InlineLink } from "@/components/button";
 import { HtmlContent, PublishingStatus } from "@/components/data/post";
 import { PostDetail } from "@/components/data/types";
 import Webmentions from "@/components/data/webmentions";
@@ -57,7 +57,10 @@ export default function PostPage({ post }: PostProps) {
           />
 
           <PostTitle post={post} className="[grid-area:title]" />
-          <PostInfo post={post} className="[grid-area:info] text-sm" />
+          <PostInfo
+            post={post}
+            className="[grid-area:info] text-sm lg:text-end lg:*:justify-end"
+          />
 
           <HtmlContent
             post={post}
@@ -70,7 +73,7 @@ export default function PostPage({ post }: PostProps) {
 
           <MediaCarousel
             media={post.files}
-            className="[grid-area:media] h-[50vh]"
+            className="[grid-area:media] max-h-[80vh]"
           />
         </article>
 

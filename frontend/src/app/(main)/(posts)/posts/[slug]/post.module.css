@@ -12,8 +12,8 @@
     grid-template-areas:
       ". hero . ."
       ". title . ."
-      ". content info . "
-      ". media . . "
-      ". mentions . . ";
+      ". content info ."
+      ". media media ."
+      ". mentions . .";
   }
 }

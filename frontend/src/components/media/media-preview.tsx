@@ -37,7 +37,11 @@ export default function MediaPreview(
         isOpen={fileIndex !== undefined}
         onClose={() => setFileIndex(undefined)}
       >
-        <MediaCarousel media={media} focusIndex={fileIndex} />
+        <MediaCarousel
+          media={media}
+          focusIndex={fileIndex}
+          className="max-h-full"
+        />
       </Dialog>
     </OnClickMediaContext.Provider>
   );

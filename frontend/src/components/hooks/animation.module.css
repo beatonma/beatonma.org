@@ -1,0 +1,25 @@
+.fadeIn {
+  animation-timing-function: cubic-bezier(0.64, 0, 0.7, 1);
+  animation-duration: 400ms;
+}
+
+.fadeIn_a {
+  composes: fadeIn;
+  animation-name: fade-in-a;
+}
+.fadeIn_b {
+  composes: fadeIn;
+  animation-name: fade-in-b;
+}
+
+@keyframes fade-in-a {
+  0% {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in-b {
+  0% {
+    opacity: 0;
+  }
+}

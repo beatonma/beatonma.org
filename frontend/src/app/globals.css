@@ -196,10 +196,6 @@
 }
 
 @layer base {
-  *:focus-visible {
-    @apply outline-2 outline-current outline-dashed;
-  }
-
   html {
     scrollbar-width: thin;
   }

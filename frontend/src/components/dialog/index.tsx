@@ -77,11 +77,12 @@ export default function Dialog(
           {...addClass(
             rest,
             "[--max-width:95vw] [--max-height:95vh] max-h-(--max-height) max-w-(--max-width)",
-            "surface-alt column gap-4 overflow-hidden justify-self-center rounded-md",
+            "surface-alt gap-4 overflow-hidden justify-self-center rounded-md",
+            "grid grid-cols-1 grid-rows-[1fr_auto]",
           )}
         >
-          {children}
-          <div className="p-4 self-end w-fit">
+          <div className="overflow-hidden">{children}</div>
+          <div className="p-4 justify-self-end w-fit">
             <Button
               icon="Close"
               onClick={onClickClose}

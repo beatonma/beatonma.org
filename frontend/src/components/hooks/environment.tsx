@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { ChildrenProps } from "@/types/react";
 
+/**
+ * If return value is true then we are in a javascript-enabled client environment.
+ * Otherwise, server or
+ */
 export const useClient = () => {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -12,15 +16,7 @@ export const useClient = () => {
 };
 
 export const Client = (props: ChildrenProps) => {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const isClient = useClient();
 
   if (isClient) return <>{props.children}</>;
-};
-
-export const Server = (props: ChildrenProps) => {
-  if (typeof window === "undefined") return <>{props.children}</>;
 };
