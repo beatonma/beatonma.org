@@ -149,6 +149,9 @@
   background-color: var(--fg);
   color: var(--bg);
 }
+*:focus-visible {
+  @apply outline-on-background ring-background ring-2 outline-2 outline-dashed;
+}
 
 @theme {
   --color-scrim: rgb(0 0 0 / 0.7);
@@ -285,6 +288,25 @@
   fill: --value(--color-on-*);
   --bg: --value(--color-*);
   --fg: --value(--color-on-*);
+}
+/* prettier-ignore */
+@utility hover-surface-* {
+  @apply transition-colors;
+
+  background-color: --value(--color-*);
+  color: --value(--color-on-*);
+  fill: --value(--color-on-*);
+  --bg: --value(--color-*);
+  --fg: --value(--color-on-*);
+
+  &:hover:not(:disabled) {
+    --bg: --value(--color-*);
+    --fg: --value(--color-on-*);
+
+    background-color: color-mix(in srgb, var(--bg) 90%, var(--fg));
+    color: --value(--color-on-*);
+    fill: --value(--color-on-*);
+  }
 }
 
 @utility card {

@@ -6,15 +6,34 @@ import Icon, { type AppIcon } from "@/components/icon";
 import { ChildrenProps, ClassNameProps } from "@/types/react";
 import { addClass, formatUrl } from "@/util/transforms";
 
+interface ButtonContentProps {
+  icon?: AppIcon | ReactNode;
+}
+interface ButtonColors {
+  colors?: string;
+}
+
+type ButtonLinkProps = {
+  href: string | null | undefined;
+} & ButtonContentProps &
+  Omit<ComponentPropsWithoutRef<"a">, "onClick" | "href">;
+
+type ButtonProps = ButtonContentProps &
+  (
+    | ComponentPropsWithoutRef<"button">
+    | Omit<ComponentPropsWithoutRef<"a">, "onClick">
+    | Omit<ComponentPropsWithoutRef<"div">, "onClick">
+  );
+
 /**
- * A button with no padding.
+ * A button with no padding which shows a larger background on hover.
  */
 export const InlineButton = (props: ButtonProps) => {
   const { children, ...rest } = addClass(
     props,
     "relative select-none no-underline! rounded-sm font-bold tracking-tight",
-    "hover:not-disabled:[&_.outofbounds]:bg-hover",
-    "disabled:text-current/70 disabled:fill-current/70",
+    "hover:[&_.outofbounds]:bg-hover",
+    "disabled:[&_.outofbounds]:hidden",
   );
   return (
     <BaseButton
@@ -28,39 +47,30 @@ export const InlineButton = (props: ButtonProps) => {
   );
 };
 
-export const Button = (props: ButtonProps) => {
-  return (
-    <BaseButton
-      {...addClass(
-        props,
-        "rounded-md px-2 py-1 min-w-[2em] min-h-[2em]",
-        "select-none font-bold transition-colors no-underline!",
-        "hover:not-disabled:bg-hover",
-        "disabled:text-current/70 disabled:fill-current/70",
-      )}
-    />
-  );
-};
-
-export const TintedButton = (props: ButtonProps) => {
-  const { style, ...rest } = addClass(
+/**
+ * A typical button with customisable colors.
+ */
+export const Button = (props: ButtonProps & ButtonColors) => {
+  const { colors, ...rest } = addClass(
     props,
-    "surface",
     "rounded-md px-2 py-1 min-w-[2em] min-h-[2em]",
-    "select-none font-bold transition-colors no-underline!",
-    "hover:not-disabled:bg-[color-mix(in_srgb,var(--surface)_85%,currentColor)]",
-    "disabled:grayscale-75 disabled:text-on-vibrant/50 disabled:fill-on-vibrant/50",
+    "select-none font-bold no-underline!",
   );
-
-  const themedStyle = {
-    ...style,
-    "--surface": "var(--vibrant)",
-    "--on-surface": "var(--on-vibrant)",
-  };
-
-  return <BaseButton style={themedStyle} {...rest} />;
+  return (
+    <BaseButton colors={colors || "hover:not-disabled:bg-hover"} {...rest} />
+  );
 };
 
+/**
+ * A button styled with the current `vibrant` theme color.
+ */
+export const TintedButton = (props: ButtonProps) => {
+  return <Button colors="surface-vibrant hover-surface-vibrant" {...props} />;
+};
+
+/**
+ * A typical link with automatic formatting and optional icon.
+ */
 export const InlineLink = (props: ButtonLinkProps) => {
   const { href, children, icon, ...rest } = addClass(props, "hover:underline");
   if (!href) return null;
@@ -76,24 +86,55 @@ export const InlineLink = (props: ButtonLinkProps) => {
   );
 };
 
-interface ButtonContentProps {
-  icon?: AppIcon | ReactNode;
-}
+const BaseButton = (
+  props: ButtonProps & ButtonColors & { background?: ReactNode },
+) => {
+  const {
+    icon,
+    colors: _colors,
+    background,
+    children,
+    ...rest
+  } = addClass(
+    props,
+    "relative transition-all",
+    "inline-flex items-center justify-center",
+    "hover:cursor-pointer",
+    "disabled:cursor-not-allowed disabled:contrast-40",
+    props.colors,
+  );
 
-export type ButtonLinkProps = {
-  href: string | null | undefined;
-} & ButtonContentProps &
-  Omit<ComponentPropsWithoutRef<"a">, "onClick" | "href">;
-type ButtonDivProps = ButtonContentProps &
-  Omit<ComponentPropsWithoutRef<"a">, "onClick">;
-export type ButtonProps =
-  | (ButtonContentProps & ComponentPropsWithoutRef<"button">)
-  | ButtonDivProps
-  | ButtonLinkProps;
+  const content = (
+    <>
+      <span className="absolute size-full touch-target pointer:hidden" />
+      {background}
+      <ButtonContent icon={icon}>{children}</ButtonContent>
+    </>
+  );
+
+  if (isLink(rest)) {
+    return <Link {...rest}>{content}</Link>;
+  }
+  if (isButton(rest)) {
+    return <button {...rest}>{content}</button>;
+  }
+
+  // No usable href or onClick - render as simple div.
+  return (
+    <div
+      {...(addClass(
+        rest,
+        "pointer-events-none",
+      ) as ComponentPropsWithoutRef<"div">)}
+    >
+      {content}
+    </div>
+  );
+};
 
 const isLink = (
   obj: any,
-): obj is ComponentPropsWithoutRef<"a"> & { href: string } => {
+): obj is { href: string } & ComponentPropsWithoutRef<"a"> => {
   return "href" in obj && obj.href;
 };
 const isButton = (obj: any): obj is ComponentPropsWithoutRef<"button"> => {
@@ -129,46 +170,4 @@ const ButtonIcon = (props: ButtonContentProps & ClassNameProps) => {
   }
 
   return <div {...addClass(rest, "size-em overflow-hidden")}>{icon}</div>;
-};
-
-const BaseButton = (props: ButtonProps & { background?: ReactNode }) => {
-  const { icon, background, children, ..._rest } = addClass(
-    props,
-    "relative inline-flex items-center justify-center hover:not-disabled:cursor-pointer transition-all",
-    "disabled:cursor-not-allowed",
-  );
-
-  const isIconOnly = icon && React.Children.count(children) === 0;
-  const content = (
-    <>
-      <span className="absolute size-full touch-target pointer:hidden" />
-      {background}
-      {isIconOnly ? (
-        <ButtonIcon icon={icon} />
-      ) : (
-        <ButtonContent icon={icon}>{children}</ButtonContent>
-      )}
-    </>
-  );
-
-  const rest = isIconOnly ? addClass(_rest, "aspect-square") : _rest;
-
-  if (isLink(rest)) {
-    return <Link {...rest}>{content}</Link>;
-  }
-  if (isButton(rest)) {
-    return <button {...rest}>{content}</button>;
-  }
-
-  // No usable href or onClick - render as simple div.
-  return (
-    <div
-      {...(addClass(
-        rest,
-        "pointer-events-none",
-      ) as ComponentPropsWithoutRef<"div">)}
-    >
-      {content}
-    </div>
-  );
 };
