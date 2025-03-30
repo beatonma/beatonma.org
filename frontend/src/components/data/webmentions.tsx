@@ -64,7 +64,9 @@ interface HCardProps {
 const HCardAvatar = (props: HCardProps & DivPropsNoChildren) => {
   const { hcard, ...rest } = addClass(
     props,
-    "rounded-md overflow-hidden surface-vibrant aspect-square place-content-center text-center border-2 border-current/20 select-none",
+    "rounded-md overflow-hidden surface-vibrant",
+    "aspect-square place-content-center text-center font-bold",
+    "border-2 border-current/20 select-none",
   );
   if (!hcard) return null;
   return (
@@ -76,7 +78,7 @@ const HCardAvatar = (props: HCardProps & DivPropsNoChildren) => {
           className="size-full overflow-hidden"
         />
       ) : (
-        (hcard.name ?? (hcard.homepage ? formatUrl(hcard.homepage) : "?"))?.[0]
+        (hcard.name || (hcard.homepage ? formatUrl(hcard.homepage) : "?"))?.[0]
       )}
     </div>
   );
@@ -84,12 +86,12 @@ const HCardAvatar = (props: HCardProps & DivPropsNoChildren) => {
 
 const HCardLinkedName = (props: HCardProps & DivPropsNoChildren) => {
   const { hcard, ...rest } = addClass(props, "font-bold text-current/70");
-  if (!hcard) return null;
+  if (!hcard || (!hcard.name && !hcard.homepage)) return null;
   return (
     <div {...rest}>
       {hcard.homepage ? (
         <InlineLink icon={null} href={hcard.homepage}>
-          {hcard.name ?? formatUrl(hcard.homepage)}
+          {hcard.name || formatUrl(hcard.homepage)}
         </InlineLink>
       ) : (
         hcard.name
