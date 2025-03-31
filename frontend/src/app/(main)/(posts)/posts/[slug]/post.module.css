@@ -7,13 +7,13 @@
     "media"
     "mentions";
 
-  /* Tailwind lg */
-  @media (width >= 64rem) {
+  /* Tailwind xl */
+  @media (width >= 80rem) {
     grid-template-areas:
-      ". hero . ."
-      ". title . ."
-      ". content info ."
-      ". media media ."
-      ". mentions . .";
+      ". . hero . ."
+      ". . title . ."
+      ". . content info ."
+      ". . media . ."
+      ". . mentions . .";
   }
 }

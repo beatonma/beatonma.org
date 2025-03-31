@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { InlineLink } from "@/components/button";
 import { HtmlContent, PublishingStatus } from "@/components/data/post";
 import { PostDetail } from "@/components/data/types";
@@ -17,7 +18,7 @@ import { onlyIf } from "@/util/optional";
 import { addClass, classes } from "@/util/transforms";
 import styles from "./post.module.css";
 
-const Insets = "px-edge lg:px-0";
+const Insets = "px-edge xl:px-0";
 
 export default function PostPage({ post }: PostProps) {
   return (
@@ -28,15 +29,15 @@ export default function PostPage({ post }: PostProps) {
         className={classes(
           "h-entry mb-48",
           styles.postGridAreas,
-          "grid gap-x-8 gap-y-8 justify-center",
+          "grid justify-center",
           "grid-cols-[min(100%,var(--spacing-readable))]",
-          "lg:grid-cols-[1fr_var(--spacing-readable)_240px_1fr]",
+          "xl:grid-cols-[1fr_240px_var(--spacing-readable)_240px_1fr]",
         )}
       >
         <article
           style={itemTheme(post)}
           className={classes(
-            "grid subgrid-span-full",
+            "grid subgrid-span-full space-y-8",
             styles.postGridAreas,
             Insets,
           )}
@@ -50,10 +51,10 @@ export default function PostPage({ post }: PostProps) {
             className="[grid-area:hero] card max-h-[50vh]"
           />
 
-          <PostTitle post={post} className="[grid-area:title]" />
+          <PostTitle post={post} className="[grid-area:title] space-y-0.5" />
           <PostInfo
             post={post}
-            className="[grid-area:info] text-sm lg:text-end lg:*:justify-end"
+            className="[grid-area:info] text-sm xl:text-end xl:*:justify-end"
           />
 
           <HtmlContent
@@ -73,7 +74,7 @@ export default function PostPage({ post }: PostProps) {
 
         <PostWebmentions
           post={post}
-          className={classes("[grid-area:mentions]", Insets)}
+          className={classes("[grid-area:mentions] mt-8", Insets)}
         />
       </main>
 
@@ -87,6 +88,9 @@ interface PostProps {
 }
 const PostTitle = (props: PostProps & DivPropsNoChildren) => {
   const { post, ...rest } = props;
+
+  if (!post.title && !post.subtitle) return null;
+
   return (
     <div {...rest}>
       <Optional
@@ -105,7 +109,7 @@ const PostInfo = (props: PostProps & DivPropsNoChildren) => {
   const { post, ...rest } = props;
   return (
     <div {...rest}>
-      <span className="text-current/80 lg:block lg:mb-2">
+      <span className="text-current/80 xl:block xl:mb-2">
         Published <Date date={post.published_at} />
       </span>
 
