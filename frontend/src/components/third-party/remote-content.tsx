@@ -2,12 +2,12 @@
 
 import { ReactNode, useEffect, useState } from "react";
 import { Button } from "@/components/button";
+import { Row } from "@/components/layout";
 import Loading from "@/components/loading";
 import Prose from "@/components/prose";
 import { DivPropsNoChildren } from "@/types/react";
-import { Row } from "./layout";
 
-interface RemoteContentProvider {
+export interface RemoteContentProvider {
   domain: string;
   description: ReactNode;
 }

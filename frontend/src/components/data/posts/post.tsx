@@ -9,6 +9,7 @@ import MediaPreview from "@/components/media/media-preview";
 import Optional from "@/components/optional";
 import { ProseClassName } from "@/components/prose";
 import itemTheme from "@/components/themed/item-theme";
+import RemoteIFrame from "@/components/third-party/embedded";
 import { onlyIf } from "@/util/optional";
 import { addClass } from "@/util/transforms";
 
@@ -83,11 +84,28 @@ const postIcon = (post: PostPreview) => {
 const PostMediaPreview = (
   props: { post: PostPreview } & ComponentPropsWithRef<"div">,
 ) => {
-  const { post, ...rest } = addClass(props, "bg-muted");
-  if (!post.hero_image && !post.files.length) return null;
+  const { post, ...rest } = props;
+  if (!post.hero_embedded_url && !post.hero_image && !post.files.length)
+    return null;
 
-  if (post.hero_image) {
-    return <MediaPreview media={[post.hero_image]} {...rest} />;
+  if (post.hero_embedded_url) {
+    return (
+      <RemoteIFrame
+        src={post.hero_embedded_url}
+        iframeClassName="w-[calc(100%+1px)] aspect-video" /* w-full can show a line of background at edge of frame, add a pixel to prevent that */
+        {...addClass(rest, "card-content surface-alt")}
+      />
+    );
   }
-  return <MediaPreview media={post.files} {...rest} />;
+  if (post.hero_image) {
+    return (
+      <MediaPreview
+        media={[post.hero_image]}
+        {...addClass(rest, "surface-muted")}
+      />
+    );
+  }
+  return (
+    <MediaPreview media={post.files} {...addClass(rest, "surface-muted")} />
+  );
 };

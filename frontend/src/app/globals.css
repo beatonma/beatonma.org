@@ -210,6 +210,9 @@
       @apply colorscheme-dark;
     }
   }
+  iframe {
+    border: 0;
+  }
 
   a:hover {
     @apply underline;

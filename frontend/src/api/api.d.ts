@@ -200,6 +200,8 @@ export interface components {
              */
             published_at: string;
             theme?: components["schemas"]["Theme"] | null;
+            /** Hero Embedded Url */
+            hero_embedded_url: string | null;
             hero_image: components["schemas"]["File"] | null;
             /** Content Html */
             content_html: string | null;
@@ -245,6 +247,8 @@ export interface components {
              */
             published_at: string;
             theme?: components["schemas"]["Theme"] | null;
+            /** Hero Embedded Url */
+            hero_embedded_url: string | null;
             hero_image: components["schemas"]["File"] | null;
             /** Content Html */
             content_html: string | null;
@@ -285,6 +289,8 @@ export interface components {
              */
             published_at: string;
             theme?: components["schemas"]["Theme"] | null;
+            /** Hero Embedded Url */
+            hero_embedded_url: string | null;
             hero_image: components["schemas"]["File"] | null;
             /** Content Html */
             content_html: string | null;
@@ -354,6 +360,8 @@ export interface components {
              */
             published_at: string;
             theme?: components["schemas"]["Theme"] | null;
+            /** Hero Embedded Url */
+            hero_embedded_url: string | null;
             hero_image: components["schemas"]["File"] | null;
             /** Content Html */
             content_html: string | null;

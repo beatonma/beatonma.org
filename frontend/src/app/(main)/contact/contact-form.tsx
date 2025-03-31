@@ -8,7 +8,8 @@ import Recaptcha, {
 import { TintedButton } from "@/components/button";
 import { Row } from "@/components/layout";
 import Prose from "@/components/prose";
-import RemoteContent from "@/components/remote-content";
+import ExternalLink from "@/components/third-party/link";
+import RemoteContent from "@/components/third-party/remote-content";
 import { onlyIf } from "@/util/optional";
 
 const TextInputClassName = "w-full";
@@ -79,9 +80,9 @@ const EmailAddress = () => (
 );
 
 const AboutRecaptcha = () => (
-  <a href="https://cloud.google.com/security/products/recaptcha">
+  <ExternalLink href="https://cloud.google.com/security/products/recaptcha">
     reCAPTCHA by Google
-  </a>
+  </ExternalLink>
 );
 
 const ContactForm = (

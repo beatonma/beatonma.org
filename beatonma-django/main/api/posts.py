@@ -5,7 +5,6 @@ from typing import Literal
 from common.schema import Mention
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
 from main.models import AppPost, ChangelogPost, Post
 from main.models.mixins import ThemeableMixin
 from main.models.related_file import BaseUploadedFile, MediaType
@@ -54,6 +53,7 @@ class BasePost(Schema):
     is_published: bool
     published_at: datetime
     theme: Theme | None = None
+    hero_embedded_url: str | None
     hero_image: File | None
     content_html: str | None
     content_script: str | None

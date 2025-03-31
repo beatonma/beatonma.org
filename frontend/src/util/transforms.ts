@@ -1,7 +1,12 @@
 import { MaybeString, Nullish } from "@/types";
 
+export const joinNonEmpty = (
+  separator: string = " ",
+  ...parts: (string | undefined | null)[]
+) => parts.filter(Boolean).join(separator) || undefined;
+
 export const classes = (...classNames: (string | undefined | null)[]) =>
-  classNames.filter(Boolean).join(" ") || undefined;
+  joinNonEmpty(" ", ...classNames);
 
 /**
  * Returns a copy of props with extraClasses appended to its className attribute.

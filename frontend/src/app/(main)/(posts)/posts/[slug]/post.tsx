@@ -10,6 +10,7 @@ import MediaView from "@/components/media/media-view";
 import Optional from "@/components/optional";
 import { ProseClassName } from "@/components/prose";
 import itemTheme from "@/components/themed/item-theme";
+import RemoteIFrame from "@/components/third-party/embedded";
 import { navigationHref } from "@/navigation";
 import { DivPropsNoChildren } from "@/types/react";
 import { onlyIf } from "@/util/optional";
@@ -44,16 +45,9 @@ export default function PostPage({ post }: PostProps) {
             html={post.hero_html}
             className="col-start-1 col-span-full row-start-1"
           />
-          <Optional
-            value={post.hero_image}
-            also={!post.hero_html}
-            block={(hero) => (
-              <MediaView
-                media={hero}
-                video={{ autoPlay: true, loop: true }}
-                className="[grid-area:hero] card max-h-[50vh] readable"
-              />
-            )}
+          <HeroMedia
+            post={post}
+            className="[grid-area:hero] card max-h-[50vh]"
           />
 
           <PostTitle post={post} className="[grid-area:title]" />
@@ -119,7 +113,7 @@ const PostInfo = (props: PostProps & DivPropsNoChildren) => {
       <PostTags post={post} className="row gap-x-2 flex-wrap empty:hidden" />
 
       <div className="hidden">
-        <a className="u-url" href={post.url} />
+        <Link className="u-url" href={post.url} />
       </div>
     </div>
   );
@@ -172,6 +166,34 @@ const PostWebmentions = (props: PostProps & DivPropsNoChildren) => {
 
           <Webmentions mentions={mentions} />
         </aside>
+      )}
+    />
+  );
+};
+
+const HeroMedia = (props: PostProps & DivPropsNoChildren) => {
+  const { post, ...rest } = props;
+
+  if (post.hero_embedded_url) {
+    return (
+      <RemoteIFrame
+        src={post.hero_embedded_url}
+        {...rest}
+        iframeClassName={classes(rest.className, "w-full aspect-video")}
+      />
+    );
+  }
+
+  return (
+    <Optional
+      value={post.hero_image}
+      also={!post.hero_html}
+      block={(hero) => (
+        <MediaView
+          media={hero}
+          video={{ autoPlay: true, loop: true }}
+          {...rest}
+        />
       )}
     />
   );
