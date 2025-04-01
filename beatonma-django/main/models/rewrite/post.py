@@ -3,8 +3,9 @@ import uuid
 
 from common.models import BaseModel, PublishedMixin, TaggableMixin
 from common.models.api import ApiEditable
+from common.util import regex
+from common.util.pipeline import PipelineItem
 from django.contrib.contenttypes.fields import GenericRelation
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Manager
 from django.urls import reverse
@@ -14,10 +15,6 @@ from main.models.mixins import ThemeableMixin
 from main.models.posts.formats import FormatMixin, Formats
 from main.models.related_file import RelatedFilesMixin
 from mentions.models.mixins import MentionableMixin
-
-HASHTAG_REGEX = re.compile(
-    r"(?P<previous_token>^|>|\s)(?P<hashtag>#(?![a-fA-F0-9]{3})(?P<name>[-\w]+))(?=$|[\s.!?<])(?!\s*{)"
-)
 
 
 class BasePost(
@@ -73,7 +70,15 @@ class BasePost(
     def save_text(self):
         if not self.content:
             self.content = ""
-        self.content_html = Formats.to_html(self.format, self.content)
+
+        self.content_html = Formats.to_html(
+            self.format,
+            self.content,
+            markdown_processors=self.extra_markdown_processors(),
+        )
+
+    def extra_markdown_processors(self) -> list[PipelineItem[str]]:
+        return []
 
     def save(self, *args, update_fields=None, **kwargs):
         if not self.slug:
@@ -118,8 +123,8 @@ class BasePost(
 
     def _extract_tags(self):
         """Generate tags from any #hashtags found in the text."""
-        matches = re.findall(HASHTAG_REGEX, self.content)
-        tags = [x[2] for x in matches]
+        matches = [m.groupdict() for m in re.finditer(regex.HASHTAG, self.content)]
+        tags = [x["name"] for x in matches]
         self.tags.add(*tags)
 
     def __str__(self):

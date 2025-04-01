@@ -87,8 +87,8 @@ class BasePost(
 
     def _extract_tags(self):
         """Generate tags from any #hashtags found in the text."""
-        matches = re.findall(regex.HASHTAG, self.content)
-        tags = [x[2] for x in matches]
+        matches = [m.groupdict() for m in re.finditer(regex.HASHTAG, self.content)]
+        tags = [x["name"] for x in matches]
         self.tags.add(*tags)
 
     def __str__(self):

@@ -30,8 +30,8 @@ def apply_pipeline[T](receiver: T, pipeline: Pipeline) -> T:
 
         item_len = len(item)
         func = item[0]
-        args = item[1] if item_len > 1 else []
-        kwargs = item[2] if item_len > 2 else {}
+        args = (item[1] if item_len > 1 else None) or []
+        kwargs = (item[2] if item_len > 2 else None) or {}
 
         return func(accumulator, *args, **kwargs)
 

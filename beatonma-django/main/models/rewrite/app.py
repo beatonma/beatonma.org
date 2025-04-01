@@ -4,10 +4,10 @@ from common.models import BaseModel
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.urls import reverse
 from django.utils.text import slugify
 from main.models import Link
 from main.models.mixins.media_upload import UploadedMediaMixin
+from main.models.posts.formats import linkify_github_issues
 from main.storage import OverwriteStorage
 
 from .post import BasePost
@@ -41,9 +41,6 @@ class AppPost(BasePost):
     def build_slug(self):
         return slugify(self.codename)
 
-    def get_absolute_url(self) -> str:
-        return reverse("app_post", kwargs={"slug": self.slug})
-
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self._update_repository_link()
@@ -69,6 +66,9 @@ class AppPost(BasePost):
     def resource_directory(self):
         return f"apps/{self.slug}"
 
+    def __str__(self):
+        return f"App: {self.title or self.content[:64] or self.slug}"
+
 
 class ChangelogPost(BasePost):
     is_publishable_dependencies = ("app",)
@@ -82,8 +82,19 @@ class ChangelogPost(BasePost):
     def build_slug(self):
         return slugify(f"{self.app.codename}-{self.version}".replace(".", "-"))
 
-    def get_absolute_url(self) -> str:
-        return f"{self.app.get_absolute_url()}#{self.version}"
+    def extra_markdown_processors(self):
+        extra = []
+        if repo := self.app.repository:
+            extra.append(
+                lambda markdown: linkify_github_issues(
+                    repo_url=repo.url, markdown=markdown
+                )
+            )
+
+        return extra + super().extra_markdown_processors()
+
+    def __str__(self):
+        return f"Changelog: {self.app.title} {self.version}"
 
 
 def appresource_upload_to(instance: "AppResource", filename: str):

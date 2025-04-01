@@ -1,11 +1,12 @@
 import re
 from re import Match
 from typing import List
+from urllib.parse import urljoin
 
 import markdown2
 from common.util import regex
 from common.util.html import find_links_in_html
-from common.util.pipeline import apply_pipeline
+from common.util.pipeline import PipelineItem, apply_pipeline
 from django.db import models
 from main.views import reverse
 
@@ -104,37 +105,57 @@ class Formats(models.IntegerChoices):
     MARKDOWN = 1
 
     @classmethod
-    def to_html(cls, format_: int, content: str) -> str:
+    def to_html(
+        cls,
+        format_: int,
+        content: str,
+        markdown_processors: list[PipelineItem[str]] = None,
+        html_processors: list[PipelineItem[str]] = None,
+    ) -> str:
         if format_ == Formats.MARKDOWN:
             html = apply_pipeline(
                 content,
                 [
-                    cls.preprocess_markdown,
+                    (
+                        cls.preprocess_markdown,
+                        [],
+                        {"pipeline_extras": markdown_processors or []},
+                    ),
                     cls.markdown_to_html,
                 ],
             )
         else:
             html = content
 
-        return cls.postprocess_html(html)
+        return cls.postprocess_html(html, html_processors)
 
     @classmethod
-    def preprocess_markdown(cls, markdown: str) -> str:
+    def preprocess_markdown(
+        cls,
+        markdown: str,
+        pipeline_extras: list[PipelineItem[str]] = None,
+    ) -> str:
         return apply_pipeline(
             markdown,
             [
+                *(pipeline_extras or []),
                 _apply_ligatures,
                 _apply_blockquote_callout,
             ],
         )
 
     @classmethod
-    def postprocess_html(cls, html: str) -> str:
+    def postprocess_html(
+        cls,
+        html: str,
+        pipeline_extras: list[PipelineItem[str]] = None,
+    ) -> str:
         existing_links = find_links_in_html(html)
 
         return apply_pipeline(
             html,
             [
+                *(pipeline_extras or []),
                 _prettify_links,
                 _linkify_hashtags,
                 (_linkify_keywords, [existing_links]),
@@ -175,11 +196,10 @@ def _linkify_hashtags(html: str) -> str:
     """Replace raw string #hashtags with a link to that tag."""
 
     def _sub(sub_match: Match):
-        previous_token = sub_match.group("previous_token")
         href = reverse.tag(sub_match.group("name"))
         display_name = sub_match.group("hashtag")
 
-        return f'{previous_token}<a href="{href}">{display_name}</a>'
+        return f'<a href="{href}">{display_name}</a>'
 
     return re.sub(regex.HASHTAG, _sub, html)
 
@@ -293,3 +313,12 @@ def _apply_blockquote_callout(text: str) -> str:
         return template.format(level=level, level_title=level_title, content=content)
 
     return re.sub(pattern, _replacer, text)
+
+
+def linkify_github_issues(*, repo_url: str, markdown: str) -> str:
+    def _sub(match: Match):
+        issue = match.group("issue")
+        href = urljoin(repo_url, f"issues/{issue}")
+        return f'<a href="{href}">#{issue}</a>'
+
+    return re.sub(regex.GITHUB_ISSUE, _sub, markdown)
