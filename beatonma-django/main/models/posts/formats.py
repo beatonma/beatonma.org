@@ -124,6 +124,7 @@ class Formats(models.IntegerChoices):
             markdown,
             [
                 _apply_ligatures,
+                _apply_blockquote_callout,
             ],
         )
 
@@ -258,3 +259,37 @@ def _apply_ligatures(text: str) -> str:
     editable_text = re.sub(marker, lambda match: canonical_blocks.pop(0), editable_text)
 
     return editable_text
+
+
+def _apply_blockquote_callout(text: str) -> str:
+    """
+    Convert Github-style markdown callout to HTML, applying style class from frontend <Callout/> component.>
+
+    > [!WARNING]
+    > `python manage.py migrate` required for new fields.
+    """
+
+    template = """<div class="template-callout-{level}"><p><strong>{level_title}</strong></p>{content}</div>"""
+    pattern = re.compile(r"^\s*> \[!(\w+)].*\n((?:^> .+$\n)*)", flags=re.MULTILINE)
+
+    levels = {
+        "warning": "warn",
+        "error": "warn",
+        "note": "info",
+    }
+
+    def _replacer(match: re.Match):
+        level = match.group(1).lower()
+        level_title = level.capitalize()
+        level = levels.get(level) or level
+
+        content = Formats.to_html(
+            Formats.MARKDOWN,
+            str(
+                match.group(2).replace("> ", ""),
+            ),
+        )
+
+        return template.format(level=level, level_title=level_title, content=content)
+
+    return re.sub(pattern, _replacer, text)

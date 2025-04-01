@@ -101,6 +101,8 @@ export const Callouts = () => (
   <Section name="Callout">
     <Callout level="tip">tip</Callout>
     <Callout level="info">info</Callout>
+    <Callout level="important">important</Callout>
     <Callout level="warn">warn</Callout>
+    <Callout level="caution">caution</Callout>
   </Section>
 );
