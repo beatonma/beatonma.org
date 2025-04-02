@@ -1,11 +1,11 @@
 .postGridAreas {
   grid-template-areas:
-    "hero"
-    "title"
-    "info"
-    "content"
-    "media"
-    "mentions";
+    ". hero ."
+    ". title ."
+    ". info ."
+    ". content ."
+    ". media ."
+    ". mentions .";
 
   /* Tailwind xl */
   @media (width >= 80rem) {

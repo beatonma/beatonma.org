@@ -5,8 +5,11 @@ export const viewport: Viewport = {
   themeColor: "#111111",
 };
 export const metadata: Metadata = {
-  title: process.env.SITE_NAME,
-  description: process.env.SITE_NAME,
+  title: {
+    default: process.env.NEXT_PUBLIC_SITE_NAME,
+    template: `%s - ${process.env.NEXT_PUBLIC_SITE_NAME}`,
+  },
+  description: process.env.NEXT_PUBLIC_SITE_NAME,
   alternates: {
     canonical: "/",
     types: {
@@ -14,7 +17,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: process.env.GOOGLE_SITE_VERIFICATION,
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
   },
   icons: {
     // This is unhinged, but it seems to be the only way to set a 'nonstandard' link.

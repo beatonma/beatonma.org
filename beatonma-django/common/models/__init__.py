@@ -23,6 +23,10 @@ class BaseModel(models.Model):
         self.save(update_fields=changed_keys)
         return self
 
+    @classmethod
+    def qualified_name(cls):
+        return f"{cls._meta.app_label}.{cls.__name__}"
+
     class Meta:
         abstract = True
         ordering = ["-created_at"]

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { ComponentPropsWithoutRef, ReactNode } from "react";
+import React, { ComponentPropsWithRef, ReactNode } from "react";
 import Icon, { type AppIcon } from "@/components/icon";
 import { ChildrenProps, ClassNameProps } from "@/types/react";
 import { addClass, formatUrl } from "@/util/transforms";
@@ -16,13 +16,13 @@ interface ButtonColors {
 type ButtonLinkProps = {
   href: string | null | undefined;
 } & ButtonContentProps &
-  Omit<ComponentPropsWithoutRef<"a">, "onClick" | "href">;
+  Omit<ComponentPropsWithRef<"a">, "onClick" | "href">;
 
 type ButtonProps = ButtonContentProps &
   (
-    | ComponentPropsWithoutRef<"button">
-    | Omit<ComponentPropsWithoutRef<"a">, "onClick">
-    | Omit<ComponentPropsWithoutRef<"div">, "onClick">
+    | ComponentPropsWithRef<"button">
+    | Omit<ComponentPropsWithRef<"a">, "onClick">
+    | Omit<ComponentPropsWithRef<"div">, "onClick">
   );
 
 /**
@@ -32,19 +32,9 @@ export const InlineButton = (props: ButtonProps) => {
   const { children, ...rest } = addClass(
     props,
     "relative select-none no-underline! rounded-sm font-bold tracking-tight",
-    "hover:[&_.outofbounds]:bg-hover",
-    "disabled:[&_.outofbounds]:hidden",
+    "hover-big-background",
   );
-  return (
-    <BaseButton
-      background={
-        <div className="absolute -inset-x-2 -inset-y-1 pointer-events-none outofbounds rounded-lg transition-colors" />
-      }
-      {...rest}
-    >
-      {children}
-    </BaseButton>
-  );
+  return <BaseButton {...rest}>{children}</BaseButton>;
 };
 
 /**
@@ -86,13 +76,10 @@ export const InlineLink = (props: ButtonLinkProps) => {
   );
 };
 
-const BaseButton = (
-  props: ButtonProps & ButtonColors & { background?: ReactNode },
-) => {
+const BaseButton = (props: ButtonProps & ButtonColors) => {
   const {
     icon,
     colors: _colors,
-    background,
     children,
     ...rest
   } = addClass(
@@ -107,7 +94,6 @@ const BaseButton = (
   const content = (
     <>
       <span className="absolute size-full touch-target pointer:hidden" />
-      {background}
       <ButtonContent icon={icon}>{children}</ButtonContent>
     </>
   );
@@ -125,7 +111,7 @@ const BaseButton = (
       {...(addClass(
         rest,
         "pointer-events-none",
-      ) as ComponentPropsWithoutRef<"div">)}
+      ) as ComponentPropsWithRef<"div">)}
     >
       {content}
     </div>
@@ -134,10 +120,10 @@ const BaseButton = (
 
 const isLink = (
   obj: any,
-): obj is { href: string } & ComponentPropsWithoutRef<"a"> => {
+): obj is { href: string } & ComponentPropsWithRef<"a"> => {
   return "href" in obj && obj.href;
 };
-const isButton = (obj: any): obj is ComponentPropsWithoutRef<"button"> => {
+const isButton = (obj: any): obj is ComponentPropsWithRef<"button"> => {
   return (
     ("onClick" in obj && typeof obj.onClick === "function") ||
     ("type" in obj && obj.type === "submit")

@@ -1,10 +1,12 @@
 from common.util.client import get_client_ip
+from django.contrib.redirects.models import Redirect
 from django.http import HttpRequest
+from django.shortcuts import get_object_or_404, redirect
 from django_user_agents.utils import get_user_agent
 from ninja import Router, Schema
 from pydantic import IPvAnyAddress
 
-router = Router()
+router = Router(tags=["Network tools"])
 
 
 @router.get("/ping/")
@@ -35,3 +37,17 @@ def whoami(request: HttpRequest):
         "os": ua.get_os(),
         "browser": ua.get_browser(),
     }
+
+
+class RedirectSchema(Schema):
+    redirect: str
+
+
+@router.get("/redirect/", response=RedirectSchema)
+def check_redirect(request: HttpRequest, path: str):
+    if not path.endswith("/"):
+        path += "/"
+
+    _redirect = get_object_or_404(Redirect, old_path=path)
+
+    return {"redirect": _redirect.new_path}

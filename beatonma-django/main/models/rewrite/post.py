@@ -9,7 +9,6 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.db.models import Manager
 from django.urls import reverse
-from django.utils.text import slugify
 from main.models import Link
 from main.models.mixins import ThemeableMixin
 from main.models.posts.formats import FormatMixin, Formats
@@ -119,7 +118,7 @@ class BasePost(
         return f"{self.published_at.strftime("%Y%m%d")}{uuid.uuid4().hex[:3]}"
 
     def get_absolute_url(self) -> str:
-        return reverse("post", kwargs={"slug": self.slug})
+        return reverse(self.qualified_name(), kwargs={"slug": self.slug})
 
     def _extract_tags(self):
         """Generate tags from any #hashtags found in the text."""

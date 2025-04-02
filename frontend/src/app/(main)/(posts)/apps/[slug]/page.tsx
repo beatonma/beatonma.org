@@ -6,9 +6,6 @@ interface Params {
   slug: string;
 }
 
-const get = async (params: Promise<Params>) =>
-  getSlug("/api/posts/{slug}/", params);
-
 export default async function Page({ params }: { params: Promise<Params> }) {
   const app = await get(params);
 
@@ -20,10 +17,13 @@ export async function generateMetadata({
 }: {
   params: Promise<Params>;
 }): Promise<Metadata> {
-  const post = await get(params);
+  const app = await get(params);
 
   return {
-    title: post.title || "Post",
-    description: post.subtitle,
+    title: app.title,
+    description: app.subtitle,
   };
 }
+
+const get = async (params: Promise<Params>) =>
+  getSlug("/api/apps/{slug}/", params);

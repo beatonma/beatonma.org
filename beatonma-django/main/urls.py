@@ -2,6 +2,7 @@ from common.urls import path
 from mentions.helpers import mentions_path
 
 from .feeds import LatestUpdatesFeed
+from .urls_frontend import frontend_urlpatterns
 from .views import view_names
 from .views.about import AboutView
 from .views.app import AppView
@@ -14,7 +15,7 @@ from .views.search import (
     TagView,
 )
 from .views.webapp import WebAppView
-from .views.webpost import ArticleView, BlogView, ChangelogView, NoteView, PostView
+from .views.webpost import ArticleView, BlogView, ChangelogView, NoteView
 
 api_urlpatterns = [
     # RSS feed
@@ -70,21 +71,6 @@ article_urlpatterns = [
 ]
 
 
-frontend_paths = [
-    mentions_path(
-        "posts/<slug:slug>/",
-        PostView.as_view(),
-        name="post",
-        model_class="main.Post",
-    ),
-    mentions_path(
-        "apps/<slug:slug>/",
-        PostView.as_view(),
-        name="app_post",
-        model_class="main.AppPost",
-    ),
-]
-
 site_functions_urlpatterns = [
     path("", IndexView, view_names.INDEX),
     path("about/", AboutView, view_names.ABOUT),
@@ -95,7 +81,7 @@ site_functions_urlpatterns = [
 
 urlpatterns = (
     api_urlpatterns
-    + frontend_paths
+    + frontend_urlpatterns
     + app_urlpatterns
     + article_urlpatterns
     + site_functions_urlpatterns

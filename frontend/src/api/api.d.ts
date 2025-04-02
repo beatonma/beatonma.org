@@ -38,6 +38,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/apps/{slug}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** App */
+        get: operations["main_api_posts_app"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/changelog/{slug}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Changelog */
+        get: operations["main_api_posts_changelog"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/search/": {
         parameters: {
             query?: never;
@@ -107,6 +141,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/redirect/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Check Redirect */
+        get: operations["main_api_status_check_redirect"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/contact/": {
         parameters: {
             query?: never;
@@ -118,6 +169,24 @@ export interface paths {
         put?: never;
         /** Send Mail */
         post: operations["contact_api_send_mail"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/webmentions_tester/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Temporary Webmentions */
+        get: operations["webmentions_tester_api_get_temporary_webmentions"];
+        put?: never;
+        /** Post Webmention */
+        post: operations["webmentions_tester_api_post_webmention"];
         delete?: never;
         options?: never;
         head?: never;
@@ -231,86 +300,6 @@ export interface components {
             vibrant?: string | null;
         };
         Url: string;
-        /** AppDetail */
-        AppDetail: {
-            /** @default app */
-            post_type: components["schemas"]["PostType"];
-            /** Title */
-            title: string | null;
-            /** Url */
-            url: string;
-            /** Is Published */
-            is_published: boolean;
-            /**
-             * Published At
-             * Format: date-time
-             */
-            published_at: string;
-            theme?: components["schemas"]["Theme"] | null;
-            /** Hero Embedded Url */
-            hero_embedded_url: string | null;
-            hero_image: components["schemas"]["File"] | null;
-            /** Content Html */
-            content_html: string | null;
-            /** Content Script */
-            content_script: string | null;
-            /** Links */
-            links: components["schemas"]["Link"][];
-            /** Files */
-            files: components["schemas"]["File"][];
-            /** Tags */
-            tags: components["schemas"]["Tag"][];
-            /** Subtitle */
-            subtitle?: string | null;
-            /** Hero Html */
-            hero_html: string | null;
-            /** Mentions */
-            mentions: components["schemas"]["Mention"][];
-            /** Changelog */
-            changelog: components["schemas"]["ChangelogDetail"][];
-            /** Icon */
-            icon: string | null;
-            /** Script */
-            script: string | null;
-        };
-        /** ChangelogDetail */
-        ChangelogDetail: {
-            /** @default changelog */
-            post_type: components["schemas"]["PostType"];
-            /** Title */
-            title: string | null;
-            /** Url */
-            url: string;
-            /** Is Published */
-            is_published: boolean;
-            /**
-             * Published At
-             * Format: date-time
-             */
-            published_at: string;
-            theme?: components["schemas"]["Theme"] | null;
-            /** Hero Embedded Url */
-            hero_embedded_url: string | null;
-            hero_image: components["schemas"]["File"] | null;
-            /** Content Html */
-            content_html: string | null;
-            /** Content Script */
-            content_script: string | null;
-            /** Links */
-            links: components["schemas"]["Link"][];
-            /** Files */
-            files: components["schemas"]["File"][];
-            /** Tags */
-            tags: components["schemas"]["Tag"][];
-            /** Subtitle */
-            subtitle?: string | null;
-            /** Hero Html */
-            hero_html: string | null;
-            /** Mentions */
-            mentions: components["schemas"]["Mention"][];
-            /** Version */
-            version: string;
-        };
         /** HCard */
         HCard: {
             /** Name */
@@ -341,8 +330,6 @@ export interface components {
              * Format: date-time
              */
             date: string;
-            /** Dev Admin */
-            dev_admin: string;
         };
         /** PostDetail */
         PostDetail: {
@@ -380,6 +367,122 @@ export interface components {
             /** Mentions */
             mentions: components["schemas"]["Mention"][];
         };
+        /** AppDetail */
+        AppDetail: {
+            /** @default app */
+            post_type: components["schemas"]["PostType"];
+            /** Title */
+            title: string | null;
+            /** Url */
+            url: string;
+            /** Is Published */
+            is_published: boolean;
+            /**
+             * Published At
+             * Format: date-time
+             */
+            published_at: string;
+            theme?: components["schemas"]["Theme"] | null;
+            /** Hero Embedded Url */
+            hero_embedded_url: string | null;
+            hero_image: components["schemas"]["File"] | null;
+            /** Content Html */
+            content_html: string | null;
+            /** Content Script */
+            content_script: string | null;
+            /** Links */
+            links: components["schemas"]["Link"][];
+            /** Files */
+            files: components["schemas"]["File"][];
+            /** Tags */
+            tags: components["schemas"]["Tag"][];
+            /** Subtitle */
+            subtitle?: string | null;
+            /** Hero Html */
+            hero_html: string | null;
+            /** Mentions */
+            mentions: components["schemas"]["Mention"][];
+            /** Changelog */
+            changelog: components["schemas"]["ChangelogDetail"][];
+            icon: components["schemas"]["File"] | null;
+            /** Script */
+            script?: string | null;
+            /** Script Html */
+            script_html: string | null;
+            /** Is Widget */
+            is_widget: boolean;
+        };
+        /** AppPreview */
+        AppPreview: {
+            post_type: components["schemas"]["PostType"];
+            /** Title */
+            title: string | null;
+            /** Url */
+            url: string;
+            /** Is Published */
+            is_published: boolean;
+            /**
+             * Published At
+             * Format: date-time
+             */
+            published_at: string;
+            theme?: components["schemas"]["Theme"] | null;
+            /** Hero Embedded Url */
+            hero_embedded_url: string | null;
+            hero_image: components["schemas"]["File"] | null;
+            /** Content Html */
+            content_html: string | null;
+            /** Content Script */
+            content_script: string | null;
+            /** Links */
+            links: components["schemas"]["Link"][];
+            /** Files */
+            files: components["schemas"]["File"][];
+            /** Tags */
+            tags: components["schemas"]["Tag"][];
+            /** Is Preview */
+            is_preview: boolean;
+            icon?: components["schemas"]["File"] | null;
+        };
+        /** ChangelogDetail */
+        ChangelogDetail: {
+            /** @default changelog */
+            post_type: components["schemas"]["PostType"];
+            /** Title */
+            title: string | null;
+            /** Url */
+            url: string;
+            /** Is Published */
+            is_published: boolean;
+            /**
+             * Published At
+             * Format: date-time
+             */
+            published_at: string;
+            theme?: components["schemas"]["Theme"] | null;
+            /** Hero Embedded Url */
+            hero_embedded_url: string | null;
+            hero_image: components["schemas"]["File"] | null;
+            /** Content Html */
+            content_html: string | null;
+            /** Content Script */
+            content_script: string | null;
+            /** Links */
+            links: components["schemas"]["Link"][];
+            /** Files */
+            files: components["schemas"]["File"][];
+            /** Tags */
+            tags: components["schemas"]["Tag"][];
+            /** Subtitle */
+            subtitle?: string | null;
+            /** Hero Html */
+            hero_html: string | null;
+            /** Mentions */
+            mentions: components["schemas"]["Mention"][];
+            app: components["schemas"]["AppPreview"];
+            /** Version */
+            version: string;
+        };
         /** SearchResponseSchema */
         SearchResponseSchema: {
             /** Query */
@@ -413,6 +516,11 @@ export interface components {
             os: string;
             /** Browser */
             browser: string;
+        };
+        /** RedirectSchema */
+        RedirectSchema: {
+            /** Redirect */
+            redirect: string;
         };
         /** ContactForm */
         ContactForm: {
@@ -514,7 +622,51 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PostDetail"] | components["schemas"]["AppDetail"] | components["schemas"]["ChangelogDetail"];
+                    "application/json": components["schemas"]["PostDetail"];
+                };
+            };
+        };
+    };
+    main_api_posts_app: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppDetail"];
+                };
+            };
+        };
+    };
+    main_api_posts_changelog: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChangelogDetail"];
                 };
             };
         };
@@ -613,6 +765,28 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["WhoAmiISchema"];
+                };
+            };
+        };
+    };
+    main_api_status_check_redirect: {
+        parameters: {
+            query: {
+                path: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RedirectSchema"];
                 };
             };
         };

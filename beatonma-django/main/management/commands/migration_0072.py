@@ -63,18 +63,22 @@ def migrate_blogs():
 
 
 def clone_related(old_post, post):
-    site = Site.objects.first()
-
-    Redirect.objects.update_or_create(
-        old_path=old_post.get_absolute_url(),
-        site=site,
-        defaults={"new_path": post.get_absolute_url()},
-    )
+    create_redirect(old_post, post)
 
     post.tags.add(*list(old_post.tags.all().values_list("name", flat=True)))
     clone_webmentions(old_post, post)
     clone_related_files(old_post, post)
     clone_links(old_post, post)
+
+
+def create_redirect(old, new):
+    site = Site.objects.first()
+
+    Redirect.objects.update_or_create(
+        old_path=old.get_absolute_url(),
+        site=site,
+        defaults={"new_path": new.get_absolute_url()},
+    )
 
 
 def migrate_articles():
@@ -176,10 +180,15 @@ def migrate_webapps():
                 title=app.title,
                 preview_text=app.description,
                 content_html=app.description,
-                content_script=app.content_html,
+                script_html=app.content_html,
             )
 
-            AppResource.objects.create(app=post, file=clone_file(app.file))
+            create_redirect(app, post)
+
+            script = AppResource.objects.create(app=post, file=clone_file(app.file))
+            post.script = script
+            post.save(update_fields=["script"])
+
             for res in app.resources.all():
                 if cloned := clone_file(res.file):
                     AppResource.objects.create(app=post, file=cloned)

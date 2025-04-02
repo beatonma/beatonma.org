@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 from main.models import Link
 from main.models.mixins.media_upload import UploadedMediaMixin
 from main.models.posts.formats import linkify_github_issues
@@ -36,6 +37,14 @@ class AppPost(BasePost):
         blank=True,
         null=True,
         related_name="+",
+    )
+    script_html = models.TextField(blank=True, null=True)
+    script_is_widget = models.BooleanField(
+        default=False,
+        help_text=_(
+            "If true, this app can be included as part of a parent UI. "
+            "Otherwise it should only displayed as its own window."
+        ),
     )
 
     def build_slug(self):

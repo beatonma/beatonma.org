@@ -12,8 +12,8 @@
 
 @layer components {
   .prose {
+    @apply text-typography-body;
     overflow-x: hidden;
-    color: var(--typography-body);
     font-size: 16px;
     line-height: 1.75;
 
@@ -27,25 +27,25 @@
   }
 
   h1 {
-    color: var(--typography-headings);
+    @apply text-typography-headings;
     font-weight: 800;
     font-size: 2.25em;
   }
 
   h2 {
-    color: var(--typography-headings);
+    @apply text-typography-headings;
     font-weight: 700;
     font-size: 1.5em;
   }
 
   h3 {
-    color: var(--typography-headings);
+    @apply text-typography-headings;
     font-weight: 600;
     font-size: 1.25em;
   }
 
   h4 {
-    color: var(--typography-headings);
+    @apply text-typography-headings;
     font-weight: 600;
   }
 
@@ -72,7 +72,7 @@
 
   .prose-h1,
   .prose h1 {
-    color: var(--typography-headings);
+    @apply text-typography-headings;
     font-weight: 800;
     font-size: 2.25em;
     margin-top: 0;
@@ -82,7 +82,7 @@
 
   .prose-h2,
   .prose h2 {
-    color: var(--typography-headings);
+    @apply text-typography-headings;
     font-weight: 700;
     font-size: 1.5em;
     margin-top: 2em;
@@ -92,7 +92,7 @@
 
   .prose-h3,
   .prose h3 {
-    color: var(--typography-headings);
+    @apply text-typography-headings;
     font-weight: 600;
     font-size: 1.25em;
     margin-top: 1.6em;
@@ -102,7 +102,7 @@
 
   .prose-h4,
   .prose h4 {
-    color: var(--typography-headings);
+    @apply text-typography-headings;
     font-weight: 600;
     margin-top: 1.5em;
     margin-bottom: 0.5em;
@@ -146,7 +146,7 @@
 
   .prose-code,
   .prose code {
-    color: var(--typography-code);
+    @apply text-typography-code;
     font-weight: 600;
     font-size: 0.875em;
 
@@ -205,8 +205,8 @@
     }
 
     > li::marker {
+      @apply text-typography-counters;
       font-weight: 400;
-      color: var(--typography-counters);
     }
   }
 
@@ -221,7 +221,7 @@
     }
 
     > li::marker {
-      color: var(--typography-bullets);
+      @apply text-typography-bullets;
     }
   }
 
@@ -259,7 +259,7 @@
 
   .prose-dt,
   .prose dt {
-    color: var(--typography-headings);
+    @apply text-typography-headings;
     font-weight: 600;
     margin-top: 1.25em;
   }
@@ -272,7 +272,7 @@
 
   .prose-a,
   .prose a {
-    color: var(--typography-links);
+    @apply text-typography-links;
     font-weight: 500;
 
     &:hover {
@@ -288,9 +288,9 @@
 
   .prose-blockquote,
   .prose blockquote {
+    @apply text-typography-quotes;
     font-weight: 500;
     font-style: italic;
-    color: var(--typography-quotes);
     border-inline-start: 0.25rem solid var(--typography-quote-borders);
     margin-top: 1.6em;
     margin-bottom: 1.6em;
@@ -323,7 +323,7 @@
       border-bottom: 1px solid var(--typography-th-borders);
 
       th {
-        color: var(--typography-headings);
+        @apply text-typography-headings;
         font-weight: 600;
         vertical-align: bottom;
         padding-inline-end: 0.6em;
@@ -384,7 +384,7 @@
 
   .prose-figcaption,
   .prose figcaption {
-    color: var(--typography-captions);
+    @apply text-typography-captions;
     font-size: 0.875em;
     line-height: 1.4;
     margin-top: 0.85em;
@@ -392,9 +392,9 @@
 
   .prose-kbd,
   .prose kbd {
+    @apply text-typography-kbd;
     font-weight: 500;
     font-family: inherit;
-    color: var(--typography-kbd);
     box-shadow:
       0 0 0 1px rgb(var(--typography-kbd-shadows) / 10%),
       0 3px 0 rgb(var(--typography-kbd-shadows) / 10%);
@@ -419,7 +419,7 @@
     margin-top: 0;
   }
 
-  .prose section:first-child > *:first-child {
+  .prose *:first-child > *:first-child {
     margin-top: 0;
   }
 

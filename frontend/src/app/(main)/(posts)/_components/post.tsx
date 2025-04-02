@@ -1,11 +1,18 @@
 import Link from "next/link";
 import { InlineLink } from "@/components/button";
 import { HtmlContent, PublishingStatus } from "@/components/data/post";
-import { PostDetail } from "@/components/data/types";
+import Post from "@/components/data/posts/post";
+import {
+  AppDetail,
+  AppPreview,
+  PostDetail,
+  isApp,
+  isChangelog,
+} from "@/components/data/types";
 import Webmentions from "@/components/data/webmentions";
 import { Date } from "@/components/datetime";
 import DangerousHtml from "@/components/html";
-import { RemoteIcon } from "@/components/icon";
+import { RemoteIcon, RemoteIconProps } from "@/components/icon";
 import MediaCarousel from "@/components/media/media-carousel";
 import MediaView from "@/components/media/media-view";
 import Optional from "@/components/optional";
@@ -13,48 +20,59 @@ import { ProseClassName } from "@/components/prose";
 import itemTheme from "@/components/themed/item-theme";
 import RemoteIFrame from "@/components/third-party/embedded";
 import { navigationHref } from "@/navigation";
-import { DivPropsNoChildren } from "@/types/react";
-import { onlyIf } from "@/util/optional";
+import { type Optional as MakeOptional } from "@/types";
+import { DivPropsNoChildren, PropsExcept } from "@/types/react";
 import { addClass, classes } from "@/util/transforms";
 import styles from "./post.module.css";
 
 const Insets = "px-edge xl:px-0";
 
-export default function PostPage({ post }: PostProps) {
+interface PostProps {
+  post: PostDetail;
+}
+interface AppProps {
+  app: AppDetail;
+}
+
+export default function PostPage(props: PostProps) {
+  const { post } = props;
+  const themeSource = isChangelog(post) && !post.theme ? post.app : post;
+
   return (
-    <div>
+    <div style={itemTheme(themeSource)}>
       <PublishingStatus post={post} />
 
       <main
         className={classes(
           "h-entry mb-48",
           styles.postGridAreas,
-          "grid justify-center",
-          "grid-cols-[min(100%,var(--spacing-readable))]",
+          "grid lg:gap-x-8",
+          "grid-cols-[1fr_min(100%,var(--spacing-readable))_1fr]",
           "xl:grid-cols-[1fr_240px_var(--spacing-readable)_240px_1fr]",
         )}
       >
         <article
-          style={itemTheme(post)}
           className={classes(
-            "grid subgrid-span-full space-y-8",
+            "grid subgrid-span-full space-y-8 w-full",
             styles.postGridAreas,
-            Insets,
           )}
         >
-          <DangerousHtml
-            html={post.hero_html}
-            className="col-start-1 col-span-full row-start-1"
-          />
-          <HeroMedia
+          <HeroHtml
             post={post}
-            className="[grid-area:hero] card max-h-[50vh]"
+            className="col-start-1 col-span-full row-start-1 max-h-[50vh]"
           />
+          <Hero post={post} className="[grid-area:hero] card max-h-[50vh]" />
 
-          <PostTitle post={post} className="[grid-area:title] space-y-0.5" />
+          <PostTitle
+            post={post}
+            className={classes("[grid-area:title]", Insets)}
+          />
           <PostInfo
             post={post}
-            className="[grid-area:info] text-sm xl:text-end xl:*:justify-end"
+            className={classes(
+              "[grid-area:info] text-sm xl:text-end xl:*:justify-end xl:*:justify-self-end",
+              Insets,
+            )}
           />
 
           <HtmlContent
@@ -63,6 +81,7 @@ export default function PostPage({ post }: PostProps) {
               "[grid-area:content]",
               ProseClassName,
               "e-content",
+              Insets,
             )}
           />
 
@@ -78,24 +97,29 @@ export default function PostPage({ post }: PostProps) {
         />
       </main>
 
+      {isApp(post) && <Changelogs app={post} className="readable mx-auto" />}
+
       <DangerousHtml html={post.content_script} className="hidden" />
     </div>
   );
 }
-
-interface PostProps {
-  post: PostDetail;
-}
 const PostTitle = (props: PostProps & DivPropsNoChildren) => {
   const { post, ...rest } = props;
 
-  if (!post.title && !post.subtitle) return null;
+  const _isChangelog = isChangelog(post);
+  if (!post.title && !post.subtitle && !_isChangelog) return null;
 
   return (
-    <div {...rest}>
+    <div {...addClass(rest, "space-y-0.5")}>
       <Optional
         value={post.title}
-        block={(title) => <h1 className="p-name">{title}</h1>}
+        block={(title) => (
+          <h1 className="p-name">
+            {_isChangelog
+              ? `${post.app.title}: ${title || post.version}`
+              : title}
+          </h1>
+        )}
       />
       <Optional
         value={post.subtitle}
@@ -113,6 +137,13 @@ const PostInfo = (props: PostProps & DivPropsNoChildren) => {
         Published <Date date={post.published_at} />
       </span>
 
+      {isApp(post) && post.script && (
+        <AppLink app={post} liveInstance={true} className="my-2" />
+      )}
+      {isChangelog(post) && (
+        <AppLink app={post.app} liveInstance={false} className="my-2" />
+      )}
+
       <PostLinks post={post} className="row gap-x-2 flex-wrap empty:hidden" />
       <PostTags post={post} className="row gap-x-2 flex-wrap empty:hidden" />
 
@@ -120,6 +151,43 @@ const PostInfo = (props: PostProps & DivPropsNoChildren) => {
         <Link className="u-url" href={post.url} />
       </div>
     </div>
+  );
+};
+
+const AppLink = (
+  props: {
+    app: Pick<AppPreview, "title" | "icon" | "url" | "theme">;
+    liveInstance: boolean;
+  } & PropsExcept<"a", "children" | "href">,
+) => {
+  const {
+    app,
+    liveInstance, // If true, link to the webapp instance page
+    style,
+    ...rest
+  } = addClass(
+    props,
+    "grid grid-cols-[auto_1fr] hover-big-background w-fit text-start",
+  );
+
+  return (
+    <Link
+      href={liveInstance ? `${app.url}/live` : app.url}
+      style={itemTheme(app)}
+      {...rest}
+    >
+      <OptionalRemoteIcon
+        src={app.icon?.url}
+        mask={false}
+        className="text-[calc(--spacing(8))] me-2"
+      />
+      <div>
+        <div className="font-bold">{app.title}</div>
+        <div className="text-current/80">
+          {liveInstance ? "Live instance" : "App"}
+        </div>
+      </div>
+    </Link>
   );
 };
 
@@ -132,12 +200,22 @@ const PostLinks = (props: PostProps & DivPropsNoChildren) => {
         <InlineLink
           key={link.url}
           href={link.url}
-          icon={onlyIf(link.icon, (icon) => (
-            <RemoteIcon src={icon} />
-          ))}
+          icon={<OptionalRemoteIcon src={link.icon} />}
         />
       ))}
     </div>
+  );
+};
+
+const OptionalRemoteIcon = (
+  props: MakeOptional<RemoteIconProps, "src"> & DivPropsNoChildren,
+) => {
+  const { src: propsSrc, mask, ...rest } = props;
+  return (
+    <Optional
+      value={propsSrc}
+      block={(src) => <RemoteIcon src={src} mask={mask} {...rest} />}
+    />
   );
 };
 
@@ -175,7 +253,22 @@ const PostWebmentions = (props: PostProps & DivPropsNoChildren) => {
   );
 };
 
-const HeroMedia = (props: PostProps & DivPropsNoChildren) => {
+const HeroHtml = (props: PostProps & DivPropsNoChildren) => {
+  const { post, ...rest } = props;
+  if (isApp(post) && post.is_widget && post.script) {
+    const liveUrl = `${post.url}/live`;
+    return (
+      <iframe
+        src={liveUrl}
+        title={`Live instance of app '${post.title}'`}
+        {...addClass(rest, "w-full")}
+      />
+    );
+  }
+
+  return <DangerousHtml html={post.hero_html} {...rest} />;
+};
+const Hero = (props: PostProps & DivPropsNoChildren) => {
   const { post, ...rest } = props;
 
   if (post.hero_embedded_url) {
@@ -200,5 +293,22 @@ const HeroMedia = (props: PostProps & DivPropsNoChildren) => {
         />
       )}
     />
+  );
+};
+
+const Changelogs = (props: AppProps & DivPropsNoChildren) => {
+  const { app, ...rest } = props;
+  if (!app.changelog.length) return null;
+
+  return (
+    <div {...rest}>
+      <h2 className="prose-h2">Changelog</h2>
+
+      <div className="space-y-8">
+        {app.changelog.map((entry) => (
+          <Post key={entry.url} post={{ ...entry, is_preview: false }} />
+        ))}
+      </div>
+    </div>
   );
 };

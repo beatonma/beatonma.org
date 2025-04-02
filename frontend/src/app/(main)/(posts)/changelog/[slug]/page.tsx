@@ -7,12 +7,12 @@ interface Params {
 }
 
 const get = async (params: Promise<Params>) =>
-  getSlug("/api/posts/{slug}/", params);
+  getSlug("/api/changelog/{slug}/", params);
 
 export default async function Page({ params }: { params: Promise<Params> }) {
-  const app = await get(params);
+  const changelog = await get(params);
 
-  return <PostPage post={app} />;
+  return <PostPage post={changelog} />;
 }
 
 export async function generateMetadata({
@@ -20,10 +20,10 @@ export async function generateMetadata({
 }: {
   params: Promise<Params>;
 }): Promise<Metadata> {
-  const post = await get(params);
+  const changelog = await get(params);
 
   return {
-    title: post.title || "Post",
-    description: post.subtitle,
+    title: `${changelog.app.title} ${changelog.version}`,
+    description: `Changelog for app ${changelog.app.title} version ${changelog.version}`,
   };
 }

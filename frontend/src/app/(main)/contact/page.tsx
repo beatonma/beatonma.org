@@ -8,6 +8,8 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   return (
-    <ContactPage recaptchaPublicSiteKey={process.env.GOOGLE_RECAPTCHA_TOKEN!} />
+    <ContactPage
+      recaptchaPublicSiteKey={process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_TOKEN!}
+    />
   );
 }

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import React from "react";
+import ReturnToTopButton from "@/app/(main)/_components/return-to-top";
 import { Button } from "@/components/button";
 import { Row, Separator } from "@/components/layout";
 import ThemeController from "@/components/themed/light-dark";
@@ -10,19 +12,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="grid grid-rows-[min-content_1fr_min-content] grid-cols-1 h-full items-start">
-      <header className="p-edge max-xl:mb-16">
+    <div className="grid grid-rows-[min-content_1fr_min-content] grid-cols-1 gap-y-16 h-full items-start">
+      <header className="p-edge">
         <Row className="gap-8 justify-between flex-wrap">
-          <h1 className="line-clamp-1 font-normal">
+          <h1 className="line-clamp-1 font-normal" id="top">
             <Link href={navigationHref("home")} className="no-underline">
-              {process.env.SITE_NAME}
+              {process.env.NEXT_PUBLIC_SITE_NAME}
             </Link>
           </h1>
 
           <Row className="gap-4">
-            <Button icon="Dev" href="/dev/">
-              Components
-            </Button>
+            {process.env.NODE_ENV === "development" && (
+              <Button icon="Dev" href="/dev/">
+                Components
+              </Button>
+            )}
             <Separator />
             <Button href={navigationHref("contact")}>Contact</Button>
             <ThemeController />
@@ -32,7 +36,9 @@ export default function RootLayout({
 
       {children}
 
-      <footer></footer>
+      <footer className="mx-auto pb-8">
+        <ReturnToTopButton />
+      </footer>
     </div>
   );
 }

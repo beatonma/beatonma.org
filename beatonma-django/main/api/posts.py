@@ -63,10 +63,11 @@ class BasePost(Schema):
 
     @staticmethod
     def resolve_theme(obj: ThemeableMixin):
-        return {
-            "muted": obj.color_muted,
-            "vibrant": obj.color_vibrant,
-        }
+        if obj.color_muted or obj.color_vibrant:
+            return {
+                "muted": obj.color_muted,
+                "vibrant": obj.color_vibrant,
+            }
 
     @staticmethod
     def resolve_files(obj):
@@ -85,6 +86,10 @@ class PostPreview(BasePost):
         return bool(obj.preview_text)
 
 
+class AppPreview(PostPreview):
+    icon: File | None = None
+
+
 class PostDetail(BasePost):
     post_type: PostType = "post"
     subtitle: str | None = None
@@ -94,32 +99,52 @@ class PostDetail(BasePost):
 
 class ChangelogDetail(PostDetail):
     post_type: PostType = "changelog"
+    app: AppPreview
     version: str
+
+    @staticmethod
+    def resolve_app(obj):
+        _app = obj.app
+        _app.post_type = "app"
+        return _app
 
 
 class AppDetail(PostDetail):
     post_type: PostType = "app"
+    hero_html: str | None
     changelog: list[ChangelogDetail] = Field(alias="changelogs")
-    icon: str | None
-    script: str | None
+    icon: File | None
+    script: str | None = Field(alias="script.file.url", default=None)
+    script_html: str | None
+    is_widget: bool = Field(alias="script_is_widget")
 
 
-@router.get("/", response=list[PostPreview])
+@router.get("/posts/", response=list[PostPreview])
 @paginate
 def post_feed(request: HttpRequest, query: str = None, tag: str = None):
     feed = get_feed(query=query, tag=tag)
-    for post in feed:
-        if isinstance(post, AppPost):
-            post.post_type = "app"
-        elif isinstance(post, ChangelogPost):
-            post.post_type = "changelog"
-            post.title = f"{post.app.title} {post.title}"
+    for item in feed:
+        if isinstance(item, AppPost):
+            item.post_type = "app"
+        elif isinstance(item, ChangelogPost):
+            item.post_type = "changelog"
+            item.title = f"{item.app.title} {item.title}"
         else:
-            post.post_type = "post"
+            item.post_type = "post"
 
     return feed
 
 
-@router.get("/{slug}/", response=PostDetail | AppDetail | ChangelogDetail)
+@router.get("/posts/{slug}/", response=PostDetail)
 def post(request: HttpRequest, slug: str):
     return get_object_or_404(Post, slug=slug)
+
+
+@router.get("/apps/{slug}/", response=AppDetail)
+def app(request: HttpRequest, slug: str):
+    return get_object_or_404(AppPost, slug=slug)
+
+
+@router.get("/changelog/{slug}/", response=ChangelogDetail)
+def changelog(request: HttpRequest, slug: str):
+    return get_object_or_404(ChangelogPost, slug=slug)

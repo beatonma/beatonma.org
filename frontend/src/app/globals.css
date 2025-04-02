@@ -28,6 +28,43 @@
   }
 }
 
+/* Common colours for content. */
+@utility palette {
+  --background-light: var(--color-stone-200);
+  --on-background-light: var(--color-stone-950);
+  --surface-light: var(--color-stone-50);
+  --on-surface-light: var(--color-stone-950);
+  --alt-light: var(--color-stone-800);
+  --on-alt-light: var(--color-stone-200);
+  --vibrant-light: var(--color-green-700);
+  --on-vibrant-light: var(--color-green-100);
+  --muted-light: var(--color-slate-600);
+  --on-muted-light: var(--color-slate-100);
+
+  --background-dark: #252225;
+  --on-background-dark: #f1edf1;
+  --surface-dark: #4b495c;
+  --on-surface-dark: #efeef9;
+  --alt-dark: #26252c;
+  --on-alt-dark: #dddbea;
+  --vibrant-dark: #55c191;
+  --on-vibrant-dark: #0c1e16;
+  --muted-dark: var(--color-slate-500);
+  --on-muted-dark: var(--color-slate-900);
+
+  --white: var(--color-white);
+  --black: var(--color-black);
+  --grey: var(--color-neutral-700);
+  --red: var(--color-rose-700);
+  --green: var(--color-green-600);
+  --blue: var(--color-sky-600);
+  --cyan: var(--color-cyan-400);
+  --yellow: var(--color-yellow-400);
+  --orange: var(--color-orange-600);
+  --purple: var(--color-purple-700);
+  --pink: var(--color-pink-600);
+}
+
 @utility colorscheme-light {
   --background: var(--background-light);
   --on-background: var(--on-background-light);
@@ -91,68 +128,6 @@
   --typography-kbd-shadows: var(--color-slate-900);
 }
 
-/* Common colours for content. */
-@utility palette {
-  --background-light: var(--color-stone-200);
-  --on-background-light: var(--color-stone-950);
-  --surface-light: var(--color-stone-50);
-  --on-surface-light: var(--color-stone-950);
-  --alt-light: var(--color-stone-800);
-  --on-alt-light: var(--color-stone-200);
-  --vibrant-light: var(--color-green-700);
-  --on-vibrant-light: var(--color-green-100);
-  --muted-light: var(--color-slate-600);
-  --on-muted-light: var(--color-slate-100);
-
-  --background-dark: #252225;
-  --on-background-dark: #f1edf1;
-  --surface-dark: #4b495c;
-  --on-surface-dark: #efeef9;
-  --alt-dark: #26252c;
-  --on-alt-dark: #dddbea;
-  --vibrant-dark: #55c191;
-  --on-vibrant-dark: #0c1e16;
-  --muted-dark: var(--color-slate-500);
-  --on-muted-dark: var(--color-slate-900);
-
-  --white: var(--color-white);
-  --black: var(--color-black);
-  --grey: var(--color-neutral-700);
-  --red: var(--color-rose-700);
-  --green: var(--color-green-600);
-  --blue: var(--color-sky-600);
-  --cyan: var(--color-cyan-400);
-  --yellow: var(--color-yellow-400);
-  --orange: var(--color-orange-600);
-  --purple: var(--color-purple-700);
-  --pink: var(--color-pink-600);
-}
-
-:root {
-  @apply palette;
-  @media (prefers-color-scheme: light) {
-    @apply colorscheme-light;
-  }
-  @media (prefers-color-scheme: dark) or (prefers-color-scheme: no-preference) {
-    @apply colorscheme-dark;
-  }
-
-  /* Values updated by surface-* utility - should always contain location-specific colors */
-  --bg: var(--background);
-  --fg: var(--on-background);
-  accent-color: var(--vibrant);
-  --max-width: 100vw;
-  --max-height: 100vh;
-}
-
-::selection {
-  background-color: var(--fg);
-  color: var(--bg);
-}
-*:focus-visible {
-  @apply outline-on-background ring-background ring-2 outline-2 outline-dashed;
-}
-
 @theme {
   --color-scrim: rgb(0 0 0 / 0.7);
   --color-on-scrim: rgb(250 250 250);
@@ -196,7 +171,51 @@
   --color-on-vibrant: var(--on-vibrant);
   --color-muted: var(--muted);
   --color-on-muted: var(--on-muted);
-  --color-hover: color-mix(in srgb, var(--fg) 10%, transparent);
+  --color-hover: color-mix(in srgb, var(--hover, var(--fg)) 10%, transparent);
+
+  --color-typography-body: var(--typography-body);
+  --color-typography-headings: var(--typography-headings);
+  --color-typography-lead: var(--typography-lead);
+  --color-typography-links: var(--typography-links);
+  --color-typography-bold: var(--typography-bold);
+  --color-typography-counters: var(--typography-counters);
+  --color-typography-bullets: var(--typography-bullets);
+  --color-typography-hr: var(--typography-hr);
+  --color-typography-quotes: var(--typography-quotes);
+  --color-typography-quote-borders: var(--typography-quote-borders);
+  --color-typography-captions: var(--typography-captions);
+  --color-typography-code: var(--typography-code);
+  --color-typography-pre-code: var(--typography-pre-code);
+  --color-typography-pre-bg: var(--typography-pre-bg);
+  --color-typography-th-borders: var(--typography-th-borders);
+  --color-typography-td-borders: var(--typography-td-borders);
+  --color-typography-kbd: var(--typography-kbd);
+  --color-typography-kbd-shadows: var(--typography-kbd-shadows);
+}
+
+:root {
+  @apply palette;
+  @media (prefers-color-scheme: light) {
+    @apply colorscheme-light;
+  }
+  @media (prefers-color-scheme: dark) or (prefers-color-scheme: no-preference) {
+    @apply colorscheme-dark;
+  }
+
+  /* Values updated by surface-* utility - should always contain location-specific colors */
+  --bg: var(--background);
+  --fg: var(--on-background);
+  accent-color: var(--vibrant);
+  --max-width: 100vw;
+  --max-height: 100vh;
+}
+
+::selection {
+  background-color: var(--fg);
+  color: var(--bg);
+}
+*:focus-visible {
+  @apply outline-on-background ring-background ring-2 outline-2 outline-dashed;
 }
 
 @layer base {
@@ -285,6 +304,13 @@
 }
 
 /* prettier-ignore */
+@utility fg-* {
+  --fg: --value(--color-on-*);
+  color: --value(--color-on-*);
+  fill: --value(--color-on-*);
+}
+
+/* prettier-ignore */
 @utility surface-* {
   background-color: --value(--color-*);
   color: --value(--color-on-*);
@@ -327,6 +353,12 @@
 @utility chip-content {
   @apply px-2 py-1;
 }
+@utility badge {
+  @apply rounded-md select-none;
+}
+@utility badge-content {
+  @apply px-1 py-0.5;
+}
 @utility readable {
   @apply max-w-readable w-full;
   --max-width: min(100%, var(--spacing-readable));
@@ -335,6 +367,19 @@
 /* Make a subgrid that completely fills its parent grid. Useful for sharing named grid areas. */
 @utility subgrid-span-full {
   @apply col-span-full col-start-1 row-span-full row-start-1 grid-cols-subgrid grid-rows-subgrid;
+}
+
+/* Add a hover background which is a little larger than the element. */
+@utility hover-big-background {
+  position: relative;
+  &::after {
+    @apply pointer-events-none absolute -inset-x-2 -inset-y-1 rounded-lg bg-transparent transition-colors;
+    content: "";
+  }
+  &:not(:disabled):hover::after {
+    @apply bg-hover;
+    content: "";
+  }
 }
 
 /** Used in HTML generated by Formats markdown -> html */

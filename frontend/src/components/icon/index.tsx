@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef } from "react";
+import { CSSProperties, ComponentPropsWithoutRef } from "react";
 import { Nullish } from "@/types";
 import { DivPropsNoChildren } from "@/types/react";
 import { addClass } from "@/util/transforms";
@@ -85,17 +85,25 @@ export default function Icon(props: IconProps) {
   return <Element {...rest} />;
 }
 
-interface RemoteIconProps {
+export interface RemoteIconProps {
   src: string;
+  mask?: boolean;
 }
 export const RemoteIcon = (props: RemoteIconProps & DivPropsNoChildren) => {
-  const { src, style, ...rest } = addClass(props, "size-em bg-current");
-  return (
-    <div
-      style={{ ...style, maskImage: `url('${src}')`, maskSize: "1em" }}
-      {...rest}
-    />
-  );
+  const { src, mask = true, style, ...rest } = addClass(props, "size-em");
+
+  const maskStyle: CSSProperties = mask
+    ? {
+        backgroundColor: "currentColor",
+        maskImage: `url('${src}')`,
+        maskSize: "1em",
+      }
+    : {
+        backgroundImage: `url('${src}')`,
+        backgroundSize: "1em",
+      };
+
+  return <div style={{ ...style, ...maskStyle }} {...rest} />;
 };
 
 export const _private = {

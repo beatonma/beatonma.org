@@ -12,13 +12,15 @@ interface ThemeCss extends CSSProperties {
   "--on-vibrant"?: string | Nullish;
   "--muted"?: string | Nullish;
   "--on-muted"?: string | Nullish;
+  "--hover"?: string | Nullish;
 }
 
 export default function itemTheme(
   obj: Themed,
   mergeInto?: CSSProperties,
 ): ThemeCss {
-  if (!obj.theme) return {};
+  if (!obj.theme) return mergeInto ?? {};
+
   const { vibrant, muted } = obj.theme;
 
   return {
@@ -26,6 +28,7 @@ export default function itemTheme(
     "--on-vibrant": getForegroundColor(vibrant),
     "--muted": muted,
     "--on-muted": getForegroundColor(muted),
+    "--hover": vibrant,
     ...(mergeInto ?? {}),
-  };
+  } as CSSProperties;
 }

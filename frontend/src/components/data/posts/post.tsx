@@ -1,4 +1,3 @@
-import { ComponentPropsWithRef, useId } from "react";
 import { InlineButton, InlineLink } from "@/components/button";
 import { HtmlContent, PublishingStatus } from "@/components/data/post";
 import { PostPreview } from "@/components/data/types";
@@ -10,15 +9,14 @@ import Optional from "@/components/optional";
 import { ProseClassName } from "@/components/prose";
 import itemTheme from "@/components/themed/item-theme";
 import RemoteIFrame from "@/components/third-party/embedded";
-import { onlyIf } from "@/util/optional";
+import { DivPropsNoChildren } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
 export default function Post(
-  props: { post: PostPreview } & ComponentPropsWithRef<"div">,
+  props: { post: PostPreview } & DivPropsNoChildren,
 ) {
   const { post, style, ...rest } = addClass(props, "h-entry");
   const themedStyle = { ...style, ...itemTheme(post) };
-  const labelId = useId();
 
   return (
     <article style={themedStyle} {...rest}>
@@ -30,21 +28,23 @@ export default function Post(
           <Optional
             value={post.title}
             block={(title) => (
-              <h2 className="p-name" id={labelId}>
-                <InlineLink href={post.url} icon={postIcon(post)}>
-                  {title}
-                </InlineLink>
-              </h2>
+              <Row className="gap-x-4 items-center">
+                <h2 className="p-name">
+                  <InlineLink href={post.url} icon={null}>
+                    {title}
+                  </InlineLink>
+                </h2>
+                <PostType post={post} className="text-current/60" />
+              </Row>
             )}
           />
 
           <HtmlContent
             post={post}
-            id={onlyIf(!post.title, labelId)}
             className={
               post.is_preview
-                ? "text-lg! p-summary"
-                : `text-xl! e-content ${ProseClassName}`
+                ? `text-lg! p-summary ${ProseClassName} compact`
+                : `text-xl! e-content ${ProseClassName} compact`
             }
           />
 
@@ -66,8 +66,6 @@ export default function Post(
           </Row>
         </div>
       </div>
-
-      <h4>{post.post_type}</h4>
     </article>
   );
 }
@@ -82,7 +80,7 @@ const postIcon = (post: PostPreview) => {
 };
 
 const PostMediaPreview = (
-  props: { post: PostPreview } & ComponentPropsWithRef<"div">,
+  props: { post: PostPreview } & DivPropsNoChildren,
 ) => {
   const { post, ...rest } = props;
   if (!post.hero_embedded_url && !post.hero_image && !post.files.length)
@@ -108,4 +106,17 @@ const PostMediaPreview = (
   return (
     <MediaPreview media={post.files} {...addClass(rest, "surface-muted")} />
   );
+};
+
+const PostType = (props: { post: PostPreview } & DivPropsNoChildren) => {
+  const { post, ...rest } = addClass(
+    props,
+    "text-xs badge badge-content border-1",
+  );
+
+  if (post.post_type === "post") return null;
+  if (post.post_type === "changelog")
+    return <span {...rest}>{post.post_type}</span>;
+
+  return <span {...rest}>{post.post_type}</span>;
 };

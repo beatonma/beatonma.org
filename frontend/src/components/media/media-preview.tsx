@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import Dialog from "@/components/dialog";
 import MediaCarousel from "@/components/media/media-carousel";
