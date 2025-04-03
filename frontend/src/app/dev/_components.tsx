@@ -1,6 +1,7 @@
 "use client";
 
 import { ComponentPropsWithoutRef } from "react";
+import { LoremIpsum } from "@/app/dev/_sample";
 import {
   Button,
   InlineButton,
@@ -11,7 +12,8 @@ import Callout from "@/components/callout";
 import Icon, { _private as Icon_private } from "@/components/icon";
 import { Row } from "@/components/layout";
 import Loading, { LoadingBar, LoadingSkeleton } from "@/components/loading";
-import { addClass } from "@/util/transforms";
+import { ClassNameProps } from "@/types/react";
+import { addClass, classes } from "@/util/transforms";
 
 const Section = (
   props: { name?: string } & ComponentPropsWithoutRef<"section">,
@@ -106,3 +108,41 @@ export const Callouts = () => (
     <Callout level="caution">caution</Callout>
   </Section>
 );
+
+export const Surfaces = () => {
+  const Surface = (props: ClassNameProps) => {
+    const content = (
+      <>
+        <strong>{props.className}</strong>
+        <p>
+          A paragraph of text with a <a href="#">link</a>.
+        </p>
+        <Row className="gap-2">
+          <Button icon="MB" className="surface" />
+          <Button icon="MB" className="surface-alt" />
+          <Button icon="MB" className="surface-vibrant" />
+          <Button icon="MB" className="surface-muted" />
+        </Row>
+      </>
+    );
+    return (
+      <>
+        <div {...addClass(props, "card card-content readable prose")}>
+          {content}
+        </div>
+      </>
+    );
+  };
+
+  return (
+    <Section name="Surfaces">
+      <div className="space-y-4 max-w-[40ch]">
+        <Surface className="background" />
+        <Surface className="surface" />
+        <Surface className="surface-alt" />
+        <Surface className="surface-vibrant" />
+        <Surface className="surface-muted" />
+      </div>
+    </Section>
+  );
+};

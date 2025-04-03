@@ -1,0 +1,216 @@
+/* Common colours for content. */
+
+@utility surface-colors {
+  /* Light variants */
+  --background-light: var(--color-stone-200);
+  --on-background-light: var(--color-stone-950);
+  --vibrant-on-background-light: var(--vibrant-light);
+  --muted-on-background-light: var(--muted-light);
+
+  --surface-light: var(--color-stone-50);
+  --on-surface-light: var(--color-stone-950);
+  --vibrant-on-surface-light: var(--vibrant-light);
+  --muted-on-surface-light: var(--muted-light);
+
+  --alt-light: var(--color-stone-800);
+  --on-alt-light: var(--color-stone-200);
+  --vibrant-on-alt-light: var(--vibrant-dark);
+  --muted-on-alt-light: var(--muted-light);
+
+  --vibrant-light: var(--color-green-700);
+  --on-vibrant-light: var(--color-green-50);
+  --vibrant-on-vibrant-light: var(--color-yellow-200);
+  --muted-on-vibrant-light: var(--color-slate-700);
+
+  --muted-light: var(--color-slate-600);
+  --on-muted-light: var(--color-slate-100);
+  --vibrant-on-muted-light: var(--color-green-300);
+  --muted-on-muted-light: var(--color-slate-800);
+
+  /* Dark variants */
+  --background-dark: #252225;
+  --on-background-dark: #f1edf1;
+  --vibrant-on-background-dark: var(--vibrant-dark);
+  --muted-on-background-dark: var(--muted-dark);
+
+  --surface-dark: #4b495c;
+  --on-surface-dark: #efeef9;
+  --vibrant-on-surface-dark: var(--vibrant-dark);
+  --muted-on-surface-dark: var(--muted-dark);
+
+  --alt-dark: #26252c;
+  --on-alt-dark: #dddbea;
+  --vibrant-on-alt-dark: var(--vibrant-dark);
+  --muted-on-alt-dark: var(--muted-dark);
+
+  --vibrant-dark: #55c191;
+  --on-vibrant-dark: #0c1e16;
+  --vibrant-on-vibrant-dark: var(--color-emerald-950);
+  --muted-on-vibrant-dark: var(--color-emerald-200); /*#8ed5b5;*/
+
+  --muted-dark: var(--color-slate-400);
+  --on-muted-dark: var(--color-slate-900);
+  --vibrant-on-muted-dark: var(--color-slate-950);
+  --muted-on-muted-dark: var(--color-slate-300);
+}
+
+@utility palette {
+  @apply surface-colors;
+
+  --white: var(--color-white);
+  --black: var(--color-black);
+  --grey: var(--color-neutral-700);
+  --red: var(--color-rose-700);
+  --green: var(--color-green-600);
+  --blue: var(--color-sky-600);
+  --cyan: var(--color-cyan-400);
+  --yellow: var(--color-yellow-400);
+  --orange: var(--color-orange-600);
+  --purple: var(--color-purple-700);
+  --pink: var(--color-pink-600);
+}
+
+@utility colorscheme-light {
+  --background: var(--background-light);
+  --on-background: var(--on-background-light);
+  --vibrant-on-background: var(--vibrant-on-background-light);
+  --muted-on-background: var(--muted-on-background-light);
+
+  --surface: var(--surface-light);
+  --on-surface: var(--on-surface-light);
+  --vibrant-on-surface: var(--vibrant-on-surface-light);
+  --muted-on-surface: var(--muted-on-surface-light);
+
+  --alt: var(--alt-light);
+  --on-alt: var(--on-alt-light);
+  --vibrant-on-alt: var(--vibrant-on-alt-light);
+  --muted-on-alt: var(--muted-on-alt-light);
+
+  --vibrant: var(--vibrant-light);
+  --on-vibrant: var(--on-vibrant-light);
+  --vibrant-on-vibrant: var(--vibrant-on-vibrant-light);
+  --muted-on-vibrant: var(--muted-on-vibrant-light);
+
+  --muted: var(--muted-light);
+  --on-muted: var(--on-muted-light);
+  --vibrant-on-muted: var(--vibrant-on-muted-light);
+  --muted-on-muted: var(--muted-on-muted-light);
+}
+
+@utility colorscheme-dark {
+  --background: var(--background-dark);
+  --on-background: var(--on-background-dark);
+  --vibrant-on-background: var(--vibrant-on-background-dark);
+  --muted-on-background: var(--muted-on-background-dark);
+
+  --surface: var(--surface-dark);
+  --on-surface: var(--on-surface-dark);
+  --vibrant-on-surface: var(--vibrant-on-surface-dark);
+  --muted-on-surface: var(--muted-on-surface-dark);
+
+  --alt: var(--alt-dark);
+  --on-alt: var(--on-alt-dark);
+  --vibrant-on-alt: var(--vibrant-on-alt-dark);
+  --muted-on-alt: var(--muted-on-alt-dark);
+
+  --vibrant: var(--vibrant-dark);
+  --on-vibrant: var(--on-vibrant-dark);
+  --vibrant-on-vibrant: var(--vibrant-on-vibrant-dark);
+  --muted-on-vibrant: var(--muted-on-vibrant-dark);
+
+  --muted: var(--muted-dark);
+  --on-muted: var(--on-muted-dark);
+  --vibrant-on-muted: var(--vibrant-on-muted-dark);
+  --muted-on-muted: var(--muted-on-muted-dark);
+}
+
+@theme {
+  --color-scrim: rgb(0 0 0 / 0.7);
+  --color-on-scrim: rgb(250 250 250);
+
+  --color-media-image: var(--color-amber-400);
+  --color-on-media-image: var(--color-amber-900);
+  --color-media-audio: var(--color-cyan-400);
+  --color-on-media-audio: var(--color-cyan-900);
+  --color-media-text: var(--color-neutral-300);
+  --color-on-media-text: var(--color-neutral-900);
+  --color-media-video: var(--color-rose-700);
+  --color-on-media-video: var(--color-rose-50);
+  --color-media-unknown: var(--color-emerald-800);
+  --color-on-media-unknown: var(--color-emerald-50);
+
+  --color-callout-info: var(--color-blue-200);
+  --color-on-callout-info: var(--color-blue-950);
+  --color-callout-tip: var(--color-green-200);
+  --color-on-callout-tip: var(--color-green-950);
+  --color-callout-warn: var(--color-red-200);
+  --color-on-callout-warn: var(--color-red-950);
+  --color-callout-important: var(--color-violet-200);
+  --color-on-callout-important: var(--color-violet-950);
+  --color-callout-caution: var(--color-red-950);
+  --color-on-callout-caution: var(--color-red-200);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-on-background: var(--on-background);
+  --color-vibrant-on-background: var(--vibrant-on-background);
+  --color-muted-on-background: var(--muted-on-background);
+
+  --color-surface: var(--surface);
+  --color-on-surface: var(--on-surface);
+  --color-vibrant-on-surface: var(--vibrant-on-surface);
+  --color-muted-on-surface: var(--muted-on-surface);
+
+  --color-alt: var(--alt);
+  --color-on-alt: var(--on-alt);
+  --color-vibrant-on-alt: var(--vibrant-on-alt);
+  --color-muted-on-alt: var(--muted-on-alt);
+
+  --color-vibrant: var(--vibrant);
+  --color-on-vibrant: var(--on-vibrant);
+  --color-vibrant-on-vibrant: var(--vibrant-on-vibrant);
+  --color-muted-on-vibrant: var(--muted-on-vibrant);
+
+  --color-muted: var(--muted);
+  --color-on-muted: var(--on-muted);
+  --color-vibrant-on-muted: var(--vibrant-on-muted);
+  --color-muted-on-muted: var(--muted-on-muted);
+
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-hover: color-mix(in srgb, var(--hover, var(--fg)) 10%, transparent);
+}
+
+:root {
+  @apply palette;
+  @media (prefers-color-scheme: light) {
+    @apply colorscheme-light;
+  }
+  @media (prefers-color-scheme: dark) or (prefers-color-scheme: no-preference) {
+    @apply colorscheme-dark;
+  }
+
+  /* Values updated by surface-* utility - should always contain location-specific colors */
+  --bg: var(--background);
+  --fg: var(--on-background);
+  --vibrant: var(--vibrant-on-background);
+  --muted: var(--muted-on-background);
+  accent-color: var(--vibrant-on-background);
+}
+
+@property --hover {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: none;
+}
+@property --selection-fg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: none;
+}
+@property --selection-bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: none;
+}

@@ -12,7 +12,7 @@
 
 @layer components {
   .prose {
-    @apply text-typography-body;
+    @apply text-fg;
     overflow-x: hidden;
     font-size: 16px;
     line-height: 1.75;
@@ -27,25 +27,25 @@
   }
 
   h1 {
-    @apply text-typography-headings;
+    @apply text-fg/95;
     font-weight: 800;
     font-size: 2.25em;
   }
 
   h2 {
-    @apply text-typography-headings;
+    @apply text-fg/95;
     font-weight: 700;
     font-size: 1.5em;
   }
 
   h3 {
-    @apply text-typography-headings;
+    @apply text-fg/95;
     font-weight: 600;
     font-size: 1.25em;
   }
 
   h4 {
-    @apply text-typography-headings;
+    @apply text-fg/95;
     font-weight: 600;
   }
 
@@ -72,7 +72,7 @@
 
   .prose-h1,
   .prose h1 {
-    @apply text-typography-headings;
+    @apply text-fg/95;
     font-weight: 800;
     font-size: 2.25em;
     margin-top: 0;
@@ -82,7 +82,7 @@
 
   .prose-h2,
   .prose h2 {
-    @apply text-typography-headings;
+    @apply text-fg/95;
     font-weight: 700;
     font-size: 1.5em;
     margin-top: 2em;
@@ -92,7 +92,7 @@
 
   .prose-h3,
   .prose h3 {
-    @apply text-typography-headings;
+    @apply text-fg/95;
     font-weight: 600;
     font-size: 1.25em;
     margin-top: 1.6em;
@@ -102,7 +102,7 @@
 
   .prose-h4,
   .prose h4 {
-    @apply text-typography-headings;
+    @apply text-fg/95;
     font-weight: 600;
     margin-top: 1.5em;
     margin-bottom: 0.5em;
@@ -146,7 +146,7 @@
 
   .prose-code,
   .prose code {
-    @apply text-typography-code;
+    @apply text-fg;
     font-weight: 600;
     font-size: 0.875em;
 
@@ -158,12 +158,9 @@
 
   .prose-pre,
   .prose pre {
-    --fg: var(--typography-pre-code);
-    --bg: var(--typography-pre-bg);
+    @apply surface-alt;
 
     overflow-x: auto;
-    color: var(--fg);
-    background-color: var(--bg);
     font-weight: 400;
     font-size: 0.875em;
     border-radius: 0.3rem;
@@ -205,7 +202,7 @@
     }
 
     > li::marker {
-      @apply text-typography-counters;
+      @apply text-fg/80;
       font-weight: 400;
     }
   }
@@ -221,7 +218,7 @@
     }
 
     > li::marker {
-      @apply text-typography-bullets;
+      @apply text-vibrant;
     }
   }
 
@@ -259,7 +256,7 @@
 
   .prose-dt,
   .prose dt {
-    @apply text-typography-headings;
+    @apply text-fg/95;
     font-weight: 600;
     margin-top: 1.25em;
   }
@@ -272,7 +269,7 @@
 
   .prose-a,
   .prose a {
-    @apply text-typography-links;
+    @apply text-vibrant;
     font-weight: 500;
 
     &:hover {
@@ -282,16 +279,17 @@
 
   .prose-hr,
   .prose hr {
-    border: 1px solid var(--typography-hr);
+    @apply border-vibrant border-[1px] border-solid;
     margin-block: 3em;
   }
 
   .prose-blockquote,
   .prose blockquote {
-    @apply text-typography-quotes;
+    @apply text-fg border-s-vibrant;
     font-weight: 500;
     font-style: italic;
-    border-inline-start: 0.25rem solid var(--typography-quote-borders);
+    border-inline-start-style: solid;
+    border-inline-start-width: 0.25rem;
     margin-top: 1.6em;
     margin-bottom: 1.6em;
     padding-inline-start: 1em;
@@ -320,10 +318,12 @@
     }
 
     thead {
-      border-bottom: 1px solid var(--typography-th-borders);
+      @apply border-b-vibrant;
+      border-bottom-width: 1px;
+      border-bottom-style: solid;
 
       th {
-        @apply text-typography-headings;
+        @apply text-fg/95;
         font-weight: 600;
         vertical-align: bottom;
         padding-inline-end: 0.6em;
@@ -342,7 +342,9 @@
 
     tbody {
       tr {
-        border-bottom: 1px solid var(--typography-td-borders);
+        @apply border-b-fg/40;
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
 
         &:last-child {
           border-bottom: none;
@@ -384,7 +386,7 @@
 
   .prose-figcaption,
   .prose figcaption {
-    @apply text-typography-captions;
+    @apply text-fg/70;
     font-size: 0.875em;
     line-height: 1.4;
     margin-top: 0.85em;
@@ -392,12 +394,9 @@
 
   .prose-kbd,
   .prose kbd {
-    @apply text-typography-kbd;
+    @apply surface-muted shadow-sm;
     font-weight: 500;
     font-family: inherit;
-    box-shadow:
-      0 0 0 1px rgb(var(--typography-kbd-shadows) / 10%),
-      0 3px 0 rgb(var(--typography-kbd-shadows) / 10%);
     font-size: 0.875em;
     border-radius: 0.3rem;
     padding-top: 0.1875em;

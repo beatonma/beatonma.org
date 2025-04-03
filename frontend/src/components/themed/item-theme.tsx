@@ -13,6 +13,8 @@ interface ThemeCss extends CSSProperties {
   "--muted"?: string | Nullish;
   "--on-muted"?: string | Nullish;
   "--hover"?: string | Nullish;
+  "--selection-fg"?: string | Nullish;
+  "--selection-bg"?: string | Nullish;
 }
 
 export default function itemTheme(
@@ -29,6 +31,8 @@ export default function itemTheme(
     "--muted": muted,
     "--on-muted": getForegroundColor(muted),
     "--hover": vibrant,
+    "--selection-bg": vibrant,
+    "--selection-fg": muted,
     ...(mergeInto ?? {}),
   } as CSSProperties;
 }

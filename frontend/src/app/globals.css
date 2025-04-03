@@ -2,6 +2,7 @@
 @import "./_style/window-insets.css";
 @import "./_style/code-syntax-highlighting.css";
 @import "./_style/typography.css";
+@import "./_style/color.css";
 
 @custom-variant touch (@media(pointer: coarse));
 @custom-variant pointer (@media(pointer: fine));
@@ -28,191 +29,24 @@
   }
 }
 
-/* Common colours for content. */
-@utility palette {
-  --background-light: var(--color-stone-200);
-  --on-background-light: var(--color-stone-950);
-  --surface-light: var(--color-stone-50);
-  --on-surface-light: var(--color-stone-950);
-  --alt-light: var(--color-stone-800);
-  --on-alt-light: var(--color-stone-200);
-  --vibrant-light: var(--color-green-700);
-  --on-vibrant-light: var(--color-green-100);
-  --muted-light: var(--color-slate-600);
-  --on-muted-light: var(--color-slate-100);
-
-  --background-dark: #252225;
-  --on-background-dark: #f1edf1;
-  --surface-dark: #4b495c;
-  --on-surface-dark: #efeef9;
-  --alt-dark: #26252c;
-  --on-alt-dark: #dddbea;
-  --vibrant-dark: #55c191;
-  --on-vibrant-dark: #0c1e16;
-  --muted-dark: var(--color-slate-500);
-  --on-muted-dark: var(--color-slate-900);
-
-  --white: var(--color-white);
-  --black: var(--color-black);
-  --grey: var(--color-neutral-700);
-  --red: var(--color-rose-700);
-  --green: var(--color-green-600);
-  --blue: var(--color-sky-600);
-  --cyan: var(--color-cyan-400);
-  --yellow: var(--color-yellow-400);
-  --orange: var(--color-orange-600);
-  --purple: var(--color-purple-700);
-  --pink: var(--color-pink-600);
-}
-
-@utility colorscheme-light {
-  --background: var(--background-light);
-  --on-background: var(--on-background-light);
-  --surface: var(--surface-light);
-  --on-surface: var(--on-surface-light);
-  --alt: var(--alt-light);
-  --on-alt: var(--on-alt-light);
-  --vibrant: var(--vibrant-light);
-  --on-vibrant: var(--on-vibrant-light);
-  --muted: var(--muted-light);
-  --on-muted: var(--on-muted-light);
-
-  --typography-body: var(--color-stone-800);
-  --typography-headings: var(--color-stone-900);
-  --typography-lead: var(--color-stone-700);
-  --typography-links: var(--vibrant);
-  --typography-bold: var(--color-stone-900);
-  --typography-counters: var(--color-stone-700);
-  --typography-bullets: var(--vibrant);
-  --typography-hr: var(--vibrant);
-  --typography-quotes: var(--color-stone-900);
-  --typography-quote-borders: var(--vibrant);
-  --typography-captions: var(--color-stone-600);
-  --typography-code: var(--color-stone-900);
-  --typography-pre-code: var(--color-stone-100);
-  --typography-pre-bg: var(--color-stone-900);
-  --typography-th-borders: color-mix(in srgb, var(--bg) 80%, var(--vibrant));
-  --typography-td-borders: var(--color-stone-300);
-  --typography-kbd: var(--color-stone-900);
-  --typography-kbd-shadows: var(--color-stone-900);
-}
-@utility colorscheme-dark {
-  --background: var(--background-dark);
-  --on-background: var(--on-background-dark);
-  --surface: var(--surface-dark);
-  --on-surface: var(--on-surface-dark);
-  --alt: var(--alt-dark);
-  --on-alt: var(--on-alt-dark);
-  --vibrant: var(--vibrant-dark);
-  --on-vibrant: var(--on-vibrant-dark);
-  --muted: var(--muted-dark);
-  --on-muted: var(--on-muted-dark);
-
-  --typography-body: var(--color-slate-200);
-  --typography-headings: var(--color-slate-100);
-  --typography-lead: var(--color-slate-300);
-  --typography-links: var(--vibrant);
-  --typography-bold: var(--color-slate-100);
-  --typography-counters: var(--color-slate-300);
-  --typography-bullets: var(--vibrant);
-  --typography-hr: var(--vibrant);
-  --typography-quotes: var(--color-slate-100);
-  --typography-quote-borders: var(--vibrant);
-  --typography-captions: var(--color-slate-300);
-  --typography-code: var(--color-slate-100);
-  --typography-pre-code: var(--color-slate-100);
-  --typography-pre-bg: var(--color-slate-950);
-  --typography-th-borders: color-mix(in srgb, var(--bg) 80%, var(--vibrant));
-  --typography-td-borders: var(--color-slate-800);
-  --typography-kbd: var(--color-slate-900);
-  --typography-kbd-shadows: var(--color-slate-900);
-}
-
 @theme {
-  --color-scrim: rgb(0 0 0 / 0.7);
-  --color-on-scrim: rgb(250 250 250);
-
-  --color-media-image: var(--color-amber-400);
-  --color-on-media-image: var(--color-amber-900);
-  --color-media-audio: var(--color-cyan-400);
-  --color-on-media-audio: var(--color-cyan-900);
-  --color-media-text: var(--color-neutral-300);
-  --color-on-media-text: var(--color-neutral-900);
-  --color-media-video: var(--color-rose-700);
-  --color-on-media-video: var(--color-rose-50);
-  --color-media-unknown: var(--color-emerald-800);
-  --color-on-media-unknown: var(--color-emerald-50);
-
-  --color-callout-info: var(--color-blue-200);
-  --color-on-callout-info: var(--color-blue-950);
-  --color-callout-tip: var(--color-green-200);
-  --color-on-callout-tip: var(--color-green-950);
-  --color-callout-warn: var(--color-red-200);
-  --color-on-callout-warn: var(--color-red-950);
-  --color-callout-important: var(--color-violet-200);
-  --color-on-callout-important: var(--color-violet-950);
-  --color-callout-caution: var(--color-red-950);
-  --color-on-callout-caution: var(--color-red-200);
-
   --spacing-em: 1em;
   --spacing-lh: 1lh;
   --spacing-readable: 80ch;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-on-background: var(--on-background);
-
-  --color-surface: var(--surface);
-  --color-on-surface: var(--on-surface);
-  --color-alt: var(--alt);
-  --color-on-alt: var(--on-alt);
-  --color-vibrant: var(--vibrant);
-  --color-on-vibrant: var(--on-vibrant);
-  --color-muted: var(--muted);
-  --color-on-muted: var(--on-muted);
-  --color-hover: color-mix(in srgb, var(--hover, var(--fg)) 10%, transparent);
-
-  --color-typography-body: var(--typography-body);
-  --color-typography-headings: var(--typography-headings);
-  --color-typography-lead: var(--typography-lead);
-  --color-typography-links: var(--typography-links);
-  --color-typography-bold: var(--typography-bold);
-  --color-typography-counters: var(--typography-counters);
-  --color-typography-bullets: var(--typography-bullets);
-  --color-typography-hr: var(--typography-hr);
-  --color-typography-quotes: var(--typography-quotes);
-  --color-typography-quote-borders: var(--typography-quote-borders);
-  --color-typography-captions: var(--typography-captions);
-  --color-typography-code: var(--typography-code);
-  --color-typography-pre-code: var(--typography-pre-code);
-  --color-typography-pre-bg: var(--typography-pre-bg);
-  --color-typography-th-borders: var(--typography-th-borders);
-  --color-typography-td-borders: var(--typography-td-borders);
-  --color-typography-kbd: var(--typography-kbd);
-  --color-typography-kbd-shadows: var(--typography-kbd-shadows);
-}
-
 :root {
-  @apply palette;
-  @media (prefers-color-scheme: light) {
-    @apply colorscheme-light;
-  }
-  @media (prefers-color-scheme: dark) or (prefers-color-scheme: no-preference) {
-    @apply colorscheme-dark;
-  }
-
-  /* Values updated by surface-* utility - should always contain location-specific colors */
-  --bg: var(--background);
-  --fg: var(--on-background);
-  accent-color: var(--vibrant);
   --max-width: 100vw;
   --max-height: 100vh;
 }
 
 ::selection {
-  background-color: var(--fg);
-  color: var(--bg);
+  background-color: color-mix(
+    in srgb,
+    var(--selection-bg, var(--fg)) 20%,
+    var(--fg)
+  );
+  color: color-mix(in srgb, var(--selection-fg, var(--bg)) 20%, var(--bg));
 }
 *:focus-visible {
   @apply outline-on-background ring-background ring-2 outline-2 outline-dashed;
@@ -297,44 +131,56 @@
   }
 }
 
+/* Base surface theme. */
 @utility surface {
-  @apply bg-surface text-on-surface fill-on-surface;
   --bg: var(--surface);
   --fg: var(--on-surface);
+  --vibrant: var(--vibrant-on-surface);
+  --muted: var(--muted-on-surface);
+  accent-color: var(--vibrant-on-surface);
+
+  background-color: var(--bg);
+  color: var(--fg);
+  fill: var(--fg);
 }
 
-/* prettier-ignore */
-@utility fg-* {
-  --fg: --value(--color-on-*);
-  color: --value(--color-on-*);
-  fill: --value(--color-on-*);
-}
-
+/* Apply a surface color theme. */
 /* prettier-ignore */
 @utility surface-* {
-  background-color: --value(--color-*);
-  color: --value(--color-on-*);
-  fill: --value(--color-on-*);
   --bg: --value(--color-*);
   --fg: --value(--color-on-*);
+  accent-color: --value(--color-vibrant-on-*);
+
+  background-color: var(--bg);
+  color: var(--fg);
+  fill: var(--fg);
+
+  > * {
+    --vibrant: --value(--color-vibrant-on-*);
+    --muted: --value(--color-muted-on-*);
+  }
 }
+
+/* Apply a surface theme and a slightly modified variant when hovered. */
 /* prettier-ignore */
 @utility hover-surface-* {
   @apply transition-colors;
 
-  background-color: --value(--color-*);
-  color: --value(--color-on-*);
-  fill: --value(--color-on-*);
   --bg: --value(--color-*);
   --fg: --value(--color-on-*);
+  accent-color: --value(--color-vibrant-on-*);
+
+  background-color: var(--bg);
+  color: var(--fg);
+  fill: var(--fg);
+
+  > * {
+    --vibrant: --value(--color-vibrant-on-*);
+    --muted: --value(--color-muted-on-*);
+  }
 
   &:hover:not(:disabled) {
-    --bg: --value(--color-*);
-    --fg: --value(--color-on-*);
-
     background-color: color-mix(in srgb, var(--bg) 90%, var(--fg));
-    color: --value(--color-on-*);
-    fill: --value(--color-on-*);
   }
 }
 

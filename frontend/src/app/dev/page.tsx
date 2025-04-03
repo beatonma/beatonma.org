@@ -13,6 +13,7 @@ export default function Page() {
       <Row className="justify-between w-full">
         <h1>Components overview</h1>
       </Row>
+      <Preview.Surfaces />
       <Preview.Buttons />
       <Preview.Icons />
       <Preview.Callouts />

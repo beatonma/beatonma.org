@@ -1,3 +1,11 @@
 {
-  "extends": ["stylelint-config-recommended","stylelint-config-tailwindcss"]
+  "extends": ["stylelint-config-recommended", "stylelint-config-tailwindcss"],
+  "overrides": [
+    {
+      "rules": {
+        "at-rule-no-deprecated": false
+      },
+      "files": ["*.css"]
+    }
+  ]
 }
