@@ -6,6 +6,7 @@
     ". content ."
     ". media ."
     ". mentions .";
+  grid-template-columns: 1fr min(100%, var(--spacing-readable)) 1fr;
 
   /* Tailwind xl */
   @media (width >= 80rem) {

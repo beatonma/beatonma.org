@@ -5,35 +5,77 @@
  * px-edge, no further padding will be applied..
  */
 :root {
-  --_spacing-window-inset-x: 8px;
-  --_spacing-window-inset-y: 8px;
+  --spacing-window-inset-start: 8px;
+  --spacing-window-inset-end: 8px;
+  --spacing-window-inset-top: 8px;
+  --spacing-window-inset-bottom: 8px;
+
   @media (width >= 40rem) {
-    --_spacing-window-inset-x: 16px;
-    --_spacing-window-inset-y: 16px;
+    --spacing-window-inset-start: 16px;
+    --spacing-window-inset-end: 16px;
+    --spacing-window-inset-top: 16px;
+    --spacing-window-inset-bottom: 16px;
   }
 }
+
+@layer components {
+  .p-edge,
+  .px-edge,
+  .ps-edge {
+    .p-edge,
+    .px-edge,
+    .ps-edge {
+      --spacing-window-inset-start: 0;
+    }
+  }
+  .p-edge,
+  .px-edge,
+  .pe-edge {
+    .p-edge,
+    .px-edge,
+    .pe-edge {
+      --spacing-window-inset-end: 0;
+    }
+  }
+
+  .p-edge,
+  .py-edge,
+  .pt-edge {
+    .p-edge,
+    .py-edge,
+    .pt-edge {
+      --spacing-window-inset-top: 0;
+    }
+  }
+  .p-edge,
+  .py-edge,
+  .pb-edge {
+    .p-edge,
+    .py-edge,
+    .pb-edge {
+      --spacing-window-inset-bottom: 0;
+    }
+  }
+}
+
 @utility px-edge {
-  padding-inline: var(--_spacing-window-inset-x);
+  @apply ps-edge pe-edge;
 }
 @utility py-edge {
-  padding-block: var(--_spacing-window-inset-y);
+  @apply pt-edge pb-edge;
+}
+@utility ps-edge {
+  padding-inline-start: var(--spacing-window-inset-start);
+}
+@utility pe-edge {
+  padding-inline-end: var(--spacing-window-inset-end);
 }
 @utility p-edge {
   @apply px-edge py-edge;
 }
-
-@layer components {
-  .p-edge .p-edge,
-  .p-edge .px-edge,
-  .px-edge .px-edge,
-  .px-edge .p-edge {
-    --_spacing-window-inset-x: 0;
-  }
-
-  .p-edge .p-edge,
-  .p-edge .py-edge,
-  .py-edge .py-edge,
-  .py-edge .p-edge {
-    --_spacing-window-inset-y: 0;
-  }
+@utility pt-edge {
+  padding-top: var(--spacing-window-inset-top);
+}
+@utility pb-edge {
+  padding-bottom: var(--spacing-window-inset-bottom);
 }

@@ -42,15 +42,7 @@ export default function PostPage(props: PostProps) {
     <div style={itemTheme(themeSource)}>
       <PublishingStatus post={post} />
 
-      <main
-        className={classes(
-          "h-entry mb-48",
-          styles.postGridAreas,
-          "grid lg:gap-x-8",
-          "grid-cols-[1fr_min(100%,var(--spacing-readable))_1fr]",
-          "xl:grid-cols-[1fr_240px_var(--spacing-readable)_240px_1fr]",
-        )}
-      >
+      <main className={classes("h-entry mb-48", "grid", styles.postGridAreas)}>
         <article
           className={classes(
             "grid subgrid-span-full space-y-8 w-full",
@@ -72,6 +64,7 @@ export default function PostPage(props: PostProps) {
             className={classes(
               "[grid-area:info] text-sm xl:text-end xl:*:justify-end xl:*:justify-self-end",
               Insets,
+              "xl:pe-edge",
             )}
           />
 
@@ -79,8 +72,8 @@ export default function PostPage(props: PostProps) {
             post={post}
             className={classes(
               "[grid-area:content]",
-              ProseClassName,
               "e-content",
+              ProseClassName,
               Insets,
             )}
           />
