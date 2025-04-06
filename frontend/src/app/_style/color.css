@@ -27,6 +27,11 @@
   --vibrant-on-muted-light: var(--color-green-300);
   --muted-on-muted-light: var(--color-slate-800);
 
+  --input-light: var(--color-stone-300);
+  --on-input-light: var(--color-stone-950);
+  --vibrant-on-input-light: var(--vibrant-light);
+  --muted-on-input-light: var(--muted-light);
+
   /* Dark variants */
   --background-dark: #252225;
   --on-background-dark: #f1edf1;
@@ -46,12 +51,17 @@
   --vibrant-dark: #55c191;
   --on-vibrant-dark: #0c1e16;
   --vibrant-on-vibrant-dark: var(--color-emerald-950);
-  --muted-on-vibrant-dark: var(--color-emerald-200); /*#8ed5b5;*/
+  --muted-on-vibrant-dark: var(--color-emerald-200);
 
   --muted-dark: var(--color-slate-400);
   --on-muted-dark: var(--color-slate-900);
   --vibrant-on-muted-dark: var(--color-slate-950);
   --muted-on-muted-dark: var(--color-slate-300);
+
+  --input-dark: #2d2c35;
+  --on-input-dark: #dddbea;
+  --vibrant-on-input-dark: var(--vibrant-dark);
+  --muted-on-input-dark: var(--muted-dark);
 }
 
 @utility palette {
@@ -95,6 +105,11 @@
   --on-muted: var(--on-muted-light);
   --vibrant-on-muted: var(--vibrant-on-muted-light);
   --muted-on-muted: var(--muted-on-muted-light);
+
+  --input: var(--input-light);
+  --on-input: var(--on-input-light);
+  --vibrant-on-input: var(--vibrant-on-input-light);
+  --muted-on-input: var(--muted-on-input-light);
 }
 
 @utility colorscheme-dark {
@@ -122,6 +137,11 @@
   --on-muted: var(--on-muted-dark);
   --vibrant-on-muted: var(--vibrant-on-muted-dark);
   --muted-on-muted: var(--muted-on-muted-dark);
+
+  --input: var(--input-dark);
+  --on-input: var(--on-input-dark);
+  --vibrant-on-input: var(--vibrant-on-input-dark);
+  --muted-on-input: var(--muted-on-input-dark);
 }
 
 @theme {
@@ -176,6 +196,11 @@
   --color-on-muted: var(--on-muted);
   --color-vibrant-on-muted: var(--vibrant-on-muted);
   --color-muted-on-muted: var(--muted-on-muted);
+
+  --color-input: var(--input);
+  --color-on-input: var(--on-input);
+  --color-vibrant-on-input: var(--vibrant-on-input);
+  --color-muted-on-input: var(--muted-on-input);
 
   --color-bg: var(--bg);
   --color-fg: var(--fg);

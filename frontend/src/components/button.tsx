@@ -32,7 +32,7 @@ export const InlineButton = (props: ButtonProps) => {
   const { children, ...rest } = addClass(
     props,
     "relative select-none no-underline! rounded-sm font-bold tracking-tight",
-    "hover-big-background",
+    "hover-extra-background before:-inset-x-2 before:-inset-y-1",
   );
   return <BaseButton {...rest}>{children}</BaseButton>;
 };

@@ -2,7 +2,6 @@ import { InlineButton, InlineLink } from "@/components/button";
 import { HtmlContent, PublishingStatus } from "@/components/data/post";
 import { PostPreview } from "@/components/data/types";
 import { Date } from "@/components/datetime";
-import { AppIcon } from "@/components/icon";
 import { Row } from "@/components/layout";
 import MediaPreview from "@/components/media/media-preview";
 import Optional from "@/components/optional";
@@ -70,15 +69,6 @@ export default function Post(
   );
 }
 
-const postIcon = (post: PostPreview) => {
-  const icons: Record<PostPreview["post_type"], AppIcon | undefined> = {
-    app: "Code",
-    changelog: "Code",
-    post: undefined,
-  };
-  return icons[post.post_type];
-};
-
 const PostMediaPreview = (
   props: { post: PostPreview } & DivPropsNoChildren,
 ) => {
@@ -108,7 +98,7 @@ const PostMediaPreview = (
   );
 };
 
-const PostType = (props: { post: PostPreview } & DivPropsNoChildren) => {
+export const PostType = (props: { post: PostPreview } & DivPropsNoChildren) => {
   const { post, ...rest } = addClass(
     props,
     "text-xs badge badge-content border-1",

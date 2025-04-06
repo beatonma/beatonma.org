@@ -1,0 +1,18 @@
+.headerGrid {
+  display: grid;
+  grid-template-areas:
+    "title . toolbar"
+    "search search search";
+  grid-template-columns: auto 1fr auto;
+
+  /* Tailwind sm */
+  @media (width >= 40rem) {
+    grid-template-areas: "title . search toolbar";
+    grid-template-columns: auto 1fr auto auto;
+  }
+
+  @media (width <= 400px) {
+    grid-template-areas: "title" "toolbar" "search";
+    grid-template-columns: 1fr;
+  }
+}

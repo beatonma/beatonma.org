@@ -2,6 +2,7 @@
 
 import { ComponentProps, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/button";
+import { useClient } from "@/components/hooks/environment";
 import { AppIcon } from "@/components/icon";
 
 const StorageKey = "theme";
@@ -33,6 +34,8 @@ const ThemeController = (
     document.body.dataset.theme = mode;
     localStorage.setItem(StorageKey, mode);
   }, [mode]);
+
+  if (!useClient()) return null;
 
   return (
     <Button

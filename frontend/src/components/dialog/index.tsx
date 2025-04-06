@@ -10,9 +10,8 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/button";
-import { DivProps } from "@/types/react";
+import Scrim from "@/components/dialog/scrim";
 import { addClass } from "@/util/transforms";
-import styles from "./dialog.module.css";
 
 const DialogPortalContainerId = "dialog_portal_container";
 
@@ -50,22 +49,14 @@ export default function Dialog(
       ev.preventDefault();
     }
   }, []);
-  const onClickClose = useCallback(
-    (ev: MouseEvent) => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      onClose();
-    },
-    [onClose],
-  );
 
   // Don't render anything until dialog has been requested.
   if (!hasOpened) return null;
 
   return createPortal(
     <Scrim
-      data-is-open={isOpen}
-      onClick={onClickClose}
+      isVisible={isOpen}
+      onClose={onClose}
       className="flex justify-center items-center overflow-hidden"
     >
       {isOpen && (
@@ -85,7 +76,11 @@ export default function Dialog(
           <div className="p-4 justify-self-end w-fit">
             <Button
               icon="Close"
-              onClick={onClickClose}
+              onClick={(ev) => {
+                ev.preventDefault();
+                ev.stopPropagation();
+                onClose();
+              }}
               className="text-vibrant"
             >
               Close
@@ -97,13 +92,3 @@ export default function Dialog(
     containerRef.current!,
   );
 }
-
-const Scrim = (props: DivProps) => {
-  const { ...rest } = addClass(
-    props,
-    styles.dialogScrim,
-    "fixed inset-0 surface-scrim z-100",
-  );
-
-  return <div {...rest} />;
-};

@@ -1,10 +1,13 @@
 import Link from "next/link";
 import React from "react";
 import ReturnToTopButton from "@/app/(main)/_components/return-to-top";
+import GlobalSearch from "@/app/(main)/_components/search";
 import { Button } from "@/components/button";
-import { Row, Separator } from "@/components/layout";
+import { Row } from "@/components/layout";
 import ThemeController from "@/components/themed/light-dark";
 import { navigationHref } from "@/navigation";
+import { classes } from "@/util/transforms";
+import styles from "./layout.module.css";
 
 export default function RootLayout({
   children,
@@ -13,25 +16,29 @@ export default function RootLayout({
 }>) {
   return (
     <div className="grid grid-rows-[min-content_1fr_min-content] grid-cols-1 gap-y-16 h-full items-start">
-      <header className="p-edge">
-        <Row className="gap-8 justify-between flex-wrap">
-          <h1 className="line-clamp-1 font-normal" id="top">
-            <Link href={navigationHref("home")} className="no-underline">
-              {process.env.NEXT_PUBLIC_SITE_NAME}
-            </Link>
-          </h1>
+      <header
+        className={classes(styles.headerGrid, "p-edge items-center gap-4")}
+      >
+        <h1
+          className="[grid-area:title] line-clamp-1 font-normal justify-self-start"
+          id="top"
+        >
+          <Link href={navigationHref("home")} className="no-underline">
+            {process.env.NEXT_PUBLIC_SITE_NAME}
+          </Link>
+        </h1>
 
-          <Row className="gap-4">
-            {process.env.NODE_ENV === "development" && (
-              <Button icon="Dev" href="/dev/">
-                Components
-              </Button>
-            )}
-            <Separator />
-            <Button href={navigationHref("contact")}>Contact</Button>
-            <ThemeController />
-          </Row>
+        <Row className="[grid-area:toolbar] gap-4 justify-self-end justify-end">
+          <ThemeController />
+          <Button
+            className="[grid-area:contact]"
+            href={navigationHref("contact")}
+          >
+            Contact
+          </Button>
         </Row>
+
+        <GlobalSearch containerClassName="[grid-area:search]" />
       </header>
 
       {children}

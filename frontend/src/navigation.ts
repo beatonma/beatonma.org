@@ -1,4 +1,6 @@
-type SearchParams = Record<string, string | number>;
+import { Query } from "@/api";
+
+type PostSearchParams = Query<"/api/posts/">;
 
 const Navigation = {
   home: () => "/",
@@ -7,7 +9,7 @@ const Navigation = {
   appLiveInstance: (slug: string) => `/apps/${slug}/live/`,
   changelog: (slug: string) => `/changelog/${slug}/`,
   post: (slug: string) => `/posts/${slug}/`,
-  posts: (params?: SearchParams) => `/${searchParams(params)}`,
+  posts: (params?: PostSearchParams) => `/${searchParams(params)}`,
   tag: (tag: string) => `/tag/${tag}/`,
 };
 type Navigable = keyof typeof Navigation;
@@ -23,7 +25,7 @@ export const navigationHref = <T extends Navigable>(
   return (Navigation[type] as P)(...args);
 };
 
-const searchParams = (params: SearchParams | undefined) => {
+const searchParams = (params: Record<string, string | number> | undefined) => {
   if (!params) return "";
 
   const formatted = Object.entries(params).map(

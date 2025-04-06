@@ -28,8 +28,15 @@
     }
   }
 }
+@custom-variant hover {
+  &:hover,
+  &:focus-visible {
+    @slot;
+  }
+}
 
 @theme {
+  --spacing-px: 1px;
   --spacing-em: 1em;
   --spacing-lh: 1lh;
   --spacing-readable: 80ch;
@@ -48,11 +55,11 @@
   );
   color: color-mix(in srgb, var(--selection-fg, var(--bg)) 20%, var(--bg));
 }
-*:focus-visible {
-  @apply outline-on-background ring-background ring-2 outline-2 outline-dashed;
-}
 
 @layer base {
+  *:focus-visible {
+    @apply outline-on-background ring-vibrant ring-2 outline-1 outline-offset-[-1px] outline-dashed;
+  }
   html {
     scrollbar-width: thin;
   }
@@ -81,13 +88,27 @@
 
   input,
   textarea {
-    @apply surface-alt rounded-lg px-2 py-1;
+    @apply surface-input rounded-lg px-2 py-1;
 
     &:focus-visible {
-      @apply outline-1 outline-current outline-solid;
+      @apply outline-1 -outline-offset-2 outline-current outline-solid;
     }
   }
 
+  input::-webkit-search-cancel-button {
+    mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" ><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>');
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: 1em;
+    background: var(--fg);
+
+    -webkit-appearance: none;
+    height: 1em;
+    width: 1em;
+    margin-left: 0.4em;
+  }
+
+  /*noinspection CssInvalidPseudoSelector*/
   audio::-webkit-media-controls-enclosure {
     @apply rounded-md;
   }
@@ -100,10 +121,6 @@
 
   .column {
     @apply flex flex-col;
-  }
-
-  .touch-target {
-    @apply min-h-12 min-w-12;
   }
 
   .overflow-auto,
@@ -129,6 +146,18 @@
       scrollbar-width: auto;
     }
   }
+  @media (pointer: fine) {
+    * {
+      scrollbar-color: var(--muted) var(--background);
+    }
+  }
+}
+
+/* prettier-ignore */
+@utility fg-* {
+  --fg: --value(--color-on-*);
+  color: var(--fg);
+  fill: var(--fg);
 }
 
 /* Base surface theme. */
@@ -179,8 +208,8 @@
     --muted: --value(--color-muted-on-*);
   }
 
-  &:hover:not(:disabled) {
-    background-color: color-mix(in srgb, var(--bg) 90%, var(--fg));
+  &:hover:not(:disabled), &:focus-visible:not(:disabled) {
+    background-color: color-mix(in srgb, var(--hover, var(--fg)) 10%, var(--bg));
   }
 }
 
@@ -209,22 +238,32 @@
   @apply max-w-readable w-full;
   --max-width: min(100%, var(--spacing-readable));
 }
+@utility touch-target {
+  @apply min-h-12 min-w-12;
+}
 
 /* Make a subgrid that completely fills its parent grid. Useful for sharing named grid areas. */
 @utility subgrid-span-full {
   @apply col-span-full col-start-1 row-span-full row-start-1 grid-cols-subgrid grid-rows-subgrid;
 }
 
-/* Add a hover background which is a little larger than the element. */
-@utility hover-big-background {
-  position: relative;
-  &::after {
-    @apply pointer-events-none absolute -inset-x-2 -inset-y-1 rounded-lg bg-transparent transition-colors;
+@utility extra-background {
+  @apply relative;
+  &::before {
+    @apply pointer-events-none absolute -z-1 rounded-lg;
     content: "";
   }
-  &:not(:disabled):hover::after {
+}
+
+/* Add a hover background which is a little larger than the element. */
+@utility hover-extra-background {
+  @apply extra-background relative;
+  &::before {
+    @apply bg-transparent transition-colors;
+  }
+  &:not(:disabled):hover::before,
+  &:not(:disabled):focus-visible::before {
     @apply bg-hover;
-    content: "";
   }
 }
 

@@ -9,8 +9,11 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <Row className="gap-4 justify-end p-edge">
-        <InlineButton href="/dev/">Base</InlineButton>
+      <Row className="gap-4 justify-end p-edge max-w-full overflow-x-auto *:shrink-0">
+        <InlineButton href="/dev/">Components</InlineButton>
+        <Separator />
+        <InlineButton href="/dev/main/">Main layout</InlineButton>
+        <InlineButton href="/dev/search/">Search</InlineButton>
         <InlineButton href="/dev/media/">Media</InlineButton>
         <Separator />
         <ThemeController />

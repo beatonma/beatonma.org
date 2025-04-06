@@ -20,27 +20,35 @@ export interface Paginated<T> {
   hasMore: boolean;
   loadNext: (() => Promise<void>) | undefined;
   error: any | undefined;
-  reset: () => Promise<void>;
+  reset: (reason?: string) => Promise<void>;
   href: AdjacentPages;
+}
+
+interface PaginationConfig<P extends PathWithPagination> {
+  load?: boolean;
+  init?: PagedResponseOf<P>;
+  query?: Query<P> | undefined;
 }
 
 export const usePagination = <P extends PathWithPagination>(
   path: P,
-  init?: PagedResponseOf<P>,
-  query?: Query<P> | undefined,
+  config?: PaginationConfig<P>,
 ): Paginated<PageItemType<P>> => {
-  const [items, setItems] = useState<PageItemType<P>[]>(init?.items ?? []);
-  const totalItemsAvailable = useRef(init?.count ?? -1);
-  const offset = useRef(init?.items?.length ?? 0);
+  const [items, setItems] = useState<PageItemType<P>[]>(
+    config?.init?.items ?? [],
+  );
+  const totalItemsAvailable = useRef(config?.init?.count ?? -1);
+  const offset = useRef(config?.init?.items?.length ?? 0);
   const isInitialised = useRef(false);
   const [adjacentPages, setAdjacentPages] = useState<AdjacentPages>({
-    next: init?.next ?? null,
-    previous: init?.previous ?? null,
+    next: config?.init?.next ?? null,
+    previous: config?.init?.previous ?? null,
   });
   const [isLoading, _setIsLoading] = useState(false);
   const loadingRef = useRef(false);
   const [error, _setError] = useState<any>();
   const errorRef = useRef(false);
+  const abortController = useRef<AbortController>(null);
 
   const setIsLoading = useCallback((value: boolean) => {
     loadingRef.current = value;
@@ -51,7 +59,9 @@ export const usePagination = <P extends PathWithPagination>(
     _setError(value);
   }, []);
 
-  const reset = useCallback(async () => {
+  const reset = useCallback(async (reason?: string) => {
+    abortController.current?.abort(reason ?? "Pagination reset");
+    abortController.current = null;
     setItems([]);
     setError(undefined);
     setIsLoading(false);
@@ -60,6 +70,7 @@ export const usePagination = <P extends PathWithPagination>(
   }, []);
 
   const loadNext = useCallback(async () => {
+    if (!(config?.load ?? true)) return;
     if (loadingRef.current || errorRef.current) return;
     if (
       totalItemsAvailable.current >= 0 &&
@@ -67,19 +78,23 @@ export const usePagination = <P extends PathWithPagination>(
     ) {
       return;
     }
-
     setIsLoading(true);
+    abortController.current = new AbortController();
 
     try {
       const fullQuery: Query<P> = {
-        ...((query ?? {}) as Query<P>),
+        ...((config?.query ?? {}) as Query<P>),
         offset: offset.current,
       };
       const {
         data,
         error: err,
         response,
-      } = await getPaginated(path, fullQuery);
+      } = await getPaginated(
+        path,
+        { query: fullQuery },
+        abortController.current?.signal,
+      );
 
       if (err || !data) {
         console.error(err);
@@ -95,16 +110,19 @@ export const usePagination = <P extends PathWithPagination>(
       totalItemsAvailable.current = data.count;
       offset.current = offset.current + data.items.length;
     } catch (e: unknown) {
+      if (e instanceof Error && e?.name === "AbortError") return;
+
       setError(e);
+      console.error(e);
     } finally {
       setIsLoading(false);
     }
-  }, [path, query]);
+  }, [path, config?.query, config?.load]);
 
   useEffect(() => {
     if (isInitialised.current) {
       void reset().then(loadNext);
-    } else if (!init) {
+    } else if (!config?.init) {
       void loadNext();
     }
     isInitialised.current = true;

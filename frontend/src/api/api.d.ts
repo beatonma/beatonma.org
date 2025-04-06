@@ -72,40 +72,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/search/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Search */
-        get: operations["main_api_search_search"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/search/suggestions/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Suggestions */
-        get: operations["main_api_search_suggestions"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/ping/": {
         parameters: {
             query?: never;
@@ -483,26 +449,6 @@ export interface components {
             /** Version */
             version: string;
         };
-        /** SearchResponseSchema */
-        SearchResponseSchema: {
-            /** Query */
-            query: string;
-            /** Feed */
-            feed: components["schemas"]["SearchResult"][];
-        };
-        /** SearchResult */
-        SearchResult: {
-            /** Name */
-            name: string;
-            /** Url */
-            url: string;
-            /** Timestamp */
-            timestamp?: string | null;
-            /** Description */
-            description?: string | null;
-            /** Classname */
-            className?: string | null;
-        };
         /** WhoAmiISchema */
         WhoAmiISchema: {
             /**
@@ -667,48 +613,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ChangelogDetail"];
-                };
-            };
-        };
-    };
-    main_api_search_search: {
-        parameters: {
-            query: {
-                query: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SearchResponseSchema"];
-                };
-            };
-        };
-    };
-    main_api_search_suggestions: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SearchResult"][];
                 };
             };
         };

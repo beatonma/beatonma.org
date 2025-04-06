@@ -1,21 +1,7 @@
 import { notFound } from "next/navigation";
-import createClient, { FetchOptions } from "openapi-fetch";
-import { FilterKeys } from "openapi-typescript-helpers";
+import createClient from "openapi-fetch";
+import { PathsWithMethod } from "openapi-typescript-helpers";
 import type { components, paths } from "./api";
-
-export const client = createClient<paths>({
-  baseUrl: process.env.API_BASE_URL,
-  fetch: (original) => {
-    // TODO remove: dev only
-    if (typeof window !== "undefined") {
-      const url = new URL(original.url);
-      url.port = "80";
-      const altered = new Request(url, original);
-      return fetch(altered);
-    }
-    return fetch(original);
-  },
-});
 
 export type schemas = components["schemas"];
 
@@ -39,134 +25,48 @@ export type ApiResponse<T> =
     };
 type ApiPromise<T> = Promise<ApiResponse<T>>;
 
-export type Path = keyof paths;
+type Path = keyof paths;
 
-export type Query<P extends PathWithGet> =
-  paths[P]["get"]["parameters"]["query"] extends never
-    ? never
-    : paths[P]["get"]["parameters"]["query"];
+type GetResponse200<T> = { get: { responses: { 200: T } } };
+type GetResponse200Json<T> = GetResponse200<{
+  content: { "application/json": T };
+}>;
 
-export type PathArgs<P extends PathWithGet> =
-  paths[P]["get"]["parameters"]["path"] extends never
-    ? never
-    : paths[P]["get"]["parameters"]["path"];
+/** Return the union of all paths which extend T. */
+type PathsOf<T> = {
+  [Path in keyof paths]: paths[Path] extends T ? Path : never;
+}[keyof paths];
 
-type GetInit<Path extends keyof paths> = FetchOptions<
-  FilterKeys<paths[Path], "get">
->;
-export const get = <P extends PathWithGet>(
-  path: P,
-  params?: { path?: PathArgs<P>; query?: Query<P> },
-): ApiPromise<ResponseOf<P>> =>
-  client.GET(path, {
-    params: params,
-  } as GetInit<P>) as ApiPromise<ResponseOf<P>>;
+/** Return the type of the JSON data returned by the given path. */
+export type ResponseOf<P extends Path> =
+  paths[P] extends GetResponse200Json<infer JSON> ? JSON : never;
 
-export const getSlug = async <P extends PathWithSlug>(
-  path: P,
-  slug: string | Promise<{ slug: string }>,
-) => {
-  const resolvedSlug = typeof slug === "string" ? slug : (await slug).slug;
-
-  const response = await client.GET(path, {
-    params: {
-      path: {
-        slug: resolvedSlug,
-      },
-    },
-  } as GetInit<P>);
-
-  const data = response.data;
-
-  if (!data) return notFound();
-  return data;
-};
-
-export const getPaginated = <P extends PathWithPagination>(
-  path: P,
-  query: Query<P>,
-): ApiPromise<PagedResponseOf<P>> =>
-  client.GET(path, {
-    params: {
-      query: query,
-    },
-  } as GetInit<P>) as ApiPromise<PagedResponseOf<P>>;
-
-export type ResponseOf<P extends Path> = paths[P] extends {
-  get: {
-    responses: {
-      200: {
-        content: {
-          "application/json": infer JSON;
-        };
-      };
-    };
-  };
-}
-  ? JSON
-  : never;
-
-export type PagedResponseOf<P extends PathWithPagination> = paths[P] extends {
-  get: {
-    responses: {
-      200: {
-        content: {
-          "application/json": Paged<unknown>;
-        };
-      };
-    };
-  };
-}
-  ? Paged<PageItemType<P>>
-  : never;
-
+/** Return the type of items in the paginated response of the given path. */
 export type PageItemType<P extends PathWithPagination> =
-  paths[P]["get"]["responses"][200]["content"]["application/json"] extends {
-    items: (infer ItemType)[];
-  }
-    ? ItemType
+  paths[P] extends GetResponse200Json<Paged<infer ItemType>> ? ItemType : never;
+
+export type PagedResponseOf<P extends PathWithPagination> =
+  paths[P] extends GetResponse200Json<Paged<unknown>>
+    ? Paged<PageItemType<P>>
     : never;
 
-export type PathWithGet = {
-  [Path in keyof paths]: paths[Path] extends {
-    get: unknown;
-  }
-    ? Path
-    : never;
-}[keyof paths];
-
-type PathWithSlug = {
-  [Path in keyof paths]: paths[Path] extends {
-    get: {
-      parameters: {
-        path: {
-          slug: string;
-        };
+type PathWithSlug = PathsOf<{
+  get: {
+    parameters: {
+      path: {
+        slug: string;
       };
     };
-  }
-    ? Path
-    : never;
-}[keyof paths];
+  };
+}>;
 
-/**
- * Paths which returns a Paged response.
- */
-export type PathWithPagination = {
-  [Path in keyof paths]: paths[Path] extends {
-    get: {
-      responses: {
-        200: {
-          content: {
-            "application/json": Paged<unknown>;
-          };
-        };
-      };
-    };
-  }
-    ? Path
-    : never;
-}[keyof paths];
+type PathWithGetResponse200Json<T> = PathsOf<GetResponse200Json<T>>;
+
+/** Paths which return a response of Paged<T> */
+export type PathWithPaginationOf<T> = PathWithGetResponse200Json<Paged<T>>;
+
+/** Paths which returns a Paged response of any kind.*/
+export type PathWithPagination = PathWithPaginationOf<unknown>;
 
 /**
  * Paths which accept a ?query=string parameter.
@@ -186,3 +86,58 @@ type PathWithSearch = {
 }[keyof paths];
 
 export type SearchablePath = PathWithPagination & PathWithSearch;
+
+export const client = createClient<paths>({
+  baseUrl: process.env.API_BASE_URL,
+  fetch: (original) => {
+    // TODO remove: dev only
+    if (typeof window !== "undefined") {
+      const url = new URL(original.url);
+      url.port = "80";
+      const altered = new Request(url, original);
+      return fetch(altered);
+    }
+    return fetch(original);
+  },
+});
+
+type PathWithGet = PathsWithMethod<paths, "get">;
+type Params<P extends PathWithGet> = paths[P]["get"]["parameters"];
+export type Query<P extends PathWithGet> =
+  paths[P]["get"]["parameters"]["query"];
+
+const get = async <P extends PathWithGet>(
+  path: P,
+  params?: Params<P>,
+  signal?: AbortSignal,
+) =>
+  client.GET(
+    path,
+    // @ts-expect-error Unable to find 'correct' type for this object
+    {
+      params,
+      signal,
+    },
+  );
+
+export const getSlug = async <P extends PathWithSlug>(
+  path: P,
+  slug: string | Promise<{ slug: string }>,
+  signal?: AbortSignal,
+) => {
+  const resolvedSlug = typeof slug === "string" ? slug : (await slug).slug;
+
+  const response = await get(path, { path: { slug: resolvedSlug } }, signal);
+  const data = response.data;
+
+  if (!data) return notFound();
+  return data;
+};
+
+export const getPaginated = <P extends PathWithPagination>(
+  path: P,
+  query: Params<P>,
+  signal?: AbortSignal,
+): ApiPromise<PagedResponseOf<P>> => {
+  return get(path, query, signal) as ApiPromise<PagedResponseOf<P>>;
+};

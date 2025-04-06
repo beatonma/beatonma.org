@@ -11,6 +11,7 @@ import { Row } from "@/components/layout";
 import Loading from "@/components/loading";
 import usePagination, { Paginated } from "@/components/paginated";
 import { navigationHref } from "@/navigation";
+import { Props } from "@/types/react";
 import { onlyIf } from "@/util/optional";
 import { PaginatedPostsProps } from "./paginated-posts";
 import Post from "./post";
@@ -24,13 +25,11 @@ interface InfinitePostsProps extends PaginatedPostsProps {
  * Otherwise links are shown for manual navigation between pages..
  */
 export default function InfinitePosts(props: InfinitePostsProps) {
-  const { query, init } = props;
-
-  const paged = usePagination("/api/posts/", init, query);
+  const paged = usePagination("/api/posts/", props);
 
   return (
     <>
-      {paged.items.map((post, index) => (
+      {paged.items.map((post) => (
         <Post key={post.url} post={post} />
       ))}
 
@@ -38,30 +37,7 @@ export default function InfinitePosts(props: InfinitePostsProps) {
         pagination={paged}
         endOfContent={<div className="text-lg">-</div>}
       >
-        <noscript className="w-full">
-          <Row className="gap-8 justify-between w-full">
-            <Row className="gap-2">
-              {onlyIf(paged.href.previous, (prev) => (
-                <InlineButton
-                  href={navigationHref("posts", { offset: prev })}
-                  icon="ChevronLeft"
-                >
-                  Previous
-                </InlineButton>
-              ))}
-            </Row>
-            <Row className="gap-2">
-              {onlyIf(paged.href.next, (next) => (
-                <InlineButton
-                  href={navigationHref("posts", { offset: next })}
-                  icon="ChevronRight"
-                >
-                  Next
-                </InlineButton>
-              ))}
-            </Row>
-          </Row>
-        </noscript>
+        <NoscriptPageControls paged={paged} className="w-full" />
 
         <Client>
           <TintedButton onClick={paged.loadNext} className="my-16">
@@ -72,6 +48,38 @@ export default function InfinitePosts(props: InfinitePostsProps) {
     </>
   );
 }
+
+const NoscriptPageControls = (
+  props: { paged: Paginated<PostPreview> } & Props<"noscript">,
+) => {
+  const { paged, ...rest } = props;
+  return (
+    <noscript {...rest}>
+      <Row className="gap-8 justify-between w-full">
+        <Row className="gap-2">
+          {onlyIf(props.paged.href.previous, (prev) => (
+            <InlineButton
+              href={navigationHref("posts", { offset: prev })}
+              icon="ChevronLeft"
+            >
+              Previous
+            </InlineButton>
+          ))}
+        </Row>
+        <Row className="gap-2">
+          {onlyIf(props.paged.href.next, (next) => (
+            <InlineButton
+              href={navigationHref("posts", { offset: next })}
+              icon="ChevronRight"
+            >
+              Next
+            </InlineButton>
+          ))}
+        </Row>
+      </Row>
+    </noscript>
+  );
+};
 
 const LoadNext = <T,>(props: {
   pagination: Paginated<T>;

@@ -160,7 +160,7 @@ const AppLink = (
     ...rest
   } = addClass(
     props,
-    "grid grid-cols-[auto_1fr] hover-big-background w-fit text-start",
+    "grid grid-cols-[auto_1fr] hover-extra-background w-fit text-start",
   );
 
   return (
