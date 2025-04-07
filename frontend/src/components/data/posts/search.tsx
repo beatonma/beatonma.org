@@ -10,7 +10,7 @@ import {
 } from "react";
 import { SearchablePath } from "@/api";
 import { Button } from "@/components/button";
-import { PostType } from "@/components/data/posts/post";
+import { PostType } from "@/components/data/posts";
 import { PostPreview } from "@/components/data/types";
 import { Date } from "@/components/datetime";
 import { ScrimBackground } from "@/components/dialog/scrim";

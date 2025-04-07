@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { InlineLink } from "@/components/button";
-import { HtmlContent, PublishingStatus } from "@/components/data/post";
+import { HtmlContent, PublishingStatus } from "@/components/data/posts";
 import Post from "@/components/data/posts/post";
 import {
   AppDetail,

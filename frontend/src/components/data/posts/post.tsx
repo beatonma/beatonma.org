@@ -1,5 +1,4 @@
 import { InlineButton, InlineLink } from "@/components/button";
-import { HtmlContent, PublishingStatus } from "@/components/data/post";
 import { PostPreview } from "@/components/data/types";
 import { Date } from "@/components/datetime";
 import { Row } from "@/components/layout";
@@ -10,6 +9,7 @@ import itemTheme from "@/components/themed/item-theme";
 import RemoteIFrame from "@/components/third-party/embedded";
 import { DivPropsNoChildren } from "@/types/react";
 import { addClass } from "@/util/transforms";
+import { HtmlContent, PostType, PublishingStatus } from "./components";
 
 export default function Post(
   props: { post: PostPreview } & DivPropsNoChildren,
@@ -96,17 +96,4 @@ const PostMediaPreview = (
   return (
     <MediaPreview media={post.files} {...addClass(rest, "surface-muted")} />
   );
-};
-
-export const PostType = (props: { post: PostPreview } & DivPropsNoChildren) => {
-  const { post, ...rest } = addClass(
-    props,
-    "text-xs badge badge-content border-1",
-  );
-
-  if (post.post_type === "post") return null;
-  if (post.post_type === "changelog")
-    return <span {...rest}>{post.post_type}</span>;
-
-  return <span {...rest}>{post.post_type}</span>;
 };
