@@ -1,7 +1,6 @@
 "use client";
 
-import { ComponentPropsWithoutRef } from "react";
-import { LoremIpsum } from "@/app/dev/_sample";
+import { ComponentPropsWithoutRef, useCallback } from "react";
 import {
   Button,
   InlineButton,
@@ -27,47 +26,60 @@ const Section = (
   );
 };
 
-export const Buttons = () => (
-  <Section name="Buttons" className="space-y-2">
-    <Row className="gap-4 flex-wrap">
-      <InlineButton icon="MB" href="#" />
-      <InlineButton href="#">InlineButton</InlineButton>
-      <InlineButton onClick={() => console.log("click")} icon="MB">
-        InlineButton
-      </InlineButton>
-      <InlineButton disabled onClick={() => console.log("click")} icon="MB">
-        disabled
-      </InlineButton>
-    </Row>
+export const Buttons = () => {
+  const onClick = useCallback(() => console.log("click"), []);
+  return (
+    <Section name="Buttons" className="space-y-2">
+      <Row className="gap-4 flex-wrap">
+        <InlineButton icon="MB" href="#" />
+        <InlineButton href="#">InlineButton</InlineButton>
+        <InlineButton onClick={onClick} icon="MB">
+          InlineButton
+        </InlineButton>
+        <InlineButton disabled onClick={onClick} icon="MB">
+          disabled
+        </InlineButton>
+        <InlineButton tooltip="Tooltip" onClick={onClick}>
+          Tooltip
+        </InlineButton>
+      </Row>
 
-    <Row className="gap-4 flex-wrap">
-      <TintedButton icon="MB" href="#" />
-      <TintedButton href="#">TintedButton</TintedButton>
-      <TintedButton onClick={() => console.log("click")} icon="MB">
-        TintedButton
-      </TintedButton>
-      <TintedButton disabled onClick={() => console.log("click")} icon="MB">
-        disabled
-      </TintedButton>
-    </Row>
+      <Row className="gap-4 flex-wrap">
+        <TintedButton icon="MB" href="#" />
+        <TintedButton href="#">TintedButton</TintedButton>
+        <TintedButton onClick={onClick} icon="MB">
+          TintedButton
+        </TintedButton>
+        <TintedButton disabled onClick={onClick} icon="MB">
+          disabled
+        </TintedButton>
+        <TintedButton tooltip="Tooltip" onClick={onClick}>
+          Tooltip
+        </TintedButton>
+      </Row>
 
-    <Row className="gap-4 flex-wrap">
-      <Button icon="MB" href="#" />
-      <Button href="#">Button</Button>
-      <Button onClick={() => console.log("click")} icon="MB">
-        Button
-      </Button>
-      <Button disabled onClick={() => console.log("click")} icon="MB">
-        disabled
-      </Button>
-    </Row>
+      <Row className="gap-4 flex-wrap">
+        <Button icon="MB" href="#" />
+        <Button href="#">Button</Button>
+        <Button onClick={onClick} icon="MB">
+          Button
+        </Button>
+        <Button disabled onClick={onClick} icon="MB">
+          disabled
+        </Button>
+        <Button tooltip="This is a really long tooltip" onClick={onClick}>
+          Tooltip
+        </Button>
+      </Row>
 
-    <Row className="gap-4 flex-wrap">
-      <InlineLink icon="MB" href="https://beatonma.org" />
-      <InlineLink href="https://beatonma.org" />
-    </Row>
-  </Section>
-);
+      <Row className="gap-4 flex-wrap">
+        <InlineLink icon="MB" href="https://beatonma.org" />
+        <InlineLink href="https://beatonma.org" />
+        <InlineLink tooltip="Tooltip" href="https://beatonma.org" />
+      </Row>
+    </Section>
+  );
+};
 export const Icons = () => {
   const icons = Icon_private.Icons;
 

@@ -1,9 +1,10 @@
+from datetime import datetime
+
 from common.util.time import coerce_tzdatetime
 from dateutil import parser as dateparser
-from django.utils import timezone
 
 
-def parse_datetime(text: str) -> timezone.datetime | None:
+def parse_datetime(text: str) -> datetime | None:
     if text is None:
         return None
 

@@ -2,7 +2,6 @@
 
 import {
   ComponentPropsWithoutRef,
-  MouseEvent,
   useCallback,
   useEffect,
   useRef,

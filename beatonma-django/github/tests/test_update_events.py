@@ -1,22 +1,19 @@
+from basetest.testcase import LocalTestCase
 from django.utils import timezone
 from django.utils.timezone import get_current_timezone
-
-from basetest.testcase import LocalTestCase
-from github.models import GithubLanguage, GithubLicense, GithubRepository, GithubUser
-from github.models.events import (
-    GithubEventUpdateCycle,
-    GithubIssuesPayload,
-    GithubPullRequestPayload,
-    GithubReleasePayload,
-    GithubUserEvent,
-    GithubWikiPayload,
-)
+from github.models import (GithubLanguage, GithubLicense, GithubRepository,
+                           GithubUser)
+from github.models.events import (GithubEventUpdateCycle,
+                                  GithubIssueClosedPayload,
+                                  GithubPullRequestMergedPayload,
+                                  GithubReleasePublishedPayload,
+                                  GithubUserEvent, GithubWikiPayload)
 from github.tasks import update_events
 from github.tasks.api_models import Event
 from main.models import App, Changelog
 
-SAMPLE_CREATE_EVENT = Event(
-    **{
+SAMPLE_CREATE_EVENT = Event.model_validate(
+    {
         "id": "20975491109",
         "type": "CreateEvent",
         "actor": {
@@ -44,8 +41,8 @@ SAMPLE_CREATE_EVENT = Event(
     }
 )
 
-SAMPLE_PUSH_EVENT = Event(
-    **{
+SAMPLE_PUSH_EVENT = Event.model_validate(
+    {
         "id": "20975676236",
         "type": "PushEvent",
         "actor": {
@@ -83,8 +80,8 @@ SAMPLE_PUSH_EVENT = Event(
     }
 )
 
-SAMPLE_PULLREQUEST_EVENT = Event(
-    **{
+SAMPLE_PULLREQUEST_EVENT = Event.model_validate(
+    {
         "id": "20950698922",
         "type": "PullRequestEvent",
         "actor": {
@@ -134,8 +131,8 @@ SAMPLE_PULLREQUEST_EVENT = Event(
     }
 )
 
-SAMPLE_RELEASE_EVENT = Event(
-    **{
+SAMPLE_RELEASE_EVENT = Event.model_validate(
+    {
         "id": "20950698922",
         "type": "ReleaseEvent",
         "actor": {
@@ -181,8 +178,8 @@ SAMPLE_RELEASE_EVENT = Event(
     }
 )
 
-SAMPLE_ISSUES_EVENT = Event(
-    **{
+SAMPLE_ISSUES_EVENT = Event.model_validate(
+    {
         "id": "20950698727",
         "type": "IssuesEvent",
         "actor": {
@@ -235,8 +232,8 @@ SAMPLE_ISSUES_EVENT = Event(
     }
 )
 
-SAMPLE_WIKI_EVENT = Event(
-    **{
+SAMPLE_WIKI_EVENT = Event.model_validate(
+    {
         "id": "21143487061",
         "type": "GollumEvent",
         "actor": {
@@ -358,7 +355,7 @@ class UpdateEventsTest(LocalTestCase):
 
         event = GithubUserEvent.objects.first()
         self.assertEqual(event.type, "PullRequestEvent")
-        event_data: GithubPullRequestPayload = event.pull_merged_data
+        event_data: GithubPullRequestMergedPayload = event.pull_merged_data
 
         self.assertEqual(
             event_data.url, "https://github.com/beatonma/django-wm/pull/24"
@@ -377,7 +374,7 @@ class UpdateEventsTest(LocalTestCase):
 
         event = GithubUserEvent.objects.first()
         self.assertEqual(event.type, "ReleaseEvent")
-        event_data: GithubReleasePayload = event.release_data
+        event_data: GithubReleasePublishedPayload = event.release_data
 
         self.assertEqual(
             event_data.url, "https://github.com/octocat/Hello-World/releases/v1.0.0"
@@ -402,7 +399,7 @@ class UpdateEventsTest(LocalTestCase):
 
         event = GithubUserEvent.objects.first()
         self.assertEqual(event.type, "IssuesEvent")
-        event_data: GithubIssuesPayload = event.issue_closed_data
+        event_data: GithubIssueClosedPayload = event.issue_closed_data
 
         self.assertEqual(
             event_data.url,

@@ -1,0 +1,21 @@
+.mainFeedGrid {
+  --feed-width: 60ch;
+  --grid-gap: calc(8 * var(--spacing));
+
+  display: grid;
+  row-gap: var(--grid-gap);
+  grid-template-columns: 1fr min(100%, var(--feed-width)) 1fr;
+  grid-template-areas:
+    ". github ."
+    ". posts .";
+
+  /* Tailwind xl */
+  @media (width >= 80rem) {
+    --sidebar-width: 320px;
+
+    grid-template-columns:
+      1fr var(--sidebar-width) var(--grid-gap) var(--feed-width)
+      var(--grid-gap) var(--sidebar-width) 1fr;
+    grid-template-areas: ". . . posts . github .";
+  }
+}

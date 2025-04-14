@@ -248,6 +248,8 @@
   @apply col-span-full col-start-1 row-span-full row-start-1 grid-cols-subgrid grid-rows-subgrid;
 }
 
+/* By default this will have zero size and appear to do nothing! Remember
+ * to set the size of your background with before:-inset-2 or whatever.*/
 @utility extra-background {
   @apply relative;
   &::before {
@@ -256,7 +258,9 @@
   }
 }
 
-/* Add a hover background which is a little larger than the element. */
+/* Add a hover background which is a little larger than the element.
+ * By default this will have zero size and appear to do nothing! Remember
+ * to set the size of your background with before:-inset-2 or whatever.*/
 @utility hover-extra-background {
   @apply extra-background relative;
   &::before {

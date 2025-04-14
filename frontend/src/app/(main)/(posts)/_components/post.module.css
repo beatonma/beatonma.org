@@ -10,14 +10,15 @@
 
   /* Tailwind xl */
   @media (width >= 80rem) {
+    --grid-gap: calc(8 * var(--spacing));
+    --sidebar-width: 240px;
+
     grid-template-areas:
       ". . . hero . . ."
       ". . . title . . ."
       ". . . content . info ."
       ". . . media . info ."
       ". . . mentions . . .";
-    --grid-gap: calc(8 * var(--spacing));
-    --sidebar-width: 240px;
     grid-template-columns:
       1fr var(--sidebar-width) var(--grid-gap) var(--spacing-readable)
       var(--grid-gap) var(--sidebar-width) 1fr;

@@ -1,8 +1,8 @@
-import datetime
 import logging
 import time
 from dataclasses import dataclass
-from typing import Callable, Dict, List, Optional
+from datetime import datetime
+from typing import Callable
 
 import requests
 from django.conf import settings
@@ -23,7 +23,7 @@ class GithubApiException(Exception):
 @dataclass
 class GithubResponseHeaders:
     etag: str
-    timestamp: datetime.datetime
+    timestamp: datetime
 
 
 def _prepare_request(url: str, params: dict, headers: dict) -> requests.PreparedRequest:
@@ -34,7 +34,7 @@ def _get(request: requests.PreparedRequest) -> requests.Response:
     return _session.send(request)
 
 
-def get_if_changed(url, params=None, headers=None) -> Optional[requests.Response]:
+def get_if_changed(url, params=None, headers=None) -> requests.Response | None:
     """If data has not changed since the last time we asked, return None."""
 
     if params is None:
@@ -79,18 +79,17 @@ def for_each(
     block: Callable[[dict], None],
     params=None,
     headers=None,
-) -> Optional[requests.Response]:
+) -> requests.Response | None:
     """Run [block] with each object in the response list of data."""
 
     response = get_if_changed(url, params, headers)
 
     if response is None:
-        return
+        return None
 
-    data: Optional[List[Dict]] = response.json()
+    data: list[dict] | None = response.json()
 
     while data is not None:
-
         for obj in data:
             block(obj)
 
@@ -111,7 +110,7 @@ def for_each(
     return response
 
 
-def _get_existing_etag(url: str) -> Optional[GithubETag]:
+def _get_existing_etag(url: str) -> GithubETag | None:
     try:
         return GithubETag.objects.get(url=url)
     except GithubETag.DoesNotExist:

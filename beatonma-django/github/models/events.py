@@ -1,13 +1,8 @@
 from common.models import ApiModel, BaseModel
-from django.conf import settings
 from django.db import models
 from django.db.models import QuerySet
 from github.events import GithubEvent
 from github.models.repository import GithubRepository, GithubUser
-
-
-def _get_event_types():
-    return getattr(settings, "GITHUB_EVENTS", GithubEvent.values())
 
 
 class GithubEventUpdateCycle(BaseModel):
@@ -78,7 +73,7 @@ class GithubUserEvent(ApiModel, BaseModel):
         payload = self.payload()
         if isinstance(payload, QuerySet):
             return payload.count()
-        return 0
+        return 1
 
     def to_json(self) -> dict:
         if not self.repository.is_published or not self.is_public:
@@ -166,7 +161,7 @@ class GithubCreatePayload(GithubEventPayload):
         verbose_name_plural = "GithubEvents: Create"
 
 
-class GithubIssuesPayload(GithubEventPayload):
+class GithubIssueClosedPayload(GithubEventPayload):
     number = models.PositiveSmallIntegerField(editable=False)
     url = models.URLField(editable=False)
     closed_at = models.DateTimeField(editable=False)
@@ -191,7 +186,7 @@ class GithubIssuesPayload(GithubEventPayload):
         verbose_name_plural = "GithubEvents: Issue"
 
 
-class GithubPullRequestPayload(GithubEventPayload):
+class GithubPullRequestMergedPayload(GithubEventPayload):
     url = models.URLField(editable=False)
     number = models.PositiveSmallIntegerField(editable=False)
     merged_at = models.DateTimeField(editable=False)
@@ -222,7 +217,7 @@ class GithubPullRequestPayload(GithubEventPayload):
         verbose_name_plural = "GithubEvents: Close pull request"
 
 
-class GithubReleasePayload(GithubEventPayload):
+class GithubReleasePublishedPayload(GithubEventPayload):
     name = models.CharField(max_length=256, editable=False)
     url = models.URLField(editable=False)
     description = models.TextField(editable=False)

@@ -159,6 +159,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/github/recent/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Github Events */
+        get: operations["github_api_get_github_events"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -517,6 +534,216 @@ export interface components {
             /** Mentions */
             mentions: components["schemas"]["Mention"][];
         };
+        /** GithubCommit */
+        GithubCommit: {
+            /** Sha */
+            sha: string;
+            /** Message */
+            message: string;
+            /** Url */
+            url: string;
+        };
+        /** GithubCreateEventPayload */
+        GithubCreateEventPayload: {
+            /** Type */
+            type?: string | null;
+            /** Ref */
+            ref: string;
+        };
+        /** GithubIssueEventPayload */
+        GithubIssueEventPayload: {
+            /** Number */
+            number: number;
+            /** Url */
+            url: string;
+            /**
+             * Closed At
+             * Format: date-time
+             */
+            closed_at: string;
+        };
+        /** GithubPrivateEvent */
+        GithubPrivateEvent: {
+            /**
+             * Type
+             * @constant
+             */
+            type: "PrivateEventSummary";
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Event Count */
+            event_count: number;
+            /** Change Count */
+            change_count: number;
+            /** Repository Count */
+            repository_count: number;
+        };
+        /** GithubPublicCreateEvent */
+        GithubPublicCreateEvent: {
+            /**
+             * Type
+             * @constant
+             */
+            type: "CreateEvent";
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Id */
+            id: number;
+            repository: components["schemas"]["GithubRepositorySchema"];
+            payload: components["schemas"]["GithubCreateEventPayload"];
+        };
+        /** GithubPublicIssueEvent */
+        GithubPublicIssueEvent: {
+            /**
+             * Type
+             * @constant
+             */
+            type: "IssuesEvent";
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Id */
+            id: number;
+            repository: components["schemas"]["GithubRepositorySchema"];
+            payload: components["schemas"]["GithubIssueEventPayload"];
+        };
+        /** GithubPublicPullRequestEvent */
+        GithubPublicPullRequestEvent: {
+            /**
+             * Type
+             * @constant
+             */
+            type: "PullRequestEvent";
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Id */
+            id: number;
+            repository: components["schemas"]["GithubRepositorySchema"];
+            payload: components["schemas"]["GithubPullRequestPayload"];
+        };
+        /** GithubPublicPushEvent */
+        GithubPublicPushEvent: {
+            /**
+             * Type
+             * @constant
+             */
+            type: "PushEvent";
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Id */
+            id: number;
+            repository: components["schemas"]["GithubRepositorySchema"];
+            /** Payload */
+            payload: components["schemas"]["GithubCommit"][];
+        };
+        /** GithubPublicReleaseEvent */
+        GithubPublicReleaseEvent: {
+            /**
+             * Type
+             * @constant
+             */
+            type: "ReleaseEvent";
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Id */
+            id: number;
+            repository: components["schemas"]["GithubRepositorySchema"];
+            payload: components["schemas"]["GithubReleasePayload"];
+        };
+        /** GithubPublicWikiEvent */
+        GithubPublicWikiEvent: {
+            /**
+             * Type
+             * @constant
+             */
+            type: "GollumEvent";
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Id */
+            id: number;
+            repository: components["schemas"]["GithubRepositorySchema"];
+            /** Payload */
+            payload: components["schemas"]["GithubWikiEdit"][];
+        };
+        /** GithubPullRequestPayload */
+        GithubPullRequestPayload: {
+            /** Number */
+            number: number;
+            /** Url */
+            url: string;
+            /**
+             * Merged At
+             * Format: date-time
+             */
+            merged_at: string;
+            /** Additions Count */
+            additions_count: number;
+            /** Deletions Count */
+            deletions_count: number;
+            /** Changed Files Count */
+            changed_files_count: number;
+        };
+        /** GithubRecentEvents */
+        GithubRecentEvents: {
+            /** Events */
+            events: (components["schemas"]["GithubPrivateEvent"] | components["schemas"]["GithubPublicCreateEvent"] | components["schemas"]["GithubPublicIssueEvent"] | components["schemas"]["GithubPublicPullRequestEvent"] | components["schemas"]["GithubPublicReleaseEvent"] | components["schemas"]["GithubPublicPushEvent"] | components["schemas"]["GithubPublicWikiEvent"])[];
+        };
+        /** GithubReleasePayload */
+        GithubReleasePayload: {
+            /** Name */
+            name: string;
+            /** Url */
+            url: string;
+            /** Description */
+            description: string;
+            /**
+             * Published At
+             * Format: date-time
+             */
+            published_at: string;
+        };
+        /** GithubRepositorySchema */
+        GithubRepositorySchema: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Url */
+            url: string;
+            /** License */
+            license?: string | null;
+            /** Description */
+            description: string | null;
+        };
+        /** GithubWikiEdit */
+        GithubWikiEdit: {
+            /** Name */
+            name: string;
+            /** Url */
+            url: string;
+            /** Action */
+            action: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -766,6 +993,26 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    github_api_get_github_events: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GithubRecentEvents"];
+                };
             };
         };
     };

@@ -17,6 +17,12 @@ import ChevronLeft from "./svg/material/chevron_left.svg";
 import ChevronRight from "./svg/material/chevron_right.svg";
 import Close from "./svg/material/close.svg";
 import Code from "./svg/material/code.svg";
+import GitBranch from "./svg/material/git_branch.svg";
+import GitBugfix from "./svg/material/git_bugfix.svg";
+import GitCommit from "./svg/material/git_commit.svg";
+import GitMerge from "./svg/material/git_merge.svg";
+import GitRelease from "./svg/material/git_release.svg";
+import GitWiki from "./svg/material/git_wiki.svg";
 import Audio from "./svg/material/headphones.svg";
 import Home from "./svg/material/home.svg";
 import Image from "./svg/material/image.svg";
@@ -54,6 +60,14 @@ const Icons = {
   Image,
   PlayArrow,
   Text,
+
+  // Git
+  GitBranch,
+  GitBugfix,
+  GitCommit,
+  GitMerge,
+  GitRelease,
+  GitWiki,
 
   // General use
   ArrowUp,

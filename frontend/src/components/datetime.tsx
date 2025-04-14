@@ -4,18 +4,22 @@ import { DivPropsNoChildren } from "@/types/react";
 import { addClass, capitalize } from "@/util/transforms";
 
 type ParseableDate = Date | string | number | Nullish;
-const Locale = undefined;
+type DateFormat = "smart" | Intl.DateTimeFormat;
+const Locale = "en-gb";
 
 export namespace DateFormat {
-  export const YearMonth: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "long",
-  };
-  export const YearMonthDay: Intl.DateTimeFormatOptions = {
+  export const MonthDay: Intl.DateTimeFormat = new Intl.DateTimeFormat(Locale, {
     day: "numeric",
-    year: "numeric",
     month: "long",
-  };
+  });
+  export const YearMonthDay: Intl.DateTimeFormat = new Intl.DateTimeFormat(
+    Locale,
+    {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    },
+  );
   export const Default = YearMonthDay;
 }
 
@@ -30,12 +34,28 @@ export const parseDate = (dt: ParseableDate): Date | null => {
 
 export const formatDate = (
   dt: ParseableDate,
-  dateFormat: Intl.DateTimeFormatOptions = DateFormat.Default,
+  dateFormat: DateFormat = DateFormat.Default,
 ): string | null => {
   const parsed = parseDate(dt);
   if (!parsed) return null;
 
-  return parsed.toLocaleDateString(Locale, dateFormat);
+  if (dateFormat !== "smart") {
+    return dateFormat.format(parsed);
+  }
+
+  // Format date differently depending on relation to current date.
+  const now = new globalThis.Date();
+  if (now.getFullYear() === parsed.getFullYear()) {
+    if (
+      now.getMonth() === parsed.getMonth() &&
+      now.getDate() === parsed.getDate()
+    ) {
+      return "Today";
+    }
+    return DateFormat.MonthDay.format(parsed);
+  }
+
+  return DateFormat.YearMonthDay.format(parsed);
 };
 
 /**
@@ -45,7 +65,7 @@ export const DateRange = (
   props: {
     start: ParseableDate;
     end: ParseableDate;
-    dateFormat?: Intl.DateTimeFormatOptions;
+    dateFormat?: DateFormat;
     capitalized?: boolean;
   } & DivPropsNoChildren,
 ) => {
@@ -82,10 +102,10 @@ export const DateRange = (
 export const Date = (
   props: {
     date: ParseableDate;
-    dateFormat?: Intl.DateTimeFormatOptions;
+    dateFormat?: DateFormat;
   } & Omit<ComponentPropsWithoutRef<"time">, "dateTime" | "children" | "title">,
 ) => {
-  const { date, dateFormat = DateFormat.Default, ...rest } = props;
+  const { date, dateFormat = "smart", ...rest } = props;
   const parsed = parseDate(date);
 
   if (parsed == null) return null;

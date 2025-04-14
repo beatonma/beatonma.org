@@ -5,10 +5,23 @@ import { int } from "@/components/number";
  */
 const Plurals = {
   result: ["result", "results"],
+  mention: ["mention", "mentions"],
+  change: ["change", "changes"],
+  repository: ["repository", "repositories"],
 };
 
-export const plural = (key: keyof typeof Plurals, count: number) => {
+export const plural = (
+  key: keyof typeof Plurals | [string, string],
+  count: number,
+  format?: (pluralized: string) => string,
+) => {
   const index = count === 1 ? 0 : 1;
 
-  return `${int(count)} ${Plurals[key][index]}`;
+  const word = (typeof key === "string" ? Plurals[key] : key)[index];
+
+  if (format) {
+    return format(word);
+  }
+
+  return `${int(count)} ${word}`;
 };

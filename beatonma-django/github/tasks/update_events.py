@@ -1,6 +1,6 @@
 import logging
 import re
-from typing import Callable, Optional, TypeVar
+from typing import Callable
 
 from celery import shared_task
 from django.conf import settings
@@ -12,9 +12,9 @@ from github.models.events import (
     GithubCommit,
     GithubCreatePayload,
     GithubEventUpdateCycle,
-    GithubIssuesPayload,
-    GithubPullRequestPayload,
-    GithubReleasePayload,
+    GithubIssueClosedPayload,
+    GithubPullRequestMergedPayload,
+    GithubReleasePublishedPayload,
     GithubUserEvent,
     GithubWikiPayload,
 )
@@ -39,7 +39,6 @@ OWNER = settings.GITHUB_USERNAME
 
 
 SUPPORTED_EVENTS = [
-    GithubEvent.CreateEvent,
     GithubEvent.CreateEvent,
     GithubEvent.WikiEvent,
     GithubEvent.IssuesEvent,
@@ -73,9 +72,9 @@ def update_github_user_events():
     if _polling_allowed():
         update_cycle = GithubEventUpdateCycle.objects.create()
 
-        def _try_create_event(data: dict) -> Optional[GithubUserEvent]:
+        def _try_create_event(data: dict) -> GithubUserEvent | None:
             try:
-                return _create_event(update_cycle, Event(**data))
+                return _create_event(update_cycle, Event.model_validate(data))
 
             except UnwantedEvent as e:
                 log.debug(f"Skipping event {e}")
@@ -105,7 +104,7 @@ def _polling_allowed() -> bool:
     """Check if the previous polling was sufficiently long ago.
 
     Polling interval is defined in X-Poll-Interval header."""
-    previous_poll: Optional[GithubPollingEvent] = GithubPollingEvent.objects.first()
+    previous_poll: GithubPollingEvent | None = GithubPollingEvent.objects.first()
     if previous_poll and not previous_poll.elapsed():
         log.warning(
             f"Github polling event denied until at least {previous_poll.elapses_at}"
@@ -125,9 +124,9 @@ def _remember_polling(url: str, headers: CaseInsensitiveDict):
 def _create_event(
     parent: GithubEventUpdateCycle,
     data: Event,
-) -> Optional[GithubUserEvent]:
+) -> GithubUserEvent | None:
     if data.actor.login != OWNER:
-        return
+        return None
 
     event_type = data.type
     if event_type not in SUPPORTED_EVENTS:
@@ -170,40 +169,36 @@ def _get_repo(repo: Repo) -> GithubRepository:
         raise UnknownRepository(f"Unknown repository: {repo.name} [{repo.id}")
 
 
-def create_payload(
-    event_type: str,
-    event: GithubUserEvent,
-    data: dict,
-):
+def create_payload[
+    T: _EventPayload
+](event_type: str, event: GithubUserEvent, data: dict,):
     """Spec: https://docs.github.com/en/developers/webhooks-and-events/events/github-event-types"""
-
-    T = TypeVar("T", bound=_EventPayload)
 
     func: Callable[[GithubUserEvent, T], None]
     payload: T
 
     if event_type == GithubEvent.CreateEvent:
-        payload = CreateEventPayload(**data)
+        payload = CreateEventPayload.model_validate(data)
         func = _create_create_payload
 
     elif event_type == GithubEvent.WikiEvent:
-        payload = WikiEvent(**data)
+        payload = WikiEvent.model_validate(data)
         func = _create_wiki_payload
 
     elif event_type == GithubEvent.IssuesEvent:
-        payload = IssuesEvent(**data)
+        payload = IssuesEvent.model_validate(data)
         func = _create_issues_payload
 
     elif event_type == GithubEvent.PullRequestEvent:
-        payload = PullRequestEvent(**data)
+        payload = PullRequestEvent.model_validate(data)
         func = _create_pullrequest_payload
 
     elif event_type == GithubEvent.PushEvent:
-        payload = PushEvent(**data)
+        payload = PushEvent.model_validate(data)
         func = _create_push_payload
 
     elif event_type == GithubEvent.ReleaseEvent:
-        payload = ReleaseEvent(**data)
+        payload = ReleaseEvent.model_validate(data)
         func = _create_release_event
 
     else:
@@ -246,9 +241,9 @@ def _create_pullrequest_payload(event: GithubUserEvent, payload: PullRequestEven
         pull_request = payload.pull_request
 
         if pull_request.is_merged:
-            GithubPullRequestPayload.objects.create(
+            GithubPullRequestMergedPayload.objects.create(
                 event=event,
-                url=pull_request.url,
+                url=pull_request.html_url,
                 number=pull_request.number,
                 merged_at=pull_request.merged_at,
                 additions_count=pull_request.additions,
@@ -265,7 +260,7 @@ def _create_issues_payload(event: GithubUserEvent, payload: IssuesEvent):
 
     if action == "closed":
         issue = payload.issue
-        GithubIssuesPayload.objects.create(
+        GithubIssueClosedPayload.objects.create(
             event=event,
             number=issue.number,
             url=issue.html_url,
@@ -291,7 +286,7 @@ def _create_wiki_payload(event: GithubUserEvent, payload: WikiEvent):
 def _create_release_event(event: GithubUserEvent, payload: ReleaseEvent):
     if payload.action == "published":
         release = payload.release
-        GithubReleasePayload.objects.create(
+        GithubReleasePublishedPayload.objects.create(
             event=event,
             url=release.html_url,
             name=release.name,

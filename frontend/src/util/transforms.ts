@@ -14,7 +14,7 @@ export const classes = (...classNames: (string | undefined | null)[]) =>
 export const addClass = <T extends { className?: string }>(
   props: T,
   ...extraClasses: (string | Nullish)[]
-) => ({
+): T => ({
   ...props,
   className: classes(props.className, ...extraClasses),
 });
@@ -22,7 +22,11 @@ export const addClass = <T extends { className?: string }>(
 export const capitalize = (value: MaybeString | null): string | null =>
   value ? value.slice(0, 1).toUpperCase() + value.slice(1) : null;
 
-export const formatUrl = (url: string): string => {
-  const _url = new URL(url);
-  return _url.hostname.replace("www.", "");
+export const formatUrl = (url: string | URL | Nullish): string => {
+  try {
+    const _url = new URL(url as string | URL);
+    return _url.hostname.replace("www.", "");
+  } catch (e) {
+    return "__BAD_URL__";
+  }
 };

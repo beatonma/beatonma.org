@@ -11,7 +11,7 @@ from django.contrib import admin
 from django.template.response import TemplateResponse
 from django.urls import include, path
 from django.views.generic import RedirectView
-from github.api import github_api
+from github.api import router as github_router
 from main.api import public_api
 
 
@@ -59,7 +59,6 @@ public_api.add_router("contact/", contact_router)
 urlpatterns = (
     [
         path("api/", public_api.urls),
-        path("api/github/", github_api.urls),
         path("api/webmention/", include("mentions.urls")),
         path("webmentions_tester/", include("webmentions_tester.urls")),
         path("api/v2/", bma_app_api.urls),
