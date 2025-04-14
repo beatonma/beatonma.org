@@ -1,0 +1,11 @@
+.tooltip {
+  animation-name: tooltip;
+  animation-duration: 160ms;
+  animation-timing-function: ease-out;
+}
+
+@keyframes tooltip {
+  0% {
+    opacity: 0;
+  }
+}

@@ -3,18 +3,21 @@
 import Link from "next/link";
 import React, { ComponentPropsWithRef, ReactNode } from "react";
 import Icon, { type AppIcon } from "@/components/icon";
-import { ChildrenProps, ClassNameProps } from "@/types/react";
+import { useTooltip } from "@/components/tooltip/tooltip";
+import { Nullish } from "@/types";
+import { ChildrenProps, ClassNameProps, DivProps } from "@/types/react";
 import { addClass, formatUrl } from "@/util/transforms";
 
 interface ButtonContentProps {
   icon?: AppIcon | ReactNode;
+  tooltip?: string;
 }
 interface ButtonColors {
   colors?: string;
 }
 
 type ButtonLinkProps = {
-  href: string | null | undefined;
+  href: string | Nullish;
 } & ButtonContentProps &
   Omit<ComponentPropsWithRef<"a">, "onClick" | "href">;
 
@@ -63,11 +66,10 @@ export const TintedButton = (props: ButtonProps) => {
  */
 export const InlineLink = (props: ButtonLinkProps) => {
   const { href, children, icon, ...rest } = addClass(props, "hover:underline");
-  if (!href) return null;
 
   return (
     <BaseButton
-      href={href}
+      href={href ?? undefined}
       icon={icon === null ? null : (icon ?? "Link")}
       {...rest}
     >
@@ -79,6 +81,7 @@ export const InlineLink = (props: ButtonLinkProps) => {
 const BaseButton = (props: ButtonProps & ButtonColors) => {
   const {
     icon,
+    tooltip,
     colors: _colors,
     children,
     ...rest
@@ -91,6 +94,8 @@ const BaseButton = (props: ButtonProps & ButtonColors) => {
     props.colors,
   );
 
+  const tooltipAttrs = useTooltip({ tooltip });
+
   const content = (
     <>
       <span className="absolute size-full touch-target pointer:hidden" />
@@ -99,20 +104,34 @@ const BaseButton = (props: ButtonProps & ButtonColors) => {
   );
 
   if (isLink(rest)) {
-    return <Link {...rest}>{content}</Link>;
+    return (
+      <Link {...rest} {...tooltipAttrs}>
+        {content}
+      </Link>
+    );
   }
   if (isButton(rest)) {
-    return <button {...rest}>{content}</button>;
+    return (
+      <button {...rest} {...tooltipAttrs}>
+        {content}
+      </button>
+    );
   }
+
+  // Strip and `hover:` or `hover-` classes from className. don't use
+  //   `pointer-events-none` as that prevents tooltip from working.
+  const { className: originalClassName, ...divRest } = addClass(
+    rest,
+    "cursor-default",
+  ) as DivProps;
+  const noHoverClassName = originalClassName?.replace(
+    /(^|\s+)hover[-:]\S+/g,
+    "",
+  );
 
   // No usable href or onClick - render as simple div.
   return (
-    <div
-      {...(addClass(
-        rest,
-        "pointer-events-none",
-      ) as ComponentPropsWithRef<"div">)}
-    >
+    <div className={noHoverClassName} {...divRest} {...tooltipAttrs}>
       {content}
     </div>
   );
