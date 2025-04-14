@@ -4,7 +4,8 @@ type PostSearchParams = Query<"/api/posts/">;
 
 const Navigation = {
   home: () => "/",
-  contact: () => `/contact/`,
+  contact: () => "/contact/",
+  about: () => "/about/",
   app: (slug: string) => `/apps/${slug}/`,
   appLiveInstance: (slug: string) => `/apps/${slug}/live/`,
   changelog: (slug: string) => `/changelog/${slug}/`,

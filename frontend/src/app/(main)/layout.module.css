@@ -11,7 +11,7 @@
     grid-template-columns: auto 1fr auto auto;
   }
 
-  @media (width <= 400px) {
+  @media (width <= 460px) {
     grid-template-areas: "title" "toolbar" "search";
     grid-template-columns: 1fr;
   }

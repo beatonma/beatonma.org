@@ -7,6 +7,7 @@ from django.core.files.base import ContentFile
 from django.core.management import BaseCommand
 from django.db import models, transaction
 from main.models import (
+    About,
     App,
     AppPost,
     Article,
@@ -19,6 +20,7 @@ from main.models import (
     UploadedFile,
     WebApp,
 )
+from main.models.rewrite import AboutPost
 from main.models.rewrite.app import AppResource
 from mentions.models import SimpleMention, Webmention
 
@@ -38,6 +40,7 @@ def migrate_posts():
     migrate_articles()
     migrate_apps()
     migrate_webapps()
+    migrate_about()
 
 
 def migrate_blogs():
@@ -79,6 +82,18 @@ def create_redirect(old, new):
         site=site,
         defaults={"new_path": new.get_absolute_url()},
     )
+
+
+def migrate_about():
+    for page in About.objects.all():
+        with transaction.atomic():
+            AboutPost.objects.create(
+                created_at=page.created_at,
+                modified_at=page.modified_at,
+                content=page.content,
+                content_html=page.content_html,
+                is_published=page.active,
+            )
 
 
 def migrate_articles():

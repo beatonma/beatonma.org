@@ -30,12 +30,8 @@ export default function RootLayout({
 
         <Row className="[grid-area:toolbar] gap-4 justify-self-end justify-end">
           <ThemeController />
-          <Button
-            className="[grid-area:contact]"
-            href={navigationHref("contact")}
-          >
-            Contact
-          </Button>
+          <Button href={navigationHref("about")}>About</Button>
+          <Button href={navigationHref("contact")}>Contact</Button>
         </Row>
 
         <GlobalSearch containerClassName="[grid-area:search]" />

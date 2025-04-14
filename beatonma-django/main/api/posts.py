@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Literal
 
 from common.schema import Mention
-from django.http import HttpRequest
+from django.http import Http404, HttpRequest
 from django.shortcuts import get_object_or_404
 from main.models import AppPost, ChangelogPost, Post
 from main.models.mixins import ThemeableMixin
@@ -11,12 +11,14 @@ from main.models.related_file import BaseUploadedFile, MediaType
 from ninja import Field, Router, Schema
 from ninja.pagination import paginate
 
+from ..models.rewrite import AboutPost
 from .querysets import get_feed
 
 log = logging.getLogger(__name__)
 router = Router(tags=["Posts"])
 
 type Url = str
+
 
 class Theme(Schema):
     muted: str | None = None
@@ -148,3 +150,12 @@ def app(request: HttpRequest, slug: str):
 @router.get("/changelog/{slug}/", response=ChangelogDetail)
 def changelog(request: HttpRequest, slug: str):
     return get_object_or_404(ChangelogPost, slug=slug)
+
+
+@router.get("/about/", response=PostDetail)
+def about(request: HttpRequest):
+    about_page = AboutPost.objects.get_current()
+
+    if about_page:
+        return about_page
+    raise Http404()

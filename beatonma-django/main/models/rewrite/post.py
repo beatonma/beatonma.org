@@ -3,6 +3,7 @@ import uuid
 
 from common.models import BaseModel, PublishedMixin, TaggableMixin
 from common.models.api import ApiEditable
+from common.models.published import PublishedQuerySet
 from common.util import regex
 from common.util.pipeline import PipelineItem
 from django.contrib.contenttypes.fields import GenericRelation
@@ -14,6 +15,10 @@ from main.models.mixins import ThemeableMixin
 from main.models.posts.formats import FormatMixin, Formats
 from main.models.related_file import RelatedFilesMixin
 from mentions.models.mixins import MentionableMixin
+
+
+class PostQuerySet(PublishedQuerySet):
+    pass
 
 
 class BasePost(
@@ -32,6 +37,8 @@ class BasePost(
 
     search_enabled = True
     search_fields = ("title", "content", "tags__name")
+
+    objects = PostQuerySet.as_manager()
 
     # At least one of the listed fields must have useful content before publishing.
     publishing_require_field = (

@@ -72,6 +72,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/about/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** About */
+        get: operations["main_api_posts_about"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/ping/": {
         parameters: {
             query?: never;
@@ -546,7 +563,7 @@ export interface components {
         /** GithubCreateEventPayload */
         GithubCreateEventPayload: {
             /** Type */
-            type?: string | null;
+            type?: ("branch" | "tag" | "repository") | null;
             /** Ref */
             ref: string;
         };
@@ -741,8 +758,11 @@ export interface components {
             name: string;
             /** Url */
             url: string;
-            /** Action */
-            action: string;
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "created" | "edited";
         };
     };
     responses: never;
@@ -840,6 +860,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ChangelogDetail"];
+                };
+            };
+        };
+    };
+    main_api_posts_about: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostDetail"];
                 };
             };
         };
