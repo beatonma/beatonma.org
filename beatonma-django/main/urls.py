@@ -1,7 +1,7 @@
 from common.urls import path
 from mentions.helpers import mentions_path
 
-from .feeds import LatestUpdatesFeed
+from .api.rss import LatestUpdatesFeed
 from .urls_frontend import frontend_urlpatterns
 from .views import view_names
 from .views.about import AboutView
@@ -82,7 +82,7 @@ site_functions_urlpatterns = [
 urlpatterns = (
     api_urlpatterns
     + frontend_urlpatterns
-    + app_urlpatterns
-    + article_urlpatterns
-    + site_functions_urlpatterns
+    # + app_urlpatterns
+    # + article_urlpatterns
+    # + site_functions_urlpatterns
 )
