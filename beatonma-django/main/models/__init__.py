@@ -1,3 +1,4 @@
+from .hcard import SiteHCard
 from .link import Host, Link
 from .motd import MessageOfTheDay
 from .posts import *

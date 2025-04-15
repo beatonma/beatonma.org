@@ -120,6 +120,29 @@ const get = async <P extends PathWithGet>(
     },
   );
 
+export const getOr404 = async <P extends PathWithGet>(
+  path: P,
+  params?: Params<P>,
+  signal?: AbortSignal,
+) => {
+  const response = await get(path, params, signal);
+  const data = response.data;
+
+  if (!data) return notFound();
+  return data;
+};
+
+export const getOrNull = async <P extends PathWithGet>(
+  path: P,
+  params?: Params<P>,
+  signal?: AbortSignal,
+) => {
+  const response = await get(path, params, signal);
+  const data = response.data;
+
+  return data ?? null;
+};
+
 export const getSlug = async <P extends PathWithSlug>(
   path: P,
   slug: string | Promise<{ slug: string }>,
@@ -127,11 +150,7 @@ export const getSlug = async <P extends PathWithSlug>(
 ) => {
   const resolvedSlug = typeof slug === "string" ? slug : (await slug).slug;
 
-  const response = await get(path, { path: { slug: resolvedSlug } }, signal);
-  const data = response.data;
-
-  if (!data) return notFound();
-  return data;
+  return getOr404(path, { path: { slug: resolvedSlug } }, signal);
 };
 
 export const getPaginated = <P extends PathWithPagination>(

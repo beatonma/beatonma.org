@@ -167,16 +167,18 @@ def get_module_models(module_name: str) -> Iterator[Type[models.Model]]:
 
 def register_models_to_default_admin(
     module_name: str,
-    default_admin: Type[admin.ModelAdmin],
+    default_admin: Type[admin.ModelAdmin] = BaseAdmin,
 ):
     """
     Any models in the module that have not already been registered will be registered with default_admin.
     """
     for model in get_module_models(module_name):
-        try:
+        if not admin.site.is_registered(model):
             admin.site.register(model, default_admin)
-        except admin.sites.AlreadyRegistered:
-            pass
+
+
+def register_model_to_default_admin(model: Type[models.Model], **options):
+    admin.site.register(model, BaseAdmin, **options)
 
 
 def _get_app_list(self, request, app_label=None):

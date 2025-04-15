@@ -141,6 +141,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/state/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Global State */
+        get: operations["main_api_global_state_get_global_state"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/contact/": {
         parameters: {
             query?: never;
@@ -501,6 +518,11 @@ export interface components {
         RedirectSchema: {
             /** Redirect */
             redirect: string;
+        };
+        /** GlobalState */
+        GlobalState: {
+            /** Hcard */
+            hcard: string | null;
         };
         /** ContactForm */
         ContactForm: {
@@ -958,6 +980,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RedirectSchema"];
+                };
+            };
+        };
+    };
+    main_api_global_state_get_global_state: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GlobalState"];
                 };
             };
         };

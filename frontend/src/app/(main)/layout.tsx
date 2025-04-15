@@ -1,8 +1,10 @@
 import Link from "next/link";
 import React from "react";
+import { getOrNull } from "@/api";
 import ReturnToTopButton from "@/app/(main)/_components/return-to-top";
 import GlobalSearch from "@/app/(main)/_components/search";
 import { Button } from "@/components/button";
+import DangerousHtml from "@/components/html";
 import { Row } from "@/components/layout";
 import ThemeController from "@/components/themed/light-dark";
 import { navigationHref } from "@/navigation";
@@ -14,6 +16,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const globalState = await getOrNull("/api/state/");
+
   return (
     <div className="grid grid-rows-[min-content_1fr_min-content] grid-cols-1 gap-y-16 h-full items-start">
       <header
@@ -40,6 +44,7 @@ export default function RootLayout({
       {children}
 
       <footer className="mx-auto pb-8">
+        <DangerousHtml html={globalState?.hcard} className="hidden h-card" />
         <ReturnToTopButton />
       </footer>
     </div>
