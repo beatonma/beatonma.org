@@ -31,7 +31,14 @@ export default function NotFound() {
   }, []);
 
   if (redirectTo) return permanentRedirect(redirectTo);
-  if (redirectTo === undefined) return <Loading />;
+  if (redirectTo === undefined)
+    return (
+      <MainLayout>
+        <Loading>
+          <strong>Looking for redirects...</strong>
+        </Loading>
+      </MainLayout>
+    );
 
   return (
     <MainLayout>

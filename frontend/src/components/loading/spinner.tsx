@@ -1,15 +1,17 @@
-import { DivPropsNoChildren } from "@/types/react";
+import { DivProps } from "@/types/react";
 import { addClass } from "@/util/transforms";
 import styles from "./spinner.module.css";
 
-export default function Spinner(props: DivPropsNoChildren) {
+export default function Spinner(props: DivProps) {
+  const { children, ...rest } = props;
   return (
-    <div {...addClass(props, styles.spinner)}>
+    <div {...addClass(rest, styles.spinner)}>
       <div className={styles.spinnerWrapper}>
         <div className={styles.spinnerChild} />
         <div className={styles.spinnerChild} />
         <div className={styles.spinnerChild} />
       </div>
+      {children}
       <noscript className="text-sm">
         Loading error: javascript is disabled.
       </noscript>
