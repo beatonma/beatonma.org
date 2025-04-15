@@ -1,37 +1,44 @@
-import { InlineButton, InlineLink } from "@/components/button";
+import Link from "next/link";
+import { InlineButton } from "@/components/button";
 import { PostPreview } from "@/components/data/types";
-import { Date } from "@/components/datetime";
+import { Date, formatDate } from "@/components/datetime";
 import { Row } from "@/components/layout";
 import MediaPreview from "@/components/media/media-preview";
 import Optional from "@/components/optional";
 import { ProseClassName } from "@/components/prose";
 import itemTheme from "@/components/themed/item-theme";
 import RemoteIFrame from "@/components/third-party/embedded";
-import { DivPropsNoChildren } from "@/types/react";
-import { addClass } from "@/util/transforms";
+import { DivPropsNoChildren, Props } from "@/types/react";
+import { addClass, classes } from "@/util/transforms";
 import { HtmlContent, PostType, PublishingStatus } from "./components";
 
 export default function Post(
   props: { post: PostPreview } & DivPropsNoChildren,
 ) {
-  const { post, style, ...rest } = addClass(props, "h-entry");
+  const { post, style, ...rest } = props;
   const themedStyle = { ...style, ...itemTheme(post) };
 
   return (
-    <article style={themedStyle} {...rest}>
-      <div className="card-hover surface">
-        <PublishingStatus post={post} />
-        <PostMediaPreview post={post} className="max-h-[60vh]" />
+    <article style={themedStyle} {...addClass(rest, "h-entry")}>
+      <div className="card-hover surface relative isolate">
+        <Link
+          href={post.url}
+          className="absolute inset-0 z-0"
+          aria-label={getLabelForPost(post)}
+        />
 
-        <div className="card-content column gap-1">
+        <PublishingStatus post={post} />
+        <PostMediaPreview post={post} className="max-h-[60vh] z-1 relative" />
+
+        <div className="card-content column gap-1 z-1 relative">
           <Optional
             value={post.title}
             block={(title) => (
               <Row className="gap-x-4 items-center">
                 <h2 className="p-name">
-                  <InlineLink href={post.url} icon={null}>
+                  <Link href={post.url} aria-hidden tabIndex={-1}>
                     {title}
-                  </InlineLink>
+                  </Link>
                 </h2>
                 <PostType post={post} className="text-current/60" />
               </Row>
@@ -40,23 +47,15 @@ export default function Post(
 
           <HtmlContent
             post={post}
-            className={
-              post.is_preview
-                ? `text-lg! p-summary ${ProseClassName} compact`
-                : `text-xl! e-content ${ProseClassName} compact`
-            }
+            className={classes(
+              "compact z-1",
+              ProseClassName,
+              post.is_preview ? "text-lg! p-summary" : "text-xl! e-content",
+            )}
           />
 
           <Row className="justify-between mt-4">
-            {post.is_preview ? (
-              <InlineButton href={post.url}>Read more</InlineButton>
-            ) : (
-              <InlineButton
-                href={post.url}
-                icon="Link"
-                title="Link to this post"
-              />
-            )}
+            <LinkToPost post={post} aria-hidden tabIndex={-1} />
 
             <Date
               date={post.published_at}
@@ -68,6 +67,23 @@ export default function Post(
     </article>
   );
 }
+
+const LinkToPost = (
+  props: { post: PostPreview } & Props<typeof InlineButton>,
+) => {
+  const { post, ...rest } = props;
+  const common: Props<typeof InlineButton> = {
+    href: post.url,
+    "aria-label": getLabelForPost(post),
+    title: "Link to this post",
+    ...rest,
+  };
+
+  if (post.is_preview) {
+    return <InlineButton {...common}>Read more</InlineButton>;
+  }
+  return <InlineButton {...common} icon="Link" />;
+};
 
 const PostMediaPreview = (
   props: { post: PostPreview } & DivPropsNoChildren,
@@ -96,4 +112,19 @@ const PostMediaPreview = (
   return (
     <MediaPreview media={post.files} {...addClass(rest, "surface-muted")} />
   );
+};
+
+/** If a post does not have a title, try to build something descriptive. */
+const getLabelForPost = (post: PostPreview): string => {
+  const postType = post.post_type === "post" ? null : `(${post.post_type})`;
+  if (post.title) return [post.title, postType].filter(Boolean).join(" ");
+
+  const labelParts = ["Untitled post"];
+  if (post.hero_embedded_url) {
+    labelParts.push("with embedded URL");
+  } else if (post.files.length) {
+    labelParts.push("with media");
+  }
+
+  return labelParts.join(" ") + `, dated ${formatDate(post.published_at)}`;
 };

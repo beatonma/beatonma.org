@@ -192,6 +192,7 @@ const SearchBar = (props: SearchBarProps & DivPropsNoChildren) => {
         value={query}
         onChange={(ev) => setQuery(ev.target.value)}
         onFocus={() => setIsActive(true)}
+        onBlur={() => setIsActive(false)}
         className={classes(
           "outline-0 border-0 ring-0 bg-transparent",
           isActive ? "w-full" : "sm:max-w-0 sm:p-0",
