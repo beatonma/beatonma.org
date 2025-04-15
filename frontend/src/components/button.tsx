@@ -21,7 +21,7 @@ type ButtonLinkProps = {
 } & ButtonContentProps &
   Omit<ComponentPropsWithRef<"a">, "onClick" | "href">;
 
-type ButtonProps = ButtonContentProps &
+export type ButtonProps = ButtonContentProps &
   (
     | ComponentPropsWithRef<"button">
     | Omit<ComponentPropsWithRef<"a">, "onClick">
@@ -87,7 +87,7 @@ const BaseButton = (props: ButtonProps & ButtonColors) => {
     ...rest
   } = addClass(
     props,
-    "relative transition-all",
+    "isolate relative transition-all",
     "inline-flex items-center justify-center",
     "hover:cursor-pointer",
     "disabled:cursor-not-allowed disabled:contrast-40",
