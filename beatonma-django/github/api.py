@@ -124,16 +124,7 @@ class GithubRecentEvents(Schema):
 def get_github_events(request: HttpRequest):
     cached_response = CachedResponse.objects.first()
 
-    print(type(cached_response.data))
-
     return cached_response.data
-    # except:
-    #     raise ValueError(f"CachedResponse {cached_response}")
-
-    # events = cached_response.data if cached_response else []
-    # return {"events": events}
-    # update_cycle = GithubEventUpdateCycle.objects.first()
-    # return build_response(update_cycle.events.all())
 
 
 def build_response(events: QuerySet[GithubUserEvent]) -> GithubRecentEvents:

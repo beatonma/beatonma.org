@@ -16,27 +16,29 @@ def create_test_data():
     _generate(published=False)
 
     CachedResponse.objects.get_or_create(
-        data=[
-            {
-                "id": "27999829329",
-                "type": "PushEvent",
-                "payload": [
-                    {
-                        "sha": "0cee90da75c45e9001f2e03a71e1ee2cc0b2e611",
-                        "url": "https://github.com/beatonma/whammy-arduino/commits/0cee90da75c45e9001f2e03a71e1ee2cc0b2e611",
-                        "message": "Minor layout tweaks. Added png render in case of differences with fonts or whatever.",
-                    }
-                ],
-                "created_at": "2023-03-27 10:58:04+00:00",
-                "repository": {
-                    "id": 483399730,
-                    "url": "https://github.com/beatonma/whammy-arduino",
-                    "name": "beatonma/whammy-arduino",
-                    "license": "gpl-3.0",
-                    "description": "An Arduino-based MIDI controller for the Digitech Whammy IV effects pedal.",
+        data={
+            "events": [
+                {
+                    "id": "27999829329",
+                    "type": "PushEvent",
+                    "payload": [
+                        {
+                            "sha": "0cee90da75c45e9001f2e03a71e1ee2cc0b2e611",
+                            "url": "https://github.com/beatonma/whammy-arduino/commits/0cee90da75c45e9001f2e03a71e1ee2cc0b2e611",
+                            "message": "Minor layout tweaks. Added png render in case of differences with fonts or whatever.",
+                        }
+                    ],
+                    "created_at": "2023-03-27 10:58:04+00:00",
+                    "repository": {
+                        "id": 483399730,
+                        "url": "https://github.com/beatonma/whammy-arduino",
+                        "name": "beatonma/whammy-arduino",
+                        "license": "gpl-3.0",
+                        "description": "An Arduino-based MIDI controller for the Digitech Whammy IV effects pedal.",
+                    },
                 },
-            },
-        ]
+            ]
+        }
     )
 
 
