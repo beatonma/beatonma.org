@@ -2,17 +2,24 @@
   display: grid;
   grid-template-areas:
     "title . toolbar"
-    "search search search";
+    "search search search"
+    "motd motd motd";
   grid-template-columns: auto 1fr auto;
 
   /* Tailwind sm */
   @media (width >= 40rem) {
-    grid-template-areas: "title . search toolbar";
+    grid-template-areas:
+      "title . search toolbar"
+      "motd motd motd motd";
     grid-template-columns: auto 1fr auto auto;
   }
 
   @media (width <= 460px) {
-    grid-template-areas: "title" "toolbar" "search";
+    grid-template-areas:
+      "title"
+      "toolbar"
+      "search"
+      "motd";
     grid-template-columns: 1fr;
   }
 }

@@ -23,7 +23,7 @@ class MotdTests(LocalTestCase):
             content="correct",
         )
 
-        self.assertEqual(MessageOfTheDay.objects.get_current().content, "correct")
+        self.assertEqual(MessageOfTheDay.objects.get_current().content_html, "correct")
 
     def test_public_from(self):
         MessageOfTheDay.objects.create(

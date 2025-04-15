@@ -4,14 +4,16 @@ import { getOrNull } from "@/api";
 import ReturnToTopButton from "@/app/(main)/_components/return-to-top";
 import GlobalSearch from "@/app/(main)/_components/search";
 import { Button } from "@/components/button";
+import Callout from "@/components/callout";
 import DangerousHtml from "@/components/html";
 import { Row } from "@/components/layout";
+import Optional from "@/components/optional";
 import ThemeController from "@/components/themed/light-dark";
 import { navigationHref } from "@/navigation";
 import { classes } from "@/util/transforms";
 import styles from "./layout.module.css";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -39,6 +41,17 @@ export default function RootLayout({
         </Row>
 
         <GlobalSearch containerClassName="[grid-area:search]" />
+
+        <Optional
+          value={globalState?.motd}
+          block={(motd) => (
+            <Callout
+              level="important"
+              className="[grid-area:motd] readable justify-self-center"
+              dangerouslySetInnerHTML={{ __html: motd }}
+            />
+          )}
+        />
       </header>
 
       {children}

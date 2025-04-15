@@ -16,7 +16,7 @@ def get_global_state(request: HttpRequest):
     hcard_html = hcard.html if hcard else None
 
     motd = MessageOfTheDay.objects.get_current()
-    motd_html = motd.html if motd else None
+    motd_html = motd.content_html if motd else None
 
     return {
         "motd": motd_html,

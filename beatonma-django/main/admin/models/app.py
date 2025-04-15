@@ -9,6 +9,20 @@ from main.models import App, AppType, Host, Link
 @admin.register(App)
 class AppAdmin(BaseAdmin):
     list_display = ["title", "app_id", "app_type", "is_published"]
+    editable_fields = [
+        "slug",
+        "icon",
+        "is_published",
+        "allow_outgoing_webmentions",
+        "color_muted",
+        "color_vibrant",
+        "format",
+        "title",
+        "app_id",
+        "tagline",
+        "status",
+        "content",
+    ]
     prepopulated_fields = {
         "slug": ("app_id",),
     }

@@ -521,6 +521,8 @@ export interface components {
         };
         /** GlobalState */
         GlobalState: {
+            /** Motd */
+            motd: string | null;
             /** Hcard */
             hcard: string | null;
         };
