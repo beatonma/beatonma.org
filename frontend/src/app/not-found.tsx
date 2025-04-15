@@ -7,7 +7,7 @@ import { client } from "@/api";
 import Loading from "@/components/loading";
 import { navigationHref } from "@/navigation";
 import { Nullish } from "@/types";
-import MainLayout from "./(main)/layout";
+import MainLayout from "./(main)/_components/main-layout";
 
 export default function NotFound() {
   const path = usePathname();
@@ -39,6 +39,10 @@ export default function NotFound() {
       <title>404 not found</title>
       <div className="readable prose mx-auto">
         <h1>404 not found</h1>
+
+        <p>
+          Path <code>{path}</code> could not be resolved.
+        </p>
 
         <p>
           If you followed a link to get here please{" "}
