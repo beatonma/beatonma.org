@@ -111,6 +111,19 @@ const SearchUI = (
   } = props;
   const queryIsValid = isQueryValid(query);
 
+  const onBlur = useCallback((ev: FocusEvent) => {
+    if (ev.currentTarget.contains(ev.relatedTarget)) {
+      // Focus moved to element within search UI
+      return;
+    }
+
+    if (ev.currentTarget.contains(document.activeElement)) {
+      return;
+    }
+
+    setIsActive(false);
+  }, []);
+
   return (
     <ScrimBackground
       isVisible={isActive}
@@ -119,6 +132,7 @@ const SearchUI = (
     >
       <div
         {...addClass(rest, "relative [--search-padding:--spacing(4)] w-full")}
+        onBlur={onBlur}
       >
         <SearchBar
           query={query}
@@ -175,24 +189,18 @@ const SearchBar = (props: SearchBarProps & DivPropsNoChildren) => {
     }
   }, [isActive]);
 
-  const onBlur = useCallback((ev: FocusEvent) => {
-    if (
-      !ev.currentTarget.contains(ev.relatedTarget) &&
-      document.activeElement === this // don't hide if blur is triggered by user defocussing the browser window.
-    ) {
-      setIsActive(false);
-    }
-  }, []);
-
   return (
-    <Row onBlur={onBlur} {...addClass(rest, "w-fit")}>
-      <Button icon="Search" onClick={() => setIsActive((prev) => !prev)} />
+    <Row {...addClass(rest, "w-fit")}>
+      <Button
+        icon="Search"
+        tabIndex={-1}
+        onClick={() => setIsActive((prev) => !prev)}
+      />
       <SearchForm
         ref={inputRef}
         value={query}
         onChange={(ev) => setQuery(ev.target.value)}
         onFocus={() => setIsActive(true)}
-        onBlur={() => setIsActive(false)}
         className={classes(
           "outline-0 border-0 ring-0 bg-transparent",
           isActive ? "w-full" : "sm:max-w-0 sm:p-0",
@@ -248,7 +256,7 @@ const Result = (props: { post: PostPreview } & Props<"a">) => {
         "grid grid-cols-[1fr_auto] hover-surface-alt hover:no-underline",
       )}
     >
-      <div className="col-start-1 space-y-1">
+      <div className="col-start-1 space-y-1 overflow-x-hidden">
         <TextContent post={post} />
         <Date className="text-sm text-current/60" date={post.published_at} />
       </div>

@@ -43,13 +43,13 @@ export default function MainLayout({
           </Link>
         </h1>
 
+        <GlobalSearch containerClassName="[grid-area:search]" />
         <Row className="[grid-area:toolbar] gap-4 justify-self-end justify-end">
           <ThemeController />
           <Button href={navigationHref("about")}>About</Button>
           <Button href={navigationHref("contact")}>Contact</Button>
         </Row>
 
-        <GlobalSearch containerClassName="[grid-area:search]" />
         <GlobalMotd
           motd={state?.motd}
           className="[grid-area:motd] readable justify-self-center"
