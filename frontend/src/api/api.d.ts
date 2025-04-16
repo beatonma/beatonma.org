@@ -243,16 +243,6 @@ export interface components {
          * @enum {string}
          */
         ImageFit: "cover" | "contain";
-        /** Link */
-        Link: {
-            /** Url */
-            url: string;
-            /** Description */
-            description?: string | null;
-            /** Host */
-            host?: string | null;
-            icon?: components["schemas"]["Url"] | null;
-        };
         /**
          * MediaType
          * @enum {string}
@@ -293,22 +283,13 @@ export interface components {
             content_html: string | null;
             /** Content Script */
             content_script: string | null;
-            /** Links */
-            links: components["schemas"]["Link"][];
             /** Files */
             files: components["schemas"]["File"][];
-            /** Tags */
-            tags: components["schemas"]["Tag"][];
             /** Is Preview */
             is_preview: boolean;
         };
         /** @enum {string} */
         PostType: "post" | "app" | "changelog";
-        /** Tag */
-        Tag: {
-            /** Name */
-            name: string;
-        };
         /** Theme */
         Theme: {
             /** Muted */
@@ -334,6 +315,14 @@ export interface components {
          * @enum {string}
          */
         IncomingMentionType: "u-bookmark-of" | "u-like-of" | "u-listen-of" | "u-in-reply-to" | "u-repost-of" | "u-translation-of" | "u-watch-of";
+        /** Link */
+        Link: {
+            /** Url */
+            url: string;
+            /** Description */
+            description?: string | null;
+            icon?: components["schemas"]["Url"] | null;
+        };
         /** Mention */
         Mention: {
             /** Source Url */
@@ -350,8 +339,12 @@ export interface components {
         };
         /** PostDetail */
         PostDetail: {
-            /** @default post */
-            post_type: components["schemas"]["PostType"];
+            /**
+             * Post Type
+             * @default post
+             * @constant
+             */
+            post_type: "post";
             /** Title */
             title: string | null;
             /** Url */
@@ -371,23 +364,32 @@ export interface components {
             content_html: string | null;
             /** Content Script */
             content_script: string | null;
-            /** Links */
-            links: components["schemas"]["Link"][];
             /** Files */
             files: components["schemas"]["File"][];
-            /** Tags */
-            tags: components["schemas"]["Tag"][];
             /** Subtitle */
             subtitle?: string | null;
             /** Hero Html */
             hero_html: string | null;
+            /** Links */
+            links: components["schemas"]["Link"][];
+            /** Tags */
+            tags: components["schemas"]["Tag"][];
             /** Mentions */
             mentions: components["schemas"]["Mention"][];
         };
+        /** Tag */
+        Tag: {
+            /** Name */
+            name: string;
+        };
         /** AppDetail */
         AppDetail: {
-            /** @default app */
-            post_type: components["schemas"]["PostType"];
+            /**
+             * Post Type
+             * @default app
+             * @constant
+             */
+            post_type: "app";
             /** Title */
             title: string | null;
             /** Url */
@@ -407,16 +409,16 @@ export interface components {
             content_html: string | null;
             /** Content Script */
             content_script: string | null;
-            /** Links */
-            links: components["schemas"]["Link"][];
             /** Files */
             files: components["schemas"]["File"][];
-            /** Tags */
-            tags: components["schemas"]["Tag"][];
             /** Subtitle */
             subtitle?: string | null;
             /** Hero Html */
             hero_html: string | null;
+            /** Links */
+            links: components["schemas"]["Link"][];
+            /** Tags */
+            tags: components["schemas"]["Tag"][];
             /** Mentions */
             mentions: components["schemas"]["Mention"][];
             /** Changelog */
@@ -431,7 +433,12 @@ export interface components {
         };
         /** AppPreview */
         AppPreview: {
-            post_type: components["schemas"]["PostType"];
+            /**
+             * Post Type
+             * @default app
+             * @constant
+             */
+            post_type: "app";
             /** Title */
             title: string | null;
             /** Url */
@@ -451,20 +458,20 @@ export interface components {
             content_html: string | null;
             /** Content Script */
             content_script: string | null;
-            /** Links */
-            links: components["schemas"]["Link"][];
             /** Files */
             files: components["schemas"]["File"][];
-            /** Tags */
-            tags: components["schemas"]["Tag"][];
             /** Is Preview */
             is_preview: boolean;
             icon?: components["schemas"]["File"] | null;
         };
         /** ChangelogDetail */
         ChangelogDetail: {
-            /** @default changelog */
-            post_type: components["schemas"]["PostType"];
+            /**
+             * Post Type
+             * @default changelog
+             * @constant
+             */
+            post_type: "changelog";
             /** Title */
             title: string | null;
             /** Url */
@@ -484,16 +491,16 @@ export interface components {
             content_html: string | null;
             /** Content Script */
             content_script: string | null;
-            /** Links */
-            links: components["schemas"]["Link"][];
             /** Files */
             files: components["schemas"]["File"][];
-            /** Tags */
-            tags: components["schemas"]["Tag"][];
             /** Subtitle */
             subtitle?: string | null;
             /** Hero Html */
             hero_html: string | null;
+            /** Links */
+            links: components["schemas"]["Link"][];
+            /** Tags */
+            tags: components["schemas"]["Tag"][];
             /** Mentions */
             mentions: components["schemas"]["Mention"][];
             app: components["schemas"]["AppPreview"];

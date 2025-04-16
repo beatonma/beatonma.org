@@ -6,6 +6,7 @@ from django.contrib.sites.models import Site
 from django.core.files.base import ContentFile
 from django.core.management import BaseCommand
 from django.db import models, transaction
+from django.utils.text import slugify
 from main.models import (
     About,
     App,
@@ -156,6 +157,7 @@ def migrate_apps():
                 created_at=app.created_at,
                 modified_at=app.modified_at,
                 old_slug=app.slug,
+                slug=slugify(f"app-{app.app_id}"),
                 api_id=app.api_id,
                 content=app.content,
                 content_html=app.content_html,

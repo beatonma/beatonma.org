@@ -1,4 +1,4 @@
-from typing import Self
+from typing import Self, Type
 
 from django.db import models
 from django.utils import timezone
@@ -26,6 +26,20 @@ class BaseModel(models.Model):
     @classmethod
     def qualified_name(cls):
         return f"{cls._meta.app_label}.{cls.__name__}"
+
+    @classmethod
+    def subclasses(cls) -> list[Type[Self]]:
+        from django.apps import apps
+
+        return [m for m in apps.get_models() if issubclass(m, cls)]
+
+    @classmethod
+    def fields(cls) -> list[str]:
+        return [field.name for field in cls._meta.get_fields()]
+
+    @classmethod
+    def local_fields(cls) -> list[str]:
+        return [field.name for field in cls._meta.get_fields() if not field.is_relation]
 
     class Meta:
         abstract = True

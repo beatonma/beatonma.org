@@ -11,10 +11,10 @@ from main.models.mixins.media_upload import UploadedMediaMixin
 from main.models.posts.formats import linkify_github_issues
 from main.storage import OverwriteStorage
 
-from .post import BasePost
+from .post import Post
 
 
-class AppPost(BasePost):
+class AppPost(Post):
     codename = models.CharField(max_length=255, unique=True)
     repository = models.OneToOneField(
         "github.GithubRepository",
@@ -79,7 +79,7 @@ class AppPost(BasePost):
         return f"App: {self.title or self.content[:64] or self.slug}"
 
 
-class ChangelogPost(BasePost):
+class ChangelogPost(Post):
     is_publishable_dependencies = ("app",)
     app = models.ForeignKey(
         AppPost,
@@ -88,8 +88,13 @@ class ChangelogPost(BasePost):
     )
     version = models.CharField(max_length=32)
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.title = f"{self.app.title}: {self.version}"
+        super().save(*args, **kwargs)
+
     def build_slug(self):
-        return slugify(f"{self.app.codename}-{self.version}".replace(".", "-"))
+        return slugify(f"{self.app.codename}_{self.version}".replace(".", "-"))
 
     def extra_markdown_processors(self):
         extra = []

@@ -1,12 +1,13 @@
 import time
 from enum import Enum
 from functools import partial, wraps
-from typing import Any, List
+from typing import Any, List, Self
 
 from django import db
 from django.http import HttpResponse
 
 FLOAT_PRECISION_DEFAULT = 2
+INDENT = 0
 
 
 def dump(
@@ -79,7 +80,7 @@ class TimerScale(Enum):
     Millisecond = 1000000
 
 
-def timer(func=None, scale: TimerScale = TimerScale.Microsecond):
+def timer(func=None, scale: TimerScale = TimerScale.Millisecond):
     if func is None:
         return partial(
             timer,
@@ -88,24 +89,97 @@ def timer(func=None, scale: TimerScale = TimerScale.Microsecond):
 
     @wraps(func)
     def wrapped_func(*args, **kwargs):
+        global INDENT
+        INDENT += 2
         start = time.monotonic_ns()
         result = func(*args, **kwargs)
         end = time.monotonic_ns()
 
-        duration_nanoseconds = end - start
-        if scale == TimerScale.Nanosecond:
-            scaled_duration = duration_nanoseconds
-        else:
-            scaled_duration = duration_nanoseconds / scale.value
-
         print(
-            f"{_function_as_string(func, *args, **kwargs)} took "
-            f"{_to_string(scaled_duration)} {scale.name.lower()}s."
+            f"{INDENT * ' '}{_function_as_string(func, *args, **kwargs)} took "
+            f"{_format_duration(end - start, scale)}."
         )
+        INDENT -= 2
 
         return result
 
     return wrapped_func
+
+
+class Timer:
+    label: str
+    scale: TimerScale
+    print_result: bool
+
+    duration: int
+    timers: dict[str, list[Self]]
+
+    # Track timing of internal operations to subtract from measured duration
+    overhead: int
+
+    def __init__(
+        self,
+        label: str = "Timer",
+        scale: TimerScale = TimerScale.Millisecond,
+        print_result: bool = True,
+    ):
+        self.label = label
+        self.scale = scale
+        self.print_result = print_result
+        self.duration = None
+        self.timers = {}
+        self.overhead = 0
+
+    def __enter__(self):
+        global INDENT
+        INDENT += 2
+        self.start = time.monotonic_ns()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.end = time.monotonic_ns()
+        self.duration = self.end - self.start - self.overhead
+
+        global INDENT
+        if self.print_result:
+            print(f"{INDENT * ' '}{self}")
+        INDENT -= 2
+
+    def sub(self, label: str = "sub"):
+        overhead_start = time.monotonic_ns()
+        timer = Timer(label=label, print_result=False)
+
+        timers = self.timers.get(label) or []
+        timers.append(timer)
+        self.timers[label] = timers
+
+        self.overhead += time.monotonic_ns() - overhead_start
+        return timer
+
+    def __str__(self):
+        return f"{self.label}: {_format_duration(self.duration, self.scale)}"
+
+    def report(self) -> str:
+        reports = [self.__str__()]
+
+        for label, timers in self.timers.items():
+            count = len(timers)
+            mean_duration = sum([x.duration for x in timers]) / count
+            reports.append(
+                f"  [{label}] (n={count}) x̄={_format_duration(mean_duration, self.scale, show_units=False)}"
+            )
+
+        return "\n".join(reports)
+
+
+def _format_duration(
+    duration_nanoseconds, scale: TimerScale, show_units: bool = True
+) -> str:
+    scaled_duration = duration_nanoseconds / scale.value
+
+    formatted = f"{scaled_duration:.{FLOAT_PRECISION_DEFAULT}f}"
+    if show_units:
+        formatted += f" {scale.name.lower()}s"
+    return formatted
 
 
 def _function_as_string(

@@ -1,5 +1,6 @@
 import re
 import uuid
+from typing import Literal
 
 from common.models import BaseModel, PublishedMixin, TaggableMixin
 from common.models.api import ApiEditable
@@ -15,6 +16,8 @@ from main.models.mixins import ThemeableMixin
 from main.models.posts.formats import FormatMixin, Formats
 from main.models.related_file import RelatedFilesMixin
 from mentions.models.mixins import MentionableMixin
+
+type PostType = Literal["post", "app", "changelog"]
 
 
 class PostQuerySet(PublishedQuerySet):

@@ -82,7 +82,7 @@ site_functions_urlpatterns = [
 urlpatterns = (
     api_urlpatterns
     + frontend_urlpatterns
-    # + app_urlpatterns
-    # + article_urlpatterns
-    # + site_functions_urlpatterns
+    + app_urlpatterns
+    + article_urlpatterns
+    + site_functions_urlpatterns
 )

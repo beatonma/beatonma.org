@@ -1,40 +1,39 @@
 import logging
-from itertools import chain
-from typing import Type
 
-from main.models import AppPost, ChangelogPost, Post
+from django.db.models import Case, CharField, QuerySet, Value, When
+from main.models import Post
 from main.models.rewrite.post import BasePost
 
 log = logging.getLogger(__name__)
 
 
 type FeedItem = BasePost
-feed_models: list[Type[FeedItem]] = [
-    Post,
-    AppPost,
-    ChangelogPost,
-]
 
 
 def get_feed(
-    query: str | None = None, tag: str | None = None, **kwargs
-) -> list[FeedItem]:
-    def build_qs(model_class: Type[FeedItem]):
-        qs = model_class.objects.published()
+    *,
+    query: str | None = None,
+    tag: str | None = None,
+    **kwargs,
+) -> QuerySet[FeedItem]:
+    qs = Post.objects.published().filter(**kwargs)
 
-        if tag:
-            qs = qs.filter(tags__name=tag)
-        if query:
-            qs = qs.search(query)
-        return (
-            qs.filter(**kwargs)
-            .prefetch_related("related_files")
-            .order_by("-published_at")
+    if query:
+        qs = qs.search(query)
+    if tag:
+        qs = qs.filter(tags__name=tag)
+
+    qs = (
+        qs.annotate(
+            post_type=Case(
+                When(apppost__id__isnull=False, then=Value("app")),
+                When(changelogpost__id__isnull=False, then=Value("changelog")),
+                default=Value("post"),
+                output_field=CharField(),
+            )
         )
+        .prefetch_related("related_files")
+        .select_related("apppost", "changelogpost")
+    ).distinct()
 
-    feed = list(chain(*(build_qs(x) for x in feed_models)))
-    return sorted(feed, key=_sort_queryset, reverse=True)
-
-
-def _sort_queryset(instance: FeedItem):
-    return instance.published_at
+    return qs.order_by("-published_at")

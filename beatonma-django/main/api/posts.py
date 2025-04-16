@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from main.models import AppPost, ChangelogPost, Post
 from main.models.mixins import ThemeableMixin
 from main.models.related_file import BaseUploadedFile, MediaType
+from main.models.rewrite.post import PostType
 from ninja import Field, Router, Schema
 from ninja.pagination import paginate
 
@@ -37,7 +38,6 @@ class File(Schema):
 class Link(Schema):
     url: str
     description: str | None = None
-    host: str | None = Field(alias="host.name", default=None)
     icon: Url | None = Field(alias="host.icon_file", default=None)
 
 
@@ -45,13 +45,10 @@ class Tag(Schema):
     name: str
 
 
-type PostType = Literal["post", "app", "changelog"]
-
-
 class BasePost(Schema):
     post_type: PostType
     title: str | None
-    url: str = Field(alias="get_absolute_url")
+    url: str
     is_published: bool
     published_at: datetime
     theme: Theme | None = None
@@ -59,9 +56,7 @@ class BasePost(Schema):
     hero_image: File | None
     content_html: str | None
     content_script: str | None
-    links: list[Link]
     files: list[File]
-    tags: list[Tag]
 
     @staticmethod
     def resolve_theme(obj: ThemeableMixin):
@@ -70,6 +65,14 @@ class BasePost(Schema):
                 "muted": obj.color_muted,
                 "vibrant": obj.color_vibrant,
             }
+
+    @staticmethod
+    def resolve_url(obj):
+        if obj.post_type == "app":
+            return obj.apppost.get_absolute_url()
+        if obj.post_type == "changelog":
+            return obj.changelogpost.get_absolute_url()
+        return obj.get_absolute_url()
 
     @staticmethod
     def resolve_files(obj):
@@ -89,30 +92,39 @@ class PostPreview(BasePost):
 
 
 class AppPreview(PostPreview):
+    post_type: Literal["app"] = Field("app")
     icon: File | None = None
+
+    @staticmethod
+    def resolve_url(obj):
+        return obj.apppost.get_absolute_url()
 
 
 class PostDetail(BasePost):
-    post_type: PostType = "post"
+    post_type: Literal["post"] = Field("post")
     subtitle: str | None = None
     hero_html: str | None
+    links: list[Link]
+    tags: list[Tag]
     mentions: list[Mention] = Field(alias="get_mentions")
+
+    @staticmethod
+    def resolve_url(obj):
+        return obj.get_absolute_url()
 
 
 class ChangelogDetail(PostDetail):
-    post_type: PostType = "changelog"
+    post_type: Literal["changelog"] = Field("changelog")
     app: AppPreview
     version: str
 
     @staticmethod
-    def resolve_app(obj):
-        _app = obj.app
-        _app.post_type = "app"
-        return _app
+    def resolve_url(obj):
+        return obj.changelogpost.get_absolute_url()
 
 
 class AppDetail(PostDetail):
-    post_type: PostType = "app"
+    post_type: Literal["app"] = Field("app")
     hero_html: str | None
     changelog: list[ChangelogDetail] = Field(alias="changelogs")
     icon: File | None
@@ -120,19 +132,15 @@ class AppDetail(PostDetail):
     script_html: str | None
     is_widget: bool = Field(alias="script_is_widget")
 
+    @staticmethod
+    def resolve_url(obj):
+        return obj.apppost.get_absolute_url()
+
 
 @router.get("/posts/", response=list[PostPreview])
 @paginate
 def post_feed(request: HttpRequest, query: str = None, tag: str = None):
     feed = get_feed(query=query, tag=tag)
-    for item in feed:
-        if isinstance(item, AppPost):
-            item.post_type = "app"
-        elif isinstance(item, ChangelogPost):
-            item.post_type = "changelog"
-            item.title = f"{item.app.title} {item.title}"
-        else:
-            item.post_type = "post"
 
     return feed
 
