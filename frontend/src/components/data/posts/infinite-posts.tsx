@@ -7,6 +7,7 @@ import Callout from "@/components/callout";
 import { PostPreview } from "@/components/data/types";
 import { GridSpan } from "@/components/grid";
 import { Client } from "@/components/hooks/environment";
+import Icon from "@/components/icon";
 import { Row } from "@/components/layout";
 import Loading from "@/components/loading";
 import usePagination, { Paginated } from "@/components/paginated";
@@ -35,7 +36,11 @@ export default function InfinitePosts(props: InfinitePostsProps) {
 
       <LoadNext
         pagination={paged}
-        endOfContent={<div className="text-lg">-</div>}
+        endOfContent={
+          <div className="text-lg">
+            <Icon icon="MB" />
+          </div>
+        }
       >
         <NoscriptPageControls paged={paged} className="w-full" />
 

@@ -44,9 +44,7 @@ export const SamplePosts: PostPreview[] = [
     hero_image: null,
     content_html: "Typography check",
     content_script: "",
-    links: [],
     files: [],
-    tags: [],
     is_preview: true,
   },
   {
@@ -64,9 +62,7 @@ export const SamplePosts: PostPreview[] = [
     content_html:
       "<p>Hosting for this site is now provided by a European company instead of Amazon.</p>\n\n<p>It&#8217;s an extremely minor thing, but it is a thing nonetheless. 🇺🇦🇪🇺🇬🇧</p>\n",
     content_script: "",
-    links: [],
     files: [],
-    tags: [],
     is_preview: false,
   },
   {
@@ -81,7 +77,6 @@ export const SamplePosts: PostPreview[] = [
     content_html:
       '<p>A year of incrementally learning Polyphia tunes: <a href="https://www.youtube.com/watch?v=Z5WudJ53zGs" >youtube</a></p>\n',
     content_script: null,
-    links: [],
     files: [
       {
         url: "/media/related/2025/68490e.jpg",
@@ -92,7 +87,6 @@ export const SamplePosts: PostPreview[] = [
         fit: null,
       },
     ],
-    tags: [],
     is_preview: false,
   },
   {
@@ -106,9 +100,7 @@ export const SamplePosts: PostPreview[] = [
     hero_image: null,
     content_html: "<p>🤢</p>\n",
     content_script: null,
-    links: [],
     files: [],
-    tags: [],
     is_preview: false,
   },
   {
@@ -122,7 +114,6 @@ export const SamplePosts: PostPreview[] = [
     hero_image: null,
     content_html: "<p>Jigsaw pumpkin 🎃</p>\n",
     content_script: null,
-    links: [],
     files: [
       {
         url: "/media/related/2025/e0f6f8.jpeg",
@@ -141,20 +132,6 @@ export const SamplePosts: PostPreview[] = [
         fit: null,
       },
     ],
-    tags: [
-      {
-        name: "halloween",
-      },
-      {
-        name: "jigsaw",
-      },
-      {
-        name: "pumpkin",
-      },
-      {
-        name: "art",
-      },
-    ],
     is_preview: false,
   },
   {
@@ -168,9 +145,7 @@ export const SamplePosts: PostPreview[] = [
     hero_image: null,
     content_html: "<p></p>\n",
     content_script: null,
-    links: [],
     files: [],
-    tags: [],
     is_preview: false,
   },
   {
@@ -185,9 +160,7 @@ export const SamplePosts: PostPreview[] = [
     content_html:
       "Many more microformat tags supported, now available for Firefox + Chrome.",
     content_script: null,
-    links: [],
     files: [],
-    tags: [],
     is_preview: true,
   },
   {
@@ -201,7 +174,6 @@ export const SamplePosts: PostPreview[] = [
     hero_image: null,
     content_html: "<p>The continuing saga of Holiday Cat</p>\n",
     content_script: null,
-    links: [],
     files: [
       {
         url: "/media/related/2025/8a36f4.jpg",
@@ -212,7 +184,6 @@ export const SamplePosts: PostPreview[] = [
         fit: null,
       },
     ],
-    tags: [],
     is_preview: false,
   },
   {
@@ -226,9 +197,7 @@ export const SamplePosts: PostPreview[] = [
     hero_image: null,
     content_html: "<p></p>\n",
     content_script: null,
-    links: [],
     files: [],
-    tags: [],
     is_preview: false,
   },
   {
@@ -242,9 +211,7 @@ export const SamplePosts: PostPreview[] = [
     hero_image: null,
     content_html: "Simple viewer for a colour palette.",
     content_script: null,
-    links: [],
     files: [],
-    tags: [],
     is_preview: true,
   },
   {
@@ -258,9 +225,7 @@ export const SamplePosts: PostPreview[] = [
     hero_image: null,
     content_html: "<p></p>\n",
     content_script: null,
-    links: [],
     files: [],
-    tags: [],
     is_preview: false,
   },
   {
@@ -275,9 +240,7 @@ export const SamplePosts: PostPreview[] = [
     content_html:
       "Added Webmention.has_been_read field and new settings for enabling webmentions depending on source/target domain.",
     content_script: null,
-    links: [],
     files: [],
-    tags: [],
     is_preview: true,
   },
   {
@@ -291,9 +254,7 @@ export const SamplePosts: PostPreview[] = [
     hero_image: null,
     content_html: "Resolves #53: Compatibility with dependency mf2py>=2.0.",
     content_script: null,
-    links: [],
     files: [],
-    tags: [],
     is_preview: true,
   },
   {
@@ -307,7 +268,6 @@ export const SamplePosts: PostPreview[] = [
     hero_image: null,
     content_html: "<p>Holiday cat, I guess</p>\n",
     content_script: null,
-    links: [],
     files: [
       {
         url: "/media/related/2025/16f8f6.jpg",
@@ -318,7 +278,6 @@ export const SamplePosts: PostPreview[] = [
         fit: null,
       },
     ],
-    tags: [],
     is_preview: false,
   },
   {
@@ -333,7 +292,6 @@ export const SamplePosts: PostPreview[] = [
     content_html:
       '<p>3D printed cat with a hat made from old jeans.</p>\n\n<p>Model by Toonz Factory: <a href="https://www.thingiverse.com/thing:6236328" >thingiverse/6236328</a></p>\n',
     content_script: null,
-    links: [],
     files: [
       {
         url: "/media/related/2025/fe7cae.jpg",
@@ -342,11 +300,6 @@ export const SamplePosts: PostPreview[] = [
         name: "jpeg",
         description: "",
         fit: null,
-      },
-    ],
-    tags: [
-      {
-        name: "halloween",
       },
     ],
     is_preview: false,
@@ -365,35 +318,7 @@ export const SamplePosts: PostPreview[] = [
     hero_image: null,
     content_html: "This website",
     content_script: null,
-    links: [
-      {
-        url: "https://github.com/beatonma/beatonma.org",
-        description: "source",
-        host: "Github",
-        icon: null,
-      },
-    ],
     files: [],
-    tags: [
-      {
-        name: "django",
-      },
-      {
-        name: "sass",
-      },
-      {
-        name: "docker",
-      },
-      {
-        name: "gulp",
-      },
-      {
-        name: "typescript",
-      },
-      {
-        name: "blog",
-      },
-    ],
     is_preview: true,
   },
   {
@@ -408,9 +333,7 @@ export const SamplePosts: PostPreview[] = [
     content_html:
       "Resolves #50: broken search field on QuotableAdmin.\nAdded tests for admin pages to avoid that sort of thing happening again.\nMinor touch-ups for the admin pages.\nSource and target URL fields are now read-only.\nAdded appropriate search fields and list…",
     content_script: null,
-    links: [],
     files: [],
-    tags: [],
     is_preview: true,
   },
   {
@@ -425,9 +348,7 @@ export const SamplePosts: PostPreview[] = [
     content_html:
       "Added management command mentions_reverify [filters ...] [--all]\nAllows you to reprocess received Webmentions to see if they are still ‘live’.\nAccepts a space-separated list of field=value queryset filters, or --all to reprocess all of them.\nAdded ma…",
     content_script: null,
-    links: [],
     files: [],
-    tags: [],
     is_preview: true,
   },
   {
@@ -442,9 +363,7 @@ export const SamplePosts: PostPreview[] = [
     content_html:
       "This update alters fields on MentionableMixin so you will need to run makemigrations and migrate after upgrading!\r\nMentionableMixin:\r\nallow_outgoing_webmentions default now configurable via settings.WEBMENTIONS_ALLOW_OUTGOING_DEFAULT.\r\nRemoved slug fiel…",
     content_script: null,
-    links: [],
     files: [],
-    tags: [],
     is_preview: true,
   },
   {
@@ -459,9 +378,7 @@ export const SamplePosts: PostPreview[] = [
     content_html:
       "Fixes #43: outgoing webmention being resubmitted continuously.",
     content_script: null,
-    links: [],
     files: [],
-    tags: [],
     is_preview: true,
   },
   {
@@ -476,9 +393,7 @@ export const SamplePosts: PostPreview[] = [
     content_html:
       "Resolves #38: Revalidate target URLs when handling pending mentions\r\nShould be unnecessary generally (they are also validated at discovery time when parsed from HTML) but important if validation checks are updated.\r\nResolves #41: Find correct endpoint …",
     content_script: null,
-    links: [],
     files: [],
-    tags: [],
     is_preview: true,
   },
   {
@@ -493,13 +408,7 @@ export const SamplePosts: PostPreview[] = [
     content_html:
       "Upgrade warning\nIf upgrading from an older version please be aware of these changes:\nUnused MentionableMixin.allow_incoming_webmentions field has been removed.\nAny existing instances of PendingIncomingWebmention and PendingOutgoingContent will be del…",
     content_script: null,
-    links: [],
     files: [],
-    tags: [
-      {
-        name: "anchor",
-      },
-    ],
     is_preview: true,
   },
   {
@@ -513,9 +422,7 @@ export const SamplePosts: PostPreview[] = [
     hero_image: null,
     content_html: "Fitter. Happier. More productive.",
     content_script: null,
-    links: [],
     files: [],
-    tags: [],
     is_preview: true,
   },
   {
@@ -530,9 +437,7 @@ export const SamplePosts: PostPreview[] = [
     content_html:
       "Simulation of a 4PDT switch for moving a subcircuit between two parent circuits.",
     content_script: null,
-    links: [],
     files: [],
-    tags: [],
     is_preview: true,
   },
 ];
