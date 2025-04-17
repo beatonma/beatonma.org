@@ -8,19 +8,19 @@ class MotdTests(LocalTestCase):
         MessageOfTheDay.objects.create(
             created_at=tzdatetime(2023, 3, 15, 12, 0),
             is_published=False,
-            content="not displayed",
+            content_html="not displayed",
         )
 
         MessageOfTheDay.objects.create(
             created_at=tzdatetime(2023, 3, 15, 12, 15),
             is_published=True,
-            content="displayed but superseded",
+            content_html="displayed but superseded",
         )
 
         MessageOfTheDay.objects.create(
             created_at=tzdatetime(2023, 3, 15, 12, 20),
             is_published=True,
-            content="correct",
+            content_html="correct",
         )
 
         self.assertEqual(MessageOfTheDay.objects.get_current().content_html, "correct")
@@ -28,7 +28,7 @@ class MotdTests(LocalTestCase):
     def test_public_from(self):
         MessageOfTheDay.objects.create(
             created_at=tzdatetime(2023, 3, 15, 12, 20),
-            content="correct",
+            content_html="correct",
             is_published=True,
             public_from=tzdatetime(2023, 3, 15, 12, 30),
         )
@@ -43,7 +43,7 @@ class MotdTests(LocalTestCase):
     def test_public_until(self):
         MessageOfTheDay.objects.create(
             created_at=tzdatetime(2023, 3, 15, 12, 20),
-            content="correct",
+            content_html="correct",
             is_published=True,
             public_until=tzdatetime(2023, 3, 15, 12, 30),
         )
@@ -58,7 +58,7 @@ class MotdTests(LocalTestCase):
     def test_public_from_until(self):
         MessageOfTheDay.objects.create(
             created_at=tzdatetime(2023, 3, 15, 12, 20),
-            content="correct",
+            content_html="correct",
             is_published=True,
             public_from=tzdatetime(2023, 3, 15, 12, 25),
             public_until=tzdatetime(2023, 3, 15, 12, 30),
