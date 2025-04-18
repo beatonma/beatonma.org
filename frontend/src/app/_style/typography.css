@@ -10,6 +10,15 @@
 * used in a 'standalone' way by just using the global classname on an element.
 */
 
+:root {
+  --prose-list-indent: 0.8125em;
+
+  /* Tailwind md */
+  @media (width >= 48rem) {
+    --prose-list-indent: 1.625em;
+  }
+}
+
 @layer components {
   .prose {
     @apply text-fg;
@@ -195,7 +204,7 @@
   .prose ol {
     list-style-type: decimal;
     margin-block: 1.25em;
-    padding-inline-start: 1.625em;
+    padding-inline-start: var(--prose-list-indent);
 
     > li {
       padding-inline-start: 0.375em;
@@ -211,7 +220,7 @@
   .prose ul {
     list-style-type: square;
     margin-block: 1.25em;
-    padding-inline-start: 1.625em;
+    padding-inline-start: var(--prose-list-indent);
 
     > li {
       padding-inline-start: 0.375em;
@@ -264,7 +273,7 @@
   .prose-dd,
   .prose dd {
     margin-top: 0.5em;
-    padding-inline-start: 1.625em;
+    padding-inline-start: var(--prose-list-indent);
   }
 
   .prose-a,
