@@ -427,14 +427,11 @@
     margin-top: 0;
   }
 
-  .prose *:first-child,
-  .prose *:first-child > *:first-child {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-  }
-
-  .prose section:last-child > *:last-child {
-    margin-bottom: 0;
-    padding-bottom: 0;
+  .prose > *:first-child,
+  .prose > *:first-child > *:first-child {
+    &:not([class^="template-"]) {
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+    }
   }
 }
