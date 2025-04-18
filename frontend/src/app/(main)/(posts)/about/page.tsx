@@ -1,15 +1,8 @@
 import PostPage from "../_components/post";
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { client } from "@/api";
+import { getOr404 } from "@/api";
 
-const get = async () => {
-  const response = await client.GET("/api/about/");
-  const data = response.data;
-
-  if (!data) return notFound();
-  return data;
-};
+const get = async () => getOr404("/api/about/");
 
 export default async function Page() {
   const app = await get();

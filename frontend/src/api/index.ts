@@ -120,18 +120,6 @@ const get = async <P extends PathWithGet>(
     },
   );
 
-export const getOr404 = async <P extends PathWithGet>(
-  path: P,
-  params?: Params<P>,
-  signal?: AbortSignal,
-) => {
-  const response = await get(path, params, signal);
-  const data = response.data;
-
-  if (!data) return notFound();
-  return data;
-};
-
 export const getOrNull = async <P extends PathWithGet>(
   path: P,
   params?: Params<P>,
@@ -141,6 +129,29 @@ export const getOrNull = async <P extends PathWithGet>(
   const data = response.data;
 
   return data ?? null;
+};
+
+export const getOr404 = async <P extends PathWithGet>(
+  path: P,
+  params?: Params<P>,
+  signal?: AbortSignal,
+) => {
+  const data = await getOrNull(path, params, signal);
+
+  if (!data) return notFound();
+  return data;
+};
+
+export const getOrThrow = async <P extends PathWithGet>(
+  path: P,
+  params?: Params<P>,
+  signal?: AbortSignal,
+) => {
+  const response = await get(path, params, signal);
+  const { data, error } = response;
+
+  if (!data) throw new Error(`Failed to load data from ${path}: ${error}`);
+  return data;
 };
 
 export const getSlug = async <P extends PathWithSlug>(

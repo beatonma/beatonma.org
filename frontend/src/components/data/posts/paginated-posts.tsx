@@ -1,4 +1,4 @@
-import { Query, client } from "@/api";
+import { Query, getOrThrow } from "@/api";
 import Optional from "@/components/optional";
 import { DivPropsNoChildren } from "@/types/react";
 import { onlyIf } from "@/util/optional";
@@ -12,14 +12,9 @@ export default async function PaginatedPosts(
 ) {
   const { query, ...rest } = props;
 
-  // Load first page on server side
-  const initial = await client.GET("/api/posts/", {
-    params: {
-      query: query,
-    },
+  const data = await getOrThrow("/api/posts/", {
+    query,
   });
-  const data = initial.data;
-  if (!data) throw initial.error;
 
   const title =
     onlyIf(query?.query, (q) => `'${q}'`) ??
