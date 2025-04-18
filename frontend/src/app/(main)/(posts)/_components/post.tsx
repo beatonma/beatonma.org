@@ -5,6 +5,7 @@ import Post from "@/components/data/posts/post";
 import {
   AppDetail,
   AppPreview,
+  ChangelogDetail,
   PostDetail,
   isApp,
   isChangelog,
@@ -28,7 +29,7 @@ import styles from "./post.module.css";
 const Insets = "px-edge xl:px-0";
 
 interface PostProps {
-  post: PostDetail;
+  post: PostDetail | AppDetail | ChangelogDetail;
 }
 interface AppProps {
   app: AppDetail;
@@ -106,13 +107,7 @@ const PostTitle = (props: PostProps & DivPropsNoChildren) => {
     <div {...addClass(rest, "space-y-0.5")}>
       <Optional
         value={post.title}
-        block={(title) => (
-          <h1 className="p-name">
-            {_isChangelog
-              ? `${post.app.title}: ${title || post.version}`
-              : title}
-          </h1>
-        )}
+        block={(title) => <h1 className="p-name">{title}</h1>}
       />
       <Optional
         value={post.subtitle}
