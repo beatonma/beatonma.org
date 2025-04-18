@@ -27,7 +27,7 @@
   --vibrant-on-muted-light: var(--color-green-300);
   --muted-on-muted-light: var(--color-slate-800);
 
-  --input-light: var(--color-stone-300);
+  --input-light: var(--color-stone-50);
   --on-input-light: var(--color-stone-950);
   --vibrant-on-input-light: var(--vibrant-light);
   --muted-on-input-light: var(--muted-light);
