@@ -162,6 +162,7 @@ const AppLink = (
     <Link
       href={liveInstance ? `${app.url}/live` : app.url}
       style={itemTheme(app)}
+      target="_blank"
       {...rest}
     >
       <OptionalRemoteIcon

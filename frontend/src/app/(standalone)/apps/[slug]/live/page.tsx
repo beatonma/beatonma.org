@@ -19,8 +19,12 @@ export default async function Page({ params }: { params: Promise<Params> }) {
 
   return (
     <>
+      <noscript>
+        This page is supposed to show a webapp but you do not have javascript
+        enabled.
+      </noscript>
       <DangerousHtml html={app.script_html} />
-      <Script src={app.script} />
+      <Script src={app.script} defer async />
     </>
   );
 }

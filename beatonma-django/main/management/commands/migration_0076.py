@@ -1,5 +1,6 @@
 import os.path
 
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.redirects.models import Redirect
 from django.contrib.sites.models import Site
@@ -189,7 +190,7 @@ def migrate_webapps():
             post = AppPost.objects.create(
                 created_at=app.created_at,
                 modified_at=app.modified_at,
-                is_published=True,
+                is_published=False,
                 published_at=app.created_at,
                 old_slug=f"webapp-{app.slug}",
                 slug=f"webapp-{app.slug}",
@@ -206,8 +207,19 @@ def migrate_webapps():
             post.script = script
             post.save(update_fields=["script"])
 
+            if not app.resources.all().exists():
+                continue
+
+            resource_paths = [
+                x for x in app.resources.all().values_list("file", flat=True)
+            ]
+            base_path = os.path.commonpath(resource_paths)
+
             for res in app.resources.all():
-                if cloned := clone_file(res.file):
+                if cloned := clone_file(
+                    res.file,
+                    base_path=os.path.join(settings.MEDIA_ROOT, base_path),
+                ):
                     AppResource.objects.create(app=post, file=cloned)
 
 
@@ -248,13 +260,19 @@ def clone_related_files(source, target):
         )
 
 
-def clone_file(file: models.FileField | None) -> ContentFile | None:
+def clone_file(
+    file: models.FileField | None, base_path: str = None
+) -> ContentFile | None:
     try:
         source = file.path
     except ValueError:
         return None
 
-    name = os.path.basename(source)
+    if base_path:
+        name = os.path.relpath(source, base_path)
+    else:
+        name = os.path.basename(source)
+
     try:
         with file.storage.open(source, "rb") as f:
             data = f.read()
