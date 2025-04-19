@@ -1,6 +1,7 @@
-import { ComponentPropsWithoutRef } from "react";
+import Link from "next/link";
+import { PropsExcept } from "@/types/react";
 import { onlyIf } from "@/util/optional";
-import { joinNonEmpty } from "@/util/transforms";
+import { formatUrl, joinNonEmpty } from "@/util/transforms";
 
 interface ExternalLinkProps {
   follow?: boolean;
@@ -8,9 +9,12 @@ interface ExternalLinkProps {
   referrer?: boolean;
 }
 export default function ExternalLink(
-  props: ExternalLinkProps & ComponentPropsWithoutRef<"a">,
+  props: ExternalLinkProps &
+    PropsExcept<typeof Link, "href"> & { href: string },
 ) {
   const {
+    href,
+    children,
     rel,
     follow = false,
     opener = false,
@@ -18,7 +22,8 @@ export default function ExternalLink(
     ...rest
   } = props;
   return (
-    <a
+    <Link
+      href={href}
       rel={joinNonEmpty(
         " ",
         rel,
@@ -27,6 +32,8 @@ export default function ExternalLink(
         onlyIf(!referrer, "noreferrer"),
       )}
       {...rest}
-    />
+    >
+      {children ?? formatUrl(href)}
+    </Link>
   );
 }

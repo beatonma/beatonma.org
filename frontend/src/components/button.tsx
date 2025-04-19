@@ -1,11 +1,17 @@
 "use client";
 
-import Link from "next/link";
-import React, { ComponentPropsWithRef, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import Icon, { type AppIcon } from "@/components/icon";
+import ExternalLink from "@/components/third-party/link";
 import { useTooltip } from "@/components/tooltip/tooltip";
 import { Nullish } from "@/types";
-import { ChildrenProps, ClassNameProps, DivProps } from "@/types/react";
+import {
+  ChildrenProps,
+  ClassNameProps,
+  DivProps,
+  Props,
+  PropsExcept,
+} from "@/types/react";
 import { addClass, formatUrl } from "@/util/transforms";
 
 interface ButtonContentProps {
@@ -16,17 +22,13 @@ interface ButtonColors {
   colors?: string;
 }
 
-type ButtonLinkProps = {
-  href: string | Nullish;
-} & ButtonContentProps &
-  Omit<ComponentPropsWithRef<"a">, "onClick" | "href">;
+type ButtonLinkProps = ButtonContentProps &
+  PropsExcept<typeof ExternalLink, "onClick" | "href"> & {
+    href: string | Nullish;
+  };
 
 export type ButtonProps = ButtonContentProps &
-  (
-    | ComponentPropsWithRef<"button">
-    | Omit<ComponentPropsWithRef<"a">, "onClick">
-    | Omit<ComponentPropsWithRef<"div">, "onClick">
-  );
+  (Props<"button"> | ButtonLinkProps | PropsExcept<"div", "onClick">);
 
 /**
  * A button with no padding which shows a larger background on hover.
@@ -105,9 +107,9 @@ const BaseButton = (props: ButtonProps & ButtonColors) => {
 
   if (isLink(rest)) {
     return (
-      <Link {...rest} {...tooltipAttrs}>
+      <ExternalLink {...rest} {...tooltipAttrs}>
         {content}
-      </Link>
+      </ExternalLink>
     );
   }
   if (isButton(rest)) {
@@ -118,7 +120,7 @@ const BaseButton = (props: ButtonProps & ButtonColors) => {
     );
   }
 
-  // Strip and `hover:` or `hover-` classes from className. don't use
+  // Strip any `hover:` or `hover-` classes from className. Don't use
   //   `pointer-events-none` as that prevents tooltip from working.
   const { className: originalClassName, ...divRest } = addClass(
     rest,
@@ -139,10 +141,10 @@ const BaseButton = (props: ButtonProps & ButtonColors) => {
 
 const isLink = (
   obj: any,
-): obj is { href: string } & ComponentPropsWithRef<"a"> => {
+): obj is { href: string } & Props<typeof ExternalLink> => {
   return "href" in obj && obj.href;
 };
-const isButton = (obj: any): obj is ComponentPropsWithRef<"button"> => {
+const isButton = (obj: any): obj is Props<"button"> => {
   return (
     ("onClick" in obj && typeof obj.onClick === "function") ||
     ("type" in obj && obj.type === "submit")
