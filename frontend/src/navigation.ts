@@ -12,6 +12,7 @@ const Navigation = {
   post: (slug: string) => `/posts/${slug}/`,
   posts: (params?: PostSearchParams) => `/${searchParams(params)}`,
   tag: (tag: string) => `/tag/${tag}/`,
+  webmentionsTest: () => `/webmentions_tester/`,
 };
 type Navigable = keyof typeof Navigation;
 export type NavDestination = {

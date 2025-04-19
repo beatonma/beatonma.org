@@ -13,6 +13,7 @@ from django.urls import include, path
 from django.views.generic import RedirectView
 from github.api import router as github_router
 from main.api import public_api
+from webmentions_tester.api import router as webmentions_tester_router
 
 
 def _redirect(url: str):
@@ -55,12 +56,13 @@ errors = [
 ]
 
 public_api.add_router("contact/", contact_router)
+public_api.add_router("webmentions_tester/", webmentions_tester_router)
+public_api.add_router("github/", github_router)
 
 urlpatterns = (
     [
         path("api/", public_api.urls),
         path("api/webmention/", include("mentions.urls")),
-        path("webmentions_tester/", include("webmentions_tester.urls")),
         path("api/v2/", bma_app_api.urls),
         # path("wurdle/", include("webapp.wurdle.urls")),
         path("", include("main.urls")),

@@ -6,6 +6,7 @@ import Recaptcha, {
   RecaptchaProps,
 } from "@/app/(main)/contact/_components/recaptcha";
 import { TintedButton } from "@/components/button";
+import { FormField } from "@/components/form";
 import { Row } from "@/components/layout";
 import Prose from "@/components/prose";
 import ExternalLink from "@/components/third-party/link";
@@ -237,21 +238,4 @@ const useRequiredText = (): [
     },
     isValid,
   ];
-};
-
-const FormField = (props: {
-  label: string;
-  block: (id: string) => ReactNode;
-}) => {
-  const { label, block } = props;
-  const id = useId();
-  return (
-    <p>
-      <label className="block mb-1" htmlFor={id}>
-        {label}
-      </label>
-
-      {block(id)}
-    </p>
-  );
 };

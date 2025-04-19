@@ -13,7 +13,6 @@ COPY --chown=app:app ./frontend/package.json ./frontend/package-lock.json /app/
 RUN npm install
 
 COPY --chown=app:app ./frontend /app
-#EXPOSE 3000
 
 
 ################################################################################
@@ -46,6 +45,13 @@ COPY ./docker/django/entrypoint.dev.sh /
 
 EXPOSE 8000
 ENTRYPOINT ["/entrypoint.dev.sh"]
+
+
+################################################################################
+FROM django_core AS celery
+
+ENTRYPOINT ["celery", "-A", "beatonma", "worker", "-l", "info"]
+
 
 ################################################################################
 FROM nginx:latest AS nginx

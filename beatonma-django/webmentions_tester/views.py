@@ -16,7 +16,7 @@ from webmentions_tester import view_names
 from webmentions_tester.models import (
     TemporaryMention,
     get_active_temporary_mentions,
-    get_temp_webmention_time_to_live,
+    get_temp_webmention_ttl_seconds,
 )
 
 
@@ -57,7 +57,7 @@ class TemporaryMentionsView(View):
     def get(self, request):
         now = timezone.now()
         active_mentions = get_active_temporary_mentions(now)
-        ttl = timezone.timedelta(minutes=get_temp_webmention_time_to_live()).seconds
+        ttl = get_temp_webmention_ttl_seconds()
 
         mentions = [
             {

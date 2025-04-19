@@ -10,7 +10,7 @@ x-common: &common
   tty: true
 
 x-health: &health
-  interval: 120s
+  interval: 30s
   timeout: 2s
   start_period: 20s
 
@@ -114,3 +114,26 @@ services:
       - /var/www/media:/var/www/media
     ports:
       - "80:80"
+
+  celery:
+    <<: *common
+    build:
+      context: .
+      target: celery
+      dockerfile: ./docker/Dockerfile.dev
+    volumes:
+      - ./beatonma-django:/django:ro
+    container_name: bma_dev-celery
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  rabbitmq:
+    <<: *common
+    image: rabbitmq:4.0-alpine
+    container_name: bma_dev-rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      <<: *health
+    ports:
+      - "5672"

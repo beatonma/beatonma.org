@@ -8,6 +8,9 @@ const Plurals = {
   mention: ["mention", "mentions"],
   change: ["change", "changes"],
   repository: ["repository", "repositories"],
+  hour: ["hour", "hours"],
+  minute: ["minute", "minutes"],
+  second: ["second", "seconds"],
 };
 
 export const plural = (

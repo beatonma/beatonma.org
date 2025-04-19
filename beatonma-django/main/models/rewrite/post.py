@@ -130,6 +130,21 @@ class BasePost(
     def get_absolute_url(self) -> str:
         return reverse(self.qualified_name(), kwargs={"slug": self.slug})
 
+    @classmethod
+    def resolve_from_url_kwargs(cls, slug: str):
+        return cls.objects.get(slug=slug)
+
+    def get_mentions(self):
+        sources = set()
+        from_unique_sources = []
+        mentions = super().get_mentions()
+        for m in mentions:
+            if m.source_url not in sources:
+                sources.add(m.source_url)
+                from_unique_sources.append(m)
+
+        return from_unique_sources
+
     def _extract_tags(self):
         """Generate tags from any #hashtags found in the text."""
         matches = [m.groupdict() for m in re.finditer(regex.HASHTAG, self.content)]

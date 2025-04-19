@@ -573,7 +573,7 @@ export interface components {
             /** Target Url */
             target_url: string;
             /** Endpoint */
-            endpoint: string | null;
+            endpoint: string;
         };
         /** WebmentionTesterSchema */
         WebmentionTesterSchema: {
@@ -1044,7 +1044,9 @@ export interface operations {
     };
     webmentions_tester_api_get_temporary_webmentions: {
         parameters: {
-            query?: never;
+            query: {
+                url_path: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;

@@ -23,6 +23,7 @@ export const capitalize = (value: MaybeString | null): string | null =>
   value ? value.slice(0, 1).toUpperCase() + value.slice(1) : null;
 
 export const formatUrl = (url: string | URL | Nullish): string => {
+  if (!url) return "";
   try {
     const _url = new URL(url as string | URL);
     return _url.hostname.replace("www.", "");

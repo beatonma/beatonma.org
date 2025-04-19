@@ -1,6 +1,7 @@
 import { InlineLink } from "@/components/button";
 import { type Webmention } from "@/components/data/types";
 import Optional from "@/components/optional";
+import ExternalLink from "@/components/third-party/link";
 import { DivPropsNoChildren } from "@/types/react";
 import { onlyIf } from "@/util/optional";
 import { addClass, formatUrl } from "@/util/transforms";
@@ -32,15 +33,15 @@ interface WebmentionProps {
 const Webmention = (props: WebmentionProps & DivPropsNoChildren) => {
   const { mention, ...rest } = addClass(
     props,
-    "p-2 surface-alt rounded-md",
-    "grid grid-cols-[--spacing(12)_1fr] gap-2",
+    "p-2 surface-alt md:rounded-md",
+    "grid grid-cols-[auto_1fr] gap-y-2",
     onlyIf(props.mention.quote, "col-start-1 md:col-span-2"),
     "[&_a]:hover:underline",
   );
 
   return (
     <div {...rest}>
-      <HCardAvatar hcard={mention.hcard} className="col-start-1" />
+      <HCardAvatar hcard={mention.hcard} className="col-start-1 me-2 size-12" />
       <div className="col-start-2">
         <HCardLinkedName hcard={mention.hcard} />
         <InlineLink href={mention.source_url} />
@@ -64,21 +65,20 @@ interface HCardProps {
 const HCardAvatar = (props: HCardProps & DivPropsNoChildren) => {
   const { hcard, ...rest } = addClass(
     props,
-    "rounded-md overflow-hidden surface-vibrant",
+    "rounded-md overflow-hidden surface-muted",
     "aspect-square place-content-center text-center font-bold",
     "border-2 border-current/20 select-none",
   );
-  if (!hcard) return null;
   return (
     <div {...rest}>
-      {hcard.avatar ? (
+      {hcard?.avatar ? (
         <img
           src={hcard.avatar}
           alt={undefined}
           className="size-full overflow-hidden"
         />
       ) : (
-        (hcard.name || (hcard.homepage ? formatUrl(hcard.homepage) : "?"))?.[0]
+        (hcard?.name || formatUrl(hcard?.homepage) || "?")?.[0]
       )}
     </div>
   );
@@ -90,9 +90,9 @@ const HCardLinkedName = (props: HCardProps & DivPropsNoChildren) => {
   return (
     <div {...rest}>
       {hcard.homepage ? (
-        <InlineLink icon={null} href={hcard.homepage}>
+        <ExternalLink href={hcard.homepage}>
           {hcard.name || formatUrl(hcard.homepage)}
-        </InlineLink>
+        </ExternalLink>
       ) : (
         hcard.name
       )}
