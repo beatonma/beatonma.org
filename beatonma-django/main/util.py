@@ -7,4 +7,5 @@ log = logging.getLogger(__name__)
 
 
 def to_absolute_url(path: str) -> str:
-    return urljoin(f"https://{settings.DOMAIN_NAME}", path)
+    schema = "http" if settings.DEBUG else "https"
+    return urljoin(f"{schema}://{settings.DOMAIN_NAME}", path)

@@ -56,6 +56,7 @@ ENTRYPOINT ["celery", "-A", "beatonma", "worker", "-l", "info"]
 ################################################################################
 FROM nginx:latest AS nginx
 
+COPY ./docker/nginx/templates/ /etc/nginx/templates/
 COPY ./docker/nginx/nginx.dev.conf /etc/nginx/nginx.conf
 
 EXPOSE 80

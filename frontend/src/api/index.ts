@@ -89,16 +89,6 @@ export type SearchablePath = PathWithPagination & PathWithSearch;
 
 export const client = createClient<paths>({
   baseUrl: process.env.API_BASE_URL,
-  fetch: (original) => {
-    // TODO remove: dev only
-    if (typeof window !== "undefined") {
-      const url = new URL(original.url);
-      url.port = "80";
-      const altered = new Request(url, original);
-      return fetch(altered);
-    }
-    return fetch(original);
-  },
 });
 
 type PathWithGet = PathsWithMethod<paths, "get">;

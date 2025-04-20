@@ -1,3 +1,8 @@
+location = /health-check/ {
+    add_header Content-Type text/plain;
+    return 200 "I am alive";
+}
+
 location ~* \.(bash_history|exe|dat|db|env|gz|html|log|php|rar|sql|sqlite|sqlite3|tar|zip)$ {
     return 444;
 }

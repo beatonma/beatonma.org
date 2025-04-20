@@ -1,6 +1,4 @@
-upstream django {
-    server django:8000;
-}
+include /etc/nginx/conf.d/upstream.inc;
 
 # Rate limiting 'zone' definition (~cache)
 limit_req_zone $request_uri zone=by_uri:10m rate=15r/s;
@@ -11,13 +9,13 @@ types {
 }
 
 server {
+    # Redirect http to https
     listen 80;
     listen [::]:80;
 
     server_name ${DOMAIN_NAME} *.${DOMAIN_NAME};
 
-    include templates/includes/ignore-file-ext.inc;
-    include templates/includes/healthcheck.inc;
+    include /etc/nginx/conf.d/healthy.inc;
 
     location ^~ /.well-known/acme-challenge/ {
         root /var/www/letsencrypt;
@@ -38,26 +36,12 @@ server {
 
     client_max_body_size 128M;
 
-    include templates/includes/ignore-file-ext.inc;
-    include templates/includes/healthcheck.inc;
-    include templates/includes/resources.inc;
-    include templates/includes/errors.inc;
-
-    location / {
-        proxy_pass http://django;
-        proxy_set_header Host $http_host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_redirect off;
-        limit_req zone=by_uri burst=20 nodelay;
-    }
+    include /etc/nginx/conf.d/locations.inc;
 
     ssl_certificate /etc/letsencrypt/live/$host/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/$host/privkey.pem;
     ssl_ciphers EECDH+CHACHA20:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5;
 }
-
 
 
 # HTTP-accessible from localhost for docker startup checks.
@@ -71,16 +55,5 @@ server {
     client_body_timeout 5s;
     client_header_timeout 5s;
 
-    include templates/includes/ignore-file-ext.inc;
-    include templates/includes/healthcheck.inc;
-    include templates/includes/resources.inc;
-
-    location / {
-        proxy_pass http://django;
-        proxy_set_header Host $http_host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_redirect off;
-        limit_req zone=by_uri burst=20 nodelay;
-    }
+    include /etc/nginx/conf.d/locations.inc;
 }

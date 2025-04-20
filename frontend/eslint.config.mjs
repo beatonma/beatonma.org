@@ -18,6 +18,7 @@ const eslintConfig = [
       "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/no-namespace": "off",
       "react/jsx-curly-brace-presence": "warn",
+      "@next/next/no-img-element": "off",
     },
   },
 ];

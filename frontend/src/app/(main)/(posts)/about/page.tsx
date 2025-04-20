@@ -5,16 +5,16 @@ import { getOr404 } from "@/api";
 const get = async () => getOr404("/api/about/");
 
 export default async function Page() {
-  const app = await get();
+  const about = await get();
 
-  return <PostPage post={app} />;
+  return <PostPage post={about} />;
 }
 
 export async function generateMetadata(): Promise<Metadata> {
   const post = await get();
 
   return {
-    title: post.title || "Post",
+    title: post.title || "About",
     description: post.subtitle,
   };
 }

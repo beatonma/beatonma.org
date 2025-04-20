@@ -3,29 +3,22 @@ ARG PYTHON_VERSION=3.12
 ARG NGINX_VERSION=latest
 
 ################################################################################
-FROM node:${NODE_VERSION}-alpine AS gulp
-LABEL description="Generate frontend webapp and template files."
+FROM node:${NODE_VERSION}-alpine AS frontend
+LABEL description="Main NextJS project."
 
-ARG GIT_HASH
-ARG WEBMAIL_CONTACT_EMAIL
-ARG GOOGLE_RECAPTCHA_TOKEN
-ARG SITE_NAME
+ARG NEXT_PUBLIC_SITE_NAME
+ENV NEXT_PUBLIC_SITE_NAME=$NEXT_PUBLIC_SITE_NAME
 
-ENV GIT_HASH=$GIT_HASH
-ENV WEBMAIL_CONTACT_EMAIL=$WEBMAIL_CONTACT_EMAIL
-ENV GOOGLE_RECAPTCHA_TOKEN=$GOOGLE_RECAPTCHA_TOKEN
-ENV SITE_NAME=$SITE_NAME
+RUN apk add curl
+RUN adduser -u 1001 -s /bin/sh -D app
+USER app
 
 WORKDIR /app
-COPY beatonma-gulp/package.json /app
-RUN npm install && npm cache clean --force
+COPY --chown=app:app ./frontend/package.json ./frontend/package-lock.json /app/
+RUN npm install
 
-COPY beatonma-gulp /app
+COPY --chown=app:app ./frontend /app
 RUN npm run build
-RUN npm run jest
-
-ENTRYPOINT ["/bin/ash"]
-
 
 ################################################################################
 FROM python:${PYTHON_VERSION}-alpine AS python
@@ -58,9 +51,6 @@ WORKDIR /django
 
 # Django project files.
 COPY ./beatonma-django /django
-
-# Generated template and static files from gulp build.
-COPY --from=gulp /app/dist /django
 
 
 ################################################################################

@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import Layout from "@/app/(main)/layout";
+import Layout from "@/app/(main)/_components/main-layout";
 
 export const metadata: Metadata = {
   title: "Base layout",

@@ -59,10 +59,7 @@ production_build() {
   # Run `docker compose build` with required values from .env file.
   source "$FILE_ENV"
   docker_compose_build \
-    --build-arg GIT_HASH="$(git rev-parse --short HEAD)" \
-    --build-arg WEBMAIL_CONTACT_EMAIL="$WEBMAIL_CONTACT_EMAIL" \
-    --build-arg GOOGLE_RECAPTCHA_TOKEN="$GOOGLE_RECAPTCHA_TOKEN" \
-    --build-arg SITE_NAME="$SITE_NAME" \
+    --build-arg NEXT_PUBLIC_SITE_NAME="$NEXT_PUBLIC_SITE_NAME" \
     "$@"
 }
 
@@ -306,7 +303,7 @@ case $context in
     certbot "$@"
     ;;
   "openapi")
-    npx openapi-typescript http://localhost:8001/api/openapi.json -o frontend/src/api/api.d.ts
+    npx openapi-typescript http://localhost/api/openapi.json -o frontend/src/api/api.d.ts
     ;;
   *)
     log "Unhandled context '$context'"

@@ -1,0 +1,37 @@
+location /media {
+    alias /var/www/media;
+    expires 1y;
+    add_header Cache-Control "public";
+}
+
+location /static {
+    alias /var/www/static;
+    expires 1y;
+    add_header Cache-Control "public";
+}
+
+# Server resources that are bundled alongside a webapp.
+location ~ ^/apps/.+?/live/.+$ {
+    rewrite ^/apps/(.+?)/live/(.+) /media/apps/$1/$2 permanent;
+}
+
+location / {
+    proxy_pass http://next;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_redirect off;
+    limit_req zone=by_uri burst=20 nodelay;
+}
+
+location ~ (/api|/feed|/${ADMIN_URL}|/${BMA_NOTIFICATIONS_URL}) {
+    proxy_pass http://django;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_redirect off;
+}
+
+include /etc/nginx/conf.d/healthy.inc;

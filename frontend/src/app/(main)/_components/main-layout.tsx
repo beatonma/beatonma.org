@@ -35,7 +35,7 @@ export default function MainLayout({
         className={classes(styles.headerGrid, "p-edge items-center gap-4")}
       >
         <h1
-          className="[grid-area:title] line-clamp-1 font-normal justify-self-start"
+          className="[grid-area:title] whitespace-nowrap font-normal justify-self-start"
           id="top"
         >
           <Link href={navigationHref("home")} className="no-underline">

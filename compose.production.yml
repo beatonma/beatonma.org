@@ -37,7 +37,7 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5432"
     healthcheck:
       test: pg_isready
       <<: *health
@@ -64,6 +64,26 @@ services:
       - /var/www/media:/var/www/media
       - /var/www/beatonma:/var/www/beatonma:ro
 
+  next:
+    <<: *common-defaults
+    build:
+      dockerfile: ./docker/Dockerfile
+      target: frontend
+      context: .
+    image: fallofmath/beatonma:next
+    container_name: next
+    depends_on:
+      django:
+          condition: service_healthy
+    healthcheck:
+      test: curl --head --fail http://localhost:3000/health-check/ || exit 1
+      <<: *health
+    command: npm run start
+    environment:
+      API_BASE_URL: http://django:8000
+    ports:
+      - "80"
+
   nginx:
     <<: *common-defaults
     build:
@@ -74,6 +94,8 @@ services:
     container_name: nginx
     depends_on:
       django:
+        condition: service_healthy
+      next:
         condition: service_healthy
     healthcheck:
       test: curl --head --fail http://localhost/health-check/ || exit 1

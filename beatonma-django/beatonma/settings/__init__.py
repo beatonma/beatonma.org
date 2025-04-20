@@ -29,7 +29,7 @@ from .internationalization import LANGUAGE_CODE, TIME_ZONE, USE_I18N, USE_TZ
 from .logging import LOGGING
 from .media import MEDIA_ROOT, MEDIA_URL
 from .middleware import MIDDLEWARE
-from .staticfiles import STATIC_ROOT, STATIC_URL, STATICFILES_DIRS
+from .staticfiles import STATIC_ROOT, STATIC_URL
 from .templates import TEMPLATES
 
 # Core setup

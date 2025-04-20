@@ -1,19 +1,33 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  images: {
-    remotePatterns: [
-      {
-        protocol: "http",
-        hostname: "localhost",
-        port: "",
-        pathname: "/**",
-        search: "",
-      },
-    ],
+  trailingSlash: true,
+  async rewrites() {
+    if (process.env.NODE_ENV === "development") {
+      return [
+        {
+          source: "/media/:path*",
+          destination: `${process.env.API_BASE_URL}/media/:path*`,
+        },
+      ];
+    }
+    return [];
+  },
+  async redirects() {
+    if (process.env.NODE_ENV === "development") {
+      return [
+        {
+          source: `/${process.env.ADMIN_URL}:path*`,
+          destination: `${process.env.API_BASE_URL}/${process.env.ADMIN_URL}:path*`,
+          permanent: false,
+        },
+      ];
+    }
+    return [];
   },
 
   webpack(config) {
+    /** Configuration to enable importing SVG files as React components via @svgr/webpack.*/
     // Grab the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find((rule: any) =>
       rule.test?.test?.(".svg"),

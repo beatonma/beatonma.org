@@ -1,0 +1,6 @@
+upstream django {
+    server django:8000;
+}
+upstream next {
+    server next:3000;
+}

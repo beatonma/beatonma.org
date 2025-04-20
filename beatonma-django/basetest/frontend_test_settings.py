@@ -1,4 +1,3 @@
-from beatonma.settings import STATICFILES_DIRS  # noqa
 from beatonma.settings.environment import GIT_HASH  # noqa
 
 from .default_settings import *  # noqa
