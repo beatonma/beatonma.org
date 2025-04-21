@@ -34,4 +34,4 @@ location ~ (/api|/feed|/${ADMIN_URL}|/${BMA_NOTIFICATIONS_URL}) {
     proxy_redirect off;
 }
 
-include /etc/nginx/conf.d/healthy.inc;
+include /etc/nginx/conf.d/includes/healthy.inc;
