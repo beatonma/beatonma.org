@@ -34,6 +34,7 @@ SITE_NAME: str = _env_str("SITE_NAME")
 SECRET_KEY: str = _env_str("SECRET_KEY")
 DJANGO_LOGGING_DIR: str = _env_str("DJANGO_LOGGING_DIR", default="/var/log/beatonma/")
 GIT_HASH: str = _env_str("GIT_HASH")
+CACHE_LOCATION: str = _env_str("CACHE_LOCATION")
 
 # Database
 POSTGRES_DB: str = _env_str("POSTGRES_DB")

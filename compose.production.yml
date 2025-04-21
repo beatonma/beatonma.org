@@ -36,8 +36,6 @@ services:
     container_name: postgres
     volumes:
       - postgres:/var/lib/postgresql/data
-    ports:
-      - "5432"
     healthcheck:
       test: pg_isready
       <<: *health
@@ -53,12 +51,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     healthcheck:
       test: curl --head --fail http://localhost:8000/api/ping/ || exit 1
       <<: *health
       interval: 600s
-    ports:
-      - "8000"
     volumes:
       - /var/www/static:/var/www/static
       - /var/www/media:/var/www/media
@@ -81,8 +79,6 @@ services:
     command: npm run start
     environment:
       API_BASE_URL: http://django:8000
-    ports:
-      - "80"
 
   nginx:
     <<: *common-defaults
@@ -119,7 +115,7 @@ services:
     image: fallofmath/beatonma:celery
     container_name: celery
     depends_on:
-      rabbitmq:
+      redis:
         condition: service_healthy
     volumes:
       - /var/www/beatonma:/var/www/beatonma:ro
@@ -136,15 +132,13 @@ services:
       - django
     command: crond -f
 
-  rabbitmq:
+  redis:
     <<: *common-defaults
-    image: rabbitmq:3-alpine
-    container_name: rabbitmq
+    image: redis:7-alpine
+    container_name: redis
     healthcheck:
-      test: rabbitmq-diagnostics -q ping
+      test:  redis-cli ping
       <<: *health
-    ports:
-      - "5672"
 
   server_startup_checks:
     build:

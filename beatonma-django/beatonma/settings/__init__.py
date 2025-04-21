@@ -1,6 +1,7 @@
 from .admin import ADMIN_URL, ADMINS, BMA_NOTIFICATIONS_URL, DASHBOARD_URL
 from .app_settings import *
 from .auth import AUTH_PASSWORD_VALIDATORS
+from .caching import CACHES
 from .database import DATABASES
 from .defaults import *  # noqa
 from .email import (

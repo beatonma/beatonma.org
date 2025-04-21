@@ -20,8 +20,6 @@ services:
     image: postgres:15-alpine
     volumes:
       - postgres:/var/lib/postgresql/data
-    ports:
-      - "5432"
     healthcheck:
       test: pg_isready
       <<: *health
@@ -43,6 +41,8 @@ services:
       <<: *health
     depends_on:
       db:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     ports:
       - "8001:8000"
@@ -125,15 +125,13 @@ services:
       - ./beatonma-django:/django:ro
     container_name: dev-celery
     depends_on:
-      rabbitmq:
+      redis:
         condition: service_healthy
 
-  rabbitmq:
+  redis:
     <<: *common
-    image: rabbitmq:4.0-alpine
-    container_name: dev-rabbitmq
+    image: redis:7-alpine
+    container_name: dev-redis
     healthcheck:
-      test: rabbitmq-diagnostics -q ping
+      test: redis-cli ping
       <<: *health
-    ports:
-      - "5672"

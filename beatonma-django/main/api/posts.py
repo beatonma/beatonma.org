@@ -5,11 +5,13 @@ from typing import Literal
 from common.schema import Mention
 from django.http import Http404, HttpRequest
 from django.shortcuts import get_object_or_404
+from django.views.decorators.cache import cache_page
 from main.models import AppPost, ChangelogPost, Post
 from main.models.mixins import ThemeableMixin
 from main.models.related_file import BaseUploadedFile, MediaType
 from main.models.rewrite.post import PostType
 from ninja import Field, Router, Schema
+from ninja.decorators import decorate_view
 from ninja.pagination import paginate
 
 from ..models.rewrite import AboutPost
@@ -139,6 +141,7 @@ class AppDetail(PostDetail):
 
 @router.get("/posts/", response=list[PostPreview])
 @paginate
+@decorate_view(cache_page(60 * 60))
 def post_feed(request: HttpRequest, query: str = None, tag: str = None):
     feed = get_feed(query=query, tag=tag)
 
