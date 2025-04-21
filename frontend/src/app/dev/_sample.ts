@@ -762,7 +762,7 @@ export const SampleGithub: ResponseOf<"/api/github/recent/"> = {
         description: "Automatic Webmention functionality for Django models",
       },
       payload: {
-        type: "tag",
+        ref_type: "tag",
         ref: "4.1.2",
       },
     },
@@ -892,7 +892,7 @@ export const SampleGithub: ResponseOf<"/api/github/recent/"> = {
         description: "Automatic Webmention functionality for Django models",
       },
       payload: {
-        type: "branch",
+        ref_type: "branch",
         ref: "4.1.2",
       },
     },

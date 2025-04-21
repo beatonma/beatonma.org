@@ -33,6 +33,8 @@ class GithubRepositorySchema(PayloadSchema):
     @staticmethod
     def resolve_license(obj) -> str | None:
         _license = _resolve_value(obj, "license")
+        if _license is None:
+            return None
         if isinstance(_license, str):
             return _license
         return _resolve_value(_license, "name")

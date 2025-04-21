@@ -50,7 +50,7 @@ export const SampleEvents = [
         type: "CreateEvent",
         repository: DjangoWM,
         payload: {
-            type: "tag",
+            ref_type: "tag",
             ref: "2.3.0",
         },
     },
@@ -124,7 +124,7 @@ export const SampleEvents = [
         type: "CreateEvent",
         repository: DjangoWM,
         payload: {
-            type: "tag",
+            ref_type: "tag",
             ref: "2.2.0",
         },
     },

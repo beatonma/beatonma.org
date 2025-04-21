@@ -573,7 +573,7 @@ export interface components {
             /** Target Url */
             target_url: string;
             /** Endpoint */
-            endpoint: string;
+            endpoint: string | null;
         };
         /** WebmentionTesterSchema */
         WebmentionTesterSchema: {

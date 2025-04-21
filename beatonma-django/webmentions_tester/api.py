@@ -2,14 +2,12 @@ import logging
 from datetime import datetime
 
 from common.schema import Mention
-from django.db.models import Q
 from django.http import HttpRequest
 from django.shortcuts import redirect
 from django.utils import timezone
 from main.util import to_absolute_url
 from mentions import config as mentions_config
 from mentions.models import Webmention
-from mentions.resolution import get_mentions_for_url
 from mentions.tasks import handle_outgoing_webmentions
 from ninja import Form, Router, Schema
 from pydantic import Field
@@ -25,7 +23,7 @@ class TempMentionStatus(Schema):
     message: str = Field(alias="status_message")
     source_url: str
     target_url: str
-    endpoint: str = Field(alias="target_webmention_endpoint")
+    endpoint: str | None = Field(alias="target_webmention_endpoint")
 
 
 class TempMention(Schema):

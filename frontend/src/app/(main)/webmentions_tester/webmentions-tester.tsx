@@ -157,7 +157,7 @@ const TimeDescription = (props: PropsExcept<"time", "children">) => {
 const TempMentionStatus = (
   props: { status: TempMentionStatus } & DivPropsNoChildren,
 ) => {
-  const { status, ...rest } = addClass(props, "text-sm ");
+  const { status, ...rest } = addClass(props, "text-sm max-w-128 w-full");
 
   if (!status) return <div {...rest}>No status available</div>;
 
