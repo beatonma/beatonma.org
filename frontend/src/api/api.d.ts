@@ -593,8 +593,11 @@ export interface components {
         };
         /** GithubCreateEventPayload */
         GithubCreateEventPayload: {
-            /** Type */
-            type?: ("branch" | "tag" | "repository") | null;
+            /**
+             * Ref Type
+             * @enum {string}
+             */
+            ref_type: "branch" | "tag" | "repository";
             /** Ref */
             ref: string;
         };
@@ -779,7 +782,7 @@ export interface components {
             /** Url */
             url: string;
             /** License */
-            license?: string | null;
+            license: string | null;
             /** Description */
             description: string | null;
         };

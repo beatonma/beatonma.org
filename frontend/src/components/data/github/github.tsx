@@ -121,9 +121,9 @@ const CreateEvents = (props: { payload: GroupedEventPayloads["create"] }) => {
       {payload.map((item) => (
         <InlineLink
           href={null}
-          key={`${item.type}-${item.ref}`}
-          icon={icons[item.type ?? ""]}
-          tooltip={`New ${item.type}`}
+          key={`${item.ref_type}-${item.ref}`}
+          icon={icons[item.ref_type ?? ""]}
+          tooltip={`New ${item.ref_type}`}
         >
           {item.ref}
         </InlineLink>

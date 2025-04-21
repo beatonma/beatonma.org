@@ -2,14 +2,21 @@ from datetime import datetime
 from typing import Literal
 
 from django.db.models import QuerySet
-from django.http import HttpRequest
+from django.http import Http404, HttpRequest
 from django.utils.timezone import get_current_timezone
 from github.events import GithubEvent
 from github.models import CachedResponse, GithubUserEvent
 from ninja import Router, Schema
-from pydantic import Field
 
 router = Router(tags=["Github"])
+
+
+def _resolve_value(obj, key):
+    """Get the value of obj.key or obj[key]."""
+    try:
+        return getattr(obj, key)
+    except AttributeError:
+        return obj.get(key)
 
 
 class PayloadSchema(Schema):
@@ -20,14 +27,19 @@ class GithubRepositorySchema(PayloadSchema):
     id: int
     name: str
     url: str
-    license: str | None = Field(alias="license.name", default=None)
+    license: str | None
     description: str | None
+
+    @staticmethod
+    def resolve_license(obj) -> str | None:
+        _license = _resolve_value(obj, "license")
+        if isinstance(_license, str):
+            return _license
+        return _resolve_value(_license, "name")
 
 
 class GithubCreateEventPayload(PayloadSchema):
-    type: Literal["branch", "tag", "repository"] | None = Field(
-        alias="ref_type", default=None
-    )
+    ref_type: Literal["branch", "tag", "repository"]
     ref: str
 
 
@@ -123,6 +135,8 @@ class GithubRecentEvents(Schema):
 @router.get("/recent/", response=GithubRecentEvents)
 def get_github_events(request: HttpRequest):
     cached_response = CachedResponse.objects.first()
+    if not cached_response:
+        raise Http404()
 
     return cached_response.data
 
