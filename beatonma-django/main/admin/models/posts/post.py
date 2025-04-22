@@ -3,10 +3,11 @@ from django.contrib import admin
 from main.admin.models.links import LinkInline
 from main.admin.models.relatedfile import RelatedFileInline
 from main.models import AppPost, ChangelogPost, Post
+from main.models.rewrite import AboutPost
 from main.models.rewrite.app import AppResource
 
 
-@admin.register(Post)
+@admin.register(Post, AboutPost)
 class PostAdmin(BaseAdmin):
     inlines = [
         LinkInline,
