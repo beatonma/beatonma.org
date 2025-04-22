@@ -1,16 +1,18 @@
 import sys
-from typing import List, Optional, Sized, Type, Union
+from typing import Iterable, Optional, Sized, Type, Union
 from unittest import skipIf
 
 import pytest
 from common.models.types import Model
-from common.util.html import find_links_in_soup, html_parser
+from common.util.html import html_parser
 from django.db.models import QuerySet
 from django.test import SimpleTestCase as DjangoSimpleTestCase
 from django.test import TestCase
 
 
 class SimpleTestCase(DjangoSimpleTestCase):
+    maxDiff = None
+
     def assert_length(self, items: Sized, expected: int, msg: Optional[str] = ""):
         self.assertEqual(
             len(items),
@@ -21,16 +23,18 @@ class SimpleTestCase(DjangoSimpleTestCase):
     def assert_html_links_to(
         self,
         html: str,
-        href: str | List[str],
+        href: str | Iterable[str],
         displaytext: Optional[str] = None,
     ):
-        if isinstance(href, list):
+        if isinstance(href, list) or isinstance(href, set):
             for url in href:
                 self.assert_html_links_to(html, url, displaytext)
             return
 
         soup = html_parser(html)
-        links = {(a["href"], a.get_text(strip=True)) for a in find_links_in_soup(soup)}
+        links = {
+            (a["href"], a.get_text(strip=True)) for a in soup.find_all("a", href=True)
+        }
         if not links:
             raise AssertionError(f"No links found in HTML: {html}")
 

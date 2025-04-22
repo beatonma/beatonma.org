@@ -19,11 +19,12 @@ def html_parser(content) -> BeautifulSoup:
 def find_links_in_html(html: str) -> Set[str]:
     """Get the raw target href of any links in the html."""
     soup = html_parser(html)
-    return {a["href"] for a in find_links_in_soup(soup)}
+    return find_links_in_soup(soup)
 
 
-def find_links_in_soup(soup: BeautifulSoup) -> ResultSet:
-    return soup.find_all("a", href=True)
+def find_links_in_soup(soup: BeautifulSoup) -> set[str]:
+    links = soup.find_all("a", href=True)
+    return {a["href"] for a in links}
 
 
 def text_from_html(html: str) -> str:

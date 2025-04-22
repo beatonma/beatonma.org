@@ -78,6 +78,26 @@ class FormatsMarkdownTests(SimpleTestCase):
             "something about [beatonma.org](https://beatonma.org)?",
             '<p>something about <a href="https://beatonma.org">beatonma.org</a>?</p>',
         )
+        self.assert_md(
+            "something about redistributing redis!",
+            '<p>something about redistributing <a href="https://redis.io">redis</a>!</p>',
+        )
+        self.assert_md(
+            "NGINX is a thing",
+            '<p><a href="https://www.nginx.com">NGINX</a> is a thing</p>',
+        )
+        self.assert_md(
+            "Tailwind",
+            '<p><a href="https://tailwindcss.com">Tailwind</a></p>',
+        )
+        self.assert_md(
+            "tailwindcss",
+            '<p><a href="https://tailwindcss.com">tailwindcss</a></p>',
+        )
+        self.assert_md(
+            "Tailwind CSS",
+            '<p><a href="https://tailwindcss.com">Tailwind CSS</a></p>',
+        )
 
     def test_markdown_complex(self):
         self.assert_md(

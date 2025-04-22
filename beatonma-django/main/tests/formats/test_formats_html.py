@@ -128,10 +128,10 @@ class LinkifyKeywordsTests(SimpleTestCase):
             Formats.postprocess_html(
                 "docker compose and docker should be different links"
             ),
-            [
+            {
                 "https://github.com/docker/compose",
                 "https://www.docker.com",
-            ],
+            },
         )
 
         self.assertHTMLEqual(

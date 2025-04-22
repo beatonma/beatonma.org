@@ -4,7 +4,7 @@ import re
 
 # Match a #hashtag.
 HASHTAG = re.compile(
-    r"(^|(?<=>|\s))"  # Only accept if previous char is start-of-line, whitespace or an HTML tag.
+    r"(?:^|(?<=>|\s))"  # Only accept if previous char is start-of-line, whitespace or an HTML tag.
     r"(?P<hashtag>#"  # Capture group for (#hashtag)
     r"(?![a-fA-F0-9]{3})"  # Ignore hex color codes
     r"(?P<name>[a-zA-Z][-\w]*))"  # Must start with a letter - capture group for #(name)

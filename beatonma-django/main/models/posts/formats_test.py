@@ -7,12 +7,11 @@ class FormatsTest(SimpleTestCase):
         markdown = """> [!WARNING]
 > `python manage.py migrate` required for new fields.  
 
-- Added `Webmention.has_been_read: bool` field.  """
+- Added `has_been_read: bool` field.  """
 
         html = """<div class="template-callout-warn"><p><strong>Warning</strong></p><p><code>python manage.py 
-        migrate</code> required for new 
-        fields.</p></div>
-        <ul><li>Added <code>Webmention.has_been_read: bool</code> field.</li></ul>
+migrate</code> required for new fields.</p></div>
+<ul><li>Added <code>has_been_read: bool</code> field.</li></ul>
 """
 
         print(Formats.to_html(Formats.MARKDOWN, markdown))

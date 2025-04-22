@@ -1,18 +1,19 @@
 import re
 from re import Match
-from typing import List
+from typing import Callable, Iterable
 from urllib.parse import urljoin
 
 import markdown2
+from bs4 import BeautifulSoup, NavigableString, PageElement, Tag
 from common.util import regex
-from common.util.html import find_links_in_html
+from common.util.html import find_links_in_soup, html_parser
 from common.util.pipeline import PipelineItem, apply_pipeline
 from django.db import models
 from main.views import reverse
 
 _NAME = r"(?P<name>@?[-\w]+)"
 _URL_PREFIX = r"https://(?:www\.)?"
-_PRETTY_URL_REPLACEMENTS = {
+_PRETTY_URL_REPLACEMENTS: dict[str, str] = {
     rf"{_URL_PREFIX}(?:old\.)?reddit\.com/r/{_NAME}.*": r"/r/\g<name>",
     rf"{_URL_PREFIX}(?:old\.)?reddit\.com/u(?:ser)?/{_NAME}.*": r"/u/\g<name>",
     rf"{_URL_PREFIX}github\.com/{_NAME}.*": r"github/\g<name>",
@@ -24,7 +25,7 @@ _PRETTY_URL_REPLACEMENTS = {
 }
 
 
-_LINKIFY_PATTERNS = [
+_LINKIFY_PATTERNS: Iterable[tuple[re.Pattern, str]] = [
     (re.compile(rf"/u/({_NAME})"), r"https://reddit.com/u/\g<name>"),
     (re.compile(rf"/r/({_NAME})"), r"https://reddit.com/r/\g<name>"),
     (re.compile(rf"github/({_NAME})"), r"https://github.com/\g<name>"),
@@ -50,13 +51,16 @@ _LINKIFY_PATTERNS = [
 ]
 
 
-"""A link will be inserted whenever these words appear in text.
+"""The first matching instance of each of these patterns will be linkified in text.
 
-Beware: Order matters! If one key is a substring of another it should be defined
-later in the dictionary."""
-_LINKIFY_KEYWORDS = (
+- Text case is ignored.
+- Order matters! If one key is a substring of another it should be defined
+  later in the dictionary.
+  """
+_LINKIFY_KEYWORDS: Iterable[tuple[str, str]] = (
     (r"beatonma\.org", "https://beatonma.org"),
     (r"Celery", "https://docs.celeryq.dev"),
+    (r"django-wm", "https://github.com/beatonma/django-wm"),
     (r"Django", "https://www.djangoproject.com"),
     (r"Docker Compose", "https://github.com/docker/compose"),
     (r"Docker", "https://www.docker.com"),
@@ -64,21 +68,23 @@ _LINKIFY_KEYWORDS = (
     (r"Indieweb", "https://indieweb.org"),
     (r"Lightsail", "https://aws.amazon.com/lightsail"),
     (r"Microformats?", "https://microformats.org"),
+    (r"NextJS", "https://nextjs.org"),
     (r"NGINX", "https://www.nginx.com"),
     (r"PostgreSQL", "https://postgreql.org"),
     (r"React", "https://reactjs.org"),
+    (r"Redis", "https://redis.io"),
     (r"SASS", "https://sass-lang.com"),
+    (r"Tailwind( ?css)?", "https://tailwindcss.com"),
     (r"Typescript", "https://typescriptlang.org"),
     (r"Webpack", "https://webpack.js.org"),
     (r"Webmentions?", "https://indieweb.org/Webmention"),
-    (r"django-wm", "https://github.com/beatonma/django-wm"),
 )
 
 """Keys will be replaced with their corresponding value.
 
 Beware: Order matters! If one key is a substring of another it should be defined
 later in the dictionary."""
-_LIGATURES = {
+_LIGATURES: dict[str, str] = {
     "<->": "&harr;",  # ↔
     "<-->": "&xharr;",  # ⟷
     "<=>": "&iff;",  # ⇔
@@ -110,7 +116,7 @@ class Formats(models.IntegerChoices):
         format_: int,
         content: str,
         markdown_processors: list[PipelineItem[str]] = None,
-        html_processors: list[PipelineItem[str]] = None,
+        html_processors: list[PipelineItem[BeautifulSoup]] = None,
     ) -> str:
         if format_ == Formats.MARKDOWN:
             html = apply_pipeline(
@@ -148,19 +154,20 @@ class Formats(models.IntegerChoices):
     def postprocess_html(
         cls,
         html: str,
-        pipeline_extras: list[PipelineItem[str]] = None,
+        pipeline_extras: list[PipelineItem[BeautifulSoup]] = None,
     ) -> str:
-        existing_links = find_links_in_html(html)
+        soup = html_parser(html)
+        existing_links = find_links_in_soup(soup)
 
         return apply_pipeline(
-            html,
+            soup,
             [
                 *(pipeline_extras or []),
                 _prettify_links,
                 _linkify_hashtags,
                 (_linkify_keywords, [existing_links]),
             ],
-        )
+        ).body.decode_contents()
 
     @classmethod
     def markdown_to_html(cls, content: str) -> str:
@@ -192,75 +199,37 @@ class FormatMixin(models.Model):
     )
 
 
-def _linkify_hashtags(html: str) -> str:
-    """Replace raw string #hashtags with a link to that tag."""
+def _linkify_hashtags(soup: BeautifulSoup) -> BeautifulSoup:
+    def _visit(node: NavigableString):
+        if match := re.search(regex.HASHTAG, node):
+            anchor = soup.new_tag("a", href=reverse.tag(match.group("name")))
+            anchor.string = match.group("hashtag")
+            return [(match.start(), match.end(), anchor)]
+        return []
 
-    def _sub(sub_match: Match):
-        href = reverse.tag(sub_match.group("name"))
-        display_name = sub_match.group("hashtag")
-
-        return f'<a href="{href}">{display_name}</a>'
-
-    return re.sub(regex.HASHTAG, _sub, html)
-
-
-def _prettify_links(html: str) -> str:
-    """Prettify display text for any links in the given HTML.
-
-    Recognised URLs are replaced as defined in _FRIENDLY_URL_REPLACEMENTS.
-    Unrecognised URLs are shortened to their hostname.
-    Links that already have explicit display text will not be affected.
-
-    URLs that do not use https scheme are kept in their explicitly ugly form.
-    """
-
-    def _sub(sub_match: Match):
-        url = sub_match.group("url")
-        display_text = sub_match.group("display_text")
-        attrs = " ".join(
-            [
-                x.strip()
-                for x in [
-                    f'href="{url}"',
-                    sub_match.group("attrs_1"),
-                    sub_match.group("attrs_2"),
-                ]
-                if x
-            ]
-        )
-
-        if display_text == url:
-            for pattern, replacement in _PRETTY_URL_REPLACEMENTS.items():
-                display_text, changes = re.subn(pattern, replacement, url)
-                if changes:
-                    break
-
-        return rf"<a {attrs}>{display_text}</a>"
-
-    return re.sub(
-        r"<a(?P<attrs_1>.*?)href=\"(?P<url>[^\"]+)\"(?P<attrs_2>.*?)>(?P<display_text>.*?)</a>",
-        _sub,
-        html,
-    )
+    return linkify_soup(soup, visit_string=_visit)
 
 
-def _linkify_keywords(html: str, existing_links: List[str]) -> str:
-    for match, url in _LINKIFY_KEYWORDS:
-        if url in existing_links:
-            continue
-        html = re.sub(
-            rf"(^|\s|\()({match})(?=$|[,.;:!?\s)])",
-            rf'\1<a href="{url}">\2</a>',
-            html,
-            count=1,
-            flags=re.IGNORECASE,
-        )
-    return html
+def _prettify_links(soup: BeautifulSoup) -> BeautifulSoup:
+    for node in soup.find_all("a", href=True):
+        url = node["href"]
+        for child in node.contents:
+            changes = None
+            if isinstance(child, NavigableString) and child == url:
+                for pattern, replacement in _PRETTY_URL_REPLACEMENTS.items():
+                    display_text, changes = re.subn(pattern, replacement, url)
+                    if changes:
+                        child.replace_with(display_text)
+                        break
+            if changes:
+                break
+
+    return soup
 
 
-def _apply_ligatures(text: str) -> str:
+def _apply_ligatures(markdown: str) -> str:
     marker = "__canonical_code_block__"
-    canonical_blocks: List[str] = []
+    canonical_blocks: list[str] = []
 
     def remember_canonical(match: Match):
         canonical_blocks.append(match.group())
@@ -269,7 +238,7 @@ def _apply_ligatures(text: str) -> str:
     editable_text = re.sub(
         "(```.*?```|`[^`].*?`)",  # ```code blocks``` or `inline code`
         remember_canonical,
-        text,
+        markdown,
         flags=re.DOTALL,
     )
 
@@ -281,7 +250,7 @@ def _apply_ligatures(text: str) -> str:
     return editable_text
 
 
-def _apply_blockquote_callout(text: str) -> str:
+def _apply_blockquote_callout(markdown: str) -> str:
     """
     Convert Github-style markdown callout to HTML, applying style class from frontend <Callout/> component.>
 
@@ -312,7 +281,7 @@ def _apply_blockquote_callout(text: str) -> str:
 
         return template.format(level=level, level_title=level_title, content=content)
 
-    return re.sub(pattern, _replacer, text)
+    return re.sub(pattern, _replacer, markdown)
 
 
 def linkify_github_issues(*, repo_url: str, markdown: str) -> str:
@@ -322,3 +291,77 @@ def linkify_github_issues(*, repo_url: str, markdown: str) -> str:
         return f'<a href="{href}">#{issue}</a>'
 
     return re.sub(regex.GITHUB_ISSUE, _sub, markdown)
+
+
+def _linkify_keywords(
+    soup: BeautifulSoup,
+    existing_links: set[str],
+    replacements: Iterable[tuple[str, str]] = _LINKIFY_KEYWORDS,
+) -> BeautifulSoup:
+    """
+    Linkify the first occurrence of each pattern given in replacements, as long
+    as the link is not already in existing_links.
+    """
+    existing_links = existing_links.copy()
+
+    def _visit(node: NavigableString):
+        _replacements: list[InsertLinkAt] = []
+        for pattern, url in replacements:
+            if url in existing_links:
+                continue
+
+            if match := re.search(
+                rf"(^|(?<=\s|\())(?P<matched>{pattern})(?=$|[,.;:!?\s)])",
+                node,
+                re.IGNORECASE,
+            ):
+                anchor = soup.new_tag("a", href=url)
+                anchor.string = match.group("matched")
+                existing_links.add(url)
+                _replacements.append((match.start(), match.end(), anchor))
+        return _replacements
+
+    linkify_soup(
+        soup,
+        visit_string=_visit,
+    )
+    return soup
+
+
+# tuple[replace_start_index, replace_end_index, element_to_insert]
+type InsertLinkAt = tuple[int, int, PageElement]
+
+
+def linkify_soup(
+    soup: BeautifulSoup,
+    visit_string: Callable[[NavigableString], list[InsertLinkAt]],
+):
+    def visit_node(node: NavigableString | Tag):
+        if node.name is None:
+            # visit_string may want to insert more than one link in a node,
+            # but we can't make changes to the node while traversing it.
+            #
+            # visit_string must return a list of changes that it wants to make
+            # so they can be applied as a batch after traversal is complete
+            changes = visit_string(node)
+
+            new_contents = []
+            after = node
+
+            for start, end, element in changes:
+                new_contents.append(after[:start])
+                new_contents.append(element)
+                after = after[end:]
+            new_contents.append(after)
+            node.replace_with(*new_contents)
+
+        elif node.name == "a":
+            # Don't try to add links inside links
+            return
+
+        else:
+            for child in node.contents:
+                visit_node(child)
+
+    visit_node(soup)
+    return soup
