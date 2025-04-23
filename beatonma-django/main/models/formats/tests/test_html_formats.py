@@ -1,21 +1,22 @@
+import navigation
 from basetest.testcase import SimpleTestCase
-from main.models.posts.formats import Formats
-from main.views import reverse
+from main.models.formats import Formats
 
 
-class FormatsHtmlTests(SimpleTestCase):
+class HtmlFormatsTest(SimpleTestCase):
+
     def test_linkify_hashtags(self):
-        plain_text = Formats.postprocess_html("#one #two #three")
-        self.assert_html_links_to(plain_text, reverse.tag("one"), displaytext="#one")
-        self.assert_html_links_to(plain_text, reverse.tag("two"), displaytext="#two")
+        plain_text = Formats.to_html(Formats.NONE, "#one #two #three")
+        self.assert_html_links_to(plain_text, navigation.tag("one"), displaytext="#one")
+        self.assert_html_links_to(plain_text, navigation.tag("two"), displaytext="#two")
         self.assert_html_links_to(
-            plain_text, reverse.tag("three"), displaytext="#three"
+            plain_text, navigation.tag("three"), displaytext="#three"
         )
 
-        html = Formats.postprocess_html(r"<p>#one #two #three</p>")
-        self.assert_html_links_to(html, reverse.tag("one"), displaytext="#one")
-        self.assert_html_links_to(html, reverse.tag("two"), displaytext="#two")
-        self.assert_html_links_to(html, reverse.tag("three"), displaytext="#three")
+        html = Formats.to_html(Formats.NONE, r"<p>#one #two #three</p>")
+        self.assert_html_links_to(html, navigation.tag("one"), displaytext="#one")
+        self.assert_html_links_to(html, navigation.tag("two"), displaytext="#two")
+        self.assert_html_links_to(html, navigation.tag("three"), displaytext="#three")
 
     def test_prettify_links(self):
         html = (
@@ -33,7 +34,7 @@ class FormatsHtmlTests(SimpleTestCase):
             "</p>"
         )
 
-        formatted = Formats.postprocess_html(html)
+        formatted = Formats.to_html(Formats.NONE, html)
         self.assert_html_links_to(
             formatted,
             "https://reddit.com/u/fallofmath/",
@@ -105,28 +106,29 @@ class LinkifyKeywordsTests(SimpleTestCase):
 
     def test_simple(self):
         self.assertHTMLEqual(
-            Formats.postprocess_html("beatonma.org"),
+            Formats.to_html(Formats.NONE, "beatonma.org"),
             self.EXPECTED_LINK,
         )
 
     def test_replaces_only_first_instance(self):
         self.assertHTMLEqual(
-            Formats.postprocess_html("beatonma.org and beatonma.org again"),
+            Formats.to_html(Formats.NONE, "beatonma.org and beatonma.org again"),
             f"{self.EXPECTED_LINK} and beatonma.org again",
         )
 
     def test_replacement_ignored_when_link_already_in_html(self):
         self.assertHTMLEqual(
-            Formats.postprocess_html(
-                '<a href="https://beatonma.org">beatonma.org</a> and beatonma.org again'
+            Formats.to_html(
+                Formats.NONE,
+                '<a href="https://beatonma.org">beatonma.org</a> and beatonma.org again',
             ),
             '<a href="https://beatonma.org">beatonma.org</a> and beatonma.org again',
         )
 
     def test_replace_similar(self):
         self.assert_html_links_to(
-            Formats.postprocess_html(
-                "docker compose and docker should be different links"
+            Formats.to_html(
+                Formats.NONE, "docker compose and docker should be different links"
             ),
             {
                 "https://github.com/docker/compose",
@@ -135,37 +137,39 @@ class LinkifyKeywordsTests(SimpleTestCase):
         )
 
         self.assertHTMLEqual(
-            Formats.postprocess_html("microformat and microformats"),
+            Formats.to_html(Formats.NONE, "microformat and microformats"),
             """<a href="https://microformats.org">microformat</a> and microformats""",
         )
 
     def test_replacement_in_text_block(self):
         self.assertHTMLEqual(
-            Formats.postprocess_html(
-                "This is stuff about beatonma.org and it's super interesting"
+            Formats.to_html(
+                Formats.NONE,
+                "This is stuff about beatonma.org and it's super interesting",
             ),
             f"This is stuff about {self.EXPECTED_LINK} and it's super interesting",
         )
 
         self.assertHTMLEqual(
-            Formats.postprocess_html(
-                "This is stuff about beatonma.org: it's super interesting"
+            Formats.to_html(
+                Formats.NONE, "This is stuff about beatonma.org: it's super interesting"
             ),
             f"This is stuff about {self.EXPECTED_LINK}: it's super interesting",
         )
 
         self.assertHTMLEqual(
-            Formats.postprocess_html("This is stuff about beatonma.org."),
+            Formats.to_html(Formats.NONE, "This is stuff about beatonma.org."),
             f"This is stuff about {self.EXPECTED_LINK}.",
         )
 
-        linked = Formats.postprocess_html(
-            """This site is powered by Django, Celery, Nginx and PostgreSQL, running as a Docker Compose project on 
+        linked = Formats.to_html(
+            Formats.NONE,
+            """This site is powered by Django, Celery, Nginx and PostgreSQL, running as a Docker Compose project on
             Lightsail.
 
 The front end is built with a mixture of Sass, React and Typescript, preprocessed with Gulp and Webpack.
 
-beatonma.org is built with the Indieweb in mind. It supports Microformats and Webmentions (via my library, django-wm)."""
+beatonma.org is built with the Indieweb in mind. It supports Microformats and Webmentions (via my library, django-wm).""",
         )
         self.assert_html_links_to(linked, "https://beatonma.org", "beatonma.org")
         self.assert_html_links_to(

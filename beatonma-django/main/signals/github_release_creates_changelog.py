@@ -5,7 +5,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from github.models import GithubReleasePublishedPayload
 from main.models import App, Changelog
-from main.models.posts.formats import Formats
+from main.models.formats import Formats
 
 log = logging.getLogger(__name__)
 

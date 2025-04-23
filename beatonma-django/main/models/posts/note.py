@@ -3,7 +3,7 @@ import uuid
 from common.models import ApiModel
 from django.db import models
 from django.urls import reverse
-from main.models.posts.formats import Formats
+from main.models.formats import Formats
 from main.models.posts.webpost import BasePost
 from main.util import to_absolute_url
 from main.views import view_names

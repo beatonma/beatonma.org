@@ -1,7 +1,7 @@
 from common.models import BaseModel
 from django.db import models
 from django.db.models import QuerySet
-from main.models.posts.formats import FormatMixin, Formats
+from main.models.formats import FormatMixin, Formats
 from main.models.related_file import RelatedFilesMixin
 
 

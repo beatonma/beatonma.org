@@ -8,10 +8,10 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 from main.forms import SanitizedFileField
+from main.models.formats import FormatMixin, Formats
 from main.models.link import Link
 from main.models.mixins.styleable_svg import StyleableSvgMixin
 from main.models.mixins.themeable import ThemeableMixin
-from main.models.posts.formats import FormatMixin, Formats
 from main.models.posts.webpost import BasePost
 from main.view_adapters import FeedItemContext
 from main.views import view_names

@@ -1,35 +1,36 @@
+import navigation
 from basetest.testcase import LocalTestCase, TemplateTestCase
-from main.models import Blog, Note
-from main.models.posts.formats import Formats
-from main.views import reverse
+from main.models import Post
+from main.models.formats import Formats
 
 
 class WebpostHashtagTests(LocalTestCase):
     def setUp(self) -> None:
-        Note.objects.create(
+        Post.objects.create(
+            title="note",
             content="#startoftext This post has an #awesome-hashtag. "
-            "But#not-this-one #yes-this-one"
+            "But#not-this-one #yes-this-one",
         )
 
-        Blog.objects.create(
+        Post.objects.create(
             title="Markdown blog",
             content="#start #middle but not#this-one",
             format=Formats.MARKDOWN,
         )
 
-        Blog.objects.create(
+        Post.objects.create(
             title="HTML blog",
             content="#start #middle but not#this-one",
             format=Formats.NONE,
         )
 
-        Blog.objects.create(
+        Post.objects.create(
             title="Another markdown blog",
             content="[link to a fragment](https://example.org/article#section) #real",
             format=Formats.MARKDOWN,
         )
 
-        Blog.objects.create(
+        Post.objects.create(
             title="Another HTML blog",
             content="<style>"
             "body { background-color: #f00; } "
@@ -41,60 +42,60 @@ class WebpostHashtagTests(LocalTestCase):
 
     def test_tags_are_extracted_from_content(self):
         self.assertListEqual(
-            Note.objects.first().get_tags_list(),
+            Post.objects.get(title="note").get_tags_list(),
             ["awesome-hashtag", "startoftext", "yes-this-one"],
         )
         self.assertListEqual(
-            Blog.objects.get(title="Markdown blog").get_tags_list(),
+            Post.objects.get(title="Markdown blog").get_tags_list(),
             ["middle", "start"],
         )
 
     def test_only_tags_are_extracted_from_content(self):
-        markdown = Blog.objects.get(title="Another markdown blog")
+        markdown = Post.objects.get(title="Another markdown blog")
         self.assertListEqual(markdown.get_tags_list(), ["real"])
 
-        html = Blog.objects.get(title="Another HTML blog")
+        html = Post.objects.get(title="Another HTML blog")
         self.assertListEqual(html.get_tags_list(), ["actual-tag"])
 
 
 class WebpostHashtagViewTests(TemplateTestCase, WebpostHashtagTests):
     def test_tags_are_linked_in_content_html(self):
-        note = Note.objects.first()
+        note = Post.objects.get(title="note")
         self.assert_html_links_to(
             note.content_html,
-            reverse.tag("awesome-hashtag"),
+            navigation.tag("awesome-hashtag"),
             displaytext="#awesome-hashtag",
         )
         self.assert_html_links_to(
             note.content_html,
-            reverse.tag("startoftext"),
+            navigation.tag("startoftext"),
             displaytext="#startoftext",
         )
         self.assert_html_links_to(
             note.content_html,
-            reverse.tag("yes-this-one"),
+            navigation.tag("yes-this-one"),
             displaytext="#yes-this-one",
         )
 
-        blog_markdown = Blog.objects.get(title="Markdown blog")
-        blog_html = Blog.objects.get(title="HTML blog")
+        blog_markdown = Post.objects.get(title="Markdown blog")
+        blog_html = Post.objects.get(title="HTML blog")
 
         for blog in [blog_markdown, blog_html]:
             self.assert_html_links_to(
                 blog.content_html,
-                reverse.tag("middle"),
+                navigation.tag("middle"),
                 displaytext="#middle",
             )
             self.assert_html_links_to(
                 blog.content_html,
-                reverse.tag("start"),
+                navigation.tag("start"),
                 displaytext="#start",
             )
 
 
 class WebpostViewTests(TemplateTestCase):
     def test_raw_urls_are_linkified(self):
-        note = Note.objects.create(
+        note = Post.objects.create(
             content="Links to "
             "and https://reddit.com/u/fallofmath/ "
             "and https://pypi.org/project/django-wm/ "

@@ -12,8 +12,8 @@ from django.db import models
 from django.db.models import Manager
 from django.urls import reverse
 from main.models import Link
+from main.models.formats import FormatMixin, Formats
 from main.models.mixins import ThemeableMixin
-from main.models.posts.formats import FormatMixin, Formats
 from main.models.related_file import RelatedFilesMixin
 from mentions.models.mixins import MentionableMixin
 

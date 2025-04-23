@@ -11,7 +11,7 @@ const Navigation = {
   changelog: (slug: string) => `/changelog/${slug}/`,
   post: (slug: string) => `/posts/${slug}/`,
   posts: (params?: PostSearchParams) => `/${searchParams(params)}`,
-  tag: (tag: string) => `/tag/${tag}/`,
+  tag: (tag: string) => Navigation.posts({ tag }),
   webmentionsTest: () => `/webmentions_tester/`,
 };
 type Navigable = keyof typeof Navigation;
