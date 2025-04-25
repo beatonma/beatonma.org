@@ -1,3 +1,4 @@
+import inspect
 import logging
 from typing import Iterator, Type
 
@@ -5,19 +6,8 @@ from django import forms
 from django.apps import apps
 from django.contrib import admin
 from django.db import models
-from django.db.models import URLField
-from django.utils.safestring import mark_safe
 
 log = logging.getLogger(__name__)
-
-
-def clickable_url(attr: str):
-    def _callable(obj):
-        url = getattr(obj, attr)
-        return mark_safe(f"""<a href="{url}">{url}</a>""")
-
-    _callable.short_description = attr
-    return _callable
 
 
 class AdminWidgets:
@@ -46,10 +36,13 @@ class BaseAdmin(admin.ModelAdmin):
     """
     Defaults:
      - automatically shows all fields of the model.
-     - fields are read-only by default, unless their appear in `editable_fields`
+     - fields are read-only by default, unless they appear in `editable_fields`
      - fieldsets are automatically generated.
         - fields can be grouped by defining them in `field_groups`
         - editable and read-only fields appear in separate sets
+     - field generator methods should have their name prefixed with _field_ -
+       these will be automatically discovered and added to self.readonly_fields.
+       e.g. def _field_mymethod(self, obj): return obj.name
     """
 
     save_on_top = True
@@ -84,19 +77,22 @@ class BaseAdmin(admin.ModelAdmin):
     def __init__(self, model, admin_site):
         super().__init__(model, admin_site)
 
-        fields = self.init_fields(model)
+        if self.readonly_fields:
+            log.warning(
+                f"Admin class `{self.__class__.__name__}.readonly_fields` is defined but will be ignored. Use "
+                f"`editable_fields` instead."
+            )
 
-        # Update editable_fields using ordering from field_order
-        self.editable_fields = [x for x in fields if x in self.editable_fields]
-        self.readonly_fields = [x for x in fields if x not in self.editable_fields]
+        main_fields, readonly_fields, generated_fields = self.init_fields(model)
+        self.readonly_fields = readonly_fields + generated_fields
 
         if not self.fieldsets:
             self.fieldsets = (
-                (None, {"fields": self._apply_field_groups(self.editable_fields)}),
+                (None, {"fields": self._apply_field_groups(main_fields)}),
                 (
                     "Read only",
                     {
-                        "fields": self._apply_field_groups(self.readonly_fields),
+                        "fields": self._apply_field_groups(readonly_fields),
                         "classes": [
                             "collapse visible!"  # 'collapse' django class clashes with tailwind
                         ],
@@ -105,35 +101,39 @@ class BaseAdmin(admin.ModelAdmin):
             )
             self.fields = None
 
-        # Make any read-only URL fields clickable
-        url_fields = [
-            x
-            for x in (model._meta.fields or [])
-            if isinstance(x, URLField) and x.name in self.readonly_fields
-        ]
-
-        for f in url_fields:
-            clickable_name = f"_clickable_{f.name}"
-            setattr(self, clickable_name, clickable_url(f.name))
-
-            fields[fields.index(f.name)] = clickable_name
-            self.readonly_fields[self.readonly_fields.index(f.name)] = clickable_name
-
-    def init_fields(self, model):
+    def init_fields(self, model) -> tuple[list[str], list[str], list[str]]:
         """Get all fields for this model, ordered by `field_order`."""
-        fields = self.fields or []
-        fields = list(fields) + [
-            x.name for x in (model._meta.fields or []) if x.name not in fields
-        ]
+        fields = [x for x in model._meta.fields]
 
-        def _get_sort_order(field_name: str):
+        if self.editable_fields:
+            main_fields = [x.name for x in fields if x.editable and not x.primary_key]
+        else:
+            main_fields = [x.name for x in fields if x.name in self.editable_fields]
+
+        generated_fields = self._get_generated_fields()
+        readonly_fields = [x.name for x in fields if x.name not in main_fields]
+
+        def _get_sort_order(field_name):
             try:
                 return self.field_order.index(field_name)
             except ValueError:
                 return 1_000
 
-        fields = sorted(fields, key=_get_sort_order)
-        return fields
+        return (
+            sorted(main_fields + generated_fields, key=_get_sort_order),
+            sorted(readonly_fields, key=_get_sort_order),
+            generated_fields,
+        )
+
+    def _get_generated_fields(self):
+        prefix = "_field_"
+        methods = [
+            x
+            for x in inspect.getmembers(self, predicate=inspect.ismethod)
+            if x[0].startswith(prefix)
+        ]
+
+        return [x[0] for x in methods]
 
     def _apply_field_groups(
         self, fields: list[str]

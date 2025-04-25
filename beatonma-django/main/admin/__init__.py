@@ -10,4 +10,10 @@ admin.site.site_title = settings.SITE_NAME
 admin.site.index_title = "Index"
 
 
-register_model_to_default_admin(SiteHCard, editable_fields=["html"])
+register_model_to_default_admin(
+    SiteHCard,
+    editable_fields=["*"],
+    inlines=[
+        LinkInline,
+    ],
+)

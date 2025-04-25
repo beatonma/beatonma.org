@@ -18,16 +18,6 @@ class ThemeOverrideAdmin(BaseAdmin):
         "_public_until",
     ]
 
-    fields = [
-        "is_published",
-        "name",
-        "color_muted",
-        "color_vibrant",
-        "public_from",
-        "public_until",
-        "published_at",
-    ]
-
     def _color_preview(self, color):
         return mark_safe(
             '<div style="'
