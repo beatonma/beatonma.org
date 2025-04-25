@@ -278,7 +278,8 @@
 
   .prose-a,
   .prose a {
-    @apply text-vibrant;
+    /*@apply text-vibrant;*/
+    color: var(--link-color, var(--vibrant));
     font-weight: 500;
 
     &:hover {
@@ -429,7 +430,8 @@
 
   .prose > *:first-child,
   .prose > *:first-child > *:first-child {
-    &:not([class^="template-"]) {
+    /* Remove top whitespace of first item, unless it has a background or border */
+    &:not([class^="template-"], [class*="surface"], [class*="border"]) {
       margin-top: 0 !important;
       padding-top: 0 !important;
     }

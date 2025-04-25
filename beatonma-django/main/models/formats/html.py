@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Callable, Iterable
 
 import navigation
-from bs4 import BeautifulSoup, NavigableString
+from bs4 import BeautifulSoup, Comment, NavigableString
 from common.util.html import find_links_in_soup
 
 URL_REGEX = (
@@ -168,7 +168,6 @@ def linkify_html(
             if start < position:
                 continue
             if (url in existing_urls) and replacement.only_first:
-                print(f"ONLY ONCE {url}")
                 continue
 
             nodes.append(original_text[position:start])
@@ -182,11 +181,25 @@ def linkify_html(
         text_node.replace_with(*nodes)
 
     for text in soup.find_all(string=True):
-        if text.parent.name not in [
-            "script",
-            "style",
-            "a",
-        ]:  # Avoid modifying script, style, anchor content
-            process_text_node(text)
+        if isinstance(text, Comment):
+            continue
+        if text.parent.name in ["script", "style", "a"]:
+            # Avoid modifying script, style, anchor content
+            continue
 
+        process_text_node(text)
+
+    return soup
+
+
+def flatten_contents(soup: BeautifulSoup) -> BeautifulSoup:
+    """Unwrap the body contents from its html.body wrapper so all contents
+    appear at the root level.
+
+    Parsing an HTML fragment into BeautifulSoup usually results in the content
+    being wrapped in <html><body> tags, but a <!-- comment --> at the
+    start of the fragment can appear as a top-level element instead of being
+    wrapped. By unwrapping the body contents we ensure that the structure of
+    the soup is the same as the input HTML."""
+    soup.html.replace_with(*soup.body.contents)
     return soup

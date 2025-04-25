@@ -10,18 +10,18 @@ from urllib.parse import urljoin
 from common.util import regex
 
 _LIGATURES: dict[str, str] = {
-    "<->": "&harr;",  # ↔
-    "<-->": "&xharr;",  # ⟷
-    "<=>": "&iff;",  # ⇔
-    "<==>": "&xhArr;",  # ⟺
-    "-->": "&xrarr;",  # ⟶
-    "->": "&rarr;",  # →
-    "<--": "&xlarr;",  # ⟵
-    "<-": "&larr;",  # ←
-    "==>": "&xrArr;",  # ⟹
-    "=>": "&#x21E8;",  # ⇨
-    "<==": "&xlArr;",  # ⟸
-    "<=": "&#x21E6;",  # ⇦
+    " <-> ": " &harr; ",  # ↔
+    " <--> ": " &xharr; ",  # ⟷
+    " <=> ": " &iff; ",  # ⇔
+    " <==> ": " &xhArr; ",  # ⟺
+    " --> ": " &xrarr; ",  # ⟶
+    " -> ": " &rarr; ",  # →
+    " <-- ": " &xlarr; ",  # ⟵
+    " <- ": " &larr; ",  # ←
+    " ==> ": " &xrArr; ",  # ⟹
+    " => ": " &#x21E8; ",  # ⇨
+    " <== ": " &xlArr; ",  # ⟸
+    " <= ": " &#x21E6; ",  # ⇦
     "...": "&hellip;",  # …
     "(c)": "&copy;",  # ©
     "(r)": "&reg;",  # ®

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Nullish } from "@/types";
 import { PropsExcept } from "@/types/react";
 import { onlyIf } from "@/util/optional";
-import { formatUrl, joinNonEmpty } from "@/util/transforms";
+import { UrlFormatStyle, formatUrl, joinNonEmpty } from "@/util/transforms";
 
 interface ExternalLinkProps {
   follow?: boolean;
@@ -11,7 +11,9 @@ interface ExternalLinkProps {
 }
 export default function ExternalLink(
   props: ExternalLinkProps &
-    PropsExcept<typeof Link, "href"> & { href: string | Nullish },
+    PropsExcept<typeof Link, "href"> & { href: string | Nullish } & {
+      formatStyle?: UrlFormatStyle;
+    },
 ) {
   const {
     href,
@@ -20,6 +22,7 @@ export default function ExternalLink(
     follow = false,
     opener = false,
     referrer = false,
+    formatStyle,
     ...rest
   } = props;
   if (!href) {
@@ -38,7 +41,7 @@ export default function ExternalLink(
       )}
       {...rest}
     >
-      {children ?? formatUrl(href)}
+      {children ?? formatUrl(href, formatStyle)}
     </Link>
   );
 }

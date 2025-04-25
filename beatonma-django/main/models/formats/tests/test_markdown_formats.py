@@ -4,8 +4,20 @@ from main.models.formats import Formats
 
 
 class MarkdownFormatsTest(SimpleTestCase):
-    def assert_md(self, markdown: str, html: str):
-        self.assertHTMLEqual(Formats.to_html(Formats.MARKDOWN, markdown), html)
+    def assert_md(self, markdown: str, expected_html: str):
+        formatted = Formats.to_html(Formats.MARKDOWN, markdown)
+
+        self.assertHTMLEqual(formatted, expected_html)
+        return formatted
+
+    def test_comments_are_maintained(self):
+        self.assert_md("<!-- comment -->", "<!-- comment -->")
+        self.assert_md(
+            """
+<!-- this is a comment -->
+This is content""",
+            "<!-- this is a comment --><p>This is content</p>",
+        )
 
     def test_callout(self):
         markdown = """> [!WARNING]
@@ -26,7 +38,6 @@ beatonma.org is built with the indieweb in mind. It supports microformats and we
 
 beatonma.org is hosted on a VPS in the UK by a European company.
 """
-        print("HTML", Formats.to_html(Formats.MARKDOWN, markdown))
 
         self.assert_md(
             markdown,
@@ -85,9 +96,8 @@ library, <a href="https://github.com/beatonma/django-wm">django-wm</a>).</p>
         self.assert_html_links_to(html, navigation.tag("three"), displaytext="#three")
 
     def test_markdown_complex(self):
-        self.assert_md(
-            """# Article
-
+        markdown = """<!-- comment #1 --># Article
+<!-- comment #2 -->
 This --> is a #complicated piece of writing with a link(tm) to beatonma.org and some `inline code` and...
 
 ```python
@@ -100,14 +110,15 @@ This --> is a #complicated piece of writing with a link(tm) to beatonma.org and 
 | Table |
 |-------|
 |content|
+<!-- comment #3 -->
 
 List of stuff:
 - one(r)
 - two(c)
 - ==> three
-""",
-            """<h1 id="article">Article</h1>
-
+<!-- comment #4 -->"""
+        expected_html = """<!-- comment #1 --><h1 id="article">Article</h1>
+<!-- comment #2 -->
 <p>This &xrarr; is a <a href="/?tag=complicated">#complicated</a> piece of writing with a link&trade; to <a
 href="https://beatonma.org">beatonma.org</a> and some <code>inline code</code> and&hellip;</p>
 
@@ -126,15 +137,19 @@ href="https://beatonma.org">beatonma.org</a> and some <code>inline code</code> a
   <thead><tr><th>Table</th></tr></thead>
   <tbody><tr><td>content</td></tr></tbody>
 </table>
-
+<!-- comment #3 -->
 <p>List of stuff:</p>
-
 <ul>
   <li>one®</li>
   <li>two©</li>
   <li>&xrArr; three</li>
-</ul>""",
-        )
+</ul>
+<!-- comment #4 -->"""
+        formatted = self.assert_md(markdown, expected_html)
+        self.assertIn("<!-- comment #1 -->", formatted)
+        self.assertIn("<!-- comment #2 -->", formatted)
+        self.assertIn("<!-- comment #3 -->", formatted)
+        self.assertIn("<!-- comment #4 -->", formatted)
 
     def test_md_link_patterns(self):
         """Tests for patterns passed to markdown2 link-patterns extra."""

@@ -30,7 +30,41 @@ export const SampleMedia: MediaFile[] = [
     description: "",
     fit: null,
   },
+  {
+    url: "/media/uploads/2025/hero-131610_0T5SIVu.jpg",
+    thumbnail_url: "/media/uploads/2025/hero-131610-thumb_46tMTWJ.webp",
+    type: "image",
+    name: "related/2021/46tMTWJ.jpg",
+    description: "",
+    fit: null,
+  },
+  {
+    url: "/media/related/2025/fe7cae.jpg",
+    thumbnail_url: "/media/related/2025/fe7cae-thumb.webp",
+    type: "image",
+    name: "related/2021/fe7cae.jpg",
+    description: "",
+    fit: null,
+  },
 ];
+
+const PostWithMediaTemplate: PostPreview = {
+  post_type: "post",
+  title: "Tailwind Prose",
+  url: "/posts/202504028a1/",
+  is_published: true,
+  published_at: "2025-04-02T17:21:01.768Z",
+  theme: null,
+  hero_embedded_url: null,
+  hero_image: null,
+  content_html: "Typography check",
+  content_script: "",
+  files: [],
+  is_preview: true,
+};
+export const SamplePostsWithMedia: PostPreview[] = [...Array(5).keys()].map(
+  (n) => ({ ...PostWithMediaTemplate, files: SampleMedia.slice(0, n) }),
+);
 
 export const SamplePosts: PostPreview[] = [
   {

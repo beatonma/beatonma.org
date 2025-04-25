@@ -112,7 +112,7 @@ const VideoView = (props: MediaViewProps & VideoProps) => {
 };
 
 const MediaWrapper = (props: DivPropsNoChildren) => {
-  return <div {...addClass(props, "size-full overflow-hidden")} />;
+  return <div {...addClass(props, "overflow-hidden [&>img,&>video]:m-0")} />;
 };
 
 const AudioView = (props: MediaViewProps) => {

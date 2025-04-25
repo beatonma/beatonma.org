@@ -1,5 +1,6 @@
 import { Metadata } from "next";
-import { SampleMedia } from "@/app/dev/_sample";
+import { SampleMedia, SamplePostsWithMedia } from "@/app/dev/_sample";
+import Post from "@/components/data/posts/post";
 import MediaCarousel from "@/components/media/media-carousel";
 
 export const metadata: Metadata = {
@@ -9,11 +10,17 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   return (
-    <div className="readable">
+    <div className="readable space-y-8">
       <MediaCarousel
         media={SampleMedia}
         className="max-h-[40vh] overflow-hidden"
       />
+
+      <div className="max-w-[60ch] space-y-8">
+        {SamplePostsWithMedia.map((post) => (
+          <Post post={post} key={post.files.length} />
+        ))}
+      </div>
     </div>
   );
 }

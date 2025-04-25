@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 
 from common.models import BaseModel
 from common.models.generic import GenericFkMixin
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.db.models import UniqueConstraint
 from main.models.mixins import StyleableSvgMixin
@@ -40,6 +41,7 @@ class LinkQuerySet(models.QuerySet):
 class Link(GenericFkMixin, BaseModel):
     objects = LinkQuerySet.as_manager()
     url = models.URLField(max_length=512)
+    sort_order = models.PositiveSmallIntegerField(default=0)
     description = models.CharField(
         max_length=128,
         choices=DESCRIPTION_CHOICES,
@@ -81,6 +83,14 @@ class Link(GenericFkMixin, BaseModel):
                 name="unique_url_per_target",
             )
         ]
+        ordering = ["sort_order"]
+
+
+class LinkedMixin(models.Model):
+    class Meta:
+        abstract = True
+
+    links = GenericRelation(Link)
 
 
 class Host(StyleableSvgMixin, BaseModel):

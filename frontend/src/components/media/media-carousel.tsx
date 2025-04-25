@@ -128,7 +128,7 @@ const CarouselItem = (
       <MediaView
         media={media}
         image={{ fit: "contain" }}
-        className="max-h-full min-w-64 self-center size-full"
+        className="max-h-full min-w-64 self-center size-full overflow-hidden"
       />
 
       {onlyIf(media.description, (description) => (

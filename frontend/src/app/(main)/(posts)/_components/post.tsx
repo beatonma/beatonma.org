@@ -1,6 +1,8 @@
+import parseHtml from "html-react-parser";
 import Link from "next/link";
+import { AutoHCard } from "@/app/_components/h-card";
 import { InlineLink } from "@/components/button";
-import { HtmlContent, PublishingStatus } from "@/components/data/posts";
+import { PublishingStatus } from "@/components/data/posts";
 import Post from "@/components/data/posts/post";
 import {
   AppDetail,
@@ -28,28 +30,33 @@ import styles from "./post.module.css";
 
 const Insets = "px-edge xl:px-0";
 
+interface Options {
+  showPublishedDate?: boolean;
+}
 interface PostProps {
   post: PostDetail | AppDetail | ChangelogDetail;
+  options?: Options;
 }
 interface AppProps {
   app: AppDetail;
 }
 
 export default function PostPage(props: PostProps) {
-  const { post } = props;
+  const { post, options } = props;
   const themeSource = isChangelog(post) && !post.theme ? post.app : post;
 
   return (
     <div style={itemTheme(themeSource)}>
       <PublishingStatus post={post} />
 
-      <main className={classes("h-entry mb-48", "grid", styles.postGridAreas)}>
+      <main className={classes("mb-48", "grid", styles.postGridAreas)}>
         <article
           className={classes(
-            "grid subgrid-span-full space-y-8 w-full",
+            "h-entry grid subgrid-span-full space-y-8 w-full",
             styles.postGridAreas,
           )}
         >
+          <PostMetadata post={post} />
           <HeroHtml
             post={post}
             className="col-start-1 col-span-full row-start-1 max-h-[50vh]"
@@ -62,16 +69,18 @@ export default function PostPage(props: PostProps) {
           />
           <PostInfo
             post={post}
+            options={options}
             className={classes(
-              "[grid-area:info] text-sm xl:text-end xl:*:justify-end xl:*:justify-self-end",
+              "@container [grid-area:info] text-sm xl:text-end xl:*:justify-end xl:*:justify-self-end",
               Insets,
               "xl:pe-edge",
             )}
           />
 
-          <HtmlContent
+          <MainContent
             post={post}
             className={classes(
+              "@container",
               "[grid-area:content]",
               "e-content",
               ProseClassName,
@@ -98,7 +107,7 @@ export default function PostPage(props: PostProps) {
   );
 }
 const PostTitle = (props: PostProps & DivPropsNoChildren) => {
-  const { post, ...rest } = props;
+  const { post, options, ...rest } = props;
 
   const _isChangelog = isChangelog(post);
   if (!post.title && !post.subtitle && !_isChangelog) return null;
@@ -118,12 +127,16 @@ const PostTitle = (props: PostProps & DivPropsNoChildren) => {
 };
 
 const PostInfo = (props: PostProps & DivPropsNoChildren) => {
-  const { post, ...rest } = props;
+  const { post, options = {}, ...rest } = props;
+  const { showPublishedDate = true } = options;
+
   return (
-    <div {...rest}>
-      <span className="text-current/80 xl:block xl:mb-2">
-        Published <Date date={post.published_at} />
-      </span>
+    <div {...addClass(rest, "empty:hidden")}>
+      {showPublishedDate && (
+        <span className="text-current/80 xl:block xl:mb-2">
+          Published <Date date={post.published_at} />
+        </span>
+      )}
 
       {isApp(post) && post.script && (
         <AppLink app={post} liveInstance={true} className="my-2" />
@@ -132,12 +145,18 @@ const PostInfo = (props: PostProps & DivPropsNoChildren) => {
         <AppLink app={post.app} liveInstance={false} className="my-2" />
       )}
 
-      <PostLinks post={post} className="row gap-x-2 flex-wrap empty:hidden" />
-      <PostTags post={post} className="row gap-x-2 flex-wrap empty:hidden" />
+      <PostLinks post={post} className="row gap-x-2 flex-wrap" />
+      <PostTags post={post} className="row gap-x-2 flex-wrap" />
+    </div>
+  );
+};
 
-      <div className="hidden">
-        <Link className="u-url" href={post.url} />
-      </div>
+const PostMetadata = (props: PostProps) => {
+  const { post } = props;
+
+  return (
+    <div className="hidden">
+      <Link className="u-url" href={post.url} />
     </div>
   );
 };
@@ -182,6 +201,7 @@ const AppLink = (
 
 const PostLinks = (props: PostProps & DivPropsNoChildren) => {
   const { post, ...rest } = addClass(props, "text-base");
+  if (!post.links.length) return null;
 
   return (
     <div {...rest}>
@@ -210,6 +230,7 @@ const OptionalRemoteIcon = (
 
 const PostTags = (props: PostProps & DivPropsNoChildren) => {
   const { post, ...rest } = addClass(props, "text-base");
+  if (!post.tags.length) return null;
 
   return (
     <div {...rest}>
@@ -291,7 +312,7 @@ const Changelogs = (props: AppProps & DivPropsNoChildren) => {
 
   return (
     <div {...rest}>
-      <h2 className="prose-h2">Changelog</h2>
+      <h2 className="prose-h2 px-edge">Changelog</h2>
 
       <div className="space-y-8">
         {app.changelog.map((entry) => (
@@ -300,4 +321,23 @@ const Changelogs = (props: AppProps & DivPropsNoChildren) => {
       </div>
     </div>
   );
+};
+
+const MainContent = (props: PostProps & DivPropsNoChildren) => {
+  const { post, ...rest } = props;
+
+  const content = post.content_html
+    ? parseHtml(post.content_html, {
+        replace: (domNode) => {
+          if (domNode.type === "comment") {
+            const value = domNode.nodeValue.trim();
+            if (value === "h-card") {
+              return <AutoHCard showDetail={true} />;
+            }
+          }
+        },
+      })
+    : post.content_html;
+
+  return <div {...rest}>{content}</div>;
 };

@@ -1,11 +1,11 @@
 import Link from "next/link";
 import React from "react";
 import { ResponseOf } from "@/api";
-import GlobalHCard from "@/app/(main)/_components/hcard";
 import GlobalMotd from "@/app/(main)/_components/motd";
 import ReturnToTopButton from "@/app/(main)/_components/return-to-top";
 import GlobalSearch from "@/app/(main)/_components/search";
 import styles from "@/app/(main)/layout.module.css";
+import HCard from "@/app/_components/h-card/hcard";
 import { Button } from "@/components/button";
 import { Row } from "@/components/layout";
 import ThemeController from "@/components/themed/light-dark";
@@ -59,7 +59,7 @@ export default function MainLayout({
       {children}
 
       <footer className="mx-auto pb-8">
-        <GlobalHCard hcard={state?.hcard} className="hidden" />
+        <HCard hcard={state?.hcard} showDetail={false} className="hidden!" />
         <ReturnToTopButton />
       </footer>
     </div>

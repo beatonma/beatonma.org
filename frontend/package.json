@@ -11,6 +11,7 @@
     "jest:watch": "jest --watch"
   },
   "dependencies": {
+    "html-react-parser": "^5.2.3",
     "next": "15.2.4",
     "openapi-fetch": "^0.13.5",
     "react": "^19.0.0",

@@ -37,6 +37,7 @@
 
 @theme {
   --spacing-px: 1px;
+  --spacing-ch: 0.5ch;
   --spacing-em: 1em;
   --spacing-lh: 1lh;
   --spacing-readable: 80ch;
@@ -79,8 +80,12 @@
     border: 0;
   }
 
-  a:hover {
-    @apply underline;
+  a {
+    color: var(--link-color, inherit);
+
+    &:hover {
+      @apply underline;
+    }
   }
 
   img {
@@ -265,6 +270,13 @@
   &:not(:disabled):hover::before,
   &:not(:disabled):focus-visible::before {
     @apply bg-hover;
+  }
+}
+
+@utility divider-* {
+  & > *:not(:last-child)::after {
+    /* prettier-ignore */
+    content: --value([*]);
   }
 }
 

@@ -239,3 +239,8 @@
   inherits: true;
   initial-value: none;
 }
+@property --link-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: none;
+}

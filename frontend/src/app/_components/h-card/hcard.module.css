@@ -1,0 +1,22 @@
+.hcardGrid {
+  --image-size: 4em;
+
+  display: grid;
+  grid-template-areas:
+    "image info"
+    ". ."
+    "relme relme";
+  row-gap: calc(var(--spacing));
+  /*align-items: center;*/
+  justify-content: center;
+  align-items: center;
+
+  /* tailwind @sm */
+  @container (width >= 32rem) {
+    --image-size: 120px;
+    grid-template-areas:
+      "image info"
+      "image relme";
+    row-gap: 0;
+  }
+}

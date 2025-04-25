@@ -526,12 +526,34 @@ export interface components {
             /** Redirect */
             redirect: string;
         };
+        /** GlobalHCard */
+        GlobalHCard: {
+            /** Name */
+            name: string;
+            /** Url */
+            url: string;
+            photo: components["schemas"]["File"] | null;
+            logo: components["schemas"]["File"] | null;
+            location: components["schemas"]["HAdr"] | null;
+            /** Birthday */
+            birthday: string | null;
+            /** Relme */
+            relme: components["schemas"]["Link"][];
+        };
         /** GlobalState */
         GlobalState: {
             /** Motd */
             motd: string | null;
-            /** Hcard */
-            hcard: string | null;
+            hcard: components["schemas"]["GlobalHCard"] | null;
+        };
+        /** HAdr */
+        HAdr: {
+            /** Locality */
+            locality: string | null;
+            /** Region */
+            region: string | null;
+            /** Country */
+            country: string | null;
         };
         /** ContactForm */
         ContactForm: {

@@ -61,17 +61,19 @@ const PreviewOne = (
   props: { media: MediaFile } & Omit<DivPropsNoChildren, "onClick">,
 ) => {
   const { media, ...rest } = props;
-  return <MediaThumbnail media={media} {...rest} />;
+  return (
+    <MediaThumbnail media={media} {...addClass(rest, "overflow-hidden")} />
+  );
 };
 
 const PreviewTwo = (props: { media: MediaGroup<2> } & DivPropsNoChildren) => {
-  const { media, ...rest } = addClass(props, "relative");
+  const { media, ...rest } = addClass(props, "relative overflow-hidden");
 
   const [one, two] = media;
 
   return (
     <div {...rest}>
-      <MediaThumbnail media={one} />
+      <MediaThumbnail media={one} className="overflow-hidden" />
 
       <MiniThumbnailOverlay>
         <MediaThumbnail media={two} className={`${PreviewMiniStyle}`} />
@@ -81,13 +83,13 @@ const PreviewTwo = (props: { media: MediaGroup<2> } & DivPropsNoChildren) => {
 };
 
 const PreviewThree = (props: { media: MediaGroup<3> } & DivPropsNoChildren) => {
-  const { media, ...rest } = addClass(props, "relative");
+  const { media, ...rest } = addClass(props, "relative overflow-hidden");
 
   const [one, two, three] = media;
 
   return (
     <div {...rest}>
-      <MediaThumbnail media={one} />
+      <MediaThumbnail media={one} className="overflow-hidden" />
 
       <MiniThumbnailOverlay>
         <MediaThumbnail media={two} className={PreviewMiniStyle} />

@@ -8,7 +8,6 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.cache import cache_page
 from main.models import AppPost, ChangelogPost, Post
 from main.models.mixins import ThemeableMixin
-from main.models.related_file import BaseUploadedFile, MediaType
 from main.models.rewrite.post import PostType
 from ninja import Field, Router, Schema
 from ninja.decorators import decorate_view
@@ -16,31 +15,15 @@ from ninja.pagination import paginate
 
 from ..models.rewrite import AboutPost
 from .querysets import get_feed
+from .schema import File, Link
 
 log = logging.getLogger(__name__)
 router = Router(tags=["Posts"])
-
-type Url = str
 
 
 class Theme(Schema):
     muted: str | None = None
     vibrant: str | None = None
-
-
-class File(Schema):
-    url: Url = Field(alias="file_or_none.url")
-    thumbnail_url: Url = Field(alias="thumbnail_or_none.url", default=None)
-    type: MediaType
-    name: str | None = Field(alias="original_filename", default=None)
-    description: str | None
-    fit: BaseUploadedFile.ImageFit | None
-
-
-class Link(Schema):
-    url: str
-    description: str | None = None
-    icon: Url | None = Field(alias="host.icon_file", default=None)
 
 
 class Tag(Schema):
