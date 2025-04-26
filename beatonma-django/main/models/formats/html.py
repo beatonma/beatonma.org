@@ -203,3 +203,16 @@ def flatten_contents(soup: BeautifulSoup) -> BeautifulSoup:
     the soup is the same as the input HTML."""
     soup.html.replace_with(*soup.body.contents)
     return soup
+
+
+def remove_empty(soup: BeautifulSoup) -> BeautifulSoup:
+    for text in soup.find_all(string=True):
+        if isinstance(text, NavigableString):
+            if not text.strip():
+                text.replace_with()
+
+    for x in soup.find_all("p"):
+        if not x.contents:
+            x.replace_with()
+
+    return soup

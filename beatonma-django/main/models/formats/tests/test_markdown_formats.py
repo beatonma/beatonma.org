@@ -13,11 +13,13 @@ class MarkdownFormatsTest(SimpleTestCase):
     def test_comments_are_maintained(self):
         self.assert_md("<!-- comment -->", "<!-- comment -->")
         self.assert_md(
-            """
-<!-- this is a comment -->
-This is content""",
-            "<!-- this is a comment --><p>This is content</p>",
+            """<!-- this is a comment -->This is content<!-- this is a comment -->""",
+            "<!-- this is a comment --><p>This is content</p><!-- this is a comment -->",
         )
+
+    def test_empty_is_empty(self):
+        self.assert_md("", "")
+        self.assert_md("      \n \r\n ", "")
 
     def test_callout(self):
         markdown = """> [!WARNING]

@@ -71,6 +71,7 @@ class Formats(models.IntegerChoices):
                 Html.flatten_contents,
                 Html.linkify_html,
                 Html.prettify_links,
+                Html.remove_empty,
             ],
         ).decode_contents()
 
