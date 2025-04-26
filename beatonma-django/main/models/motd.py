@@ -2,12 +2,13 @@ import logging
 
 from common.models import BaseModel
 from django.db import models
+from main.models.mixins.cache import GlobalStateCacheMixin
 from main.models.mixins.ephemeral import EphemeralMixin
 
 log = logging.getLogger(__name__)
 
 
-class MessageOfTheDay(EphemeralMixin, BaseModel):
+class MessageOfTheDay(GlobalStateCacheMixin, EphemeralMixin, BaseModel):
     search_enabled = False
 
     description = models.CharField(

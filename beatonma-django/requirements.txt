@@ -11,6 +11,7 @@ celery[redis]>=5.3
 django-colorfield>=0.10
 django-extensions>=3.2
 django-ninja>=1.1.0
+django-redis>=5.4.0
 django-taggit>=4.0
 django-user-agents>=0.4
 django-wm>=4.1

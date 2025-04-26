@@ -4,6 +4,7 @@ from typing import Literal
 
 from common.models import BaseModel, PublishedMixin, TaggableMixin
 from common.models.api import ApiEditable
+from common.models.cache import InvalidateCacheMixin
 from common.models.published import PublishedQuerySet
 from common.util import regex
 from common.util.pipeline import PipelineItem
@@ -25,6 +26,7 @@ class PostQuerySet(PublishedQuerySet):
 
 
 class BasePost(
+    InvalidateCacheMixin,
     PublishedMixin,
     MentionableMixin,
     TaggableMixin,
@@ -37,6 +39,8 @@ class BasePost(
     class Meta:
         abstract = True
         ordering = ("-published_at",)
+
+    cache_key = "__post__"
 
     search_enabled = True
     search_fields = ("title", "content", "tags__name")

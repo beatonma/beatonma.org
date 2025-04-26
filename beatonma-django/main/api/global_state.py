@@ -3,6 +3,7 @@ from datetime import date
 from django.http import HttpRequest
 from django.views.decorators.cache import cache_page
 from main.models import MessageOfTheDay, SiteHCard
+from main.models.mixins.cache import GlobalStateCacheMixin
 from ninja import Router, Schema
 from ninja.decorators import decorate_view
 from pydantic import Field
@@ -42,7 +43,7 @@ class GlobalState(Schema):
 
 
 @router.get("/state/", response=GlobalState)
-@decorate_view(cache_page(60 * 60))
+@decorate_view(cache_page(60 * 60, key_prefix=GlobalStateCacheMixin.cache_key))
 def get_global_state(request: HttpRequest):
     hcard = SiteHCard.objects.singleton()
 

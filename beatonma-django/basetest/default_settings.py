@@ -1,14 +1,4 @@
-import logging
-
-from beatonma.settings.app_settings import *  # noqa
-from beatonma.settings.defaults import *  # noqa
-from beatonma.settings.installed_apps import INSTALLED_APPS  # noqa
-from beatonma.settings.internationalization import LANGUAGE_CODE  # noqa
-from beatonma.settings.internationalization import TIME_ZONE  # noqa
-from beatonma.settings.internationalization import USE_I18N  # noqa
-from beatonma.settings.internationalization import USE_TZ  # noqa
-from beatonma.settings.middleware import MIDDLEWARE  # noqa
-from beatonma.settings.templates import TEMPLATES  # noqa
+from beatonma.settings import *  # noqa
 
 # Transitional setting until Django 6.0
 FORMS_URLFIELD_ASSUME_HTTPS = True
@@ -32,9 +22,6 @@ ADMINS = []
 
 CELERY_BROKER_URL = "fake-celery-broker-url"
 
-# Taggit - tag manager
-TAGGIT_CASE_INSENSITIVE = True
-
 # Remote services
 FCM_PROJECT_ID = "fake-project-id"
 FCM_SERVICE_ACCOUNT_FILE = "fake-file.json"
@@ -50,9 +37,10 @@ BMA_NOTIFICATIONS_URL = "notifications/"
 
 MEDIA_ROOT = "/tmp/bma-tests/media/"
 
+
 LOGGING = {
     "version": 1,
-    "disable_existing_loggers": False,
+    "disable_existing_loggers": True,
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
@@ -61,19 +49,9 @@ LOGGING = {
     },
     "loggers": {
         app: {
-            "level": logging.INFO,
+            "level": logging.DEBUG,
             "handlers": ["console"],
         }
-        for app in [
-            "bma_app",
-            "bma_dev",
-            "common",
-            "contact",
-            "dashboard",
-            "django",
-            "github",
-            "main",
-            "webmentions_tester",
-        ]
+        for app in INSTALLED_APPS
     },
 }

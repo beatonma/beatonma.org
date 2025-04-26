@@ -5,9 +5,10 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 from .link import Link
+from .mixins.cache import GlobalStateCacheMixin
 
 
-class SiteHCard(Singleton, BaseModel):
+class SiteHCard(GlobalStateCacheMixin, Singleton, BaseModel):
     name = models.CharField(max_length=255, help_text=microformats.HCard.p_name)
     url = models.URLField(help_text=microformats.HCard.u_url)
 

@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.cache import cache_page
 from main.models import AppPost, ChangelogPost, Post
 from main.models.mixins import ThemeableMixin
+from main.models.rewrite.post import BasePost as BasePost_Model
 from main.models.rewrite.post import PostType
 from ninja import Field, Router, Schema
 from ninja.decorators import decorate_view
@@ -124,7 +125,7 @@ class AppDetail(PostDetail):
 
 @router.get("/posts/", response=list[PostPreview])
 @paginate
-@decorate_view(cache_page(60 * 60))
+@decorate_view(cache_page(60 * 60, key_prefix=BasePost_Model.cache_key))
 def post_feed(request: HttpRequest, query: str = None, tag: str = None):
     feed = get_feed(query=query, tag=tag)
 
