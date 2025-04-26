@@ -5,7 +5,8 @@
     ". info ."
     ". content ."
     ". media ."
-    ". mentions .";
+    ". mentions ."
+    ". changelogs .";
   grid-template-columns: 1fr min(100%, var(--spacing-readable)) 1fr;
 
   /* Tailwind xl */
@@ -18,7 +19,8 @@
       ". . . title . . ."
       ". . . content . info ."
       ". . . media . info ."
-      ". . . mentions . . .";
+      ". . . mentions . info ."
+      ". . . changelogs . info .";
     grid-template-columns:
       1fr var(--sidebar-width) var(--grid-gap) var(--spacing-readable)
       var(--grid-gap) var(--sidebar-width) 1fr;

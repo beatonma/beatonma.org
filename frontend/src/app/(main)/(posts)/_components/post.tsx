@@ -29,12 +29,13 @@ import { addClass, classes } from "@/util/transforms";
 import styles from "./post.module.css";
 
 const Insets = "px-edge xl:px-0";
+type Post = PostDetail | AppDetail | ChangelogDetail;
 
 interface Options {
   showPublishedDate?: boolean;
 }
 interface PostProps {
-  post: PostDetail | AppDetail | ChangelogDetail;
+  post: Post;
   options?: Options;
 }
 interface AppProps {
@@ -49,10 +50,10 @@ export default function PostPage(props: PostProps) {
     <div style={itemTheme(themeSource)}>
       <PublishingStatus post={post} />
 
-      <main className={classes("mb-48", "grid", styles.postGridAreas)}>
+      <main className={classes("mb-24", "grid", styles.postGridAreas)}>
         <article
           className={classes(
-            "h-entry grid subgrid-span-full space-y-8 w-full",
+            "h-entry grid subgrid-span-full gap-y-4 w-full",
             styles.postGridAreas,
           )}
         >
@@ -98,14 +99,20 @@ export default function PostPage(props: PostProps) {
           post={post}
           className={classes("[grid-area:mentions] mt-8", Insets)}
         />
-      </main>
 
-      {isApp(post) && <Changelogs app={post} className="readable mx-auto" />}
+        {isApp(post) && (
+          <Changelogs
+            app={post}
+            className="[grid-area:changelogs] readable mx-auto"
+          />
+        )}
+      </main>
 
       <DangerousHtml html={post.content_script} className="hidden" />
     </div>
   );
 }
+
 const PostTitle = (props: PostProps & DivPropsNoChildren) => {
   const { post, options, ...rest } = props;
 
@@ -174,7 +181,7 @@ const AppLink = (
     ...rest
   } = addClass(
     props,
-    "grid grid-cols-[auto_1fr] hover-extra-background w-fit text-start",
+    "grid grid-cols-[auto_1fr] hover-extra-background w-fit text-start hover-extra-background before:-inset-2",
   );
 
   return (
@@ -187,7 +194,7 @@ const AppLink = (
       <OptionalRemoteIcon
         src={app.icon?.url}
         mask={false}
-        className="text-[calc(--spacing(8))] me-2"
+        className="text-4xl me-2"
       />
       <div>
         <div className="font-bold">{app.title}</div>
@@ -312,7 +319,7 @@ const Changelogs = (props: AppProps & DivPropsNoChildren) => {
 
   return (
     <div {...rest}>
-      <h2 className="prose-h2 px-edge">Changelog</h2>
+      <h2 className={classes("prose-h2", Insets)}>Changelog</h2>
 
       <div className="space-y-8">
         {app.changelog.map((entry) => (
@@ -326,18 +333,18 @@ const Changelogs = (props: AppProps & DivPropsNoChildren) => {
 const MainContent = (props: PostProps & DivPropsNoChildren) => {
   const { post, ...rest } = props;
 
-  const content = post.content_html
-    ? parseHtml(post.content_html, {
-        replace: (domNode) => {
-          if (domNode.type === "comment") {
-            const value = domNode.nodeValue.trim();
-            if (value === "h-card") {
-              return <AutoHCard showDetail={true} />;
-            }
-          }
-        },
-      })
-    : post.content_html;
+  if (!post.content_html) return null;
+
+  const content = parseHtml(post.content_html, {
+    replace: (domNode) => {
+      if (domNode.type === "comment") {
+        const value = domNode.nodeValue.trim();
+        if (value === "h-card") {
+          return <AutoHCard showDetail={true} />;
+        }
+      }
+    },
+  });
 
   return <div {...rest}>{content}</div>;
 };
