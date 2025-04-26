@@ -32,6 +32,7 @@ class Command(BaseCommand):
         Post.objects.all().delete()
         AppPost.objects.all().delete()
         ChangelogPost.objects.all().delete()
+        AboutPost.objects.all().delete()
 
         migrate_posts()
 
