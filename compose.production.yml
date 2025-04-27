@@ -132,6 +132,8 @@ services:
     depends_on:
       - django
     command: crond -f
+    volumes:
+      - /var/www/beatonma:/var/www/beatonma:ro
 
   redis:
     <<: *common-defaults
