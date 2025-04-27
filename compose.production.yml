@@ -24,9 +24,11 @@ x-common: &common-defaults
 
 
 x-health: &health
-  interval: 30s
+  interval: 60s
   timeout: 10s
-  start_period: 20s
+  start_period: 40s
+  start_interval: 5s
+  retries: 3
 
 
 services:
@@ -56,7 +58,6 @@ services:
     healthcheck:
       test: curl --head --fail http://localhost:8000/api/ping/ || exit 1
       <<: *health
-      interval: 600s
     volumes:
       - /var/www/static:/var/www/static
       - /var/www/media:/var/www/media
@@ -137,7 +138,7 @@ services:
     image: redis:7-alpine
     container_name: redis
     healthcheck:
-      test:  redis-cli ping
+      test: redis-cli ping
       <<: *health
 
   server_startup_checks:
@@ -151,4 +152,4 @@ services:
     container_name: server_startup_checks
     depends_on:
       - nginx
-    restart: "no"
+    restart: "on-failure"
