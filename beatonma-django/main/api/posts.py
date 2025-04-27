@@ -117,6 +117,7 @@ class AppDetail(PostDetail):
     script: str | None = Field(alias="script.file.url", default=None)
     script_html: str | None
     is_widget: bool = Field(alias="script_is_widget")
+    widget_style: str | None
 
     @staticmethod
     def resolve_url(obj):

@@ -1,5 +1,7 @@
 import parseHtml from "html-react-parser";
 import Link from "next/link";
+import { CSSProperties } from "react";
+import LocalIFrame from "@/app/(main)/(posts)/_components/LocalIFrame";
 import { AutoHCard } from "@/app/_components/h-card";
 import { InlineLink } from "@/components/button";
 import { PublishingStatus } from "@/components/data/posts";
@@ -23,7 +25,7 @@ import { ProseClassName } from "@/components/prose";
 import itemTheme from "@/components/themed/item-theme";
 import RemoteIFrame from "@/components/third-party/embedded";
 import { navigationHref } from "@/navigation";
-import { type Optional as MakeOptional } from "@/types";
+import { type Optional as MakeOptional, Nullish } from "@/types";
 import { DivPropsNoChildren, PropsExcept } from "@/types/react";
 import { addClass, classes } from "@/util/transforms";
 import styles from "./post.module.css";
@@ -60,9 +62,12 @@ export default function PostPage(props: PostProps) {
           <PostMetadata post={post} />
           <HeroHtml
             post={post}
-            className="col-start-1 col-span-full row-start-1 max-h-[50vh]"
+            className="col-start-1 col-span-full row-start-1 row-end-1 max-h-[50vh]"
           />
-          <Hero post={post} className="[grid-area:hero] card max-h-[50vh]" />
+          <Hero
+            post={post}
+            className="[grid-area:hero] max-h-[50vh] card surface"
+          />
 
           <PostTitle
             post={post}
@@ -272,16 +277,6 @@ const PostWebmentions = (props: PostProps & DivPropsNoChildren) => {
 
 const HeroHtml = (props: PostProps & DivPropsNoChildren) => {
   const { post, ...rest } = props;
-  if (isApp(post) && post.is_widget && post.script) {
-    const liveUrl = `${post.url}/live`;
-    return (
-      <iframe
-        src={liveUrl}
-        title={`Live instance of app '${post.title}'`}
-        {...addClass(rest, "w-full")}
-      />
-    );
-  }
 
   return <DangerousHtml html={post.hero_html} {...rest} />;
 };
@@ -295,6 +290,18 @@ const Hero = (props: PostProps & DivPropsNoChildren) => {
         {...rest}
         iframeClassName={classes(rest.className, "w-full aspect-video")}
       />
+    );
+  }
+
+  if (isApp(post) && post.is_widget && post.script) {
+    return (
+      <div style={parseStyle(post.widget_style)} {...addClass(rest, "w-full")}>
+        <LocalIFrame
+          src={`${post.url}/live`}
+          title={`Live instance of app '${post.title}'`}
+          className="w-full"
+        />
+      </div>
     );
   }
 
@@ -347,4 +354,13 @@ const MainContent = (props: PostProps & DivPropsNoChildren) => {
   });
 
   return <div {...rest}>{content}</div>;
+};
+
+const parseStyle = (
+  styleString: string | Nullish,
+): CSSProperties | undefined => {
+  if (!styleString) return undefined;
+
+  const parts = styleString.split(";").filter((it) => it.includes(":"));
+  return Object.fromEntries(parts.map((part) => part.split(":")));
 };

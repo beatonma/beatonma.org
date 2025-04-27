@@ -113,7 +113,7 @@ services:
       - /var/www/static:/var/www/static
       - /var/www/media:/var/www/media
     ports:
-      - "80:80"
+      - "81:80"
 
   celery:
     <<: *common

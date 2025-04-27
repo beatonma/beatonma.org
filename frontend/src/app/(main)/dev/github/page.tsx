@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { SampleGithub } from "@/app/dev/_sample";
+import { SampleGithub } from "@/app/(main)/dev/_sample";
 import GithubActivity from "@/components/data/github/github";
 
 export const metadata: Metadata = {

@@ -39,6 +39,15 @@ class AppPost(Post):
         related_name="+",
     )
     script_html = models.TextField(blank=True, null=True)
+    widget_style = models.CharField(
+        max_length=1024,
+        blank=True,
+        null=True,
+        help_text=_(
+            "Element style applied to the element that wraps the "
+            "embedded widget - use to apply a background or padding."
+        ),
+    )
     script_is_widget = models.BooleanField(
         default=False,
         help_text=_(

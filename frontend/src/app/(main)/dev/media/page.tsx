@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { SampleMedia, SamplePostsWithMedia } from "@/app/dev/_sample";
+import { SampleMedia, SamplePostsWithMedia } from "@/app/(main)/dev/_sample";
 import Post from "@/components/data/posts/post";
 import MediaCarousel from "@/components/media/media-carousel";
 

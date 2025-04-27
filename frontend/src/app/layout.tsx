@@ -35,10 +35,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="size-full">
-      <body className="surface-background overflow-x-hidden size-full">
-        <div id="dialog_portal_container" />
-        {children}
-      </body>
+      {children}
     </html>
   );
 }

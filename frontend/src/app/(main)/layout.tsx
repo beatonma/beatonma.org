@@ -10,5 +10,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const globalState = await getOrNull("/api/state/");
+
   return <MainLayout state={globalState}>{children}</MainLayout>;
 }

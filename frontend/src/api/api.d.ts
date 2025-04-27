@@ -430,6 +430,8 @@ export interface components {
             script_html: string | null;
             /** Is Widget */
             is_widget: boolean;
+            /** Widget Style */
+            widget_style: string | null;
         };
         /** AppPreview */
         AppPreview: {

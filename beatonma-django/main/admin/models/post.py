@@ -14,6 +14,12 @@ class PostAdmin(BaseAdmin):
         RelatedFileInline,
     ]
 
+    list_display = [
+        "title",
+        "is_published",
+        "published_at",
+    ]
+
     editable_fields = (
         "allow_outgoing_webmentions",
         "is_published",
@@ -72,6 +78,7 @@ class AppPostAdmin(PostAdmin):
         "script",
         "script_html",
         "script_is_widget",
+        "widget_style",
         "repository",
     )
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { SamplePosts } from "@/app/dev/_sample";
+import { SamplePosts } from "@/app/(main)/dev/_sample";
 import { _private } from "@/components/data/posts/search";
 
 export default function SampleSearch() {

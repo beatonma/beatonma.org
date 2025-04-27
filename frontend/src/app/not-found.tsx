@@ -5,6 +5,7 @@ import { permanentRedirect, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { client } from "@/api";
 import Loading from "@/components/loading";
+import Prose from "@/components/prose";
 import { navigationHref } from "@/navigation";
 import { Nullish } from "@/types";
 import MainLayout from "./(main)/_components/main-layout";
@@ -35,7 +36,7 @@ export default function NotFound() {
     return (
       <MainLayout>
         <Loading>
-          <strong>Looking for redirects...</strong>
+          <strong>Checking for redirects...</strong>
         </Loading>
       </MainLayout>
     );
@@ -44,7 +45,7 @@ export default function NotFound() {
     <MainLayout>
       {/* Metadata not supported in not-found: https://github.com/vercel/next.js/issues/45620#issuecomment-1488933853 */}
       <title>404 not found</title>
-      <div className="readable prose mx-auto">
+      <Prose className="mx-auto">
         <h1>404 not found</h1>
 
         <p>
@@ -56,7 +57,7 @@ export default function NotFound() {
           <Link href={navigationHref("contact")}>let me know</Link> so I can fix
           it.
         </p>
-      </div>
+      </Prose>
     </MainLayout>
   );
 }
