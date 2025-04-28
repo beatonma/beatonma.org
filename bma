@@ -25,6 +25,12 @@ log() {
 run_command() {
   log "COMMAND: '$*'"
   "$@"
+  exit_code=$?
+  if [ "$exit_code" -ne 0 ]; then
+    log "Command failed with code $exit_code:"
+    log "  '$*'"
+    exit "$exit_code"
+  fi
 }
 
 # Short-circuit for simple commands that don't require a build context.
