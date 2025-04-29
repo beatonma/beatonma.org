@@ -11,14 +11,15 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.utils import timezone
 from main.forms import SanitizedFileField
-from main.models.mixins.media_upload import UploadedMediaMixin
+from main.models.mixins.media_upload import (
+    AUDIO_PATTERN,
+    IMAGE_PATTERN,
+    TEXT_PATTERN,
+    VIDEO_PATTERN,
+    UploadedMediaMixin,
+)
 from main.util import to_absolute_url
 from PIL import Image
-
-VIDEO_PATTERN = re.compile(r".*\.(mp4|webm)$")
-AUDIO_PATTERN = re.compile(r".*\.(mp3|wav)$")
-IMAGE_PATTERN = re.compile(r".*\.(jpe?g|png|svg|webp)$")
-TEXT_PATTERN = re.compile(r".*\.(md|txt)$")
 
 THUMBNAIL_SIZE = (800, 800)
 

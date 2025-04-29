@@ -1,3 +1,4 @@
+import logging
 import os
 
 from common.models import BaseModel
@@ -12,6 +13,8 @@ from main.models.mixins.media_upload import UploadedMediaMixin
 from main.storage import OverwriteStorage
 
 from .post import Post
+
+log = logging.getLogger(__name__)
 
 
 class AppPost(Post):
@@ -60,6 +63,14 @@ class AppPost(Post):
         return slugify(self.codename)
 
     def save(self, *args, **kwargs):
+        if self.pk:
+            previous = AppPost.objects.get(pk=self.pk)
+            if self.slug != previous.slug:
+                log.warning(f"Slug has changed {previous.slug} -> {self.slug}")
+                self.move_resource_directory(
+                    previous.resource_directory(), self.resource_directory()
+                )
+
         super().save(*args, **kwargs)
         self._update_repository_link()
 
@@ -83,6 +94,16 @@ class AppPost(Post):
 
     def resource_directory(self):
         return f"apps/{self.slug}"
+
+    def move_resource_directory(self, original_root: str, target_root: str):
+        """Migrate files from original_root to target_root, maintaining relative structure."""
+
+        for res in self.resources.all():
+            res.move_file(source_root=original_root, target_root=target_root)
+
+        if os.path.exists(original_root) and not os.listdir(original_root):
+            os.rmdir(original_root)
+            log.info(f"Removed empty directory {original_root}")
 
     def __str__(self):
         return f"App: {self.title or self.content[:64] or self.slug}"
@@ -147,6 +168,12 @@ class AppResource(UploadedMediaMixin, BaseModel):
                 return
             self.app.save()
 
+    def move_file(self, *, source_root: str, target_root: str):
+        self.file.name = self.move_filesystem_file(
+            self.file.name, target_root, source_root=source_root
+        )
+        self.save()
+
     def extract_zip(self, file):
         from zipfile import ZipFile
 
@@ -166,4 +193,4 @@ class AppResource(UploadedMediaMixin, BaseModel):
             AppResource.objects.get_or_create(app=self.app, file=path)
 
     def __str__(self):
-        return f"{self.app.slug}/{self.file.name}"
+        return f"{self.app.slug} {self.file.name}"
