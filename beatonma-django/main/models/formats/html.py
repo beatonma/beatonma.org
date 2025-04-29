@@ -9,7 +9,7 @@ from common.util.html import find_links_in_soup
 URL_REGEX = (
     r"((?:(?P<scheme>[a-zA-Z]{3,9}):(?://))"
     r"(?:www.)?(?P<host>(?:[-.\w]+)\.(?:[a-zA-Z]+))"
-    r"(?P<path>/[+~%/.\w\-_]*)?"
+    r"(?P<path>/[:+~%/.\w\-_]*)?"
     r"(?P<query>\?[\-+=&;:%@.\w]*)?"
     r"(?P<fragment>#[.!/\w\\]*)?)"
 )
