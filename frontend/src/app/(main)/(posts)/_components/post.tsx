@@ -344,18 +344,29 @@ const MainContent = (props: PostProps & DivPropsNoChildren) => {
 
   if (!post.content_html) return null;
 
-  const content = parseHtml(post.content_html, {
-    replace: (domNode) => {
-      if (domNode.type === "comment") {
-        const value = domNode.nodeValue.trim();
-        if (value === "h-card") {
-          return <AutoHCard showDetail={true} />;
-        }
-      }
-    },
-  });
+  return (
+    <div {...rest}>
+      {parseHtml(post.content_html, {
+        replace: (domNode) => {
+          if (domNode.type !== "comment") return;
 
-  return <div {...rest}>{content}</div>;
+          const value = domNode.nodeValue.trim();
+          if (value === "h-card") {
+            return <AutoHCard showDetail={true} />;
+          }
+
+          const remote = (
+            <RemoteIFrame
+              src={value}
+              className="card card-content surface-alt"
+              iframeClassName="w-full aspect-video"
+            />
+          );
+          if (remote) return remote;
+        },
+      })}
+    </div>
+  );
 };
 
 const parseStyle = (
