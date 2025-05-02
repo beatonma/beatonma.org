@@ -12,7 +12,7 @@ class MarkdownFormatsTest(BaseFormatsTestCase):
         )
 
     def test_useful_whitespace_is_maintained(self):
-        expected_html = """<p><a href="#1">link</a> <a href="#2">link</a></p>\n"""
+        expected_html = """<p><a href="#1">link</a> <a href="#2">link</a></p>"""
         formatted = self.assert_md(
             """[link](#1) [link](#2)""",
             expected_html,
@@ -20,20 +20,32 @@ class MarkdownFormatsTest(BaseFormatsTestCase):
         self.assertEqual(formatted, expected_html)
 
     def test_empty_is_empty(self):
-        self.assert_md("", "")
-        self.assert_md("      \n \r\n ", "")
+        self.assert_md("", "", exact=True)
+        self.assert_md("      \n \r\n ", "", exact=True)
 
     def test_callout(self):
-        markdown = """> [!WARNING]
+        self.assert_md(
+            markdown="""> [!WARNING]
 > `python manage.py migrate` required for new fields.  
 
-- Added `has_been_read: bool` field.  """
-
-        html = """<div class="template-callout-warn"><p><strong>Warning</strong></p><p><code>python manage.py 
+- Added `has_been_read: bool` field.  """,
+            expected_html="""<div class="template-callout-warn"><p><strong>Warning</strong></p><p><code>python manage.py 
 migrate</code> required for new fields.</p></div>
 <ul><li>Added <code>has_been_read: bool</code> field.</li></ul>
-"""
-        self.assert_md(markdown, html)
+""",
+        )
+
+        self.assert_md(
+            markdown="""> [!Important|Custom title]
+> Within months...
+> 
+> The MonoSynth...""",
+            expected_html="""<div class="template-callout-important"><p><strong>Custom title</strong></p>
+<p>Within months…</p>
+<p>The MonoSynth…</p>
+</div>
+        """,
+        )
 
     def test_markdown(self):
         markdown = """This site uses Django, PostgreSQL, Celery and Redis on the back end. The front end is build with NextJS, Typescript, React and Tailwind. Nginx and Docker Compose tie it all together.

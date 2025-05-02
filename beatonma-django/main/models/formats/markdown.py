@@ -63,8 +63,11 @@ def apply_blockquote_callout(markdown: str) -> str:
     """
     from main.models.formats import Formats
 
-    template = """<div class="template-callout-{level}"><p><strong>{level_title}</strong></p>{content}</div>"""
-    pattern = re.compile(r"^\s*> \[!(\w+)].*\n((?:^> .+$\n)*)", flags=re.MULTILINE)
+    template = """<div class="template-callout-{level}"><p><strong>{title}</strong></p>{content}</div>"""
+    pattern = re.compile(
+        r"^> \[!(?P<level>\w+)(?:\|(?P<title>.*?))?]\s*$(?P<content>(?:\n^> .*?$)*)",
+        flags=re.MULTILINE,
+    )
 
     levels = {
         "warning": "warn",
@@ -73,18 +76,16 @@ def apply_blockquote_callout(markdown: str) -> str:
     }
 
     def _replacer(match: re.Match):
-        level = match.group(1).lower()
-        level_title = level.capitalize()
+        level = match.group("level").lower()
+        title = match.group("title") or level.capitalize()
         level = levels.get(level) or level
 
         content = Formats.to_html(
             Formats.MARKDOWN,
-            str(
-                match.group(2).replace("> ", ""),
-            ),
+            str(match.group("content").replace("> ", "")),
         )
 
-        return template.format(level=level, level_title=level_title, content=content)
+        return template.format(level=level, title=title, content=content)
 
     return re.sub(pattern, _replacer, markdown)
 

@@ -70,11 +70,11 @@ class PostPreview(BasePost):
 
     @staticmethod
     def resolve_content_html(obj):
-        return obj.preview_text or obj.content_html
+        return obj.preview_html or obj.content_html
 
     @staticmethod
     def resolve_is_preview(obj):
-        return bool(obj.preview_text)
+        return bool(obj.preview_html)
 
 
 class AppPreview(PostPreview):

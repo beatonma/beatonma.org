@@ -12,30 +12,16 @@ class BaseFormatsTestCase(SimpleTestCase):
     def _assert_formatting_is_correct(
         self, formatted_html: str, expected_html: str, exact: bool = False
     ):
-        print(f"EXPECTED:\n{expected_html}\n")
-        print(f"FORMATTED:\n{formatted_html}\n")
+        print(f"EXPECTED:\n'{expected_html}'\n")
+        print(f"FORMATTED:\n'{formatted_html}'\n")
 
-        msg = None
-        context_start = 10
-        context_end = 20
-        for n, char in enumerate(expected_html):
-            if formatted_html[n] != char:
-                msg = (
-                    f"diff at position {n}\n'{formatted_html[n-context_start:n+context_end]}'\n!=\n"
-                    f"'{expected_html[n-context_start:n+context_end]}'"
-                )
-                break
-        else:
-            if len(formatted_html) != len(expected_html):
-                msg = f"formatted HTML is longer, extra='{formatted_html[len(expected_html):]}'"
-
-        self.assertHTMLEqual(formatted_html, expected_html, msg=msg)
+        self.assertHTMLEqual(formatted_html, expected_html)
 
         if exact:
             self.assertEqual(
                 formatted_html,
                 expected_html,
-                msg=f"HTML is equivalent but strings are not equal ({msg or 'unknown difference'}).",
+                msg=f"HTML is equivalent but strings are not equal.",
             )
         return formatted_html
 
@@ -54,5 +40,4 @@ class BaseFormatsTestCase(SimpleTestCase):
         return f"""<div class="codehilite">
 <pre><code>{children}
 </code></pre>
-</div>
-"""
+</div>"""

@@ -57,7 +57,7 @@ def migrate_blogs():
                 api_id=blog.api_id,
                 title=blog.title,
                 subtitle=blog.tagline,
-                preview_text=blog.preview_text,
+                preview=blog.preview_text,
                 content=blog.content,
                 content_html=blog.content_html,
                 is_published=blog.is_published,
@@ -110,7 +110,7 @@ def migrate_articles():
                 api_id=article.api_id,
                 title=article.title,
                 subtitle=article.tagline,
-                preview_text=article.preview_text,
+                preview=article.preview_text,
                 content="\n".join(
                     [x for x in [article.abstract, article.content] if x]
                 ),
@@ -169,7 +169,7 @@ def migrate_apps():
                 color_vibrant=app.color_vibrant,
                 title=app.title,
                 subtitle=app.tagline,
-                preview_text=app.tagline,
+                preview=app.tagline,
                 repository=app.repository,
                 codename=app.app_id,
                 icon=(
@@ -197,7 +197,7 @@ def migrate_webapps():
                 slug=f"webapp-{app.slug}",
                 codename=f"webapp-{app.slug}",
                 title=app.title,
-                preview_text=app.description,
+                preview=app.description,
                 content_html=app.description,
                 script_html=app.content_html,
             )
@@ -240,7 +240,7 @@ def migrate_changelogs(source: App, target: AppPost):
             title=change.title,
             version=change.version_name,
             subtitle=change.tagline,
-            preview_text=change.preview_text,
+            preview=change.preview_text,
         )
         clone_related(change, post)
 

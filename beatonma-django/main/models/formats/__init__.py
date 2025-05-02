@@ -93,7 +93,7 @@ class Formats(models.IntegerChoices):
                 "xml",  # See _preprocess_comments, _postprocess_comments
             ],
         )
-        return html
+        return html.strip()
 
 
 class FormatMixin(models.Model):

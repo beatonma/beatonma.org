@@ -8,12 +8,11 @@ from common.models.cache import InvalidateCacheMixin
 from common.models.published import PublishedQuerySet
 from common.util import regex
 from common.util.pipeline import PipelineItem
-from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.db.models import Manager
 from django.urls import reverse
-from main.models import Link
 from main.models.formats import FormatMixin, Formats
+from main.models.link import LinkedMixin
 from main.models.mixins import ThemeableMixin
 from main.models.related_file import RelatedFilesMixin
 from mentions.models.mixins import MentionableMixin
@@ -30,6 +29,7 @@ class BasePost(
     PublishedMixin,
     MentionableMixin,
     TaggableMixin,
+    LinkedMixin,
     RelatedFilesMixin,
     ThemeableMixin,
     FormatMixin,
@@ -66,19 +66,19 @@ class BasePost(
     )
     hero_embedded_url = models.URLField(blank=True, null=True)
 
-    slug = models.SlugField(unique=True, max_length=255, editable=True)
+    slug = models.SlugField(unique=True, max_length=255, editable=True, blank=True)
     old_slug = models.SlugField(unique=True, max_length=255, editable=False, null=True)
 
     title = models.CharField(max_length=255, blank=True, null=True)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
-    preview_text = models.CharField(max_length=255, blank=True, null=True)
+
+    preview = models.CharField(max_length=512, blank=True, null=True)
+    preview_html = models.TextField(blank=True, null=True, editable=False)
 
     content = models.TextField(blank=True, null=True)
     content_html = models.TextField(blank=True, null=True, editable=False)
 
     content_script = models.TextField(blank=True, null=True)
-
-    links = GenericRelation(Link)
 
     def save_text(self):
         if not self.content:
@@ -87,6 +87,15 @@ class BasePost(
         self.content_html = Formats.to_html(
             self.format,
             self.content,
+            markdown_processors=self.extra_markdown_processors(),
+        )
+
+        if not self.preview:
+            self.preview = ""
+
+        self.preview_html = Formats.to_html(
+            Formats.MARKDOWN,
+            self.preview,
             markdown_processors=self.extra_markdown_processors(),
         )
 

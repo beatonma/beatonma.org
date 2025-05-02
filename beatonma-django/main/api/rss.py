@@ -34,4 +34,4 @@ class LatestUpdatesFeed(Feed):
         return item.title
 
     def item_description(self, item):
-        return item.preview_text or item.content_html
+        return item.preview_html or item.content_html
