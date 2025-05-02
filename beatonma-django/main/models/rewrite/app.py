@@ -7,6 +7,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+
+from github.models import GithubRepository
 from main.models import Link
 from main.models.formats.markdown import linkify_github_issues
 from main.models.mixins.media_upload import UploadedMediaMixin
@@ -15,6 +17,25 @@ from main.storage import OverwriteStorage
 from .post import Post
 
 log = logging.getLogger(__name__)
+
+
+def _update_repo_link(post: Post, repository: GithubRepository | None):
+    if not repository:
+        return
+    ct = ContentType.objects.get_for_model(post)
+    if repository.is_public():
+        Link.objects.update_or_create(
+            url=repository.url,
+            content_type=ct,
+            object_id=post.pk,
+            defaults={"description": "source"},
+        )
+    else:
+        Link.objects.filter(
+            url=repository.url,
+            content_type=ct,
+            object_id=post.pk,
+        ).delete()
 
 
 class AppPost(Post):
@@ -72,25 +93,7 @@ class AppPost(Post):
                 )
 
         super().save(*args, **kwargs)
-        self._update_repository_link()
-
-    def _update_repository_link(self):
-        if not self.repository:
-            return
-        ct = ContentType.objects.get_for_model(self)
-        if self.repository.is_public():
-            Link.objects.update_or_create(
-                url=self.repository.url,
-                content_type=ct,
-                object_id=self.pk,
-                defaults={"description": "source"},
-            )
-        else:
-            Link.objects.filter(
-                url=self.repository.url,
-                content_type=ct,
-                object_id=self.pk,
-            ).delete()
+        _update_repo_link(self, self.repository)
 
     def resource_directory(self):
         return f"apps/{self.slug}"
@@ -122,6 +125,7 @@ class ChangelogPost(Post):
         if not self.pk:
             self.title = f"{self.app.title}: {self.version}"
         super().save(*args, **kwargs)
+        _update_repo_link(self, self.app.repository)
 
     def build_slug(self):
         return slugify(f"{self.app.codename}_{self.version}".replace(".", "-"))
