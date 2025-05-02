@@ -1,21 +1,23 @@
 import navigation
-from basetest.testcase import SimpleTestCase
 from main.models.formats import Formats
+from main.models.formats.tests import BaseFormatsTestCase
 
 
-class MarkdownFormatsTest(SimpleTestCase):
-    def assert_md(self, markdown: str, expected_html: str):
-        formatted = Formats.to_html(Formats.MARKDOWN, markdown)
-
-        self.assertHTMLEqual(formatted, expected_html)
-        return formatted
-
+class MarkdownFormatsTest(BaseFormatsTestCase):
     def test_comments_are_maintained(self):
         self.assert_md("<!-- comment -->", "<!-- comment -->")
         self.assert_md(
             """<!-- this is a comment -->This is content<!-- this is a comment -->""",
             "<!-- this is a comment --><p>This is content</p><!-- this is a comment -->",
         )
+
+    def test_useful_whitespace_is_maintained(self):
+        expected_html = """<p><a href="#1">link</a> <a href="#2">link</a></p>\n"""
+        formatted = self.assert_md(
+            """[link](#1) [link](#2)""",
+            expected_html,
+        )
+        self.assertEqual(formatted, expected_html)
 
     def test_empty_is_empty(self):
         self.assert_md("", "")
@@ -31,7 +33,7 @@ class MarkdownFormatsTest(SimpleTestCase):
 migrate</code> required for new fields.</p></div>
 <ul><li>Added <code>has_been_read: bool</code> field.</li></ul>
 """
-        self.assertHTMLEqual(Formats.to_html(Formats.MARKDOWN, markdown), html)
+        self.assert_md(markdown, html)
 
     def test_markdown(self):
         markdown = """This site uses Django, PostgreSQL, Celery and Redis on the back end. The front end is build with NextJS, Typescript, React and Tailwind. Nginx and Docker Compose tie it all together.
@@ -91,7 +93,7 @@ library, <a href="https://github.com/beatonma/django-wm">django-wm</a>).</p>
         )
 
     def test_linkify_hashtags(self):
-        html = Formats.to_html(Formats.MARKDOWN, "#one #two #three")
+        html = self.format_markdown("#one #two #three")
 
         self.assert_html_links_to(html, navigation.tag("one"), displaytext="#one")
         self.assert_html_links_to(html, navigation.tag("two"), displaytext="#two")
@@ -126,7 +128,6 @@ href="https://beatonma.org">beatonma.org</a> and some <code>inline code</code> a
 
 <div class="codehilite">
 <pre>
-  <span></span>
   <code>
     <span class="c1"># And a block of code</span>
   </code>
@@ -156,8 +157,7 @@ href="https://beatonma.org">beatonma.org</a> and some <code>inline code</code> a
     def test_md_link_patterns(self):
         """Tests for patterns passed to markdown2 link-patterns extra."""
 
-        formatted = Formats.to_html(
-            Formats.MARKDOWN,
+        formatted = self.format_markdown(
             "This is text with links to /u/fallofmath and /r/android "
             "and github/beatonma and pypi/django-wm and thingiverse/4828770 "
             "and thing/4828771 and youtube/@fallofmath amd youtube/fallofmath2 "
@@ -205,7 +205,7 @@ href="https://beatonma.org">beatonma.org</a> and some <code>inline code</code> a
         )
 
 
-class MarkdownLigatureTests(SimpleTestCase):
+class MarkdownLigatureTests(BaseFormatsTestCase):
     def test_simple_text_ligatures(self):
         self.assertHTMLEqual(
             Formats._preprocess_markdown("if this(c) -> that..."),

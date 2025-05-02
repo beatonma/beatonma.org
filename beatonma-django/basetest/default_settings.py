@@ -1,9 +1,5 @@
 from beatonma.settings import *  # noqa
 
-# Transitional setting until Django 6.0
-FORMS_URLFIELD_ASSUME_HTTPS = True
-
-
 ALLOWED_HOSTS = ["localhost"]
 SITE_ID = 1
 

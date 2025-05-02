@@ -81,7 +81,7 @@ class Formats(models.IntegerChoices):
             markdown,
             extras=[
                 "cuddled-lists",  # Don't require blank line before markdown lists
-                "fenced-code-blocks",  # Use ``` instead of indent for code blocks
+                "fenced-code-blocks",  # Code syntax highlighting
                 "footnotes",
                 "header-ids",
                 "smarty-pants",  # Fancy quote marks and suchlike
@@ -108,15 +108,34 @@ class FormatMixin(models.Model):
 
 def _preprocess_comments(markdown: str) -> str:
     """Convert <!-- html comment syntax --> into <?xml instructions?> so they
-    can pass through markdown formatting untouched. Required 'xml' extra to
+    can pass through markdown formatting 'untouched'. Required 'xml' extra to
     be enabled in markdown2."""
-    return re.sub(r"<!-- (.+?) -->", r"\n\n<?COMMENT \1?>\n\n", markdown)
+    return re.sub(r"<!-- (.+?) -->", r"<?COMMENT \1?>\n\n", markdown)
 
 
 def _postprocess_comments(html: str) -> str:
     """Convert <?xml instructions?> back to <!-- html comments --> after
     other formatting is complete."""
-    html = re.sub(
-        r"\s*<\?COMMENT (.+?)\?>\s*", r"\n<!-- \1 -->\n", html, flags=re.MULTILINE
-    )
+
+    replacements = [
+        (
+            # <!-- html comments -->
+            r"(?:\n\n)?<\?COMMENT (.+?)\?>(?:\n\n)?",
+            r"<!-- \1 -->",
+        ),
+        (
+            # Escaped <!-- comments --> in ```code blocks```
+            r"(?:\n\n)?&lt;\?COMMENT (.+?)\?&gt;(?:\n\n)?",
+            r"&lt;!-- \1 --&gt;",
+        ),
+        (
+            # <?Comment.Preproc?> -> <!-- Comment.Multiline -->
+            r'(?:\n\n)?<span class="cp">(.*?)</span>(?:\n\n)?',
+            r'<span class="cm">\1</span>',
+        ),
+    ]
+
+    for pattern, replacement in replacements:
+        html = re.sub(pattern, replacement, html, flags=re.MULTILINE)
+
     return html

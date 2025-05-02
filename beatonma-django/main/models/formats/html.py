@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Callable, Iterable
 
 import navigation
-from bs4 import BeautifulSoup, Comment, NavigableString
+from bs4 import BeautifulSoup, Comment, NavigableString, PageElement
 from common.util.html import find_links_in_soup
 
 URL_REGEX = (
@@ -180,14 +180,20 @@ def linkify_html(
         nodes.append(original_text[position:])
         text_node.replace_with(*nodes)
 
-    for text in soup.find_all(string=True):
-        if isinstance(text, Comment):
-            continue
-        if text.parent.name in ["script", "style", "a"]:
-            # Avoid modifying script, style, anchor content
-            continue
+    def explore_branch(element: PageElement):
+        for element in element.contents:
+            if isinstance(element, Comment):
+                continue
+            if element.name in ["head", "script", "style", "a", "code", "pre"]:
+                continue
 
-        process_text_node(text)
+            if isinstance(element, NavigableString):
+                process_text_node(element)
+                continue
+
+            explore_branch(element)
+
+    explore_branch(soup)
 
     return soup
 
@@ -206,13 +212,17 @@ def flatten_contents(soup: BeautifulSoup) -> BeautifulSoup:
 
 
 def remove_empty(soup: BeautifulSoup) -> BeautifulSoup:
-    for text in soup.find_all(string=True):
-        if isinstance(text, NavigableString):
-            if not text.strip():
-                text.replace_with()
-
-    for x in soup.find_all("p"):
+    for x in soup.select("p, span"):
+        # Remove elements that have no children
         if not x.contents:
             x.replace_with()
+            continue
+
+        # Remove elements that only have comments as children
+        for child in x.contents:
+            if not isinstance(child, Comment):
+                break
+        else:
+            x.replace_with_children()
 
     return soup
