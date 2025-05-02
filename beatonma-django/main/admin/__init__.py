@@ -9,11 +9,6 @@ admin.site.site_header = settings.SITE_NAME
 admin.site.site_title = settings.SITE_NAME
 admin.site.index_title = "Index"
 
-
-register_model_to_default_admin(
-    SiteHCard,
-    editable_fields=["*"],
-    inlines=[
-        LinkInline,
-    ],
-)
+# Very simple admin pages may be registered here.
+register_model_to_default_admin(AppResource)
+register_model_to_default_admin(SiteHCard, editable_fields=["*"], inlines=[LinkInline])

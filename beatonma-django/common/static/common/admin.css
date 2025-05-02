@@ -1,0 +1,12 @@
+.submit-row a.deletelink {
+  height: auto;
+}
+
+.inline-related {
+  margin-bottom: 1rem;
+  border: 1px dashed #ffffff33;
+}
+
+input[type="checkbox"] {
+  margin-right: 4px;
+}

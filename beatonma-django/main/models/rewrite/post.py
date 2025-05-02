@@ -66,7 +66,7 @@ class BasePost(
     )
     hero_embedded_url = models.URLField(blank=True, null=True)
 
-    slug = models.SlugField(unique=True, max_length=255, editable=False)
+    slug = models.SlugField(unique=True, max_length=255, editable=True)
     old_slug = models.SlugField(unique=True, max_length=255, editable=False, null=True)
 
     title = models.CharField(max_length=255, blank=True, null=True)
@@ -156,7 +156,9 @@ class BasePost(
         self.tags.add(*tags)
 
     def __str__(self):
-        return f"Post: {self.title or self.content[:64] or self.slug}"
+        return (
+            f"{self.__class__.__name__}: {self.title or self.content[:64] or self.slug}"
+        )
 
 
 class Post(BasePost):

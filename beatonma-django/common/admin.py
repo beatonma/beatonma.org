@@ -73,6 +73,7 @@ class BaseAdmin(admin.ModelAdmin):
     class Media:
         # Enable tailwind classes
         js = ["https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"]
+        css = {"all": ["common/admin.css"]}
 
     def __init__(self, model, admin_site):
         super().__init__(model, admin_site)
@@ -105,10 +106,12 @@ class BaseAdmin(admin.ModelAdmin):
         """Get all fields for this model, ordered by `field_order`."""
         fields = [x for x in model._meta.fields]
 
-        if self.editable_fields:
+        editable_fields = self.editable_fields or []
+
+        if editable_fields == ["*"]:
             main_fields = [x.name for x in fields if x.editable and not x.primary_key]
         else:
-            main_fields = [x.name for x in fields if x.name in self.editable_fields]
+            main_fields = [*editable_fields]
 
         generated_fields = self._get_generated_fields()
         readonly_fields = [x.name for x in fields if x.name not in main_fields]

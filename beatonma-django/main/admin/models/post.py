@@ -1,4 +1,5 @@
 from common.admin import BaseAdmin
+from common.models.util import implementations_of
 from django.contrib import admin
 from main.admin.models.links import LinkInline
 from main.admin.models.relatedfile import RelatedFileInline
@@ -7,22 +8,33 @@ from main.models.rewrite import AboutPost
 from main.models.rewrite.app import AppResource
 
 
-@admin.register(Post, AboutPost)
-class PostAdmin(BaseAdmin):
+@admin.action(description="save()")
+def save_models(modeladmin, request, queryset):
+    for obj in queryset:
+        obj.save()
+
+
+@admin.register(AboutPost)
+class BasePostAdmin(BaseAdmin):
+    actions = (save_models,)
     inlines = [
         LinkInline,
         RelatedFileInline,
     ]
 
     list_display = [
-        "title",
+        "__str__",
+        "slug",
         "is_published",
+        "attachments",
         "published_at",
     ]
 
     editable_fields = (
+        "slug",
         "allow_outgoing_webmentions",
         "is_published",
+        "published_at",
         "color_muted",
         "color_vibrant",
         "format",
@@ -34,33 +46,64 @@ class PostAdmin(BaseAdmin):
         "preview_text",
         "content",
         "content_script",
-        "app",
+        "tags",
     )
 
     field_order = (
-        "allow_outgoing_webmentions",
         "is_published",
+        "published_at",
+        "slug",
         "color_muted",
         "color_vibrant",
-        "hero_image",
-        "hero_embedded_url",
-        "hero_html",
         "title",
         "subtitle",
         "preview_text",
         "format",
+        "content",
+        "allow_outgoing_webmentions",
+        "hero_image",
+        "hero_embedded_url",
+        "hero_html",
     )
     field_groups = (
+        ("is_published", "published_at"),
         ("color_vibrant", "color_muted"),
         ("slug", "old_slug"),
-        ("created_at", "modified_at", "published_at"),
+        ("created_at", "modified_at"),
         ("id", "api_id"),
     )
+
+    def attachments(self, obj):
+        return obj.related_files.all().count()
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related("related_files")
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name in ["content_script", "content", "content_html", "hero_html"]:
             kwargs["widget"] = self.widgets.textarea("font-mono!")
         return super().formfield_for_dbfield(db_field, **kwargs)
+
+
+@admin.register(Post)
+class PostAdmin(BasePostAdmin):
+    def get_queryset(self, request):
+        """We only want to show canonical Post instances, not those that are
+        really a subclass (AppPost, ChangelogPost, ...)"""
+        subclass_related_names = [
+            x.__name__.lower() for x in implementations_of(Post) if x != Post
+        ]
+
+        exclude_subclasses = {
+            f"{subclass}__isnull": True for subclass in subclass_related_names
+        }
+
+        return (
+            super()
+            .get_queryset(request)
+            .filter(**exclude_subclasses)
+            .prefetch_related("related_files")
+        )
 
 
 class AppResourceInline(admin.TabularInline):
@@ -69,7 +112,7 @@ class AppResourceInline(admin.TabularInline):
 
 
 @admin.register(AppPost)
-class AppPostAdmin(PostAdmin):
+class AppPostAdmin(BasePostAdmin):
     inlines = PostAdmin.inlines + [AppResourceInline]
 
     editable_fields = PostAdmin.editable_fields + (
@@ -99,7 +142,7 @@ class AppPostAdmin(PostAdmin):
 
 
 @admin.register(ChangelogPost)
-class ChangelogPostAdmin(PostAdmin):
+class ChangelogPostAdmin(BasePostAdmin):
     editable_fields = PostAdmin.editable_fields + (
         "app",
         "version",
