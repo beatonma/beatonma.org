@@ -51,8 +51,11 @@ def get_temporary_webmentions(request: HttpRequest, url_path: str):
     )
 
     # Get mentions for url, allowing http/https and with/without a trailing slash.
-    mentions = Webmention.objects.filter_public().filter(
-        target_url__regex=rf"https?://{url_without_schema}/?"
+    mentions = (
+        Webmention.objects.filter_public()
+        .filter(target_url__regex=rf"https?://{url_without_schema}/?")
+        .distinct("source_url")
+        .order_by("source_url", "-created_at")
     )
     temporary_mentions = TemporaryMention.objects.active(timezone.now())
 

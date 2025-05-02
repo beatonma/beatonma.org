@@ -330,7 +330,8 @@ export interface components {
             hcard: components["schemas"]["HCard"] | null;
             /** Quote */
             quote: string | null;
-            type?: components["schemas"]["IncomingMentionType"] | null;
+            /** Type */
+            type?: components["schemas"]["IncomingMentionType"] | string | null;
             /**
              * Date
              * Format: date-time
