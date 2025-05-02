@@ -294,9 +294,11 @@ const Hero = (props: PostProps & DivPropsNoChildren) => {
   }
 
   if (isApp(post) && post.is_widget && post.script) {
+    const style = parseStyle(post.widget_style);
     return (
-      <div style={parseStyle(post.widget_style)} {...addClass(rest, "w-full")}>
+      <div style={style} {...addClass(rest, "w-full")}>
         <LocalIFrame
+          style={iframeStyle(style)}
           src={`${post.url}/live`}
           title={`Live instance of app '${post.title}'`}
           className="w-full"
@@ -364,3 +366,10 @@ const parseStyle = (
   const parts = styleString.split(";").filter((it) => it.includes(":"));
   return Object.fromEntries(parts.map((part) => part.split(":")));
 };
+const iframeStyle = (
+  containerStyle: CSSProperties | undefined,
+): CSSProperties => ({
+  ...containerStyle,
+  margin: 0,
+  padding: 0,
+});
