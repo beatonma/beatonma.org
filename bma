@@ -73,10 +73,11 @@ docker_push() {
   run_command docker push fallofmath/beatonma:crontab
   run_command docker push fallofmath/beatonma:django
   run_command docker push fallofmath/beatonma:celery
+  run_command docker push fallofmath/beatonma:next
   run_command docker push fallofmath/beatonma:nginx
   run_command docker push fallofmath/beatonma:startup_checks
-  run_command docker --context "$DOCKER_REMOTE_CONTEXT" compose pull
-  run_command docker --context "$DOCKER_REMOTE_CONTEXT" compose up -d
+  run_command docker --context "$DOCKER_REMOTE_CONTEXT" compose -f compose.production.yml pull
+  run_command docker --context "$DOCKER_REMOTE_CONTEXT" compose -f compose.production.yml up -d
 }
 
 export_data() {
