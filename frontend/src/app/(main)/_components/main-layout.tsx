@@ -32,7 +32,7 @@ export default function MainLayout({
   return (
     <body className="surface-background overflow-x-hidden size-full">
       <div id="dialog_portal_container" />
-      <div className="grid grid-rows-[min-content_1fr_min-content] grid-cols-1 gap-y-16 h-full items-start">
+      <div className="grid grid-rows-[min-content_1fr_min-content] grid-cols-1 gap-y-8 h-full items-start">
         <header
           className={classes(styles.headerGrid, "p-edge items-center gap-4")}
         >

@@ -1,0 +1,55 @@
+.poi {
+  --poi-line-thickness: 2px;
+
+  &:has(a:hover) > .poiTitle::after {
+    transform: scaleY(0);
+  }
+
+  > .poiTitle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--poi-gap);
+
+    &:after {
+      content: "";
+      background-color: var(--vibrant);
+      transition: transform 200ms ease-in-out;
+      display: inline-block;
+      height: 1em;
+      width: var(--poi-line-thickness);
+      transform: scaleY(1);
+      transform-origin: bottom;
+    }
+  }
+
+  > .poiLink {
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+    margin-block: calc(2 * var(--poi-line-thickness));
+
+    &:after {
+      content: "";
+      background-color: var(--vibrant);
+      transition: transform 200ms ease-in-out;
+      transform-origin: bottom left;
+      position: absolute;
+      display: block;
+      height: var(--poi-line-thickness);
+      width: 100%;
+      left: 0;
+      margin-top: var(--poi-line-thickness);
+      transform: scaleX(0);
+    }
+
+    &:hover:after {
+      transform: scaleX(1);
+    }
+  }
+
+  @property --poi-gap {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 0;
+  }
+}

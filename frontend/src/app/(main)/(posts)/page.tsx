@@ -1,8 +1,10 @@
 import { Metadata } from "next";
 import { Query } from "@/api";
 import Github from "@/app/(main)/(posts)/_components/github";
+import PointsOfInterest from "@/app/(main)/(posts)/_components/poi";
 import PaginatedPosts from "@/components/data/posts";
 import Optional from "@/components/optional";
+import { classes } from "@/util/transforms";
 import styles from "./page.module.css";
 
 type SearchParams = Promise<Query<"/api/posts/">>;
@@ -40,7 +42,7 @@ export default async function Page({
 }) {
   const params = await searchParams;
 
-  const showGithub = !params?.offset && !params?.tag && !params?.query;
+  const showExtras = !params?.offset && !params?.tag && !params?.query;
 
   return (
     <main className={styles.mainFeedGrid}>
@@ -49,9 +51,18 @@ export default async function Page({
         className="[grid-area:posts] grid grid-cols-1 gap-8 h-feed"
       />
       <Optional
-        value={showGithub}
+        value={showExtras}
         block={() => (
-          <Github className="[grid-area:github] max-xl:card max-xl:card-content max-xl:surface-alt" />
+          <>
+            <PointsOfInterest
+              className={classes(
+                "[grid-area:poi] [--poi-gap:calc(var(--spacing)*4)] gap-x-(--poi-gap)",
+                "row gap-x-4 *:shrink-0 overflow-x-auto overflow-y-hidden max-xl:px-edge",
+                "xl:flex-wrap",
+              )}
+            />
+            <Github className="[grid-area:github] max-xl:card max-xl:card-content max-xl:surface-alt" />
+          </>
         )}
       />
     </main>

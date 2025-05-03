@@ -2,7 +2,7 @@ import logging
 
 from common.views.logged import LoggedView
 from django.shortcuts import render
-from main.models.motd import MessageOfTheDay
+from main.models import MessageOfTheDay
 from main.views.querysets import get_main_feed
 from main.views.util.pagination import paginate
 

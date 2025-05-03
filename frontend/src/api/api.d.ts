@@ -319,6 +319,8 @@ export interface components {
         Link: {
             /** Url */
             url: string;
+            /** Label */
+            label?: string | null;
             /** Description */
             description?: string | null;
             icon?: components["schemas"]["Url"] | null;
@@ -548,6 +550,8 @@ export interface components {
             /** Motd */
             motd: string | null;
             hcard: components["schemas"]["GlobalHCard"] | null;
+            /** Poi */
+            poi: components["schemas"]["Link"][];
         };
         /** HAdr */
         HAdr: {

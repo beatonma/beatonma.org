@@ -42,6 +42,7 @@ class Link(GenericFkMixin, BaseModel):
     objects = LinkQuerySet.as_manager()
     url = models.URLField(max_length=512)
     sort_order = models.PositiveSmallIntegerField(default=0)
+    label = models.CharField(max_length=129, null=True, blank=True)
     description = models.CharField(
         max_length=128,
         choices=DESCRIPTION_CHOICES,

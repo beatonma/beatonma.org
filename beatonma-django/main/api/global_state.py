@@ -2,7 +2,7 @@ from datetime import date
 
 from django.http import HttpRequest
 from django.views.decorators.cache import cache_page
-from main.models import MessageOfTheDay, SiteHCard
+from main.models import MessageOfTheDay, PointsOfInterest, SiteHCard
 from main.models.mixins.cache import GlobalStateCacheMixin
 from ninja import Router, Schema
 from ninja.decorators import decorate_view
@@ -26,7 +26,7 @@ class GlobalHCard(Schema):
     logo: File | None
     location: HAdr | None
     birthday: date | None
-    relme: list[Link] = Field(alias="relme_links")
+    relme: list[Link] = Field(alias="links")
 
     @staticmethod
     def resolve_location(obj):
@@ -40,6 +40,7 @@ class GlobalHCard(Schema):
 class GlobalState(Schema):
     motd: str | None
     hcard: GlobalHCard | None
+    poi: list[Link]
 
 
 @router.get("/state/", response=GlobalState)
@@ -47,10 +48,14 @@ class GlobalState(Schema):
 def get_global_state(request: HttpRequest):
     hcard = SiteHCard.objects.singleton()
 
+    poi = PointsOfInterest.objects.singleton()
+    poi_links = poi.links if poi else []
+
     motd = MessageOfTheDay.objects.get_current()
     motd_html = motd.content_html if motd else None
 
     return {
         "motd": motd_html,
         "hcard": hcard,
+        "poi": poi_links,
     }

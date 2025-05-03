@@ -15,5 +15,6 @@ class File(Schema):
 
 class Link(Schema):
     url: str
+    label: str | None = None
     description: str | None = None
     icon: Url | None = Field(alias="host.icon_file", default=None)

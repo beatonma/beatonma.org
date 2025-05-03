@@ -6,6 +6,7 @@
   row-gap: var(--grid-gap);
   grid-template-columns: 1fr min(100%, var(--feed-width)) 1fr;
   grid-template-areas:
+    ". poi ."
     ". github ."
     ". posts .";
 
@@ -16,6 +17,10 @@
     grid-template-columns:
       1fr var(--sidebar-width) var(--grid-gap) var(--feed-width)
       var(--grid-gap) var(--sidebar-width) 1fr;
-    grid-template-areas: ". . . posts . github .";
+    grid-template-rows: min-content min-content;
+    grid-auto-rows: minmax(min-content, auto);
+    grid-template-areas:
+      ". . . poi . github ."
+      ". . . posts . github .";
   }
 }
