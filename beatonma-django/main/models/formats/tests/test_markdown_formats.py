@@ -23,6 +23,9 @@ class MarkdownFormatsTest(BaseFormatsTestCase):
         self.assert_md("", "", exact=True)
         self.assert_md("      \n \r\n ", "", exact=True)
 
+    def test_require_empty_is_empty(self):
+        self.assert_md("-", "", exact=True)
+
     def test_callout(self):
         self.assert_md(
             markdown="""> [!WARNING]

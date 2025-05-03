@@ -70,6 +70,9 @@ class PostPreview(BasePost):
 
     @staticmethod
     def resolve_content_html(obj):
+        if obj.preview == "-":
+            # Don't show any content, preview or otherwise
+            return None
         return obj.preview_html or obj.content_html
 
     @staticmethod

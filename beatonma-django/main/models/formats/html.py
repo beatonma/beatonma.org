@@ -212,6 +212,11 @@ def flatten_contents(soup: BeautifulSoup) -> BeautifulSoup:
 
 
 def remove_empty(soup: BeautifulSoup) -> BeautifulSoup:
+    if len(soup.contents) == 1:
+        child = soup.contents[0]
+        if child.get_text() == "-":
+            child.replace_with()
+
     for x in soup.select("p, span"):
         # Remove elements that have no children
         if not x.contents:
