@@ -1,8 +1,8 @@
-from typing import List, Type
+from typing import Type
 
-from common.models.types import Model
 from django.apps import apps
+from django.db import models
 
 
-def implementations_of(mixin: Type[Model]) -> List[Type[Model]]:
+def implementations_of[T: models.Model](mixin: Type[T]) -> list[Type[T]]:
     return [m for m in apps.get_models() if issubclass(m, mixin)]

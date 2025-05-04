@@ -3,8 +3,8 @@ from typing import Iterable, Optional, Sized, Type, Union
 from unittest import skipIf
 
 import pytest
-from common.models.types import Model
 from common.util.html import html_parser
+from django.db import models
 from django.db.models import QuerySet
 from django.test import SimpleTestCase as DjangoSimpleTestCase
 from django.test import TestCase
@@ -87,15 +87,12 @@ class BaseTestCase(SimpleTestCase, TestCase):
         for text in content:
             self.assertContains(response, text)
 
-    def assert_exists(
-        self,
-        model_class: Type[Model],
-        count: int = 1,
-        **query,
-    ) -> Union[Model, QuerySet[Model]]:
+    def assert_exists[
+        T: models.Model
+    ](self, model_class: Type[T], count: int = 1, **query,) -> Union[T, QuerySet[T]]:
         """Assert that the expected number of model instances exist and return it/them."""
 
-        qs: QuerySet[Model]
+        qs: QuerySet[T]
         if query:
             qs = model_class.objects.filter(**query)
         else:
