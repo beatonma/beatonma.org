@@ -13,6 +13,4 @@ run_task() {
   python /django/manage.py "$@"
 }
 
-logmsg "Daily tasks starting..."
-run_task cycle_logs
-logmsg "Daily tasks complete."
+logmsg "No daily tasks registered"
