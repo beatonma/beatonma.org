@@ -1,5 +1,0 @@
-@use "mixin";
-
-section:not(:empty):not(:only-child):not(:last-child) {
-  @extend %bottom-gap;
-}

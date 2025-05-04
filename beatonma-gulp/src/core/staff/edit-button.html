@@ -1,8 +1,0 @@
-{% load admin_urls %}
-{% load page.staff %}
-
-{% block staff %}
-{% if user.is_staff %}
-<button class="staff" onclick="event.preventDefault();event.stopPropagation();window.location.href='{{ target|admin_edit_url }}';">Edit</button>
-{% endif %}
-{% endblock %}

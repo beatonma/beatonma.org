@@ -1,7 +1,0 @@
-{% extends '_http-error.html' %}
-{% load page.http_error %}
-
-{% block title %}400{% endblock %}
-
-{% block error_name %}400 Bad Request{% endblock %}
-{% block error_message %}{% http_400_message %}{% endblock %}

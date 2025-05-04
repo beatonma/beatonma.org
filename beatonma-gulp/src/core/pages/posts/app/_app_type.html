@@ -1,5 +1,0 @@
-{% if app_type.icon_svg %}
-  <div title="{{ app_type.name }}" class="app-type tooltip">{{ app_type.icon_svg|safe }}</div>
-{% elif app_type.icon_file %}
-  <div title="{{ app_type.name }}" class="app-type tooltip" style="background-image: url(\'{{ app_type.icon_file.url }}\')"></div>
-{% endif %}

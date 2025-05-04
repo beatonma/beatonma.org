@@ -1,1 +1,0 @@
-export { WebmentionsApp } from "./webmentions";

@@ -1,8 +1,0 @@
-@use "mixin";
-
-footer {
-  @extend %link-buttons;
-  @extend %padding-large;
-
-  justify-content: center;
-}
