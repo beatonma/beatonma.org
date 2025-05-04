@@ -1,8 +1,8 @@
 from typing import Type
 
-from common.urls import path
 from common.views.mentionable import MentionableView
 from django.shortcuts import get_object_or_404, render
+from django.urls import path
 from main.models import AppPost, ChangelogPost
 from main.models.posts.post import BasePost, Post
 from mentions.helpers import mentions_re_path
@@ -49,5 +49,5 @@ frontend_urlpatterns = [
 
 urlpatterns = [
     # RSS feed
-    path("feed/", LatestUpdatesFeed(), view_names.RSS_FEED),
+    path("feed/", LatestUpdatesFeed(), name=view_names.RSS_FEED),
 ] + frontend_urlpatterns

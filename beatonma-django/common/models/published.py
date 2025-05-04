@@ -5,7 +5,6 @@ from common.models.search import SearchMixin, SearchQuerySet
 from django.db import models
 from django.db.models import F, QuerySet
 from django.utils import timezone
-from main.view_adapters import FeedItemContext
 
 log = logging.getLogger(__name__)
 
@@ -79,9 +78,3 @@ class PublishedMixin(SearchMixin, models.Model):
     def get_sorting_datetime(self) -> timezone.datetime:
         """Return a datetime to be used for sorting."""
         return self.published_at
-
-    def to_feeditem_context(self) -> FeedItemContext:
-        raise NotImplemented(
-            f"Model `{self.__class__.__name__}` inherits `PublishedMixin` "
-            f"but does not implement `feeditem_context(self)`"
-        )

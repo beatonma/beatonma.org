@@ -95,15 +95,10 @@ class SearchQuerySet(QuerySet):
         return qs
 
 
-class SearchResult(Schema):
-    name: str
-    url: str
-    timestamp: Optional[datetime] = None
-    description: Optional[str] = None
-    className: Optional[str] = None
-
-
 class SearchMixin(models.Model):
+    class Meta:
+        abstract = True
+
     search_enabled: bool = True
     search_fields: List[str]
 
@@ -111,8 +106,3 @@ class SearchMixin(models.Model):
         abstract = True
 
     objects = SearchQuerySet.as_manager()
-
-    def to_search_result(self) -> SearchResult:
-        raise NotImplementedError(
-            f"{self.__class__.__name__} does not implement to_search_result"
-        )

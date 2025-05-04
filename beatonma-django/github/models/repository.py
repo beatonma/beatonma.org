@@ -2,11 +2,8 @@ import math
 
 from common.models import BaseModel, PublishedMixin, TaggableMixin
 from common.models.published import PublishedQuerySet
-from common.models.search import SearchResult
 from django.db import models
 from django.db.models import UniqueConstraint
-from django.templatetags.static import static
-from main.view_adapters import FeedItemContext
 
 
 class GithubLanguage(BaseModel):
