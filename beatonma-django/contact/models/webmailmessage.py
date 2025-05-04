@@ -1,6 +1,6 @@
 import logging
 
-from common.models import ApiModel, BaseModel
+from common.models import BaseModel
 from django.db import models
 from django.db.models import QuerySet
 
@@ -18,7 +18,7 @@ class WebmailQuerySet(QuerySet):
         return self.update(has_been_read=False)
 
 
-class WebmailMessage(ApiModel, BaseModel):
+class WebmailMessage(BaseModel):
     objects = WebmailQuerySet.as_manager()
 
     name = models.CharField(blank=True, max_length=256)
@@ -41,14 +41,6 @@ class WebmailMessage(ApiModel, BaseModel):
             message_body=http_post.get("message", "No message given"),
         )
         return msg
-
-    def to_json(self) -> dict:
-        return {
-            "name": self.name,
-            "contact": self.contact,
-            "body": self.message_body,
-            "timestamp": self.created_at,
-        }
 
     def __str__(self):
         return f"{self.name}: {self.subject}"

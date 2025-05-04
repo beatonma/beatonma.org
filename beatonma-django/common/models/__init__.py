@@ -46,8 +46,6 @@ class BaseModel(models.Model):
         ordering = ["-created_at"]
 
 
-from .api import ApiModel
-from .pageview import PageView
 from .published import PublishedMixin
 from .search import SearchMixin
 from .taggable import TaggableMixin

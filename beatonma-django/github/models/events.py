@@ -1,4 +1,4 @@
-from common.models import ApiModel, BaseModel
+from common.models import BaseModel
 from django.db import models
 from django.db.models import QuerySet
 from github.events import GithubEvent
@@ -16,7 +16,7 @@ class GithubEventUpdateCycle(BaseModel):
         return f"{self.created_at}: {self.events.count()} events"
 
 
-class GithubUserEvent(ApiModel, BaseModel):
+class GithubUserEvent(BaseModel):
     """Each event in the event stream returned by
     https://api.github.com/users/{OWNER}/events will create"""
 
@@ -75,37 +75,11 @@ class GithubUserEvent(ApiModel, BaseModel):
             return payload.count()
         return 1
 
-    def to_json(self) -> dict:
-        if not self.repository.is_published or not self.is_public:
-            return {
-                "created_at": self.created_at.isoformat(),
-                "type": self.type,
-            }
-
-        payload = self.payload()
-
-        if payload is None:
-            payload_json = None
-
-        elif isinstance(payload, QuerySet):
-            payload_json = [x.to_json() for x in payload.all()]
-
-        else:
-            payload_json = payload.to_json()
-
-        return {
-            "created_at": self.created_at.isoformat(),
-            "id": self.github_id,
-            "type": self.type,
-            "repository": self.repository.to_json(),
-            "payload": payload_json,
-        }
-
     def __str__(self):
         return f"{self.type}: {self.repository}"
 
 
-class GithubEventPayload(ApiModel, BaseModel):
+class GithubEventPayload(BaseModel):
     class Meta:
         abstract = True
 
@@ -124,13 +98,6 @@ class GithubCommit(GithubEventPayload):
         related_name="commits",
     )
 
-    def to_json(self) -> dict:
-        return {
-            "sha": self.sha,
-            "message": self.message,
-            "url": self.url,
-        }
-
     def __str__(self):
         return f"{self.sha[:6]}: {self.message[:128]}"
 
@@ -147,12 +114,6 @@ class GithubCreatePayload(GithubEventPayload):
         on_delete=models.CASCADE,
         related_name="create_event_data",
     )
-
-    def to_json(self) -> dict:
-        return {
-            "type": self.ref_type,
-            "ref": self.ref,
-        }
 
     def __str__(self):
         return f"Create {self.ref_type}: {self.ref}"
@@ -171,13 +132,6 @@ class GithubIssueClosedPayload(GithubEventPayload):
         on_delete=models.CASCADE,
         related_name="issue_closed_data",
     )
-
-    def to_json(self) -> dict:
-        return {
-            "number": self.number,
-            "url": self.url,
-            "closed_at": self.closed_at.isoformat(),
-        }
 
     def __str__(self):
         return f"Closed #{self.number}: {self.closed_at}"
@@ -200,16 +154,6 @@ class GithubPullRequestMergedPayload(GithubEventPayload):
         related_name="pull_merged_data",
     )
 
-    def to_json(self) -> dict:
-        return {
-            "number": self.number,
-            "url": self.url,
-            "merged_at": str(self.merged_at),
-            "addition_count": self.additions_count,
-            "deletions_count": self.deletions_count,
-            "changed_files_count": self.changed_files_count,
-        }
-
     def __str__(self):
         return f"Merged #{self.number}: {self.merged_at}"
 
@@ -229,14 +173,6 @@ class GithubReleasePublishedPayload(GithubEventPayload):
         related_name="release_data",
     )
 
-    def to_json(self) -> dict:
-        return {
-            "name": self.name,
-            "url": self.url,
-            "description": self.description,
-            "published_at": str(self.published_at),
-        }
-
     def __str__(self):
         return f"Release {self.name}: {self.published_at}"
 
@@ -254,13 +190,6 @@ class GithubWikiPayload(GithubEventPayload):
         on_delete=models.CASCADE,
         related_name="wiki_changes",
     )
-
-    def to_json(self) -> dict:
-        return {
-            "name": self.name,
-            "url": self.url,
-            "action": self.action,
-        }
 
     def __str__(self):
         return f"{self.action} {self.name}"

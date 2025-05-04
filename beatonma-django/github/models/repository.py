@@ -1,6 +1,6 @@
 import math
 
-from common.models import ApiModel, BaseModel, PublishedMixin, TaggableMixin
+from common.models import BaseModel, PublishedMixin, TaggableMixin
 from common.models.published import PublishedQuerySet
 from common.models.search import SearchResult
 from django.db import models
@@ -56,7 +56,7 @@ class GithubRepositoryQuerySet(PublishedQuerySet):
         return super().published().filter(is_private=False)
 
 
-class GithubRepository(PublishedMixin, ApiModel, TaggableMixin, BaseModel):
+class GithubRepository(PublishedMixin, TaggableMixin, BaseModel):
     objects = GithubRepositoryQuerySet.as_manager()
     search_fields = ["name", "description"]
 
@@ -101,43 +101,6 @@ class GithubRepository(PublishedMixin, ApiModel, TaggableMixin, BaseModel):
     def is_public(self) -> bool:
         return self.is_published and not self.is_private
 
-    def to_json(self):
-        if not self.is_published:
-            return None
-
-        if self.is_private:
-            return {
-                "name": self.name,
-            }
-
-        else:
-            return {
-                "id": self.id,
-                "name": self.full_name,
-                "url": self.url,
-                "description": self.description,
-                "license": self.license.key if self.license else None,
-            }
-
-    def to_search_result(self) -> SearchResult:
-        return SearchResult(
-            name=self.full_name,
-            description=self.description,
-            timestamp=self.published_at,
-            url=self.url,
-        )
-
-    def to_feeditem_context(self) -> FeedItemContext:
-        return FeedItemContext(
-            title=self.name,
-            url=self.url,
-            date=self.published_at,
-            type=self.__class__.__name__,
-            summary=self.description,
-            image_url=static("icon/github.svg"),
-            image_class="contain",
-        )
-
     def __str__(self):
         return self.full_name
 
@@ -146,7 +109,7 @@ class GithubRepository(PublishedMixin, ApiModel, TaggableMixin, BaseModel):
         verbose_name_plural = "Github Repositoriies"
 
 
-class GithubLanguageUsage(ApiModel, BaseModel):
+class GithubLanguageUsage(BaseModel):
     repository = models.ForeignKey(
         GithubRepository,
         on_delete=models.CASCADE,
@@ -162,12 +125,6 @@ class GithubLanguageUsage(ApiModel, BaseModel):
     @property
     def size_kb(self) -> int:
         return math.ceil(self.size_bytes / 1024.0)
-
-    def to_json(self) -> dict:
-        return {
-            "name": self.language.name,
-            "bytes": self.size_bytes,
-        }
 
     def __str__(self):
         return f"{self.repository} | {self.language} {self.size_kb}kb"

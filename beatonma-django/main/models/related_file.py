@@ -1,9 +1,8 @@
-import re
 from io import BytesIO
 from typing import Callable, Self
 
 import PIL
-from common.models import ApiModel, BaseModel
+from common.models import BaseModel
 from common.models.api import ApiEditable
 from common.models.generic import GenericFkMixin
 from django.contrib.contenttypes.fields import GenericRelation
@@ -18,7 +17,6 @@ from main.models.mixins.media_upload import (
     VIDEO_PATTERN,
     UploadedMediaMixin,
 )
-from main.util import to_absolute_url
 from PIL import Image
 
 THUMBNAIL_SIZE = (800, 800)
@@ -160,19 +158,12 @@ class UploadedFile(BaseUploadedFile):
     upload_to = "uploads"
 
 
-class RelatedFile(GenericFkMixin, ApiModel, BaseUploadedFile):
+class RelatedFile(GenericFkMixin, BaseUploadedFile):
     """Files that are uploaded"""
 
     upload_to = "related"
 
     sort_order = models.PositiveSmallIntegerField(default=0)
-
-    def to_json(self) -> dict:
-        return {
-            "url": to_absolute_url(self.file.url),
-            "description": self.description,
-            "type": self.type,
-        }
 
 
 class RelatedFilesMixin(models.Model):
