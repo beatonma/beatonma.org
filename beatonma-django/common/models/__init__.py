@@ -48,4 +48,5 @@ class BaseModel(models.Model):
 
 from .published import PublishedMixin
 from .search import SearchMixin
+from .singleton import Singleton
 from .taggable import TaggableMixin
