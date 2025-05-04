@@ -28,7 +28,6 @@ SENTRY_ENABLED = False
 
 SITE_NAME = "test"
 ADMIN_URL = "admin/"
-DASHBOARD_URL = "dashboard/"
 BMA_NOTIFICATIONS_URL = "notifications/"
 
 MEDIA_ROOT = "/tmp/bma-tests/media/"

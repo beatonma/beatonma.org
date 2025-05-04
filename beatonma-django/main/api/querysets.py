@@ -2,7 +2,7 @@ import logging
 
 from django.db.models import Case, CharField, QuerySet, Value, When
 from main.models import Post
-from main.models.rewrite.post import BasePost
+from main.models.posts.post import BasePost
 
 log = logging.getLogger(__name__)
 

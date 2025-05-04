@@ -45,14 +45,11 @@ POSTGRES_PORT: int = _env_int("POSTGRES_PORT", 5432)
 
 # URLs
 ADMIN_URL: str = _env_str("ADMIN_URL")
-DASHBOARD_URL: str = _env_str("DASHBOARD_URL")
 BMA_NOTIFICATIONS_URL: str = _env_str("BMA_NOTIFICATIONS_URL")
 
 # File paths
 MEDIA_ROOT: str = _env_str("MEDIA_ROOT", default="/var/www/media")
 STATIC_ROOT: str = _env_str("STATIC_ROOT", default="/var/www/static")
-TEMPLATE_ROOT: str = _env_str("TEMPLATE_ROOT", default=None)
-STATICFILES_ROOT: str = _env_str("STATICFILES_ROOT", default=None)
 
 # Email
 SERVER_EMAIL: str = _env_str("SERVER_EMAIL")

@@ -1,194 +1,200 @@
 import logging
-from typing import Optional
+import os
 
 from common.models import BaseModel
-from common.models.search import SearchResult
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.urls import reverse
 from django.utils.text import slugify
-from main.forms import SanitizedFileField
-from main.models.formats import FormatMixin, Formats
-from main.models.link import Link
-from main.models.mixins.styleable_svg import StyleableSvgMixin
-from main.models.mixins.themeable import ThemeableMixin
-from main.models.posts.webpost import BasePost
-from main.view_adapters import FeedItemContext
-from main.views import view_names
+from django.utils.translation import gettext_lazy as _
+
+from github.models import GithubRepository
+from main.models import Link
+from main.models.formats.markdown import linkify_github_issues
+from main.models.mixins.media_upload import UploadedMediaMixin
+from main.storage import OverwriteStorage
+
+from .post import Post
 
 log = logging.getLogger(__name__)
 
 
-class AppType(ThemeableMixin, StyleableSvgMixin, BaseModel):
-    name = models.CharField(max_length=50, help_text="e.g. Android, web, server...")
-    tooltip = models.CharField(max_length=50)
+def _update_repo_link(post: Post, repository: GithubRepository | None):
+    if not repository:
+        return
+    ct = ContentType.objects.get_for_model(post)
+    if repository.is_public():
+        Link.objects.update_or_create(
+            url=repository.url,
+            content_type=ct,
+            object_id=post.pk,
+            defaults={"description": "source"},
+        )
+    else:
+        Link.objects.filter(
+            url=repository.url,
+            content_type=ct,
+            object_id=post.pk,
+        ).delete()
 
-    def get_absolute_url(self):
-        return reverse(view_names.APPS_BY_TYPE, args=[self.name])
 
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ["name"]
-
-
-class App(
-    BasePost,
-    FormatMixin,
-    ThemeableMixin,
-    BaseModel,
-):
-    class StatusOptions(models.TextChoices):
-        dev = "dev"
-        test = "test"
-        public = "published"
-        deprecated = "deprecated"
-
-    search_fields = ["title", "content", "app_id", "tags__name"]
-
-    title = models.CharField(max_length=140)
-    app_id = models.CharField(max_length=255, unique=True, help_text="Application ID")
-    slug = models.SlugField(unique=True, max_length=255)
-    tagline = models.CharField(max_length=140, blank=True)
-    status = models.CharField(
-        max_length=16,
-        choices=StatusOptions.choices,
-        default="dev",
-        blank=True,
-        null=True,
-    )
-
-    icon = SanitizedFileField(
-        blank=True,
-        upload_to="app/",
-        size=[800, 800],
-    )
+class AppPost(Post):
+    codename = models.CharField(max_length=255, unique=True)
     repository = models.OneToOneField(
         "github.GithubRepository",
         on_delete=models.CASCADE,
-        related_name="app",
+        related_name="app_post",
         null=True,
         blank=True,
     )
-
-    app_type = models.ForeignKey(
-        "AppType",
-        on_delete=models.CASCADE,
-        related_name="apps",
+    icon = models.OneToOneField(
+        "UploadedFile",
+        on_delete=models.SET_NULL,
         blank=True,
         null=True,
+        related_name="+",
     )
-    project = models.ForeignKey(
-        "Project",
-        on_delete=models.CASCADE,
+
+    script = models.ForeignKey(
+        "AppResource",
+        on_delete=models.SET_NULL,
         blank=True,
         null=True,
+        related_name="+",
     )
-
-    primary_language = models.ForeignKey(
-        "github.GithubLanguage",
-        on_delete=models.CASCADE,
-        related_name="apps",
+    script_html = models.TextField(blank=True, null=True)
+    widget_style = models.CharField(
+        max_length=1024,
         blank=True,
         null=True,
+        help_text=_(
+            "Element style applied to the element that wraps the "
+            "embedded widget - use to apply a background or padding."
+        ),
     )
-
-    class Meta:
-        ordering = ["created_at"]
-
-    def get_absolute_url(self):
-        return reverse(view_names.APP, kwargs={"app_id": self.app_id})
-
-    def get_content_html(self) -> str:
-        return self.content_html
-
-    def save_text(self):
-        self.content_html = Formats.to_html(self.format, self.content)
+    script_is_widget = models.BooleanField(
+        default=False,
+        help_text=_(
+            "If true, this app can be included as part of a parent UI. "
+            "Otherwise it should only displayed as its own window."
+        ),
+    )
 
     def build_slug(self):
-        return slugify(self.app_id.replace(".", "-"))
+        return slugify(self.codename)
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = self.build_slug()
+        if self.pk:
+            previous = AppPost.objects.get(pk=self.pk)
+            if self.slug != previous.slug:
+                log.warning(f"Slug has changed {previous.slug} -> {self.slug}")
+                self.move_resource_directory(
+                    previous.resource_directory(), self.resource_directory()
+                )
 
-        self.get_default_theme_from(self.app_type)
+        super().save(*args, **kwargs)
+        _update_repo_link(self, self.repository)
 
-        if self.repository:
-            self._update_from_repository(*args, **kwargs)
+    def resource_directory(self):
+        return f"apps/{self.slug}"
 
-        else:
-            super().save(*args, **kwargs)
+    def move_resource_directory(self, original_root: str, target_root: str):
+        """Migrate files from original_root to target_root, maintaining relative structure."""
 
-    def _update_from_repository(self, *save_args, **save_kwargs):
-        self.primary_language = self.repository.primary_language
-        super().save(*save_args, **save_kwargs)
+        for res in self.resources.all():
+            res.move_file(source_root=original_root, target_root=target_root)
 
-        content_type = ContentType.objects.get_for_model(self)
-        if self.repository.is_public():
-            Link.objects.update_or_create(
-                url=self.repository.url,
-                content_type=content_type,
-                object_id=self.pk,
-                defaults={"description": "source"},
-            )
-        else:
-            Link.objects.filter(
-                url=self.repository.url,
-                content_type=content_type,
-                object_id=self.pk,
-            ).delete()
-
-    def resolve_icon_url(self) -> str | None:
-        try:
-            return self.icon.url
-        except (AttributeError, ValueError):
-            pass
-
-    def resolve_icon_svg(self) -> str | None:
-        try:
-            return self.app_type.icon_svg
-        except (AttributeError, ValueError):
-            pass
-
-    @classmethod
-    def resolve_from_url_kwargs(cls, app_id, **url_kwargs) -> "App":
-        return cls.objects.get(app_id=app_id)
-
-    def resolve_description(self) -> str | None:
-        if self.content_html:
-            return self.content_html
-
-        if self.repository:
-            return self.repository.description
-
-    def resolve_short_description(self) -> str | None:
-        if self.tagline:
-            return self.tagline
-
-        if self.repository:
-            return self.repository.description
-
-    def to_search_result(self) -> SearchResult:
-        return SearchResult(
-            name=self.title,
-            description=self.resolve_short_description(),
-            timestamp=self.published_at,
-            url=self.get_absolute_url(),
-        )
-
-    def to_feeditem_context(self) -> FeedItemContext:
-        return FeedItemContext(
-            title=self.title,
-            url=self.get_absolute_url(),
-            date=self.published_at,
-            type=self.__class__.__name__,
-            summary=self.resolve_short_description(),
-            image_class="contain",
-            image_url=self.resolve_icon_url(),
-            themeable=self,
-        )
+        if os.path.exists(original_root) and not os.listdir(original_root):
+            os.rmdir(original_root)
+            log.info(f"Removed empty directory {original_root}")
 
     def __str__(self):
-        return self.app_id
+        return f"App: {self.title or self.content[:64] or self.slug}"
+
+
+class ChangelogPost(Post):
+    is_publishable_dependencies = ("app",)
+    app = models.ForeignKey(
+        AppPost,
+        on_delete=models.CASCADE,
+        related_name="changelogs",
+    )
+    version = models.CharField(max_length=32)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.title = f"{self.app.title}: {self.version}"
+        super().save(*args, **kwargs)
+        _update_repo_link(self, self.app.repository)
+
+    def build_slug(self):
+        return slugify(f"{self.app.codename}_{self.version}".replace(".", "-"))
+
+    def extra_markdown_processors(self):
+        extra = []
+        if repo := self.app.repository:
+            extra.append(
+                lambda markdown: linkify_github_issues(
+                    repo_url=repo.url, markdown=markdown
+                )
+            )
+
+        return extra + super().extra_markdown_processors()
+
+    def __str__(self):
+        return f"Changelog: {self.app.title} {self.version}"
+
+
+def appresource_upload_to(instance: "AppResource", filename: str):
+    return os.path.join(instance.app.resource_directory(), filename)
+
+
+class AppResource(UploadedMediaMixin, BaseModel):
+    app = models.ForeignKey(
+        AppPost,
+        on_delete=models.CASCADE,
+        related_name="resources",
+    )
+    file = models.FileField(
+        upload_to=appresource_upload_to,
+        storage=OverwriteStorage(),
+    )
+
+    def save(self, *args, **kwargs):
+        created = not self.pk
+
+        super().save(*args, **kwargs)
+
+        if created:
+            if self.file.name.endswith(".zip"):
+                self.extract_zip(self.file)
+                self.delete()
+                return
+            self.app.save()
+
+    def move_file(self, *, source_root: str, target_root: str):
+        self.file.name = self.move_filesystem_file(
+            self.file.name, target_root, source_root=source_root
+        )
+        self.save()
+
+    def extract_zip(self, file):
+        from zipfile import ZipFile
+
+        resource_dir = self.app.resource_directory()
+        absolute_resource_dir = os.path.join(settings.MEDIA_ROOT, resource_dir)
+
+        with ZipFile(file, "r") as contents:
+            contents.extractall(absolute_resource_dir)
+            extracted_files = contents.filelist
+
+        for f in extracted_files:
+            path = os.path.join(resource_dir, f.filename)
+            if path == file.path:
+                continue
+            if os.path.isdir(os.path.join(settings.MEDIA_ROOT, path)):
+                continue
+            AppResource.objects.get_or_create(app=self.app, file=path)
+
+    def __str__(self):
+        return f"{self.app.slug} {self.file.name}"

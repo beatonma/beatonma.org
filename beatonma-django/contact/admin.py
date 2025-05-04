@@ -15,9 +15,7 @@ def action_mark_as_unread(modeladmin, request, queryset):
 
 @admin.register(WebmailMessage)
 class WebmailMessageAdmin(BaseAdmin):
-    def truncated_message_body(self, message: WebmailMessage) -> str:
-        return message.message_body[:140]
-
+    collapse_readonly = False
     actions = [
         action_mark_as_read,
         action_mark_as_unread,
@@ -30,11 +28,15 @@ class WebmailMessageAdmin(BaseAdmin):
         "truncated_message_body",
     ]
 
-    readonly_fields = [
+    editable_fields = [
+        "has_been_read",
+    ]
+    field_order = [
         "name",
         "contact",
-        "subject",
         "message_body",
-        "created_at",
-        "truncated_message_body",
+        "subject",
     ]
+
+    def truncated_message_body(self, message: WebmailMessage) -> str:
+        return message.message_body[:140]

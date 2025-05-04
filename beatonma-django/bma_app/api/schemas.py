@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List
 from uuid import UUID
 
 from main.models.related_file import MediaType
@@ -17,10 +16,10 @@ class MediaSchema(ApiEditableSchema):
     type: MediaType
 
 
-class NoteSchema(ApiEditableSchema):
+class PostSchema(ApiEditableSchema):
     content_html: str
     content: str
     url: str = Field(alias="get_absolute_url")
     is_published: bool
     published_at: datetime
-    media: List[MediaSchema] = Field(alias="related_files")
+    media: list[MediaSchema] = Field(alias="related_files")

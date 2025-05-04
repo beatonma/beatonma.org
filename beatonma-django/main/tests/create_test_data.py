@@ -10,7 +10,7 @@ TESTDATA_DATE = date(2023, 2, 3)
 def create_test_data():
     for n in range(30):
         # Force pagination
-        sample.create_note()
+        sample.create_post()
 
     _generate(published=True)
     _generate(published=False)
@@ -56,27 +56,22 @@ def _generate(published: bool):
         f"{label} MOTD content",
         is_published=published,
     )
-    language = sample.create_sample_language(name="TestTarget-Language")
-    app_type = sample.create_app_type(
-        name="TestTarget-AppType",
-        date=TESTDATA_DATE,
-    )
 
-    article = sample.create_article(
+    article = sample.create_post(
         title=f"{label} Article",
-        preview_text=f"{label} Article preview",
+        preview=f"{label} Article preview",
         is_published=published,
         tags=tags,
         date=TESTDATA_DATE,
     )
-    blog = sample.create_blog(
+    blog = sample.create_post(
         title=f"{label} Blog",
-        preview_text=f"{label} Blog preview",
+        preview=f"{label} Blog preview",
         is_published=published,
         tags=tags,
         date=TESTDATA_DATE,
     )
-    note = sample.create_note(
+    note = sample.create_post(
         content=f"{label} Note",
         is_published=published,
         tags=tags,
@@ -84,17 +79,15 @@ def _generate(published: bool):
     )
     app = sample.create_app(
         title=f"{label} App",
-        app_type=app_type,
         is_published=published,
         tags=tags,
-        language=language.name,
         date=TESTDATA_DATE,
     )
     changelog = sample.create_changelog(
         app,
         content=f"{label} changelog content",
-        version_name=f"1.0-{label}",
-        preview_text="Target changelog preview",
+        version=f"1.0-{label}",
+        preview="Target changelog preview",
         is_published=published,
         tags=tags,
         date=TESTDATA_DATE,

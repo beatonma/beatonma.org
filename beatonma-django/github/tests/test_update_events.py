@@ -1,16 +1,18 @@
 from basetest.testcase import LocalTestCase
 from django.utils import timezone
 from django.utils.timezone import get_current_timezone
-from github.models import (GithubLanguage, GithubLicense, GithubRepository,
-                           GithubUser)
-from github.models.events import (GithubEventUpdateCycle,
-                                  GithubIssueClosedPayload,
-                                  GithubPullRequestMergedPayload,
-                                  GithubReleasePublishedPayload,
-                                  GithubUserEvent, GithubWikiPayload)
+from github.models import GithubLanguage, GithubLicense, GithubRepository, GithubUser
+from github.models.events import (
+    GithubEventUpdateCycle,
+    GithubIssueClosedPayload,
+    GithubPullRequestMergedPayload,
+    GithubReleasePublishedPayload,
+    GithubUserEvent,
+    GithubWikiPayload,
+)
 from github.tasks import update_events
 from github.tasks.api_models import Event
-from main.models import App, Changelog
+from main.models import AppPost, ChangelogPost
 
 SAMPLE_CREATE_EVENT = Event.model_validate(
     {
@@ -309,9 +311,9 @@ class UpdateEventsTest(LocalTestCase):
             ),
         )
 
-        App.objects.create(
+        AppPost.objects.create(
             title="my-app",
-            app_id="my.app",
+            codename="my.app",
             repository=repo,
         )
 
@@ -388,10 +390,10 @@ class UpdateEventsTest(LocalTestCase):
 
     def test_release_event_creates_changelog(self):
         update_events._create_event(self.update_cycle, SAMPLE_RELEASE_EVENT)
-        self.assertEqual(1, Changelog.objects.count())
-        changelog = Changelog.objects.first()
+        self.assertEqual(1, ChangelogPost.objects.count())
+        changelog = ChangelogPost.objects.first()
 
-        self.assertEqual(changelog.title, "v1.0.0")
+        self.assertTrue("v1.0.0" in changelog.title)
         self.assertEqual(changelog.content, "Description of the release")
 
     def test_issues_event(self):
@@ -429,7 +431,6 @@ class UpdateEventsTest(LocalTestCase):
             GithubLanguage,
             GithubRepository,
             GithubUser,
-            Changelog,
         )
 
 

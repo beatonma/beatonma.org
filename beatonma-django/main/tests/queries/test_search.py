@@ -1,19 +1,19 @@
 from basetest.testcase import LocalTestCase
-from main.models import Note
+from main.models import Post
 
 
 def _words(query: str):
     words = query.strip().split()
-    return Note.objects.search_words(words)
+    return Post.objects.search_words(words)
 
 
 def _fragments(query: str):
     words = query.strip().split()
-    return Note.objects.search_fragments(words)
+    return Post.objects.search_fragments(words)
 
 
 def _search(query: str):
-    return Note.objects.search(query)
+    return Post.objects.search(query)
 
 
 class SearchQueryTests(LocalTestCase):
@@ -21,14 +21,14 @@ class SearchQueryTests(LocalTestCase):
         self.assert_length(func(query), n, msg=f"query:{query}")
 
     def setUp(self) -> None:
-        chickens = Note.objects.create(
+        chickens = Post.objects.create(
             content="The Basics of Photography: Learn the fundamentals of "
             "photography and how to capture stunning images. "
             "Also chickens."
         )
         chickens.tags.add("apples")
 
-        turkeys = Note.objects.create(
+        turkeys = Post.objects.create(
             content="Photography Basics: Learn the fundamentals of photography "
             "and how to capture stunning images. "
             "Also turkeys."

@@ -2,8 +2,7 @@ import logging
 
 from django.core.management import BaseCommand
 from github.models import CachedResponse, GithubLanguage
-from main.models import App, AppType, Article, Blog, Changelog, Note
-from main.models.posts import About
+from main.models import AboutPost, AppPost, ChangelogPost, Post
 from main.tasks.sample_data import generate_posts
 from taggit.models import Tag
 
@@ -14,14 +13,11 @@ class Command(BaseCommand):
     """Create sample data for running frontend development."""
 
     models = [
-        About,
-        Article,
-        Blog,
+        Post,
+        AppPost,
+        ChangelogPost,
+        AboutPost,
         CachedResponse,
-        Note,
-        App,
-        AppType,
-        Changelog,
         GithubLanguage,
         Tag,
     ]

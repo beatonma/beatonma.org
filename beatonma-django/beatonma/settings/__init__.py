@@ -1,4 +1,4 @@
-from .admin import ADMIN_URL, ADMINS, BMA_NOTIFICATIONS_URL, DASHBOARD_URL
+from .admin import ADMIN_URL, ADMINS, BMA_NOTIFICATIONS_URL
 from .app_settings import *
 from .auth import AUTH_PASSWORD_VALIDATORS
 from .caching import CACHES

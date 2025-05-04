@@ -685,7 +685,7 @@ class Migration(migrations.Migration):
                     "file",
                     models.FileField(
                         storage=main.storage.OverwriteStorage(),
-                        upload_to=main.models.rewrite.app.appresource_upload_to,
+                        upload_to=main.models.posts.app.appresource_upload_to,
                     ),
                 ),
                 (

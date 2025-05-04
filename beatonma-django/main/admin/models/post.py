@@ -1,22 +1,13 @@
 from common.admin import BaseAdmin
 from common.models.util import implementations_of
 from django.contrib import admin
-from main.admin.models.links import LinkInline
-from main.admin.models.relatedfile import RelatedFileInline
+from main.admin.models.inline import AppResourceInline, LinkInline, RelatedFileInline
 from main.models import AppPost, ChangelogPost, Post
-from main.models.rewrite import AboutPost
-from main.models.rewrite.app import AppResource
+from main.models.posts import AboutPost
+from main.models.posts.app import AppResource
 
 
-@admin.action(description="save()")
-def save_models(modeladmin, request, queryset):
-    for obj in queryset:
-        obj.save()
-
-
-@admin.register(AboutPost)
 class BasePostAdmin(BaseAdmin):
-    actions = (save_models,)
     inlines = [
         LinkInline,
         RelatedFileInline,
@@ -85,6 +76,11 @@ class BasePostAdmin(BaseAdmin):
         return super().formfield_for_dbfield(db_field, **kwargs)
 
 
+@admin.register(AboutPost)
+class AboutPostAdmin(BasePostAdmin):
+    pass
+
+
 @admin.register(Post)
 class PostAdmin(BasePostAdmin):
     def get_queryset(self, request):
@@ -104,11 +100,6 @@ class PostAdmin(BasePostAdmin):
             .filter(**exclude_subclasses)
             .prefetch_related("related_files")
         )
-
-
-class AppResourceInline(admin.TabularInline):
-    model = AppResource
-    extra = 1
 
 
 @admin.register(AppPost)

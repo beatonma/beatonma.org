@@ -48,6 +48,7 @@ class BaseAdmin(admin.ModelAdmin):
     save_on_top = True
 
     editable_fields: list[str] = []
+    collapse_readonly: bool = True
 
     """Non-exhaustive ordering of field priority.
     
@@ -95,7 +96,7 @@ class BaseAdmin(admin.ModelAdmin):
                     {
                         "fields": self._apply_field_groups(readonly_fields),
                         "classes": [
-                            "collapse visible!"  # 'collapse' django class clashes with tailwind
+                            f"{"collapse" if self.collapse_readonly else ''} visible!"  # 'collapse' django class clashes with tailwind
                         ],
                     },
                 ),

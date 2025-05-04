@@ -2,9 +2,6 @@
 
 import django.db.models.deletion
 import django.utils.timezone
-import main.forms.filename
-import main.forms.sanitized_filefield
-import main.models.webapp
 from django.db import migrations, models
 
 
@@ -33,10 +30,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("modified_at", models.DateTimeField(auto_now=True)),
-                (
-                    "file",
-                    models.FileField(upload_to=main.models.webapp._resource_upload_to),
-                ),
+                # (
+                #     "file",
+                #     models.FileField(upload_to=main.models.webapp._resource_upload_to),
+                # ),
                 (
                     "webapp",
                     models.ForeignKey(

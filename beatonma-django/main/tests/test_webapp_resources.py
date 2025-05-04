@@ -3,31 +3,22 @@ import os
 from basetest.testcase import LocalTestCase
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
-from main.models import WebApp
-from main.models.webapp import WebappResource
+from main.models import AppPost, AppResource
 
 
-class WebpostResourceTests(LocalTestCase):
-    def test_webapp_with_resources_is_moved_to_own_directory(self):
-        app = WebApp.objects.create(
+class AppResourceTests(LocalTestCase):
+    def test_app_with_resources_is_moved_to_own_directory(self):
+        app = AppPost.objects.create(
             title="title",
             slug="slug",
-            file=SimpleUploadedFile("script.js", b"const a = 1;"),
-        )
-        self.assertTrue(
-            app.file.path.endswith("webapps/script.js"),
-            msg=app.file.path,
         )
 
-        res = WebappResource.objects.create(
-            webapp=app, file=SimpleUploadedFile("resource.txt", b"Hello World!")
+        res = AppResource.objects.create(
+            app=app,
+            file=SimpleUploadedFile("resource.txt", b"Hello World!"),
         )
         self.assertTrue(
-            app.file.path.endswith("webapps/slug/script.js"),
-            msg=app.file.path,
-        )
-        self.assertTrue(
-            res.file.path.endswith("webapps/slug/resource.txt"),
+            res.file.path.endswith("apps/slug/resource.txt"),
             msg=res.file.path,
         )
 
@@ -44,22 +35,21 @@ class WebpostResourceTests(LocalTestCase):
             zip.write(xml_path, arcname="string.xml")
 
         with open(zip_path, "rb") as zip:
-            webapp = WebApp.objects.create(
+            app = AppPost.objects.create(
                 title="title",
                 slug="slug",
-                file=SimpleUploadedFile("script.js", b"const b = 2;"),
             )
-            WebappResource.objects.create(
-                webapp=webapp,
+            AppResource.objects.create(
+                app=app,
                 file=SimpleUploadedFile("resources.zip", zip.read()),
             )
 
-        resource = WebappResource.objects.get(file__endswith="string.xml")
+        resource = AppResource.objects.get(file__endswith="string.xml")
         with open(resource.file.path, "r") as f:
             content = f.read()
         self.assertEqual(content, "xml resource")
 
-        self.assertEqual(1, WebappResource.objects.all().count())
+        self.assertEqual(1, AppResource.objects.all().count())
 
     def tearDown(self):
         for path in ["resources.zip", "string.xml"]:

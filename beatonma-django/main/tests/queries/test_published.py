@@ -1,13 +1,14 @@
 from basetest.testcase import LocalTestCase
-from main.models import Note
+from main.models import Post
+from main.tasks import sample_data
 
 
 class PublishedMixinTests(LocalTestCase):
     def setUp(self):
-        Note.objects.create(id=1, content="public", is_published=True)
-        Note.objects.create(id=2, content="private", is_published=False)
+        sample_data.create_post(content="public", is_published=True)
+        sample_data.create_post(content="private", is_published=False)
 
     def test_searchability(self):
-        self.assertEqual(1, Note.objects.search("public").count())
-        self.assertEqual(0, Note.objects.search("private").count())
-        self.assertEqual(1, Note.objects.search("p").count())
+        self.assertEqual(1, Post.objects.search("public").count())
+        self.assertEqual(0, Post.objects.search("private").count())
+        self.assertEqual(1, Post.objects.search("p").count())

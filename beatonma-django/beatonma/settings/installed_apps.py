@@ -26,11 +26,9 @@ _PROJECT_APPS = [
     "bma_dev",
     "common",
     "contact",
-    "dashboard",
     "github",
     "main",
     "webmentions_tester",
-    "webapp.wurdle",
 ]
 _DEBUG_APPS = [
     "debug_toolbar",

@@ -10,7 +10,7 @@ from ninja.security.apikey import APIKeyBase
 from .. import auth
 from .docs import router as docs_router
 from .media import router as media_router
-from .notes import router as notes_router
+from .posts import router as notes_router
 
 log = logging.getLogger(__name__)
 

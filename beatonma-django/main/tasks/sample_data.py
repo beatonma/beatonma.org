@@ -2,7 +2,6 @@ import random
 from collections import namedtuple
 from datetime import date as Date
 from datetime import datetime, timezone
-from typing import List, Optional, Union
 from urllib.parse import urljoin
 
 from common.models import TaggableMixin
@@ -10,8 +9,7 @@ from common.models.util import implementations_of
 from django.db.models import QuerySet
 from django.utils.text import slugify
 from github.tests.sampledata import create_sample_language
-from main.models import App, AppType, Article, Blog, Changelog, MessageOfTheDay, Note
-from main.models.posts import About
+from main.models import AboutPost, AppPost, ChangelogPost, MessageOfTheDay, Post
 from main.tasks import samples
 from main.tasks.samples.tags import SAMPLE_TAGS
 from mentions.models import HCard, Webmention
@@ -23,13 +21,9 @@ __all__ = [
     "HCardConfig",
     "create_about_page",
     "create_app",
-    "create_app_type",
-    "create_article",
-    "create_blog",
     "create_changelog",
     "create_hcard",
     "create_sample_language",
-    "create_note",
     "generate_hcards",
     "generate_posts",
     "generate_webmentions_for",
@@ -46,13 +40,13 @@ def _any_or_none(qs: QuerySet):
 
 
 def _timestamp(
-    date: Optional[Date] = None,
-    year: Optional[int] = None,
-    month: Optional[int] = None,
-    day: Optional[int] = None,
-    hour: Optional[int] = None,
-    minute: Optional[int] = None,
-    second: Optional[int] = None,
+    date: Date = None,
+    year: int = None,
+    month: int = None,
+    day: int = None,
+    hour: int = None,
+    minute: int = None,
+    second: int = None,
 ) -> datetime:
     if date:
         year = date.year
@@ -77,135 +71,53 @@ def add_tags(obj: TaggableMixin):
     obj.tags.add(*random.sample(SAMPLE_TAGS, random.choice(range(1, 4))))
 
 
-def create_article(
+def create_post(
     title: str = None,
-    tagline: str = "",
-    preview_text: str = "",
+    subtitle: str = "",
+    preview: str = "",
     content: str = "",
     is_published: bool = True,
-    tags: Optional[List[str]] = None,
-    date: Optional[Date] = None,
-) -> Article:
+    tags: list[str] = None,
+    date: Date = None,
+) -> Post:
     sample = samples.any_post()
     created_at = _timestamp(date=date)
-
-    article, _ = Article.objects.get_or_create(
+    post, _ = Post.objects.get_or_create(
         title=title or sample.title,
         defaults={
-            "tagline": tagline or sample.summary,
-            "preview_text": preview_text or sample.summary,
+            "subtitle": subtitle or sample.summary,
+            "preview": preview or sample.summary,
             "content": content or sample.content,
-            "created_at": created_at,
-            "published_at": created_at,
             "is_published": is_published,
-        },
-    )
-
-    if tags:
-        article.tags.add(*tags)
-
-    return article
-
-
-def create_blog(
-    title: str = None,
-    tagline: str = None,
-    preview_text: str = None,
-    content: str = None,
-    is_published: bool = True,
-    tags: Optional[List[str]] = None,
-    date: Optional[Date] = None,
-) -> Blog:
-    sample = samples.any_post()
-    created_at = _timestamp(date=date)
-
-    blog, _ = Blog.objects.get_or_create(
-        title=title or sample.title,
-        defaults={
-            "tagline": tagline or sample.summary,
-            "preview_text": preview_text or sample.summary,
-            "content": content or sample.content,
-            "created_at": created_at,
             "published_at": created_at,
-            "is_published": is_published,
+            "created_at": created_at,
         },
     )
-
     if tags:
-        blog.tags.add(*tags)
+        post.tags.add(*tags)
 
-    return blog
-
-
-def create_note(
-    content: Optional[str] = None,
-    is_published: bool = True,
-    tags: Optional[List[str]] = None,
-    date: Optional[Date] = None,
-) -> Note:
-    note = Note.objects.create(
-        content=content or samples.any_note(),
-        published_at=_timestamp(date=date),
-        is_published=is_published,
-    )
-
-    if tags:
-        note.tags.add(*tags)
-
-    return note
-
-
-def create_app_type(
-    name: Optional[str] = None,
-    date: Optional[Date] = None,
-) -> AppType:
-    if not name:
-        name = samples.any_app_type()
-
-    app_type, _ = AppType.objects.get_or_create(
-        name=name,
-        defaults={
-            "tooltip": name,
-            "created_at": _timestamp(date=date),
-        },
-    )
-    return app_type
+    return post
 
 
 def create_app(
-    title: Optional[str] = None,
-    app_id: Optional[str] = None,
-    app_type: Optional[Union[AppType, str]] = None,
-    language: Optional[str] = None,
+    title: str = None,
+    codename: str = None,
     is_published: bool = True,
-    tags: Optional[List[str]] = None,
-    date: Optional[Date] = None,
-) -> App:
+    tags: list[str] = None,
+    date: Date = None,
+) -> AppPost:
     created_at = _timestamp(date=date)
-    if not app_type:
-        app_types = AppType.objects.all()
-        if not app_types.exists():
-            app_type = create_app_type()
-        else:
-            app_type = _any_or_none(app_types)
-
-    if isinstance(app_type, str):
-        app_type = create_app_type(app_type)
 
     if not title:
         title = samples.any_app_name()
 
-    language = create_sample_language(language)
-
-    app, _ = App.objects.get_or_create(
+    app, _ = AppPost.objects.get_or_create(
         title=title,
         defaults={
-            "app_id": app_id or slugify(title).replace("-", "."),
-            "app_type": app_type,
+            "codename": codename or slugify(title).replace("-", "."),
             "created_at": created_at,
             "published_at": created_at,
             "is_published": is_published,
-            "primary_language": language,
         },
     )
 
@@ -216,14 +128,14 @@ def create_app(
 
 
 def create_changelog(
-    app: App = None,
-    content: Optional[str] = None,
-    version_name: Optional[str] = None,
-    preview_text: Optional[str] = None,
+    app: AppPost = None,
+    content: str = None,
+    version: str = None,
+    preview: str = None,
     is_published: bool = True,
-    tags: Optional[List[str]] = None,
-    date: Optional[Date] = None,
-) -> Changelog:
+    tags: list[str] = None,
+    date: Date = None,
+) -> ChangelogPost:
     created_at = _timestamp(date=date)
 
     if not app:
@@ -231,12 +143,12 @@ def create_changelog(
 
     sample = samples.any_changelog()
 
-    changelog, _ = Changelog.objects.get_or_create(
+    changelog, _ = ChangelogPost.objects.get_or_create(
         app=app,
-        version_name=version_name or sample.version_name,
+        version=version or sample.version_name,
         defaults={
             "content": content or sample.content,
-            "preview_text": preview_text or sample.summary,
+            "preview": preview or sample.summary,
             "created_at": created_at,
             "published_at": created_at,
             "is_published": is_published,
@@ -250,28 +162,28 @@ def create_changelog(
 
 
 def create_about_page(
-    description: Optional[str] = None,
-    content: Optional[str] = None,
-) -> About:
+    description: str = None,
+    content: str = None,
+) -> AboutPost:
     sample = samples.any_biography()
 
-    about, _ = About.objects.get_or_create(
-        description=description or sample.summary,
+    about, _ = AboutPost.objects.get_or_create(
+        title=description or sample.summary,
         content=content or sample.content,
     )
     return about
 
 
 def create_motd(
-    title: Optional[str] = None,
-    content: Optional[str] = None,
+    title: str = None,
+    content_html: str = None,
     is_published: bool = True,
 ) -> MessageOfTheDay:
     sample = samples.any_motd()
 
     motd, _ = MessageOfTheDay.objects.get_or_create(
         title=title or sample.title,
-        content=content or sample.content,
+        content_html=content_html or sample.content,
         defaults={
             "is_published": is_published,
         },
@@ -280,13 +192,9 @@ def create_motd(
 
 
 def generate_posts():
-    funcs = [create_article, create_blog, create_note]
     for _ in range(0, 30):
-        obj = random.choice(funcs)()
+        obj = create_post()
         add_tags(obj)
-
-    for _ in range(0, 3):
-        create_app_type()
 
     for _ in range(0, 10):
         app = create_app()
@@ -302,7 +210,7 @@ def generate_posts():
     generate_webmentions()
 
 
-def generate_webmentions(force_hcard: bool = False, quote: Optional[str] = None):
+def generate_webmentions(force_hcard: bool = False, quote: str = None):
     for m in implementations_of(MentionableMixin):
         for obj in m.objects.all():
             generate_webmentions_for(obj, force_hcard, quote)
@@ -311,7 +219,7 @@ def generate_webmentions(force_hcard: bool = False, quote: Optional[str] = None)
 def generate_webmentions_for(
     target: MentionableMixin,
     force_hcard: bool,
-    quote: Optional[str],
+    quote: str,
 ):
     for n in range(3):
         hcard: HCard = HCard.objects.order_by("?").first()
@@ -334,7 +242,7 @@ def generate_webmentions_for(
 HCardConfig = namedtuple("HCardConfig", ["name", "homepage", "avatar"])
 
 
-def create_hcard(card: Optional[HCardConfig] = None):
+def create_hcard(card: HCardConfig = None):
     if card:
         HCard.objects.create(
             name=card.name,
@@ -350,7 +258,7 @@ def create_hcard(card: Optional[HCardConfig] = None):
 
 
 def generate_hcards(
-    cards: Optional[List[HCardConfig]] = None,
+    cards: list[HCardConfig] = None,
     count: int = 10,
 ):
     if cards:

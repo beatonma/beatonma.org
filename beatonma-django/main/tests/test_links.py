@@ -1,6 +1,6 @@
 from basetest.testcase import LocalTestCase
 from django.contrib.contenttypes.models import ContentType
-from main.models import Host, Link, Note
+from main.models import Host, Link, Post
 
 
 class LinkTests(LocalTestCase):
@@ -13,7 +13,7 @@ class LinkTests(LocalTestCase):
             "https://inverness.io/sample/",
         ]
 
-        target = Note.objects.create(
+        target = Post.objects.create(
             content="Hello",
         )
 
@@ -29,9 +29,3 @@ class LinkTests(LocalTestCase):
         hosts.get(domain="beatonma.org")
         hosts.get(domain="snommoc.org")
         hosts.get(domain="inverness.io")
-
-    def tearDown(self) -> None:
-        self.teardown_models(
-            Link,
-            Host,
-        )
