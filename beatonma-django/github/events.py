@@ -1,5 +1,5 @@
 from enum import StrEnum
-from typing import List, Self
+from typing import Self
 
 
 class GithubEvent(StrEnum):
@@ -11,5 +11,5 @@ class GithubEvent(StrEnum):
     ReleaseEvent = "ReleaseEvent"
 
     @classmethod
-    def values(cls) -> List[Self]:
+    def values(cls) -> list[Self]:
         return list(map(lambda e: e.value, cls))

@@ -3,7 +3,6 @@ import subprocess
 from dataclasses import dataclass, field
 from functools import reduce
 from pathlib import Path
-from typing import List, Optional
 
 from .env import get_logger
 
@@ -14,8 +13,8 @@ log = get_logger(__name__)
 class Result:
     command: str
     output: str
-    code: Optional[int]
-    inputs: Optional[List[str]] = None
+    code: int | None
+    inputs: list[str] = None
     successful: bool = field(init=False)
 
     def __post_init__(self):
@@ -36,7 +35,7 @@ class Result:
 
 def cmd(
     command: str,
-    inputs: List[str] = None,
+    inputs: list[str] = None,
     sudo: bool = False,
     throw: bool = True,
 ) -> Result:

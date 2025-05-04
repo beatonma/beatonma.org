@@ -1,6 +1,5 @@
 import random
 from dataclasses import dataclass
-from typing import Optional
 
 TITLES = [
     "Embrace Positivity",
@@ -31,11 +30,11 @@ CONTENTS = [
 
 @dataclass
 class SampleMotd:
-    title: Optional[str]
+    title: str | None
     content: str
 
 
-def any_title() -> Optional[str]:
+def any_title() -> str | None:
     return random.choice(TITLES)
 
 

@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 from common.util import http
 from django.http import HttpRequest
@@ -18,7 +17,7 @@ log = logging.getLogger(__name__)
 class TokenAuth(APIKeyBase):
     param_name = "token"
 
-    def _get_key(self, request: HttpRequest) -> Optional[str]:
+    def _get_key(self, request: HttpRequest) -> str | None:
         return auth.get_token(request)
 
     def authenticate(self, request: HttpRequest, key: str):

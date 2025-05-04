@@ -1,5 +1,5 @@
 import sys
-from typing import Iterable, Optional, Sized, Type, Union
+from typing import Iterable, Sized, Type
 from unittest import skipIf
 
 import pytest
@@ -13,7 +13,7 @@ from django.test import TestCase
 class SimpleTestCase(DjangoSimpleTestCase):
     maxDiff = None
 
-    def assert_length(self, items: Sized, expected: int, msg: Optional[str] = ""):
+    def assert_length(self, items: Sized, expected: int, msg: str = ""):
         self.assertEqual(
             len(items),
             expected,
@@ -24,7 +24,7 @@ class SimpleTestCase(DjangoSimpleTestCase):
         self,
         html: str,
         href: str | Iterable[str],
-        displaytext: Optional[str] = None,
+        displaytext: str = None,
     ):
         if isinstance(href, list) or isinstance(href, set):
             for url in href:
@@ -89,7 +89,7 @@ class BaseTestCase(SimpleTestCase, TestCase):
 
     def assert_exists[
         T: models.Model
-    ](self, model_class: Type[T], count: int = 1, **query,) -> Union[T, QuerySet[T]]:
+    ](self, model_class: Type[T], count: int = 1, **query,) -> T | QuerySet[T]:
         """Assert that the expected number of model instances exist and return it/them."""
 
         qs: QuerySet[T]

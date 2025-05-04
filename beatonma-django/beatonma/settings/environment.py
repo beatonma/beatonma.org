@@ -1,14 +1,13 @@
 import logging
 import os
 import sys
-from typing import Optional
 
 log = logging.getLogger(__name__)
 
 TESTING = "test" in sys.argv
 
 
-def _env_str(key: str, default: Optional[str] = None) -> Optional[str]:
+def _env_str(key: str, default: str = None) -> str | None:
     value = os.environ.get(key, default)
     if value is None and not TESTING and default is not None:
         log.warning(f"No value for environment.{key}")
@@ -19,7 +18,7 @@ def _env_bool(key: str, default: bool) -> bool:
     return _env_str(key, str(default)).lower() == "true"
 
 
-def _env_int(key: str, default: Optional[int] = None) -> Optional[int]:
+def _env_int(key: str, default: int = None) -> int | None:
     try:
         return int(_env_str(key, str(default)))
     except ValueError:

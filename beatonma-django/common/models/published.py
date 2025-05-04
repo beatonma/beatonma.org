@@ -1,5 +1,5 @@
 import logging
-from typing import Iterable, Optional, cast
+from typing import Iterable, cast
 
 from common.models.search import SearchMixin, SearchQuerySet
 from django.db import models
@@ -38,7 +38,7 @@ class PublishedMixin(SearchMixin, models.Model):
     objects = PublishedQuerySet.as_manager()
 
     """A list of fields which resolve to other PublishedMixin instances."""
-    is_publishable_dependencies: Optional[Iterable[str]] = None
+    is_publishable_dependencies: Iterable[str] = None
 
     is_published = models.BooleanField(default=True, help_text="Publicly visible")
     published_at = models.DateTimeField(default=timezone.now)

@@ -4,7 +4,6 @@ import logging
 import pkgutil
 import sys
 from pathlib import Path
-from typing import Dict, Optional
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
@@ -28,7 +27,7 @@ def result_fail(message: str):
 
 
 def run_tests():
-    results: Dict[str, Optional[Exception]] = {}
+    results: dict[str, Exception | None] = {}
     all_ok = True
     for loader, module_name, is_pkg in pkgutil.walk_packages(__path__):
         _loader = importlib.machinery.SourceFileLoader(

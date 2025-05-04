@@ -1,5 +1,5 @@
 from functools import reduce
-from typing import Callable, Dict, List, Tuple, Union
+from typing import Callable, Union
 
 type PipelineFunc[T] = Union[
     Callable[[T], T],  # Single argument function
@@ -7,10 +7,10 @@ type PipelineFunc[T] = Union[
 ]
 type PipelineItem[T] = Union[
     PipelineFunc[T],
-    Tuple[PipelineFunc[T], List],  # args
-    Tuple[PipelineFunc[T], List, Dict],  # args, kwargs
+    tuple[PipelineFunc[T], list],  # args
+    tuple[PipelineFunc[T], list, dict],  # args, kwargs
 ]
-type Pipeline = List[PipelineItem]
+type Pipeline = list[PipelineItem]
 
 
 def apply_pipeline[T](receiver: T, pipeline: Pipeline) -> T:

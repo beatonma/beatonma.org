@@ -1,11 +1,9 @@
 import operator
-from datetime import datetime
 from functools import reduce
-from typing import Callable, List, Optional
+from typing import Callable
 
 from django.db import connection, models
 from django.db.models import Q, QuerySet
-from ninja import Schema
 
 _DB_VENDOR = connection.vendor
 _WORD_BOUNDARY_REGEX = {
@@ -15,7 +13,7 @@ _WORD_BOUNDARY_REGEX = {
 
 
 class SearchQuerySet(QuerySet):
-    def __init__(self, *args, distinct: Optional[bool] = None, **kwargs):
+    def __init__(self, *args, distinct: bool = None, **kwargs):
         super().__init__(*args, **kwargs)
 
         self._search_enabled = getattr(self.model, "search_enabled", True)
@@ -43,8 +41,8 @@ class SearchQuerySet(QuerySet):
 
     def build_search_filter(
         self,
-        words: List[str],
-        fields: List[str],
+        words: list[str],
+        fields: list[str],
         filter_suffix: str,
         field_join: Callable,
         overall_join: Callable,
@@ -62,7 +60,7 @@ class SearchQuerySet(QuerySet):
 
         return self._apply_distinct(self.filter(q_filter))
 
-    def search_words(self, words: List[str]) -> QuerySet:
+    def search_words(self, words: list[str]) -> QuerySet:
         """Filter for any fields that match all the words in the query.
 
         A match is a whole word: 'sample' will not match 'samples'."""
@@ -74,7 +72,7 @@ class SearchQuerySet(QuerySet):
             operator.or_,
         )
 
-    def search_fragments(self, words: List[str]) -> QuerySet:
+    def search_fragments(self, words: list[str]) -> QuerySet:
         """Filter for any fields that contain all the word fragments in query.
 
         This is more lenient than _search_words: 'sample' will match 'samples'."""
@@ -83,7 +81,7 @@ class SearchQuerySet(QuerySet):
             words, self._search_fields, "__icontains", operator.and_, operator.or_
         )
 
-    def search_anything(self, words: List[str]) -> QuerySet:
+    def search_anything(self, words: list[str]) -> QuerySet:
         """Filter for any word matching any field."""
         return self.build_search_filter(
             words, self._search_fields, "__icontains", operator.or_, operator.or_
@@ -100,9 +98,6 @@ class SearchMixin(models.Model):
         abstract = True
 
     search_enabled: bool = True
-    search_fields: List[str]
-
-    class Meta:
-        abstract = True
+    search_fields: list[str]
 
     objects = SearchQuerySet.as_manager()

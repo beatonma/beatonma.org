@@ -1,7 +1,7 @@
 import time
 from enum import Enum
 from functools import partial, wraps
-from typing import Any, List, Self
+from typing import Any, Self
 
 from django import db
 from django.http import HttpResponse
@@ -187,7 +187,7 @@ def _function_as_string(
     *args,
     **kwargs,
 ):
-    def _dict_to_str(obj: dict) -> List[str]:
+    def _dict_to_str(obj: dict) -> list[str]:
         return [f"{key}={value}" for key, value in obj.items()]
 
     all_args = filter(None, [*args, *_dict_to_str(kwargs)])

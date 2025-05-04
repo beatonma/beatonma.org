@@ -1,5 +1,4 @@
 import time
-from typing import Optional
 from urllib.parse import urljoin
 
 import requests
@@ -10,7 +9,7 @@ NGINX_URL = "http://nginx-server-tests"
 
 
 def expect_status_code(
-    url: Optional[str],
+    url: str,
     expected_code: int,
 ):
     if url.startswith("/"):

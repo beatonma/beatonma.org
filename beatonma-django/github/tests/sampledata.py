@@ -1,5 +1,4 @@
 import random
-from typing import Optional
 
 from django.utils import timezone
 from github.models import GithubLanguage, GithubLicense, GithubRepository, GithubUser
@@ -45,7 +44,7 @@ def create_sample_repository(
     return repo
 
 
-def create_sample_language(name: Optional[str] = None):
+def create_sample_language(name: str = None):
     lang, _ = GithubLanguage.objects.get_or_create(
         name=name or random.choice(LANGUAGES)
     )
