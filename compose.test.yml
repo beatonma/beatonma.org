@@ -14,8 +14,6 @@ services:
       target: cypress_django
     environment:
       - GIT_HASH=dockertest
-      - STATICFILES_ROOT=/django/
-      - TEMPLATE_ROOT=/django/
     healthcheck:
       test: curl http://localhost:8000/api/ping/
       interval: 5s
