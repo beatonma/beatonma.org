@@ -88,11 +88,6 @@ class GithubApiTest(LocalTestCase):
             response = github_api.get_if_changed(URL)
             self.assertEqual(response.status_code, 200)
 
-    def tearDown(self) -> None:
-        self.teardown_models(
-            GithubETag,
-        )
-
 
 class GithubApiTestActual(NetworkTestCase):
     def test_foreach(self):
@@ -109,8 +104,3 @@ class GithubApiTestActual(NetworkTestCase):
         print(names)
         self.assertEqual(items_seen, 41)
         raise Exception("Just checking...")
-
-    def tearDown(self) -> None:
-        self.teardown_models(
-            GithubETag,
-        )

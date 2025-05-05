@@ -9,7 +9,8 @@ from common.models.util import implementations_of
 from django.db.models import QuerySet
 from django.utils.text import slugify
 from github.tests.sampledata import create_sample_language
-from main.models import AboutPost, AppPost, ChangelogPost, MessageOfTheDay, Post
+from main.models import (AboutPost, AppPost, ChangelogPost, MessageOfTheDay,
+                         Post)
 from main.tasks import samples
 from main.tasks.samples.tags import SAMPLE_TAGS
 from mentions.models import HCard, Webmention
@@ -29,14 +30,23 @@ __all__ = [
     "generate_webmentions_for",
 ]
 
+_NOT_SET = "__NOT_SET__"
 
-def _any_or_none(qs: QuerySet):
+
+def _choose(value, fallback):
+    if value is _NOT_SET:
+        return fallback
+    return value
+
+
+def _any_or_none[T](qs: QuerySet[T]) -> T | None:
     if not qs.exists():
         return None
 
     if random.random() > 0.5:
         items = list(qs)
         return random.choice(items)
+    return None
 
 
 def _timestamp(
@@ -72,10 +82,10 @@ def add_tags(obj: TaggableMixin):
 
 
 def create_post(
-    title: str = None,
-    subtitle: str = "",
-    preview: str = "",
-    content: str = "",
+    title: str | None = _NOT_SET,
+    subtitle: str | None = _NOT_SET,
+    preview: str | None = _NOT_SET,
+    content: str | None = _NOT_SET,
     is_published: bool = True,
     tags: list[str] = None,
     date: Date = None,
@@ -83,11 +93,11 @@ def create_post(
     sample = samples.any_post()
     created_at = _timestamp(date=date)
     post, _ = Post.objects.get_or_create(
-        title=title or sample.title,
+        title=_choose(title, sample.title),
+        subtitle=_choose(subtitle, sample.summary),
+        content=_choose(content, sample.content),
         defaults={
-            "subtitle": subtitle or sample.summary,
             "preview": preview or sample.summary,
-            "content": content or sample.content,
             "is_published": is_published,
             "published_at": created_at,
             "created_at": created_at,
@@ -100,21 +110,19 @@ def create_post(
 
 
 def create_app(
-    title: str = None,
-    codename: str = None,
+    title: str | None = _NOT_SET,
+    codename: str | None = _NOT_SET,
     is_published: bool = True,
     tags: list[str] = None,
     date: Date = None,
 ) -> AppPost:
     created_at = _timestamp(date=date)
-
-    if not title:
-        title = samples.any_app_name()
+    title = _choose(title, samples.any_app_name())
 
     app, _ = AppPost.objects.get_or_create(
         title=title,
         defaults={
-            "codename": codename or slugify(title).replace("-", "."),
+            "codename": _choose(codename, slugify(title).replace("-", ".")),
             "created_at": created_at,
             "published_at": created_at,
             "is_published": is_published,

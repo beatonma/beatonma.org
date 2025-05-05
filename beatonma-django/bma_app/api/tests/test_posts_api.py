@@ -4,8 +4,8 @@ from datetime import datetime
 
 from bma_app import auth
 from bma_app.api import api
+from bma_app.api.tests.test_api import ApiTestCase
 from bma_app.api.util import no_null_dict
-from bma_app.tests.api.v2.test_api import ApiTestCase
 from common.models.generic import generic_fk
 from common.util import http
 from common.util.time import tzdatetime

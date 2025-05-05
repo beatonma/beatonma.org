@@ -9,6 +9,8 @@ from django.db.models import QuerySet
 from django.test import SimpleTestCase as DjangoSimpleTestCase
 from django.test import TestCase
 
+__all__ = ["SimpleTestCase", "LocalTestCase", "NetworkTestCase"]
+
 
 class SimpleTestCase(DjangoSimpleTestCase):
     maxDiff = None
@@ -55,15 +57,7 @@ class SimpleTestCase(DjangoSimpleTestCase):
             )
 
 
-class BaseTestCase(SimpleTestCase, TestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.maxDiff = None
-
-    def teardown_models(self, *models):
-        for M in models:
-            M.objects.all().delete()
-
+class DatabaseTestCase(SimpleTestCase, TestCase):
     def assert_status(
         self,
         url_path: str,
@@ -110,15 +104,8 @@ class BaseTestCase(SimpleTestCase, TestCase):
         return qs
 
 
-class LocalTestCase(BaseTestCase):
+class LocalTestCase(DatabaseTestCase):
     """Tests that use only local data - no external network calls!"""
-
-    pass
-
-
-@pytest.mark.skipif("config.getoption('notemplate')")
-class TemplateTestCase(LocalTestCase):
-    """Tests that require templates to be available."""
 
     pass
 
@@ -128,7 +115,7 @@ class TemplateTestCase(LocalTestCase):
     "manage.py" in sys.argv,
     reason="Use `pytest --network` to run tests from NetworkTestCase.",
 )
-class NetworkTestCase(BaseTestCase):
+class NetworkTestCase(DatabaseTestCase):
     """Tests that interact a remote server.
 
     Only run when specifically enabled via `pytest--network`.

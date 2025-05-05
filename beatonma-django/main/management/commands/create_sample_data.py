@@ -1,7 +1,7 @@
 import logging
 
 from django.core.management import BaseCommand
-from github.models import CachedResponse, GithubLanguage
+from github.models import CachedResponse
 from main.models import AboutPost, AppPost, ChangelogPost, Post
 from main.tasks.sample_data import generate_posts
 from taggit.models import Tag
@@ -10,16 +10,15 @@ log = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    """Create sample data for running frontend development."""
+    """Generate sample data for frontend development."""
 
     models = [
-        Post,
+        AboutPost,
         AppPost,
         ChangelogPost,
-        AboutPost,
-        CachedResponse,
-        GithubLanguage,
+        Post,
         Tag,
+        CachedResponse,
     ]
 
     def add_arguments(self, parser):

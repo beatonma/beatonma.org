@@ -2,12 +2,11 @@ import logging
 import os
 
 from common.models import BaseModel
+from common.models.generic import generic_fk
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-
 from github.models import GithubRepository
 from main.models import Link
 from main.models.formats.markdown import linkify_github_issues
@@ -22,20 +21,15 @@ log = logging.getLogger(__name__)
 def _update_repo_link(post: Post, repository: GithubRepository | None):
     if not repository:
         return
-    ct = ContentType.objects.get_for_model(post)
+    target = generic_fk(post)
     if repository.is_public():
         Link.objects.update_or_create(
             url=repository.url,
-            content_type=ct,
-            object_id=post.pk,
+            **target,
             defaults={"description": "source"},
         )
     else:
-        Link.objects.filter(
-            url=repository.url,
-            content_type=ct,
-            object_id=post.pk,
-        ).delete()
+        Link.objects.filter(url=repository.url, **target).delete()
 
 
 class AppPost(Post):

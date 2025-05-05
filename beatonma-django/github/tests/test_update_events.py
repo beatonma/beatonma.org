@@ -424,15 +424,6 @@ class UpdateEventsTest(LocalTestCase):
         self.assertEqual(event_data.action, "created")
         self.assertEqual(event_data.name, "Home")
 
-    def tearDown(self) -> None:
-        self.update_cycle.delete()
-
-        self.teardown_models(
-            GithubLanguage,
-            GithubRepository,
-            GithubUser,
-        )
-
 
 class FlushCacheTests(LocalTestCase):
     def test_flush_caches(self):
@@ -451,6 +442,3 @@ class FlushCacheTests(LocalTestCase):
         objs = GithubEventUpdateCycle.objects.all()
         self.assertEqual(objs.count(), 1)
         self.assertEqual(objs.first(), latest)
-
-    def tearDown(self):
-        self.teardown_models(GithubEventUpdateCycle)

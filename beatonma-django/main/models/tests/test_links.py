@@ -1,6 +1,7 @@
 from basetest.testcase import LocalTestCase
-from django.contrib.contenttypes.models import ContentType
-from main.models import Host, Link, Post
+from common.models.generic import generic_fk
+from main.models import Host, Link
+from main.tasks import sample_data
 
 
 class LinkTests(LocalTestCase):
@@ -13,16 +14,10 @@ class LinkTests(LocalTestCase):
             "https://inverness.io/sample/",
         ]
 
-        target = Post.objects.create(
-            content="Hello",
-        )
+        target = sample_data.create_post(content="Hello")
 
         for url in links_string:
-            Link.objects.create(
-                url=url,
-                object_id=target.pk,
-                content_type=ContentType.objects.get_for_model(target),
-            )
+            Link.objects.create(url=url, **generic_fk(target))
 
         hosts = Host.objects.all()
         self.assertEqual(hosts.count(), 3)

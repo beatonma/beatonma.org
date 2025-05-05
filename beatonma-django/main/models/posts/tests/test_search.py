@@ -1,5 +1,6 @@
 from basetest.testcase import LocalTestCase
 from main.models import Post
+from main.tasks import sample_data
 
 
 def _words(query: str):
@@ -21,19 +22,21 @@ class SearchQueryTests(LocalTestCase):
         self.assert_length(func(query), n, msg=f"query:{query}")
 
     def setUp(self) -> None:
-        chickens = Post.objects.create(
+        sample_data.create_post(
+            title=None,
             content="The Basics of Photography: Learn the fundamentals of "
-            "photography and how to capture stunning images. "
-            "Also chickens."
+            "photography and how to capture stunning images. Also chickens.",
+            tags=["apples"],
         )
-        chickens.tags.add("apples")
 
-        turkeys = Post.objects.create(
+        sample_data.create_post(
+            title=None,
             content="Photography Basics: Learn the fundamentals of photography "
-            "and how to capture stunning images. "
-            "Also turkeys."
+            "and how to capture stunning images. Also turkeys.",
+            tags=["oranges"],
         )
-        turkeys.tags.add("oranges")
+        sample_data.create_post(title=None, content="public", is_published=True)
+        sample_data.create_post(title=None, content="private", is_published=False)
 
 
 class PartialSearchTests(SearchQueryTests):
@@ -66,3 +69,10 @@ class FullSearchTests(SearchQueryTests):
         self._assert_results("turkey apples", 2)
         self._assert_results("turkey orange", 1)
         self._assert_results("oran", 1)
+
+
+class PrivateSearchTests(SearchQueryTests):
+    def test_private_posts_not_searchable(self):
+        self._assert_results("public", 1)
+        self._assert_results("private", 0)
+        self._assert_results("p", 3)

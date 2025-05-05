@@ -17,7 +17,6 @@ TEST_RUNNER = "basetest.testrunner.PytestTestRunner"
 
 # 1st-party apps
 BMA_FEED_ITEMS_PER_PAGE = 10
-BMA_SEARCH_MAX_SUGGESTIONS = 10
 
 # 3rd-party apps
 TAGGIT_CASE_INSENSITIVE = True

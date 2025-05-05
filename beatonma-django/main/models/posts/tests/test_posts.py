@@ -1,43 +1,39 @@
 import navigation
-from basetest.testcase import LocalTestCase, TemplateTestCase
+from basetest.testcase import LocalTestCase
 from main.models import Post
-from main.models.formats import Formats
+from main.tasks import sample_data
 
 
 class WebpostHashtagTests(LocalTestCase):
     def setUp(self) -> None:
-        Post.objects.create(
+        sample_data.create_post(
             title="note",
             content="#startoftext This post has an #awesome-hashtag. "
             "But#not-this-one #yes-this-one",
         )
 
-        Post.objects.create(
+        sample_data.create_post(
             title="Markdown blog",
             content="#start #middle but not#this-one",
-            format=Formats.MARKDOWN,
         )
 
-        Post.objects.create(
+        sample_data.create_post(
             title="HTML blog",
             content="#start #middle but not#this-one",
-            format=Formats.NONE,
         )
 
-        Post.objects.create(
+        sample_data.create_post(
             title="Another markdown blog",
             content="[link to a fragment](https://example.org/article#section) #real",
-            format=Formats.MARKDOWN,
         )
 
-        Post.objects.create(
+        sample_data.create_post(
             title="Another HTML blog",
             content="<style>"
             "body { background-color: #f00; } "
             "#target { background-color: #f0f0f0; }}"
             "</style>"
             '<div id="target>this is an #actual-tag</div>',
-            format=Formats.NONE,
         )
 
     def test_tags_are_extracted_from_content(self):
@@ -57,8 +53,6 @@ class WebpostHashtagTests(LocalTestCase):
         html = Post.objects.get(title="Another HTML blog")
         self.assertListEqual(html.get_tags_list(), ["actual-tag"])
 
-
-class WebpostHashtagViewTests(TemplateTestCase, WebpostHashtagTests):
     def test_tags_are_linked_in_content_html(self):
         note = Post.objects.get(title="note")
         self.assert_html_links_to(
@@ -92,10 +86,8 @@ class WebpostHashtagViewTests(TemplateTestCase, WebpostHashtagTests):
                 displaytext="#start",
             )
 
-
-class WebpostViewTests(TemplateTestCase):
     def test_raw_urls_are_linkified(self):
-        note = Post.objects.create(
+        note = sample_data.create_post(
             content="Links to "
             "and https://reddit.com/u/fallofmath/ "
             "and https://pypi.org/project/django-wm/ "
