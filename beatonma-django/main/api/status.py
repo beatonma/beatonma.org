@@ -1,7 +1,7 @@
 from common.util.client import get_client_ip
 from django.contrib.redirects.models import Redirect
 from django.http import HttpRequest
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django_user_agents.utils import get_user_agent
 from ninja import Router, Schema
 from pydantic import IPvAnyAddress
