@@ -1,21 +1,18 @@
 from typing import Type
 
-from common.views.mentionable import MentionableView
 from django.shortcuts import get_object_or_404, render
 from django.urls import path
+from django.views import View
 from main.models import AppPost, ChangelogPost
 from main.models.posts.post import BasePost, Post
 from mentions.helpers import mentions_re_path
 
 from .api.rss import LatestUpdatesFeed
-from .views import view_names
 
 
 def post_view(model_class: Type[BasePost]):
-    class _View(MentionableView):
-        reverse_name = model_class.qualified_name()
-
-        def get(self, request, slug: str):
+    class _View(View):
+        def get(self, request, slug: str, **kwargs):
             post = get_object_or_404(model_class, slug=slug)
             return render(
                 request,
@@ -28,7 +25,7 @@ def post_view(model_class: Type[BasePost]):
             return mentions_re_path(
                 route,
                 cls.as_view(),
-                name=cls.reverse_name,
+                name=model_class.qualified_name(),
                 model_class=model_class.qualified_name(),
                 model_filter_map={"slug": "slug"},
             )
@@ -49,5 +46,5 @@ frontend_urlpatterns = [
 
 urlpatterns = [
     # RSS feed
-    path("feed/", LatestUpdatesFeed(), name=view_names.RSS_FEED),
+    path("feed/", LatestUpdatesFeed()),
 ] + frontend_urlpatterns

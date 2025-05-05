@@ -15,7 +15,6 @@ _THIRD_PARTY_MIDDLEWARE = [
 ]
 _PROJECT_MIDDLEWARE = [
     "mentions.middleware.WebmentionHeadMiddleware",
-    "main.middleware.redirect.QueryableRedirectFallbackMiddleware",
 ]
 _DEBUG_MIDDLEWARE = [
     "bma_dev.middleware.cors_middleware",
