@@ -17,8 +17,8 @@ class Formats(models.IntegerChoices):
     @classmethod
     def to_html(
         cls,
-        format_: int,
         content: str,
+        format_: int = MARKDOWN,
         markdown_processors: list[PipelineItem[str]] = None,
         html_processors: list[PipelineItem[BeautifulSoup]] = None,
     ) -> str:

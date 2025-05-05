@@ -2,6 +2,8 @@ import re
 import uuid
 from typing import Literal
 
+from bs4 import BeautifulSoup
+
 from common.models import BaseModel, PublishedMixin, TaggableMixin
 from common.models.api import ApiEditable
 from common.models.cache import InvalidateCacheMixin
@@ -85,21 +87,25 @@ class BasePost(
             self.content = ""
 
         self.content_html = Formats.to_html(
-            self.format,
             self.content,
+            self.format,
             markdown_processors=self.extra_markdown_processors(),
+            html_processors=self.extra_html_processors(),
         )
 
         if not self.preview:
             self.preview = ""
 
         self.preview_html = Formats.to_html(
-            Formats.MARKDOWN,
             self.preview,
             markdown_processors=self.extra_markdown_processors(),
+            html_processors=self.extra_html_processors(),
         )
 
     def extra_markdown_processors(self) -> list[PipelineItem[str]]:
+        return []
+
+    def extra_html_processors(self) -> list[PipelineItem[BeautifulSoup]]:
         return []
 
     def save(self, *args, update_fields=None, **kwargs):

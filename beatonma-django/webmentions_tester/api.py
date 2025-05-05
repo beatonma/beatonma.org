@@ -2,10 +2,10 @@ import logging
 from datetime import datetime
 
 from common.schema import Mention
+from common.util.url import to_absolute_url
 from django.http import HttpRequest
 from django.shortcuts import redirect
 from django.utils import timezone
-from main.util import to_absolute_url
 from mentions import config as mentions_config
 from mentions.models import Webmention
 from mentions.tasks import handle_outgoing_webmentions

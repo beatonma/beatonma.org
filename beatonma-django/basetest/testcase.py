@@ -1,9 +1,11 @@
 import sys
+from pathlib import Path
 from typing import Iterable, Sized, Type
 from unittest import skipIf
 
 import pytest
 from common.util.html import html_parser
+from django.conf import settings
 from django.db import models
 from django.db.models import QuerySet
 from django.test import SimpleTestCase as DjangoSimpleTestCase
@@ -55,6 +57,12 @@ class SimpleTestCase(DjangoSimpleTestCase):
                 len(results) > 0,
                 msg=f"Link {href} not found in: \n- {formatted_links}",
             )
+
+    @staticmethod
+    def relpath(location: str, path: str) -> Path:
+        """Resolve `path` relative to `location`.
+        `location` should usually be the value of `__file__` in the calling module"""
+        return Path(location).parent.relative_to(settings.BASE_DIR) / path
 
 
 class DatabaseTestCase(SimpleTestCase, TestCase):

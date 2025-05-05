@@ -1,0 +1,128 @@
+[
+  {
+    "model": "github.githubuser",
+    "pk": 12682046,
+    "fields": {
+      "created_at": "2022-05-14T19:22:49.836Z",
+      "modified_at": "2025-05-05T14:26:37.876Z",
+      "username": "beatonma",
+      "url": "https://github.com/beatonma",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12682046?v=4"
+    }
+  },
+  {
+    "model": "github.githublanguage",
+    "pk": 1,
+    "fields": {
+      "created_at": "2022-05-14T19:22:49.847Z",
+      "modified_at": "2023-06-28T20:32:39.929Z",
+      "name": "Python"
+    }
+  },
+  {
+    "model": "github.githublicense",
+    "pk": 1,
+    "fields": {
+      "created_at": "2022-05-14T19:22:50.370Z",
+      "modified_at": "2025-05-05T14:26:32.742Z",
+      "key": "gpl-3.0",
+      "name": "GNU General Public License v3.0",
+      "url": "https://api.github.com/licenses/gpl-3.0"
+    }
+  },
+  {
+    "model": "github.githubrepository",
+    "pk": 179150364,
+    "fields": {
+      "created_at": "2019-04-02T20:06:01Z",
+      "modified_at": "2025-05-05T14:26:32.347Z",
+      "is_published": true,
+      "published_at": "2019-04-02T20:06:01Z",
+      "url": "https://github.com/beatonma/django-wm",
+      "updated_at": "2025-04-19T14:40:39Z",
+      "owner": 12682046,
+      "name": "django-wm",
+      "full_name": "beatonma/django-wm",
+      "description": "Automatic Webmention functionality for Django models",
+      "is_private": false,
+      "size_kb": 674,
+      "primary_language": 1,
+      "license": 1
+    }
+  },
+  {
+    "model": "main.post",
+    "pk": 196,
+    "fields": {
+      "allow_outgoing_webmentions": false,
+      "created_at": "2022-05-14T18:45:20.719Z",
+      "modified_at": "2025-05-02T15:38:33.990Z",
+      "is_published": true,
+      "published_at": "2019-07-27T00:00:00Z",
+      "color_muted": "",
+      "color_vibrant": "",
+      "api_id": "16d8f142-b410-4e82-b286-34da4f8504ff",
+      "format": 1,
+      "hero_image": null,
+      "hero_html": "",
+      "hero_embedded_url": null,
+      "slug": "django-wm",
+      "old_slug": "django-wm",
+      "title": "django-wm",
+      "subtitle": null,
+      "preview": "New library: Webmention support for any Django model: https://pypi.org/project/django-wm/ | https://github.com/beatonma/django-wm",
+      "preview_html": "<p>New library: <a href=\"https://indieweb.org/Webmention\">Webmention</a> support for any <a href=\"https://www.djangoproject.com\">Django</a> model: <a href=\"https://pypi.org/project/django-wm/\">pypi/django-wm</a> | <a href=\"https://github.com/beatonma/django-wm\">github/beatonma</a></p>",
+      "content": "Automatic Webmention functionality for Django models.",
+      "content_html": "<p>Automatic <a href=\"https://indieweb.org/Webmention\">Webmention</a> functionality for <a href=\"https://www.djangoproject.com\">Django</a> models.</p>",
+      "content_script": ""
+    }
+  },
+  {
+    "model": "main.apppost",
+    "pk": 196,
+    "fields": {
+      "codename": "django-wm",
+      "repository": 179150364,
+      "icon": null,
+      "script": null,
+      "script_html": "",
+      "widget_style": null,
+      "script_is_widget": false
+    }
+  },
+  {
+    "model": "main.post",
+    "pk": 249,
+    "fields": {
+      "allow_outgoing_webmentions": false,
+      "created_at": "2025-05-01T09:56:25.125Z",
+      "modified_at": "2025-05-02T13:54:04.550Z",
+      "is_published": true,
+      "published_at": "2025-01-25T09:54:08Z",
+      "color_muted": "",
+      "color_vibrant": "",
+      "api_id": "99bfb291-2269-40f3-b301-90e4285f27e6",
+      "format": 1,
+      "hero_image": null,
+      "hero_html": "",
+      "hero_embedded_url": null,
+      "slug": "django-wm_4-1-2",
+      "old_slug": null,
+      "title": "django-wm: 4.1.2",
+      "subtitle": null,
+      "preview": "Fix for <code>wagtail>=6.2</code>",
+      "preview_html": "<p>Fix for <code>wagtail&gt;=6.2</code></p>",
+      "content": "- Fixed #54: Broken on `wagtail>=6.2`.\r\n  - Issue: In `wagtail==6.2`, the implementation of `RoutablePageMixin.route` was changed to add the `routable_resolver_match` attribute to the given request object. `get_model_for_url_by_wagtail` previously called that method with `request=None` (because there is no relevant request object available at the time webmentions are processed), so trying to set that attribute on the request fails.\r\n  - Fix: `get_model_for_url_by_wagtail` now creates and passes a dummy instance of `HttpRequest` when calling that method.\n\n\n[`WEBMENTIONS_DOMAINS_INCOMING_ALLOW: Iterable[str] = None`](wiki/Settings#WEBMENTIONS_DOMAINS_INCOMING_ALLOW)  ",
+      "content_html": "",
+      "content_script": ""
+    }
+  },
+  {
+    "model": "main.changelogpost",
+    "pk": 249,
+    "fields": {
+      "app": 196,
+      "version": "4.1.2"
+    }
+  }
+]

@@ -4,10 +4,10 @@ from main.models.formats import Formats
 
 class BaseFormatsTestCase(SimpleTestCase):
     def format_html(self, html: str):
-        return Formats.to_html(Formats.NONE, html)
+        return Formats.to_html(html, Formats.NONE)
 
     def format_markdown(self, markdown: str):
-        return Formats.to_html(Formats.MARKDOWN, markdown)
+        return Formats.to_html(markdown, Formats.MARKDOWN)
 
     def _assert_formatting_is_correct(
         self, formatted_html: str, expected_html: str, exact: bool = False
@@ -27,12 +27,12 @@ class BaseFormatsTestCase(SimpleTestCase):
 
     def assert_md(self, markdown: str, expected_html: str, exact: bool = False):
         return self._assert_formatting_is_correct(
-            Formats.to_html(Formats.MARKDOWN, markdown), expected_html, exact=exact
+            self.format_markdown(markdown), expected_html, exact=exact
         )
 
     def assert_html(self, html: str, expected_html: str, exact: bool = False):
         return self._assert_formatting_is_correct(
-            Formats.to_html(Formats.NONE, html), expected_html, exact=exact
+            self.format_html(html), expected_html, exact=exact
         )
 
     def codeblock(self, children: str) -> str:

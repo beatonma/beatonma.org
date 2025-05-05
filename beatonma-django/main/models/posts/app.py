@@ -1,15 +1,21 @@
 import logging
 import os
+import re
+from re import Match
+from urllib.parse import urljoin
 
+from bs4 import BeautifulSoup
 from common.models import BaseModel
 from common.models.generic import generic_fk
+from common.util import regex
+from common.util.pipeline import PipelineItem
+from common.util.url import enforce_trailing_slash
 from django.conf import settings
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from github.models import GithubRepository
 from main.models import Link
-from main.models.formats.markdown import linkify_github_issues
 from main.models.mixins.media_upload import UploadedMediaMixin
 from main.storage import OverwriteStorage
 
@@ -127,16 +133,44 @@ class ChangelogPost(Post):
     def extra_markdown_processors(self):
         extra = []
         if repo := self.app.repository:
-            extra.append(
-                lambda markdown: linkify_github_issues(
+            extra += [
+                lambda markdown: self._linkify_github_issues(
                     repo_url=repo.url, markdown=markdown
-                )
-            )
+                ),
+            ]
 
-        return extra + super().extra_markdown_processors()
+        return super().extra_markdown_processors() + extra
+
+    def extra_html_processors(self) -> list[PipelineItem[BeautifulSoup]]:
+        extra = []
+        if repo := self.app.repository:
+            extra += [
+                lambda soup: self._make_github_urls_absolute(
+                    repo_url=repo.url, soup=soup
+                )
+            ]
+        return super().extra_html_processors() + extra
 
     def __str__(self):
         return f"Changelog: {self.app.title} {self.version}"
+
+    @staticmethod
+    def _linkify_github_issues(*, repo_url: str, markdown: str) -> str:
+        def _sub(match: Match):
+            issue = match.group("issue")
+            print(issue)
+            href = urljoin(enforce_trailing_slash(repo_url), f"issues/{issue}")
+            return f'<a href="{href}">#{issue}</a>'
+
+        return re.sub(regex.GITHUB_ISSUE, _sub, markdown)
+
+    @staticmethod
+    def _make_github_urls_absolute(
+        *, repo_url: str, soup: BeautifulSoup
+    ) -> BeautifulSoup:
+        for a in soup.find_all("a", href=True):
+            a["href"] = urljoin(enforce_trailing_slash(repo_url), a["href"])
+        return soup
 
 
 def appresource_upload_to(instance: "AppResource", filename: str):

@@ -81,19 +81,10 @@ def apply_blockquote_callout(markdown: str) -> str:
         level = levels.get(level) or level
 
         content = Formats.to_html(
-            Formats.MARKDOWN,
             str(match.group("content").replace("> ", "")),
+            Formats.MARKDOWN,
         )
 
         return template.format(level=level, title=title, content=content)
 
     return re.sub(pattern, _replacer, markdown)
-
-
-def linkify_github_issues(*, repo_url: str, markdown: str) -> str:
-    def _sub(match: Match):
-        issue = match.group("issue")
-        href = urljoin(repo_url, f"issues/{issue}")
-        return f'<a href="{href}">#{issue}</a>'
-
-    return re.sub(regex.GITHUB_ISSUE, _sub, markdown)
