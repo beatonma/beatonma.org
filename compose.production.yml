@@ -16,142 +16,128 @@ volumes:
 
 
 # Common settings for all services
-x-common: &common-defaults
+x-common: &common
   env_file:
     - "./.env.production"
   restart: unless-stopped
   tty: true
 
-
-x-health: &health
-  interval: 60s
-  timeout: 10s
-  start_period: 40s
-  start_interval: 5s
-  retries: 3
-
+# Common volume bindings
+x-volume-beatonma: &volume-beatonma
+  - type: bind
+    source: /var/www/beatonma
+    target: /var/www/beatonma
+    read_only: true
+x-volume-media: &volume-static
+  - type: bind
+    source: /var/www/static
+    target: /var/www/static
+    read_only: true
+x-volume-static: &volume-media
+  - type: bind
+    source: /var/www/media
+    target: /var/www/media
+    read_only: true
 
 services:
   db:
-    <<: *common-defaults
-    image: postgres:15-alpine
+    <<: *common
+    extends:
+      file: compose.common.yml
+      service: postgres
     container_name: postgres
     volumes:
       - postgres:/var/lib/postgresql/data
-    healthcheck:
-      test: pg_isready
-      <<: *health
 
   django:
-    <<: *common-defaults
-    build:
-      context: .
-      target: app
-      dockerfile: ./docker/Dockerfile
+    <<: *common
     image: fallofmath/beatonma:django
+    build:
+      target: production_django
+    extends:
+      file: compose.common.yml
+      service: django
     container_name: django
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_healthy
-    healthcheck:
-      test: curl --head --fail http://localhost:8000/api/ping/ || exit 1
-      <<: *health
     volumes:
-      - /var/www/static:/var/www/static
-      - /var/www/media:/var/www/media
-      - /var/www/beatonma:/var/www/beatonma:ro
+      - <<: *volume-beatonma
+      - <<: *volume-media
+        read_only: false
+      - <<: *volume-static
+        read_only: false
 
   next:
-    <<: *common-defaults
-    build:
-      dockerfile: ./docker/Dockerfile
-      target: frontend
-      context: .
+    <<: *common
     image: fallofmath/beatonma:next
-    container_name: next
+    build:
+      target: production_nextjs
+    extends:
+      file: compose.common.yml
+      service: next
     depends_on:
       django:
-          condition: service_healthy
-    healthcheck:
-      test: curl --head --fail http://localhost:3000/health-check/ || exit 1
-      <<: *health
-    command: npm run start
-    environment:
-      API_BASE_URL: http://django:8000
+        condition: service_healthy
 
   nginx:
-    <<: *common-defaults
-    build:
-      context: .
-      target: server
-      dockerfile: ./docker/Dockerfile
+    <<: *common
     image: fallofmath/beatonma:nginx
-    container_name: nginx
+    build:
+      target: production_nginx
+    extends:
+      file: compose.common.yml
+      service: nginx
     depends_on:
       django:
         condition: service_healthy
       next:
         condition: service_healthy
-    healthcheck:
-      test: curl --head --fail http://localhost/health-check/ || exit 1
-      <<: *health
     volumes:
+      - <<: *volume-media
+      - <<: *volume-static
       - /var/log/nginx:/var/log/nginx  # Make logs accessible for fail2ban
       - letsencrypt:/etc/letsencrypt  # letsencrypt certificates
       - letsencrypt_webroot:/var/www/letsencrypt:ro  # letsencrypt renewal webroot
-      - /var/www/static:/var/www/static:ro
-      - /var/www/media:/var/www/media:ro
     ports:
       - "80:80"
       - "443:443"
 
   celery:
-    <<: *common-defaults
-    build:
-      context: .
-      target: celery
-      dockerfile: ./docker/Dockerfile
+    <<: *common
     image: fallofmath/beatonma:celery
-    container_name: celery
+    build:
+      target: production_celery
     depends_on:
       redis:
         condition: service_healthy
     volumes:
-      - /var/www/beatonma:/var/www/beatonma:ro
+      - <<: *volume-beatonma
 
   crontab:
-    <<: *common-defaults
-    build:
-      context: .
-      target: crontab
-      dockerfile: ./docker/Dockerfile
+    <<: *common
     image: fallofmath/beatonma:crontab
-    container_name: crontab
+    build:
+      target: production_crontab
     depends_on:
       - django
-    command: crond -f
     volumes:
-      - /var/www/beatonma:/var/www/beatonma:ro
+      - <<: *volume-beatonma
 
   redis:
-    <<: *common-defaults
-    image: redis:7-alpine
-    container_name: redis
-    healthcheck:
-      test: redis-cli ping
-      <<: *health
+    <<: *common
+    extends:
+      file: compose.common.yml
+      service: redis
 
   server_startup_checks:
-    build:
-      context: .
-      target: server_checks
-      dockerfile: ./docker/Dockerfile
     image: fallofmath/beatonma:startup_checks
+    build:
+      target: production_server_checks
     links:
       - "nginx:nginx-server-tests"
-    container_name: server_startup_checks
     depends_on:
       - nginx
     restart: "on-failure"

@@ -2,43 +2,48 @@ name: bma_dev
 
 volumes:
   postgres:
-  generated:
 
 x-common: &common
   env_file: "./.env.dev"
   restart: "unless-stopped"
   tty: true
 
-x-health: &health
-  interval: 30s
-  timeout: 2s
-  start_period: 20s
+x-volume-django: &volume-django
+  - type: bind
+    source: ./beatonma-django
+    target: /django
+    read_only: true
+x-volume-media: &volume-static
+  - type: bind
+    source: /var/www/static
+    target: /var/www/static
+x-volume-static: &volume-media
+  - type: bind
+    source: /var/www/media
+    target: /var/www/media
 
 services:
   db:
     <<: *common
-    image: postgres:15-alpine
+    extends:
+      file: ./compose.common.yml
+      service: postgres
     volumes:
       - postgres:/var/lib/postgresql/data
-    healthcheck:
-      test: pg_isready
-      <<: *health
 
-  db_admin:
+  redis:
     <<: *common
-    image: dpage/pgadmin4
-    ports:
-      - "8081:80"
+    extends:
+      file: ./compose.common.yml
+      service: redis
 
   django: &django
     <<: *common
     build:
-      dockerfile: ./docker/Dockerfile.dev
-      target: django
-      context: .
-    healthcheck:
-      test: curl --head --fail http://localhost:8000/api/ping/ || exit 1
-      <<: *health
+      target: dev_django
+    extends:
+      file: ./compose.common.yml
+      service: django
     depends_on:
       db:
         condition: service_healthy
@@ -47,44 +52,36 @@ services:
     ports:
       - "8001:8000"
     volumes:
-      - generated:/generated:ro
-      - ./beatonma-django:/django:ro
-      - /var/www/static:/var/www/static
-      - /var/www/media:/var/www/media
+      - <<: *volume-django
+      - <<: *volume-media
+      - <<: *volume-static
 
   django_manage:
     <<: *django
-    container_name: dev-django_manage
     profiles:
       - "manage"
     ports: []
     volumes:
-      - generated:/generated:ro
-      - ./beatonma-django:/django:rw
-      - /var/www/static:/var/www/static
-      - /var/www/media:/var/www/media
+      - <<: *volume-django
+        read_only: false
+      - <<: *volume-media
+      - <<: *volume-static
     healthcheck:
       test: [ "NONE" ]
     entrypoint: [ "sh" ]
 
   next:
     <<: *common
-    container_name: dev-next
     build:
-      dockerfile: ./docker/Dockerfile.dev
-      target: frontend
-      context: .
+      target: dev_nextjs
+    extends:
+      file: compose.common.yml
+      service: next
     depends_on:
       django:
           condition: service_healthy
-    healthcheck:
-      test: curl --head --fail http://localhost:3000/health-check || exit 1
-      <<: *health
     ports:
       - "3001:3000"
-    command: npm run dev
-    environment:
-      API_BASE_URL: http://django:8000
     develop:
       watch:
         - action: sync
@@ -98,40 +95,27 @@ services:
   nginx:
     <<: *common
     build:
-      context: .
-      target: nginx
-      dockerfile: ./docker/Dockerfile.dev
+      target: dev_nginx
+    extends:
+      file: compose.common.yml
+      service: nginx
     depends_on:
       django:
           condition: service_healthy
       next:
           condition: service_healthy
-    healthcheck:
-      test: curl --head --fail http://localhost/health-check/ || exit 1
-      <<: *health
-    volumes:
-      - /var/www/static:/var/www/static
-      - /var/www/media:/var/www/media
     ports:
       - "81:80"
+    volumes:
+      - <<: *volume-media
+      - <<: *volume-static
 
   celery:
     <<: *common
     build:
-      context: .
-      target: celery
-      dockerfile: ./docker/Dockerfile.dev
-    volumes:
-      - ./beatonma-django:/django:ro
-    container_name: dev-celery
+      target: dev_celery
     depends_on:
       redis:
         condition: service_healthy
-
-  redis:
-    <<: *common
-    image: redis:7-alpine
-    container_name: dev-redis
-    healthcheck:
-      test: redis-cli ping
-      <<: *health
+    volumes:
+      - <<: *volume-django
