@@ -3,10 +3,11 @@
 # cd into location of script to ensure relative paths resolve correctly.
 cd "$(dirname "$0")" || exit 1
 
-FILE_PRODUCTION="./compose.production.yml"
-FILE_DEV="./compose.dev.yml"
-FILE_TEST="./compose.test.yml"
-FILE_ENV="./.env.production"
+FILE_COMPOSE_PRODUCTION="./compose.production.yml"
+FILE_COMPOSE_DEV="./compose.dev.yml"
+FILE_COMPOSE_TEST="./compose.test.yml"
+FILE_ENV_PRODUCTION="./.env.production"
+FILE_ENV_DEV="./.env.dev"
 
 # Data import/export
 ARCHIVE_DIRNAME="data-archive"
@@ -58,14 +59,11 @@ docker_compose() {
 }
 
 docker_compose_build() {
-  docker_compose build --progress=plain --ssh=default "$@"
-}
-
-production_build() {
-  # Run `docker compose build` with required values from .env file.
-  source "$FILE_ENV"
-  docker_compose_build \
+  docker_compose build --progress=plain --ssh=default \
     --build-arg NEXT_PUBLIC_SITE_NAME="$NEXT_PUBLIC_SITE_NAME" \
+    --build-arg NEXT_PUBLIC_GITHUB_USERNAME="$NEXT_PUBLIC_GITHUB_USERNAME" \
+    --build-arg NEXT_PUBLIC_GOOGLE_RECAPTCHA_TOKEN="$NEXT_PUBLIC_GOOGLE_RECAPTCHA_TOKEN" \
+    --build-arg NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION="$NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION" \
     "$@"
 }
 
@@ -81,8 +79,6 @@ docker_push() {
 }
 
 export_data() {
-  source "$FILE_ENV"
-
   local_temp_path="/tmp/$ARCHIVE_DIRNAME"
   output_filename="archive-$(date +%F).tar.gz"
   docker_temp_db_path="/tmp/$ARCHIVE_DB"
@@ -112,8 +108,6 @@ export_data() {
 }
 
 import_data() {
-  source "$FILE_ENV"
-
   archive_file="$1"
   local_temp_path="/tmp/$ARCHIVE_DIRNAME"
   docker_temp_db_path="/tmp/$ARCHIVE_DB"
@@ -146,20 +140,20 @@ import_data() {
 
 production() {
   if [ $# -eq 0 ]; then
-    production_build
+    docker_compose_build
     exit 0
   fi
 
   case "$1" in
     "push")
       shift
-      production_build
+      docker_compose_build
       docker_push
       exit 0
       ;;
     "build")
       shift
-      production_build "$@"
+      docker_compose_build "$@"
       exit 0
       ;;
     "up" | "down")
@@ -203,13 +197,18 @@ dev() {
 runtests() {
   case "$1" in
     "dev")
-      # Keep the Django server running after tests complete - use with `cypress`..
+      # Keep the Django server running after tests complete - use with `cypress`.
       shift
       docker_compose up "$@"
       ;;
     "cypress")
       # Run cypress tests on running Django server - use with `dev`.
-      docker_compose up cypress
+      shift
+      docker_compose up cypress "$@"
+      ;;
+    "build")
+      shift
+      docker_compose_build "$@"
       ;;
     "--")
       shift
@@ -230,7 +229,7 @@ certbot_init() {
     --name certbot_init \
     --volume letsencrypt_keys:/etc/letsencrypt:rw \
     --volume letsencrypt_webroot:/var/www/letsencrypt:rw \
-    --env-file "$FILE_ENV" \
+    --env-file "$FILE_ENV_PRODUCTION" \
     --entrypoint "" \
     -p 80:80 \
     certbot/certbot:latest \
@@ -243,7 +242,7 @@ certbot_renew() {
     --name certbot_renew \
     --volume letsencrypt_keys:/etc/letsencrypt:rw \
     --volume letsencrypt_webroot:/var/www/letsencrypt:rw \
-    --env-file "$FILE_ENV" \
+    --env-file "$FILE_ENV_PRODUCTION" \
     --entrypoint "" \
     certbot/certbot:latest \
     sh -c "certbot certonly --webroot -w /var/www/letsencrypt $*"
@@ -251,8 +250,6 @@ certbot_renew() {
 }
 
 certbot() {
-  source "$FILE_ENV"
-
   common_args_list=(
     "-d ${DOMAIN_NAME}"
     "-d www.${DOMAIN_NAME}"
@@ -282,31 +279,38 @@ certbot() {
 
 case $context in
   "export")
-    compose_file=$FILE_PRODUCTION
+    compose_file=$FILE_COMPOSE_PRODUCTION
+    source "$FILE_ENV_PRODUCTION"
     export_data "$@"
     ;;
   "import")
-    compose_file=$FILE_PRODUCTION
+    compose_file=$FILE_COMPOSE_PRODUCTION
+    source "$FILE_ENV_PRODUCTION"
     import_data "$@"
     ;;
   "production")
-    compose_file=$FILE_PRODUCTION
+    compose_file=$FILE_COMPOSE_PRODUCTION
+    source "$FILE_ENV_PRODUCTION"
     production "$@"
     ;;
   "dev")
-    compose_file=$FILE_DEV
+    compose_file=$FILE_COMPOSE_DEV
+    source "$FILE_ENV_DEV"
     dev "$@"
     ;;
   "shell")
-    compose_file=$FILE_DEV
+    compose_file=$FILE_COMPOSE_DEV
+    source "$FILE_ENV_DEV"
     docker_compose --profile manage run --rm "$@" django_manage
     exit 0
     ;;
   "test")
-    compose_file=$FILE_TEST
+    compose_file=$FILE_COMPOSE_TEST
+    source "$FILE_ENV_DEV"
     runtests "$@"
     ;;
   "certbot")
+    source "$FILE_ENV_PRODUCTION"
     certbot "$@"
     ;;
   "openapi")

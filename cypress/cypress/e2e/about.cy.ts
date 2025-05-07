@@ -1,16 +1,13 @@
-import { CyAttr } from "./config";
+import { Navigation } from "./config";
 
 describe("About page displays correctly", () => {
-  const url = "/about/";
-
-  beforeEach(() => cy.visit(url));
-
-  it("Renders correctly", () => {
-    cy.title().should("contain", "About");
-    cy.get(CyAttr.AboutMe).should("be.visible");
-  });
+  beforeEach(() => cy.visit(Navigation.about()));
 
   it("Displays hcard", () => {
-    cy.get(".h-card").should("be.visible").contains("Michael Beaton");
+    cy.get(".h-card").should("be.visible").contains("Firstname Surname");
+  });
+
+  it("Shows content", () => {
+    cy.get("body").contains("TestTarget about content");
   });
 });

@@ -2,7 +2,7 @@ name: bma_test
 
 x-common: &common
   env_file: "./.env.dev"
-  restart: "unless-stopped"
+  restart: "no"
   tty: true
 
 x-volume-django: &volume-django
@@ -12,18 +12,6 @@ x-volume-django: &volume-django
     read_only: true
 
 services:
-  db:
-    <<: *common
-    extends:
-      file: ./compose.common.yml
-      service: postgres
-
-  redis:
-    <<: *common
-    extends:
-      file: ./compose.common.yml
-      service: redis
-
   django:
     <<: *common
     build:
@@ -31,28 +19,16 @@ services:
     extends:
       file: ./compose.common.yml
       service: django
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    ports:
-      - "8002:8000"
     volumes:
       - <<: *volume-django
 
   next:
     <<: *common
     build:
-      target: dev_nextjs
+      target: test_nextjs
     extends:
       file: compose.common.yml
       service: next
-    depends_on:
-      django:
-          condition: service_healthy
-    ports:
-      - "3002:3000"
 
   nginx:
     <<: *common
@@ -68,16 +44,6 @@ services:
           condition: service_healthy
     ports:
       - "82:80"
-
-  celery:
-    <<: *common
-    build:
-      target: dev_celery
-    depends_on:
-      redis:
-        condition: service_healthy
-    volumes:
-      - <<: *volume-django
 
   cypress:
     <<: *common

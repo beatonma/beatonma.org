@@ -25,6 +25,9 @@ RUN npm install
 
 COPY --chown=app:app ./frontend /app
 
+ARG NEXT_PUBLIC_SITE_NAME
+ENV NEXT_PUBLIC_SITE_NAME=$NEXT_PUBLIC_SITE_NAME
+
 
 ###
 FROM python AS core_django
@@ -63,9 +66,6 @@ EXPOSE 443
 
 ###
 FROM core_nextjs AS production_nextjs
-
-ARG NEXT_PUBLIC_SITE_NAME
-ENV NEXT_PUBLIC_SITE_NAME=$NEXT_PUBLIC_SITE_NAME
 
 RUN npm run build
 ENTRYPOINT ["npm", "run", "start"]
@@ -165,10 +165,17 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 
 ###
+FROM production_nextjs AS test_nextjs
+
+
+###
 FROM cypress/included AS test_cypress
 
-WORKDIR /cypress
-COPY ./docker/cypress/entrypoint-cypress.dev.sh /entrypoint.sh
+ARG NEXT_PUBLIC_SITE_NAME
+ENV NEXT_PUBLIC_SITE_NAME=$NEXT_PUBLIC_SITE_NAME
 
+ARG NEXT_PUBLIC_GITHUB_USERNAME
+ENV NEXT_PUBLIC_GITHUB_USERNAME=$NEXT_PUBLIC_GITHUB_USERNAME
+
+WORKDIR /cypress
 EXPOSE 8000
-ENTRYPOINT ["/entrypoint.sh"]

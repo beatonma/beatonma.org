@@ -29,9 +29,14 @@ import {
   PropsWithRef,
   StateSetter,
 } from "@/types/react";
+import { testId } from "@/util";
 import { onlyIf } from "@/util/optional";
 import { addClass, classes } from "@/util/transforms";
 
+const TestTarget = {
+  SearchButton: "search_button",
+  SearchInput: "search_input",
+};
 const MinQueryLength = 3;
 
 interface SearchProps<P extends SearchablePath> {
@@ -195,6 +200,7 @@ const SearchBar = (props: SearchBarProps & DivPropsNoChildren) => {
         icon="Search"
         tabIndex={-1}
         onClick={() => setIsActive((prev) => !prev)}
+        {...testId(TestTarget.SearchButton)}
       />
       <SearchForm
         ref={inputRef}
@@ -217,6 +223,7 @@ const SearchForm = (props: PropsWithRef<"input">) => {
         type="search"
         placeholder={`Search ${process.env.NEXT_PUBLIC_SITE_NAME}`}
         {...addClass(props, "w-full")}
+        {...testId(TestTarget.SearchInput)}
       />
     </form>
   );

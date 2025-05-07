@@ -1,13 +1,20 @@
 import logging
 
 from bmanotify_django.tasks import dispatch_fcm_notification
+from bmanotify_django.tasks.dispatch import NoRegisteredDevice
 from celery import shared_task
 from celery.utils.log import get_task_logger
+from common.util.tasks import dispatch_task
 from django.conf import settings
 from django.core.mail import send_mail
 
 django_log = logging.getLogger(__name__)
 task_log = get_task_logger(f"{__name__}.tasks")
+
+
+def log(level, message):
+    django_log.log(level, message)
+    task_log.log(level, message)
 
 
 def send_notification(
@@ -17,17 +24,9 @@ def send_notification(
     color: str = "#ff4081",
     important: bool = False,
 ):
-
-    if getattr(settings, "CELERY_DISABLED", False):
-        django_log.warning(
-            f"[send_notification | celery is disabled] "
-            f"title='{title}', body='{body}', tags='{tags}', "
-            f"color='{color}', important='{important}'"
-        )
-        return
-
     try:
-        _send_notification.delay(
+        dispatch_task(
+            _send_notification,
             title=title,
             body=body,
             tags=tags,
@@ -35,7 +34,7 @@ def send_notification(
             important=important,
         )
     except Exception as e:
-        django_log.error(f"send_notification error: {e}")
+        log(logging.ERROR, f"send_notification error: {e}")
 
 
 @shared_task
@@ -57,7 +56,7 @@ def send_webmail(
         "```\n"
     )
 
-    task_log.info(f"Sending mail from: '{name}'")
+    log(logging.INFO, f"Sending mail from: '{name}'")
 
     send_mail(
         subject,
@@ -66,15 +65,21 @@ def send_webmail(
         [settings.WEBMAIL_CONTACT_EMAIL],
     )
 
-    _send_notification(
-        subject,
-        f"From '{name}': {message}",
-        tags=tags,
-        color=color,
-        important=True,
-    )
+    try:
+        _send_notification(
+            subject,
+            f"From '{name}': {message}",
+            tags=tags,
+            color=color,
+            important=True,
+        )
+    except NoRegisteredDevice:
+        log(
+            logging.WARNING,
+            "Could not send notification because no devices are registered",
+        )
 
-    task_log.info(f"Mail sent from '{name}'")
+    log(logging.INFO, f"Mail sent from '{name}'")
 
 
 @shared_task

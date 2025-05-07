@@ -34,7 +34,7 @@ _NOT_SET = "__NOT_SET__"
 
 
 def _choose(value, fallback):
-    if value is _NOT_SET:
+    if value == _NOT_SET:
         return fallback
     return value
 
@@ -65,7 +65,7 @@ def _timestamp(
 
     while True:
         dt = datetime(
-            year=year or random.randint(2018, 2023),
+            year=year or random.randint(2018, now.year),
             month=month or random.randint(1, 12),
             day=day or random.randint(1, 28),
             hour=hour or random.randint(0, 23),
@@ -89,6 +89,7 @@ def create_post(
     is_published: bool = True,
     tags: list[str] = None,
     date: Date = None,
+    slug: str = None,
 ) -> Post:
     sample = samples.any_post()
     created_at = _timestamp(date=date)
@@ -97,7 +98,8 @@ def create_post(
         subtitle=_choose(subtitle, sample.summary),
         content=_choose(content, sample.content),
         defaults={
-            "preview": preview or sample.summary,
+            "slug": slug,
+            "preview": _choose(preview, sample.summary),
             "is_published": is_published,
             "published_at": created_at,
             "created_at": created_at,
@@ -115,6 +117,7 @@ def create_app(
     is_published: bool = True,
     tags: list[str] = None,
     date: Date = None,
+    slug: str = None,
 ) -> AppPost:
     created_at = _timestamp(date=date)
     title = _choose(title, samples.any_app_name())
@@ -122,6 +125,7 @@ def create_app(
     app, _ = AppPost.objects.get_or_create(
         title=title,
         defaults={
+            "slug": slug,
             "codename": _choose(codename, slugify(title).replace("-", ".")),
             "created_at": created_at,
             "published_at": created_at,
@@ -137,26 +141,27 @@ def create_app(
 
 def create_changelog(
     app: AppPost = None,
-    content: str = None,
-    version: str = None,
-    preview: str = None,
+    content: str = _NOT_SET,
+    version: str = _NOT_SET,
+    preview: str = _NOT_SET,
     is_published: bool = True,
     tags: list[str] = None,
     date: Date = None,
+    slug: str = None,
 ) -> ChangelogPost:
     created_at = _timestamp(date=date)
+    sample = samples.any_changelog()
 
     if not app:
         app = create_app()
 
-    sample = samples.any_changelog()
-
     changelog, _ = ChangelogPost.objects.get_or_create(
         app=app,
-        version=version or sample.version_name,
+        version=_choose(version, sample.version_name),
         defaults={
-            "content": content or sample.content,
-            "preview": preview or sample.summary,
+            "slug": slug,
+            "content": _choose(content, sample.content),
+            "preview": _choose(preview, sample.summary),
             "created_at": created_at,
             "published_at": created_at,
             "is_published": is_published,
@@ -190,7 +195,7 @@ def create_motd(
     sample = samples.any_motd()
 
     motd, _ = MessageOfTheDay.objects.get_or_create(
-        title=title or sample.title,
+        description=title or sample.title,
         content_html=content_html or sample.content,
         defaults={
             "is_published": is_published,

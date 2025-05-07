@@ -11,8 +11,16 @@ import { Row } from "@/components/layout";
 import Prose from "@/components/prose";
 import ExternalLink from "@/components/third-party/link";
 import RemoteContent from "@/components/third-party/remote-content";
+import { testId } from "@/util";
 import { onlyIf } from "@/util/optional";
 
+const TestTarget = {
+  ContactForm: "contact_form",
+  ContactName: "contact_name",
+  ContactMethod: "contact_method",
+  ContactMessage: "contact_message",
+  ContactSuccess: "contact_success",
+};
 const TextInputClassName = "w-full";
 
 type ContactFormProps = RecaptchaProps;
@@ -63,7 +71,7 @@ export default function ContactPage(props: ContactFormProps) {
 
 const MessageSentOK = () => {
   return (
-    <Prose>
+    <Prose {...testId(TestTarget.ContactSuccess)}>
       <h2>Thank you</h2>
 
       <p>
@@ -133,7 +141,7 @@ const ContactForm = (
 
   return (
     <div>
-      <form action={submit}>
+      <form action={submit} {...testId(TestTarget.ContactForm)}>
         <Prose>
           <FormField
             label="What should I call you?"
@@ -149,6 +157,7 @@ const ContactForm = (
                 autoFocus
                 required
                 {...nameProps}
+                {...testId(TestTarget.ContactName)}
               />
             )}
           />
@@ -166,6 +175,7 @@ const ContactForm = (
                 placeholder="Your email address, IM username and service, whatever."
                 required
                 {...contactProps}
+                {...testId(TestTarget.ContactMethod)}
               />
             )}
           />
@@ -181,7 +191,9 @@ const ContactForm = (
                 autoComplete="off"
                 placeholder="Your message"
                 rows={5}
+                required
                 {...messageProps}
+                {...testId(TestTarget.ContactMessage)}
               />
             )}
           />

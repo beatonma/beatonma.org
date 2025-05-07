@@ -1,5 +1,10 @@
+import logging
+
+from django.conf import settings
 from django.core.cache import cache
 from django.db import models
+
+log = logging.getLogger(__name__)
 
 
 class InvalidateCacheMixin(models.Model):
@@ -17,4 +22,8 @@ class InvalidateCacheMixin(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        cache.delete_pattern(f"*{self.cache_key}*")
+        try:
+            cache.delete_pattern(f"*{self.cache_key}*")
+        except AttributeError:
+            if not settings.DEBUG:
+                log.warning(f"Failed to invalidate cache '{self.cache_key}'")

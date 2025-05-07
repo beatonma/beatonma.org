@@ -1,5 +1,6 @@
 import logging
 
+from common.util.tasks import dispatch_task
 from contact.tasks import send_webmail
 from contact.tasks.recaptcha import UnverifiedRecaptcha, verify_recaptcha
 from django.http import HttpRequest
@@ -19,11 +20,10 @@ class ContactForm(Schema):
 
 @router.post("/", response={204: None, 400: None})
 def send_mail(request: HttpRequest, form: ContactForm):
-    log.info(request, form)
-
     try:
         verify_recaptcha(form.recaptcha_token)
-        send_webmail.delay(
+        dispatch_task(
+            send_webmail,
             name=form.name,
             contact_info=form.contact_info,
             message=form.message,

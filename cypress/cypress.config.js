@@ -1,9 +1,7 @@
-import { defineConfig } from "cypress";
-
 const defaultTimeout = 2_000;
 
-export default defineConfig({
-  chromeWebSecurity: false,
+module.exports = require("cypress").defineConfig({
+  chromeWebSecurity: false, // Allow access to iframe elements (specifically: recaptcha)
   e2e: {
     experimentalRunAllSpecs: true,
     supportFile: false,
@@ -15,4 +13,8 @@ export default defineConfig({
   pageLoadTimeout: defaultTimeout,
   requestTimeout: defaultTimeout,
   responseTimeout: defaultTimeout,
+  env: {
+    NEXT_PUBLIC_SITE_NAME: process.env.NEXT_PUBLIC_SITE_NAME,
+    NEXT_PUBLIC_GITHUB_USERNAME: process.env.NEXT_PUBLIC_GITHUB_USERNAME,
+  },
 });

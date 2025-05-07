@@ -24,6 +24,7 @@ def _env_int(key: str, default: int = None) -> int | None:
     except ValueError:
         if not TESTING:
             log.error(f"Expected int value for environment key '{key}'")
+        return None
 
 
 # Core

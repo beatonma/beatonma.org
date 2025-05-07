@@ -6,12 +6,13 @@ from common.models.util import implementations_of
 from django.core.management import BaseCommand
 from github.management.commands import sample_github_data as sample_github
 from github.models import CachedResponse
+from main.models import SiteHCard
 from main.tasks import sample_data as sample
 
 log = logging.getLogger(__name__)
 
 
-TESTDATA_DATE = date(2023, 2, 3)
+TESTDATA_DATE = date.today()
 
 
 class Command(BaseCommand):
@@ -36,6 +37,10 @@ def _create_test_data():
 
     _generate(published=True)
     _generate(published=False)
+
+    SiteHCard.objects.create(
+        name="Firstname Surname",
+    )
 
     CachedResponse.objects.get_or_create(
         data={
@@ -69,9 +74,12 @@ def _generate(published: bool):
 
     label = "TestTarget" if published else "__PRIVATE__ TestTarget"
 
+    def _slug(slug: str):
+        return slug if published else f"__PRIVATE__{slug}"
+
     sample.create_about_page(
         description="target",
-        content="TestTarget about content",
+        content="<!-- h-card -->\n\nTestTarget about content",
     )
     sample.create_motd(
         f"{label} MOTD",
@@ -85,6 +93,7 @@ def _generate(published: bool):
         is_published=published,
         tags=tags,
         date=TESTDATA_DATE,
+        slug=_slug("test-article"),
     )
     sample.create_post(
         title=f"{label} Blog",
@@ -92,18 +101,22 @@ def _generate(published: bool):
         is_published=published,
         tags=tags,
         date=TESTDATA_DATE,
+        slug=_slug("test-blog"),
     )
     sample.create_post(
         content=f"{label} Note",
+        preview=f"{label} Note",
         is_published=published,
         tags=tags,
         date=TESTDATA_DATE,
+        slug=_slug("test-note"),
     )
     app = sample.create_app(
         title=f"{label} App",
         is_published=published,
         tags=tags,
         date=TESTDATA_DATE,
+        slug=_slug("test-app"),
     )
     sample.create_changelog(
         app,
@@ -113,6 +126,7 @@ def _generate(published: bool):
         is_published=published,
         tags=tags,
         date=TESTDATA_DATE,
+        slug=_slug("test-changelog"),
     )
     sample_github.create_sample_repository(
         name=f"{label} Repo",

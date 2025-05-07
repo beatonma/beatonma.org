@@ -12,8 +12,13 @@ import { AppIcon } from "@/components/icon";
 import { Row } from "@/components/layout";
 import ExternalLink from "@/components/third-party/link";
 import { DivProps, DivPropsNoChildren } from "@/types/react";
+import { testId } from "@/util";
 import { plural } from "@/util/plurals";
 import { addClass } from "@/util/transforms";
+
+const TestTarget = {
+  GithubActivity: "github_activity",
+};
 
 export default function GithubActivity(
   props: { activity: GithubRecent } & DivPropsNoChildren,
@@ -23,7 +28,10 @@ export default function GithubActivity(
   const grouped = groupEvents(activity.events);
 
   return (
-    <div {...addClass(rest, "@container px-edge")}>
+    <div
+      {...addClass(rest, "@container px-edge")}
+      {...testId(TestTarget.GithubActivity)}
+    >
       <h3>
         <ExternalLink
           href={`https://github.com/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}`}

@@ -1,11 +1,14 @@
-from beatonma.settings.environment import GIT_HASH  # noqa
-
 from .default_settings import *  # noqa
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": "/tmp/cypress.sqlite3",
+    }
+}
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
     }
 }
 

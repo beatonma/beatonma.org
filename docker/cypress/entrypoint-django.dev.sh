@@ -8,4 +8,4 @@ pytest -p no:cacheprovider
 python manage.py create_test_data
 python manage.py createsuperuser --noinput --username "michael" --email "michael@beatonma.org"
 python manage.py collectstatic --noinput
-python manage.py runserver 0.0.0.0:8000 --noreload
+python manage.py runserver 0.0.0.0:8000

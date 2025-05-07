@@ -6,6 +6,11 @@ import { Row } from "@/components/layout";
 import Loading from "@/components/loading";
 import Prose from "@/components/prose";
 import { DivPropsNoChildren } from "@/types/react";
+import { testId } from "@/util";
+
+const TestTarget = {
+  AllowRemoteContent: "allow_remote_content",
+};
 
 export interface RemoteContentProvider {
   domain: string;
@@ -47,6 +52,7 @@ export default function RemoteContent(
         <Button
           className="text-vibrant self-end"
           onClick={() => setIsAllowed(true)}
+          {...testId(TestTarget.AllowRemoteContent)}
         >
           Allow
         </Button>

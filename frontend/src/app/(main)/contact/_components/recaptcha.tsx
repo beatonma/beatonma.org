@@ -3,6 +3,11 @@
 import Script from "next/script";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import LoadingSkeleton from "@/components/loading";
+import { testId } from "@/util";
+
+const TestTarget = {
+  RecaptchaWrapper: "recaptcha_wrapper",
+};
 
 declare global {
   interface Window {
@@ -76,7 +81,10 @@ export default function Recaptcha(props: RecaptchaProps & RecaptchaCallbacks) {
 
   const RecaptchaRenderedSize = "min-w-[304px] min-h-[78px]";
   return (
-    <div className={RecaptchaRenderedSize}>
+    <div
+      className={RecaptchaRenderedSize}
+      {...testId(TestTarget.RecaptchaWrapper)}
+    >
       {!isLoaded && <LoadingSkeleton className={RecaptchaRenderedSize} />}
       <div id={containerId} />
       <Script
