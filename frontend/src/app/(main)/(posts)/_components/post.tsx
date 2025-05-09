@@ -186,7 +186,7 @@ const AppLink = (
     ...rest
   } = addClass(
     props,
-    "grid grid-cols-[auto_1fr] hover-extra-background w-fit text-start hover-extra-background before:-inset-2",
+    "grid grid-cols-[auto_1fr] hover-extra-background w-fit text-start before:-inset-2",
   );
 
   return (

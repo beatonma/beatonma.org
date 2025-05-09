@@ -210,8 +210,41 @@
     --muted: --value(--color-muted-on-*);
   }
 
-  &:hover:not(:disabled), &:focus-visible:not(:disabled) {
-    background-color: color-mix(in srgb, var(--hover, var(--fg)) 10%, var(--bg));
+  &:hover:not(:disabled) {
+    @apply -hover-background;
+  }
+  &:focus-visible:not(:disabled) {
+    @apply -hover-background;
+  }
+}
+
+@utility -hover-background {
+  background-color: color-mix(in srgb, var(--hover, var(--fg)) 10%, var(--bg));
+}
+
+/* By default this will have zero size and appear to do nothing! Remember
+ * to set the size of your background with before:-inset-2 or whatever.*/
+@utility extra-background {
+  @apply relative;
+  &::before {
+    @apply pointer-events-none absolute -z-1 rounded-lg;
+    content: "";
+  }
+}
+
+/* Add a hover background which is a different size to the element.
+ * By default this will have zero size and appear to do nothing! Remember
+ * to set the size of your background with before:-inset-2 or whatever.*/
+@utility hover-extra-background {
+  @apply extra-background relative;
+  &::before {
+    @apply bg-transparent transition-colors;
+  }
+  &:not(:disabled):hover::before {
+    @apply -hover-background;
+  }
+  &:not(:disabled):focus-visible::before {
+    @apply -hover-background;
   }
 }
 
@@ -247,30 +280,6 @@
 /* Make a subgrid that completely fills its parent grid. Useful for sharing named grid areas. */
 @utility subgrid-span-full {
   @apply col-span-full col-start-1 row-span-full row-start-1 grid-cols-subgrid grid-rows-subgrid;
-}
-
-/* By default this will have zero size and appear to do nothing! Remember
- * to set the size of your background with before:-inset-2 or whatever.*/
-@utility extra-background {
-  @apply relative;
-  &::before {
-    @apply pointer-events-none absolute -z-1 rounded-lg;
-    content: "";
-  }
-}
-
-/* Add a hover background which is a little larger than the element.
- * By default this will have zero size and appear to do nothing! Remember
- * to set the size of your background with before:-inset-2 or whatever.*/
-@utility hover-extra-background {
-  @apply extra-background relative;
-  &::before {
-    @apply bg-transparent transition-colors;
-  }
-  &:not(:disabled):hover::before,
-  &:not(:disabled):focus-visible::before {
-    @apply bg-hover;
-  }
 }
 
 @utility divider-* {
