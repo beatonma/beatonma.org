@@ -128,6 +128,7 @@ const CarouselItem = (
       <MediaView
         media={media}
         image={{ fit: "contain" }}
+        video={{ autoPlay: true, loop: true }}
         className="max-h-full min-w-64 self-center size-full overflow-hidden"
       />
 
