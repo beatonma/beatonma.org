@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import styles from "@/components/dialog/dialog.module.css";
 import useKeyPress from "@/components/hooks/key";
 import { DivProps } from "@/types/react";
@@ -15,11 +16,19 @@ export default function Scrim(props: ScrimProps & Omit<DivProps, "onClick">) {
     props.scrimColor ?? "surface-scrim",
     "fixed inset-0 z-100",
   );
+  const [hasBeenVisible, setHasBeenVisible] = useState(isVisible);
 
   useKeyPress({
     Escape: () => onClose(),
   });
 
+  useEffect(() => {
+    if (isVisible) {
+      setHasBeenVisible(true);
+    }
+  }, [isVisible]);
+
+  if (!hasBeenVisible) return null;
   return <div data-is-open={isVisible} onClick={onClose} {...rest} />;
 }
 
