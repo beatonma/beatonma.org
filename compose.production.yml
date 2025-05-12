@@ -90,6 +90,7 @@ services:
     extends:
       file: compose.common.yml
       service: nginx
+    container_name: nginx
     depends_on:
       django:
         condition: service_healthy
