@@ -7,7 +7,8 @@ frontend-tests*
 .idea/
 cypress/screenshots/
 cypress/videos/
-install/
+tools/install
+tools/bma
 
 **/__pycache__/
 **/dist/

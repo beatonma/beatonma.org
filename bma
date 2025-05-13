@@ -1,23 +1,21 @@
 #!/usr/bin/env bash
 
+usage="$(basename "$0")
+  production ...
+  dev  ...
+  test [...]
+
+  pull                 Update repository from remote.
+  openapi [port=80]    Update API in frontend from server running on given port.
+"
+
 # cd into location of script to ensure relative paths resolve correctly.
 cd "$(dirname "$0")" || exit 1
 
-FILE_COMPOSE_PRODUCTION="./compose.production.yml"
-FILE_COMPOSE_DEV="./compose.dev.yml"
-FILE_COMPOSE_TEST="./compose.test.yml"
-FILE_ENV_PRODUCTION="./.env.production"
-FILE_ENV_DEV="./.env.dev"
-
-# Data import/export
-ARCHIVE_DIRNAME="data-archive"
-ARCHIVE_DB="backup.sql"
-DOCKER_CONTAINER_POSTGRES="postgres"
-DOCKER_REMOTE_CONTEXT="bma"  # Requires config via `docker context create bma...`
-
-compose_file=""
+# Runtime variables
 context="$1"
 shift
+
 
 log() {
   echo "$*" >"$(tty)"
@@ -34,290 +32,51 @@ run_command() {
   fi
 }
 
-# Short-circuit for simple commands that don't require a build context.
-case $context in
+case "$context" in
   "pull")
     run_command git pull --recurse-submodules
     exit 0
     ;;
-esac
 
-show_help() {
-  log 'bma (dev | production | test | certbot | pull | export | import)'
-  log ''
-  log 'dev (up|down) [CONTAINER]'
-  log 'production (up|down|build|push) [CONTAINER]'
-  log 'test'
-  log 'certbot (init|renew)'
-  log 'pull'
-  log 'export'
-  log 'import (FILENAME)'
-}
-
-docker_compose() {
-  run_command docker compose -f "$compose_file" "$@"
-}
-
-docker_compose_build() {
-  docker_compose build --progress=plain --ssh=default \
-    --build-arg NEXT_PUBLIC_SITE_NAME="$NEXT_PUBLIC_SITE_NAME" \
-    --build-arg NEXT_PUBLIC_GITHUB_USERNAME="$NEXT_PUBLIC_GITHUB_USERNAME" \
-    --build-arg NEXT_PUBLIC_GOOGLE_RECAPTCHA_TOKEN="$NEXT_PUBLIC_GOOGLE_RECAPTCHA_TOKEN" \
-    --build-arg NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION="$NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION" \
-    "$@"
-}
-
-docker_push() {
-  run_command docker push fallofmath/beatonma:crontab
-  run_command docker push fallofmath/beatonma:django
-  run_command docker push fallofmath/beatonma:celery
-  run_command docker push fallofmath/beatonma:next
-  run_command docker push fallofmath/beatonma:nginx
-  run_command docker push fallofmath/beatonma:startup_checks
-  run_command docker --context "$DOCKER_REMOTE_CONTEXT" compose -f compose.production.yml pull
-  run_command docker --context "$DOCKER_REMOTE_CONTEXT" compose -f compose.production.yml up -d
-}
-
-export_data() {
-  local_temp_path="/tmp/$ARCHIVE_DIRNAME"
-  output_filename="archive-$(date +%F).tar.gz"
-  docker_temp_db_path="/tmp/$ARCHIVE_DB"
-
-  # copy important files
-  run_command mkdir -p "$local_temp_path/"
-  run_command cp -r "$KEYFILES_ROOT/." "$local_temp_path/keyfiles/"
-  run_command cp -r "$MEDIA_ROOT/." "$local_temp_path/media/"
-
-  # dump database
-  run_command docker exec "$DOCKER_CONTAINER_POSTGRES" \
-    pg_dump --clean --create --no-owner \
-    --format=custom \
-    --username="$POSTGRES_USER" \
-    --file="$docker_temp_db_path" \
-    "$POSTGRES_DB"
-  run_command docker cp "${DOCKER_CONTAINER_POSTGRES}:$docker_temp_db_path" "$local_temp_path"
-
-  # build archive
-  run_command tar -czvf "$output_filename" -C "/tmp" "$ARCHIVE_DIRNAME"
-
-  # cleanup
-  run_command rm -r "$local_temp_path"
-  run_command docker exec "$DOCKER_CONTAINER_POSTGRES" \
-    rm "$docker_temp_db_path"
-  exit 0
-}
-
-import_data() {
-  archive_file="$1"
-  local_temp_path="/tmp/$ARCHIVE_DIRNAME"
-  docker_temp_db_path="/tmp/$ARCHIVE_DB"
-
-  # extract archive
-  run_command tar -xzvf "$archive_file" -C "/tmp"
-
-  # copy important files to correct location
-  run_command mkdir -p "$KEYFILES_ROOT"
-  run_command cp -r "$local_temp_path/keyfiles/." "$KEYFILES_ROOT"
-  run_command mkdir -p "$MEDIA_ROOT"
-  run_command cp -r "$local_temp_path/media/." "$MEDIA_ROOT"
-
-  # restore database
-  run_command docker cp "$local_temp_path/$ARCHIVE_DB" "$DOCKER_CONTAINER_POSTGRES:$docker_temp_db_path"
-  run_command docker exec -i "$DOCKER_CONTAINER_POSTGRES" \
-    pg_restore --clean \
-    --verbose \
-    --no-owner \
-    --username="$POSTGRES_USER" \
-    --dbname="$POSTGRES_DB" \
-    "$docker_temp_db_path"
-
-  # cleanup
-  run_command rm -r "$local_temp_path"
-  run_command docker exec -i "$DOCKER_CONTAINER_POSTGRES" rm "$docker_temp_db_path"
-
-  exit 0
-}
-
-production() {
-  if [ $# -eq 0 ]; then
-    docker_compose_build
+  "openapi")
+    run_command npx openapi-typescript "http://localhost:${1:-80}/api/openapi.json" -o frontend/src/api/api.d.ts
     exit 0
-  fi
-
-  case "$1" in
-    "push")
-      shift
-      docker_compose_build
-      docker_push
-      exit 0
-      ;;
-    "build")
-      shift
-      docker_compose_build "$@"
-      exit 0
-      ;;
-    "up" | "down")
-      docker_compose "$@"
-      exit 0
-      ;;
-    "--")
-      shift
-      docker_compose "$@"
-      exit 0
-      ;;
-    *)
-      log "Unhandled arguments '$*'"
-      exit 1
-      ;;
-  esac
-}
-
-dev() {
-  case "$1" in
-    "build")
-      shift
-      docker_compose_build "$@"
-      ;;
-    "up" | "down")
-      docker_compose "$@"
-      ;;
-    "--")
-      shift
-      docker_compose "$@"
-      ;;
-    *)
-      docker_compose_build "$@"
-      docker_compose up
-      ;;
-  esac
-
-  exit 0
-}
-
-runtests() {
-  case "$1" in
-    "dev")
-      # Keep the Django server running after tests complete - use with `cypress`.
-      shift
-      docker_compose up "$@"
-      ;;
-    "cypress")
-      # Run cypress tests on running Django server - use with `dev`.
-      shift
-      docker_compose up cypress "$@"
-      ;;
-    "build")
-      shift
-      docker_compose_build "$@"
-      ;;
-    "--")
-      shift
-      docker_compose "$@"
-      ;;
-    *)
-      docker_compose_build
-      docker_compose up --abort-on-container-exit "$@"
-      ;;
-  esac
-
-  exit 0
-}
-
-certbot_init() {
-  # Run this before first run of production server.
-  run_command docker run --rm \
-    --name certbot_init \
-    --volume letsencrypt_keys:/etc/letsencrypt:rw \
-    --volume letsencrypt_webroot:/var/www/letsencrypt:rw \
-    --env-file "$FILE_ENV_PRODUCTION" \
-    --entrypoint "" \
-    -p 80:80 \
-    certbot/certbot:latest \
-    sh -c "certbot certonly --standalone $*"
-}
-
-certbot_renew() {
-  # Run this periodically to update while production server is running.
-  run_command docker run --rm \
-    --name certbot_renew \
-    --volume letsencrypt_keys:/etc/letsencrypt:rw \
-    --volume letsencrypt_webroot:/var/www/letsencrypt:rw \
-    --env-file "$FILE_ENV_PRODUCTION" \
-    --entrypoint "" \
-    certbot/certbot:latest \
-    sh -c "certbot certonly --webroot -w /var/www/letsencrypt $*"
-    run_command docker container restart nginx
-}
-
-certbot() {
-  common_args_list=(
-    "-d ${DOMAIN_NAME}"
-    "-d www.${DOMAIN_NAME}"
-    "--email ${DOMAIN_EMAIL}"
-    "--rsa-key-size 4096"
-    "--keep-until-expiring"
-    "--agree-tos"
-    "--non-interactive"
-  )
-
-  # Concat list to string
-  common_args=$(printf "%s " "${common_args_list[@]}")
-
-  case "$1" in
-    "init")
-      shift
-      certbot_init "$common_args"
-      ;;
-    "renew")
-      shift
-      certbot_renew "$common_args"
-      ;;
-  esac
-
-  exit 0
-}
-
-case $context in
-  "export")
-    compose_file=$FILE_COMPOSE_PRODUCTION
-    source "$FILE_ENV_PRODUCTION"
-    export_data "$@"
     ;;
-  "import")
-    compose_file=$FILE_COMPOSE_PRODUCTION
-    source "$FILE_ENV_PRODUCTION"
-    import_data "$@"
-    ;;
+
   "production")
-    compose_file=$FILE_COMPOSE_PRODUCTION
-    source "$FILE_ENV_PRODUCTION"
-    production "$@"
+    source "./tools/bma/production.sh"
     ;;
   "dev")
-    compose_file=$FILE_COMPOSE_DEV
-    source "$FILE_ENV_DEV"
-    dev "$@"
-    ;;
-  "shell")
-    compose_file=$FILE_COMPOSE_DEV
-    source "$FILE_ENV_DEV"
-    docker_compose --profile manage run --rm "$@" django_manage
-    exit 0
+    source "./tools/bma/dev.sh"
     ;;
   "test")
-    compose_file=$FILE_COMPOSE_TEST
-    source "$FILE_ENV_DEV"
-    runtests "$@"
-    ;;
-  "certbot")
-    source "$FILE_ENV_PRODUCTION"
-    certbot "$@"
-    ;;
-  "openapi")
-    npx openapi-typescript http://localhost:${1:-80}/api/openapi.json -o frontend/src/api/api.d.ts
-    ;;
-  *)
-    log "Unhandled context '$context'"
-    exit 1
+    source "./tools/bma/test.sh"
     ;;
 esac
+
+action="$1"
+# Common actions
+case "$action" in
+  "up" | "down" | "restart")
+    # Common docker commands
+    docker_compose "$@"
+    exit 0
+    ;;
+  "build")
+    # Docker build
+    shift
+    docker_compose_build "$@"
+    exit 0
+    ;;
+  "--")
+    # Arbitrary docker command
+    shift
+    docker_compose "$@"
+    exit 0
+    ;;
+esac
+
+# Context-specific actions, implemented in each context script
+if type run_action >/dev/null 2>&1; then run_action "$@"; fi
+
+log "$usage"
