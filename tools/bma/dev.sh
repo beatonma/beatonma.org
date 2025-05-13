@@ -19,6 +19,7 @@ django_shell() {
 run_action() {
   case "$1" in
     "shell")
+      shift
       django_shell "$@"
       ;;
     "import")

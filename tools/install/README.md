@@ -12,22 +12,22 @@ usermod -aG sudo $username
 
 ### Clone repository
 ```bash
-git clone https://github.com/beatonma/beatonma.org beatonma.org/
+git clone https://github.com/beatonma/beatonma.org my_directory/
 ```
 
 ### Install and configure
 Create and populate `.env` file in `install/` directory.
 ```bash
-cd beatonma.org/install
+cd my_directory/install
 cp example.env .env && nano .env
 python3 install.py  # Install docker
 sudo reboot now
 
-cd beatonma.org/install
-python3.install.py  # Install other required system components
+cd my_directory/install
+python3 install.py  # Install other required system components
 sudo reboot now
 
-cd beatonma.org
+cd my_directory
 cp example.env .env && nano .env
 ./bma certbot init
 
@@ -41,6 +41,6 @@ docker context create contextname --docker "host=ssh://username@host:/run/user/1
 docker --context contextname ps  # Check that docker context works correctly
 ./bma production push
 
-scp archive-file.tar.gz username@host:/home/username/beatonma.org  # Copy previous backup to server
+scp archive-file.tar.gz username@host:/home/username/my_directory  # Copy previous backup to server
 ./bma import archive-file.tar.gz
 ```

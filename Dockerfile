@@ -80,7 +80,7 @@ COPY ./beatonma-django /django
 FROM production_core_django AS production_django
 
 EXPOSE 8000
-COPY "./docker/django/entrypoint.sh" /
+COPY ./tools/docker/django/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
@@ -94,9 +94,9 @@ ENTRYPOINT ["celery", "-A", "beatonma", "worker", "-l", "info"]
 ###
 FROM core_nginx AS production_nginx
 
-COPY ./docker/nginx/nginx.conf /etc/nginx/
-COPY ./docker/nginx/templates/ /etc/nginx/templates/
-COPY ./docker/nginx/entrypoint.sh /docker-entrypoint.d/40-letsencrypt-perms.sh
+COPY ./tools/docker/nginx/nginx.conf /etc/nginx/
+COPY ./tools/docker/nginx/templates/ /etc/nginx/templates/
+COPY ./tools/docker/nginx/entrypoint.sh /docker-entrypoint.d/40-letsencrypt-perms.sh
 RUN chmod +x /docker-entrypoint.d/40-letsencrypt-perms.sh
 
 
@@ -105,7 +105,7 @@ FROM python AS production_server_checks
 
 RUN --mount=type=cache,target=/root/.cache/pip pip install requests
 
-COPY ./docker/config_tests/ /tmp/config_tests/
+COPY ./tools/docker/config_tests/ /tmp/config_tests/
 ENTRYPOINT ["python", "/tmp/config_tests/runtests.py"]
 
 
@@ -113,8 +113,8 @@ ENTRYPOINT ["python", "/tmp/config_tests/runtests.py"]
 FROM production_core_django AS production_crontab
 
 WORKDIR /cron/
-COPY ./docker/cron/cron-schedule /tmp/
-COPY ./docker/cron/crontab/*.sh /cron/
+COPY ./tools/docker/cron/cron-schedule /tmp/
+COPY ./tools/docker/cron/crontab/*.sh /cron/
 RUN chmod +x /cron/*.sh
 RUN crontab /tmp/cron-schedule
 ENTRYPOINT ["crond", "-f"]
@@ -134,7 +134,7 @@ ENTRYPOINT ["npm", "run", "dev"]
 ###
 FROM core_django AS dev_django
 
-COPY ./docker/django/entrypoint.dev.sh /
+COPY ./tools/docker/django/entrypoint.dev.sh /
 
 EXPOSE 8000
 ENTRYPOINT ["/entrypoint.dev.sh"]
@@ -148,8 +148,8 @@ ENTRYPOINT ["celery", "-A", "beatonma", "worker", "-l", "info"]
 ###
 FROM core_nginx AS dev_nginx
 
-COPY ./docker/nginx/templates/ /etc/nginx/templates/
-COPY ./docker/nginx/nginx.dev.conf /etc/nginx/nginx.conf
+COPY ./tools/docker/nginx/templates/ /etc/nginx/templates/
+COPY ./tools/docker/nginx/nginx.dev.conf /etc/nginx/nginx.conf
 
 
 #####################
@@ -160,7 +160,7 @@ COPY ./docker/nginx/nginx.dev.conf /etc/nginx/nginx.conf
 
 ###
 FROM core_django AS test_django
-COPY ./docker/cypress/entrypoint-django.dev.sh /entrypoint.sh
+COPY ./tools/docker/cypress/entrypoint-django.dev.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 

@@ -2,7 +2,7 @@
 
 python manage.py migrate
 python manage.py collectstatic --noinput
-pytest -p no:cacheprovider
+pytest -p no:cacheprovider || exit $?
 
 python manage.py create_sample_data
 python manage.py sample_github_data
