@@ -1,23 +1,25 @@
 import logging
 
 from django.db.models import Case, CharField, QuerySet, Value, When
-from main.models import Post
-from main.models.posts.post import BasePost
+from main.models.posts.post import Post
 
 log = logging.getLogger(__name__)
 
 
-type FeedItem = BasePost
+type FeedItem = Post
 
 
 def get_feed(
     *,
     query: str | None = None,
     tag: str | None = None,
+    feed: str | None = None,
     **kwargs,
 ) -> QuerySet[FeedItem]:
-    qs = Post.objects.published().filter(**kwargs)
+    qs: QuerySet[FeedItem] = Post.objects.published().filter(**kwargs)
 
+    if feed:
+        qs = qs.filter(feeds__slug=feed)
     if query:
         qs = qs.search(query)
     if tag:

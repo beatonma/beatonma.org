@@ -18,11 +18,19 @@ class SimpleTestCase(DjangoSimpleTestCase):
     maxDiff = None
 
     def assert_length(self, items: Sized, expected: int, msg: str = ""):
+        if isinstance(items, QuerySet):
+            size = items.count()
+        else:
+            size = len(items)
+
         self.assertEqual(
-            len(items),
+            size,
             expected,
-            msg=f"Expected {expected} items, got {(len(items))}: {items} {msg}",
+            msg=f"Expected {expected} items, got {(size)}: {items} {msg}",
         )
+
+    def assert_is_empty(self, items: Sized, msg: str = ""):
+        self.assert_length(items, 0, msg)
 
     def assert_html_links_to(
         self,

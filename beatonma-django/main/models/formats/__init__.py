@@ -21,7 +21,11 @@ class Formats(models.IntegerChoices):
         format_: int = MARKDOWN,
         markdown_processors: list[PipelineItem[str]] = None,
         html_processors: list[PipelineItem[BeautifulSoup]] = None,
+        basic: bool = False,  # If True, skip extra processing (linkification, etc)
     ) -> str:
+        if basic:
+            return content if format_ == cls.NONE else cls._markdown_to_html(content)
+
         if format_ == Formats.MARKDOWN:
             html = apply_pipeline(
                 content,

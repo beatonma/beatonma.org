@@ -1,16 +1,40 @@
 from common.admin import BaseAdmin
 from common.models.util import implementations_of
 from django.contrib import admin
-from main.admin.models.inline import AppResourceInline, LinkInline, RelatedFileInline
-from main.models import AppPost, ChangelogPost, Post
-from main.models.posts import AboutPost
+from django.utils.safestring import mark_safe
+from main.admin.models import inline
+from main.admin.util import pluralize
+from main.models import AboutPost, AppPost, ChangelogPost, Feed, Post
+from main.models.formats import Formats
 from main.models.posts.app import AppResource
 
 
+@admin.action
+def publish(modeladmin, request, queryset):
+    queryset.update(is_published=True)
+
+
+@admin.action
+def unpublish(modeladmin, request, queryset):
+    queryset.update(is_published=False)
+
+
+@admin.action
+def save(modeladmin, request, queryset):
+    for item in queryset.all():
+        item.save()
+
+
 class BasePostAdmin(BaseAdmin):
+    actions = [
+        publish,
+        unpublish,
+        save,
+    ]
+
     inlines = [
-        LinkInline,
-        RelatedFileInline,
+        inline.LinkInline,
+        inline.RelatedFileInline,
     ]
 
     list_display = [
@@ -38,6 +62,7 @@ class BasePostAdmin(BaseAdmin):
         "content",
         "content_script",
         "tags",
+        "feeds",
     )
 
     field_order = (
@@ -51,13 +76,14 @@ class BasePostAdmin(BaseAdmin):
         "preview",
         "format",
         "content",
+        "feeds",
         "allow_outgoing_webmentions",
         "hero_image",
         "hero_embedded_url",
         "hero_html",
     )
     field_groups = (
-        ("is_published", "published_at"),
+        ("published_at", "is_published", "allow_outgoing_webmentions"),
         ("color_vibrant", "color_muted"),
         ("slug", "old_slug"),
         ("created_at", "modified_at"),
@@ -84,27 +110,14 @@ class AboutPostAdmin(BasePostAdmin):
 @admin.register(Post)
 class PostAdmin(BasePostAdmin):
     def get_queryset(self, request):
-        """We only want to show canonical Post instances, not those that are
-        really a subclass (AppPost, ChangelogPost, ...)"""
-        subclass_related_names = [
-            x.__name__.lower() for x in implementations_of(Post) if x != Post
-        ]
-
-        exclude_subclasses = {
-            f"{subclass}__isnull": True for subclass in subclass_related_names
-        }
-
         return (
-            super()
-            .get_queryset(request)
-            .filter(**exclude_subclasses)
-            .prefetch_related("related_files")
+            super().get_queryset(request).posts_only().prefetch_related("related_files")
         )
 
 
 @admin.register(AppPost)
 class AppPostAdmin(BasePostAdmin):
-    inlines = PostAdmin.inlines + [AppResourceInline]
+    inlines = PostAdmin.inlines + [inline.AppResourceInline]
 
     editable_fields = PostAdmin.editable_fields + (
         "icon",
@@ -138,3 +151,29 @@ class ChangelogPostAdmin(BasePostAdmin):
         "app",
         "version",
     )
+
+
+@admin.register(Feed)
+class FeedAdmin(BaseAdmin):
+    editable_fields = [
+        "is_published",
+        "slug",
+        "name",
+    ]
+
+    @admin.display(description="Posts")
+    def _field_posts(self, obj):
+        posts = obj.posts.all()
+        n = posts.count()
+
+        if n == 0:
+            return "No posts"
+
+        markdown = (
+            "**"
+            + pluralize(n, "{} post", "{} posts")
+            + "**"
+            + "\n"
+            + ("\n".join([f"- {str(x).replace("\n", "")}" for x in posts]))
+        )
+        return mark_safe(Formats.to_html(markdown, basic=True))

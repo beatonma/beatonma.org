@@ -4,23 +4,6 @@
  */
 
 export interface paths {
-    "/api/posts/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Post Feed */
-        get: operations["main_api_posts_post_feed"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/posts/{slug}/": {
         parameters: {
             query?: never;
@@ -81,6 +64,23 @@ export interface paths {
         };
         /** About */
         get: operations["main_api_posts_about"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/posts/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Post Feed */
+        get: operations["main_api_posts_post_feed"];
         put?: never;
         post?: never;
         delete?: never;
@@ -214,19 +214,6 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** Input */
-        Input: {
-            /**
-             * Limit
-             * @default 24
-             */
-            limit: number;
-            /**
-             * Offset
-             * @default 0
-             */
-            offset: number;
-        };
         /** File */
         File: {
             url: components["schemas"]["Url"];
@@ -238,66 +225,6 @@ export interface components {
             description: string | null;
             fit: components["schemas"]["ImageFit"] | null;
         };
-        /**
-         * ImageFit
-         * @enum {string}
-         */
-        ImageFit: "cover" | "contain";
-        /**
-         * MediaType
-         * @enum {string}
-         */
-        MediaType: "audio" | "video" | "image" | "text" | "unknown";
-        /** PagedPostPreview */
-        PagedPostPreview: {
-            /** Items */
-            items: components["schemas"]["PostPreview"][];
-            /** Count */
-            count: number;
-            /** Page Size */
-            page_size: number;
-            /** Previous */
-            previous: number | null;
-            /** Next */
-            next: number | null;
-        };
-        /** PostPreview */
-        PostPreview: {
-            post_type: components["schemas"]["PostType"];
-            /** Title */
-            title: string | null;
-            /** Url */
-            url: string;
-            /** Is Published */
-            is_published: boolean;
-            /**
-             * Published At
-             * Format: date-time
-             */
-            published_at: string;
-            theme?: components["schemas"]["Theme"] | null;
-            /** Hero Embedded Url */
-            hero_embedded_url: string | null;
-            hero_image: components["schemas"]["File"] | null;
-            /** Content Html */
-            content_html: string | null;
-            /** Content Script */
-            content_script: string | null;
-            /** Files */
-            files: components["schemas"]["File"][];
-            /** Is Preview */
-            is_preview: boolean;
-        };
-        /** @enum {string} */
-        PostType: "post" | "app" | "changelog";
-        /** Theme */
-        Theme: {
-            /** Muted */
-            muted?: string | null;
-            /** Vibrant */
-            vibrant?: string | null;
-        };
-        Url: string;
         /** HCard */
         HCard: {
             /** Name */
@@ -307,6 +234,11 @@ export interface components {
             /** Homepage */
             homepage: string | null;
         };
+        /**
+         * ImageFit
+         * @enum {string}
+         */
+        ImageFit: "cover" | "contain";
         /**
          * IncomingMentionType
          * @description Properties that describe the context of the incoming webmention.
@@ -325,6 +257,11 @@ export interface components {
             description?: string | null;
             icon?: components["schemas"]["Url"] | null;
         };
+        /**
+         * MediaType
+         * @enum {string}
+         */
+        MediaType: "audio" | "video" | "image" | "text" | "unknown";
         /** Mention */
         Mention: {
             /** Source Url */
@@ -385,6 +322,14 @@ export interface components {
             /** Name */
             name: string;
         };
+        /** Theme */
+        Theme: {
+            /** Muted */
+            muted?: string | null;
+            /** Vibrant */
+            vibrant?: string | null;
+        };
+        Url: string;
         /** AppDetail */
         AppDetail: {
             /**
@@ -512,6 +457,61 @@ export interface components {
             /** Version */
             version: string;
         };
+        /** Input */
+        Input: {
+            /**
+             * Limit
+             * @default 24
+             */
+            limit: number;
+            /**
+             * Offset
+             * @default 0
+             */
+            offset: number;
+        };
+        /** PagedPostPreview */
+        PagedPostPreview: {
+            /** Items */
+            items: components["schemas"]["PostPreview"][];
+            /** Count */
+            count: number;
+            /** Page Size */
+            page_size: number;
+            /** Previous */
+            previous: number | null;
+            /** Next */
+            next: number | null;
+        };
+        /** PostPreview */
+        PostPreview: {
+            post_type: components["schemas"]["PostType"];
+            /** Title */
+            title: string | null;
+            /** Url */
+            url: string;
+            /** Is Published */
+            is_published: boolean;
+            /**
+             * Published At
+             * Format: date-time
+             */
+            published_at: string;
+            theme?: components["schemas"]["Theme"] | null;
+            /** Hero Embedded Url */
+            hero_embedded_url: string | null;
+            hero_image: components["schemas"]["File"] | null;
+            /** Content Html */
+            content_html: string | null;
+            /** Content Script */
+            content_script: string | null;
+            /** Files */
+            files: components["schemas"]["File"][];
+            /** Is Preview */
+            is_preview: boolean;
+        };
+        /** @enum {string} */
+        PostType: "post" | "app" | "changelog";
         /** WhoAmiISchema */
         WhoAmiISchema: {
             /**
@@ -530,6 +530,13 @@ export interface components {
         RedirectSchema: {
             /** Redirect */
             redirect: string;
+        };
+        /** FeedSchema */
+        FeedSchema: {
+            /** Name */
+            name: string;
+            /** Slug */
+            slug: string;
         };
         /** GlobalHCard */
         GlobalHCard: {
@@ -552,6 +559,8 @@ export interface components {
             hcard: components["schemas"]["GlobalHCard"] | null;
             /** Poi */
             poi: components["schemas"]["Link"][];
+            /** Feeds */
+            feeds: components["schemas"]["FeedSchema"][];
         };
         /** HAdr */
         HAdr: {
@@ -836,31 +845,6 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    main_api_posts_post_feed: {
-        parameters: {
-            query?: {
-                query?: string;
-                tag?: string;
-                limit?: number;
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PagedPostPreview"];
-                };
-            };
-        };
-    };
     main_api_posts_post: {
         parameters: {
             query?: never;
@@ -943,6 +927,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PostDetail"];
+                };
+            };
+        };
+    };
+    main_api_posts_post_feed: {
+        parameters: {
+            query?: {
+                query?: string;
+                tag?: string;
+                feed?: string;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PagedPostPreview"];
                 };
             };
         };

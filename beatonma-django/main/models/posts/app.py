@@ -39,6 +39,13 @@ def _update_repo_link(post: Post, repository: GithubRepository | None):
 
 
 class AppPost(Post):
+    class Meta:
+        ordering = ("-published_at",)
+
+    default_feeds = Post.default_feeds + [
+        ("apps", "Projects"),
+    ]
+
     codename = models.CharField(max_length=255, unique=True)
     repository = models.OneToOneField(
         "github.GithubRepository",
@@ -113,6 +120,12 @@ class AppPost(Post):
 
 
 class ChangelogPost(Post):
+    class Meta:
+        ordering = ("-published_at",)
+
+    default_feeds = Post.default_feeds + [
+        ("changelogs", "Changelogs"),
+    ]
     is_publishable_dependencies = ("app",)
     app = models.ForeignKey(
         AppPost,

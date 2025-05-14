@@ -3,11 +3,11 @@ import uuid
 from typing import Literal
 
 from bs4 import BeautifulSoup
-
 from common.models import BaseModel, PublishedMixin, TaggableMixin
 from common.models.api import ApiEditable
 from common.models.cache import InvalidateCacheMixin
 from common.models.published import PublishedQuerySet
+from common.models.queryset import ExtendedModelQuerySet
 from common.util import regex
 from common.util.pipeline import PipelineItem
 from django.db import models
@@ -19,11 +19,14 @@ from main.models.mixins import ThemeableMixin
 from main.models.related_file import RelatedFilesMixin
 from mentions.models.mixins import MentionableMixin
 
+from .feed import Feed, FeedsMixin
+
 type PostType = Literal["post", "app", "changelog"]
 
 
-class PostQuerySet(PublishedQuerySet):
-    pass
+class PostQuerySet(ExtendedModelQuerySet, PublishedQuerySet):
+    def posts_only(self):
+        return self.exclude_subclasses_of(Post)
 
 
 class BasePost(
@@ -83,8 +86,7 @@ class BasePost(
     content_script = models.TextField(blank=True, null=True)
 
     def save_text(self):
-        if not self.content:
-            self.content = ""
+        self.content = (self.content or "").replace("\r", "")
 
         self.content_html = Formats.to_html(
             self.content,
@@ -176,5 +178,11 @@ class BasePost(
         )
 
 
-class Post(BasePost):
-    pass
+class Post(FeedsMixin, BasePost):
+    default_feeds = [
+        ("posts", "Everything"),
+    ]
+    feeds = models.ManyToManyField(Feed, related_name="posts")
+
+    class Meta:
+        ordering = ("-published_at",)

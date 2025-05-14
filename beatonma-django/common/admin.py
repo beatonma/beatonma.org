@@ -5,6 +5,7 @@ from typing import Iterator, Type
 from django import forms
 from django.apps import apps
 from django.contrib import admin
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 log = logging.getLogger(__name__)
@@ -13,11 +14,11 @@ log = logging.getLogger(__name__)
 class AdminWidgets:
     text_class = "max-w-[min(100%,80ch)] w-full text-lg!"
 
-    def textarea(self, classes: str = ""):
+    def textarea(self, classes: str = "", rows: int = 5, cols: int = 80):
         return forms.Textarea(
             attrs={
-                "rows": 20,
-                "cols": 80,
+                "rows": rows,
+                "cols": cols,
                 "class": self._build_class(classes, self.text_class),
             }
         )
@@ -105,8 +106,17 @@ class BaseAdmin(admin.ModelAdmin):
 
     def init_fields(self, model) -> tuple[list[str], list[str], list[str]]:
         """Get all fields for this model, ordered by `field_order`."""
-        fields = [x for x in model._meta.fields]
 
+        def _is_excluded_class(x):
+            return any(
+                isinstance(x, cls)
+                for cls in [
+                    GenericRelation,
+                    models.ManyToManyRel,
+                ]
+            )
+
+        fields = [x for x in model._meta.get_fields() if not _is_excluded_class(x)]
         editable_fields = self.editable_fields or []
 
         if editable_fields == ["*"]:

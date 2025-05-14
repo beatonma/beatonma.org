@@ -9,8 +9,7 @@ from common.models.util import implementations_of
 from django.db.models import QuerySet
 from django.utils.text import slugify
 from github.tests.sampledata import create_sample_language
-from main.models import (AboutPost, AppPost, ChangelogPost, MessageOfTheDay,
-                         Post)
+from main.models import AboutPost, AppPost, ChangelogPost, MessageOfTheDay, Post
 from main.tasks import samples
 from main.tasks.samples.tags import SAMPLE_TAGS
 from mentions.models import HCard, Webmention
@@ -90,6 +89,7 @@ def create_post(
     tags: list[str] = None,
     date: Date = None,
     slug: str = None,
+    feeds: list[str] = None,
 ) -> Post:
     sample = samples.any_post()
     created_at = _timestamp(date=date)
@@ -107,6 +107,9 @@ def create_post(
     )
     if tags:
         post.tags.add(*tags)
+    if feeds:
+        for x in feeds:
+            post.add_feed(x, x)
 
     return post
 

@@ -22,3 +22,9 @@ def admin_icon_check() -> str:
 
 def admin_icon_cross() -> str:
     return mark_safe('<img src="/static/admin/img/icon-no.svg" alt="False"/>')
+
+
+def pluralize(quantity: int, one: str, many_or_none: str):
+    if quantity == 1:
+        return one.format(quantity) if "{" in one else one
+    return many_or_none.format(quantity) if "{" in many_or_none else many_or_none

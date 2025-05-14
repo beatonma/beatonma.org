@@ -127,15 +127,6 @@ class AppDetail(PostDetail):
         return obj.apppost.get_absolute_url()
 
 
-@router.get("/posts/", response=list[PostPreview])
-@paginate
-@decorate_view(cache_page(60 * 60, key_prefix=BasePost_Model.cache_key))
-def post_feed(request: HttpRequest, query: str = None, tag: str = None):
-    feed = get_feed(query=query, tag=tag)
-
-    return feed
-
-
 @router.get("/posts/{slug}/", response=PostDetail)
 def post(request: HttpRequest, slug: str):
     return get_object_or_404(Post, slug=slug)
@@ -158,3 +149,17 @@ def about(request: HttpRequest):
     if about_page:
         return about_page
     raise Http404()
+
+
+@router.get("/posts/", response=list[PostPreview])
+@paginate
+@decorate_view(cache_page(60 * 60, key_prefix=BasePost_Model.cache_key))
+def post_feed(
+    request: HttpRequest,
+    query: str = None,
+    tag: str = None,
+    feed: str = None,
+):
+    feed = get_feed(query=query, tag=tag, feed=feed)
+
+    return feed

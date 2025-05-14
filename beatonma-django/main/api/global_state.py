@@ -2,7 +2,7 @@ from datetime import date
 
 from django.http import HttpRequest
 from django.views.decorators.cache import cache_page
-from main.models import MessageOfTheDay, PointsOfInterest, SiteHCard
+from main.models import Feed, MessageOfTheDay, PointsOfInterest, SiteHCard
 from main.models.mixins.cache import GlobalStateCacheMixin
 from ninja import Router, Schema
 from ninja.decorators import decorate_view
@@ -37,10 +37,16 @@ class GlobalHCard(Schema):
         }
 
 
+class FeedSchema(Schema):
+    name: str
+    slug: str
+
+
 class GlobalState(Schema):
     motd: str | None
     hcard: GlobalHCard | None
     poi: list[Link]
+    feeds: list[FeedSchema]
 
 
 @router.get("/state/", response=GlobalState)
@@ -54,8 +60,11 @@ def get_global_state(request: HttpRequest):
     motd = MessageOfTheDay.objects.get_current()
     motd_html = motd.content_html if motd else None
 
+    feeds = Feed.objects.published()
+
     return {
         "motd": motd_html,
         "hcard": hcard,
         "poi": poi_links,
+        "feeds": feeds,
     }
