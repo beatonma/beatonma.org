@@ -42,7 +42,7 @@ class GithubRepositorySchema(PayloadSchema):
 
 class GithubCreateEventPayload(PayloadSchema):
     ref_type: Literal["branch", "tag", "repository"]
-    ref: str
+    ref: str | None
 
 
 class GithubIssueEventPayload(PayloadSchema):

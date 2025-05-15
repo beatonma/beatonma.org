@@ -78,7 +78,7 @@ export const InlineLink = (props: ButtonLinkProps) => {
       icon={icon === null ? null : (icon ?? "Link")}
       {...rest}
     >
-      {children ?? formatUrl(href)}
+      {children ?? (formatUrl(href) || undefined)}
     </BaseButton>
   );
 };

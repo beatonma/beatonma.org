@@ -9,6 +9,7 @@ import Instagram from "./svg/external/ic_instagram.svg";
 import Twitter from "./svg/external/ic_twitter.svg";
 import Wikipedia from "./svg/external/ic_wikipedia.svg";
 import MB from "./svg/internal/mb.svg";
+import Add from "./svg/material/add.svg";
 import ArrowDown from "./svg/material/arrow_down.svg";
 import ArrowDropDown from "./svg/material/arrow_dropdown.svg";
 import ArrowUp from "./svg/material/arrow_up.svg";
@@ -63,6 +64,7 @@ const Icons = {
   Text,
 
   // Git
+  GitCreate: Add,
   GitBranch,
   GitBugfix,
   GitCommit,
@@ -71,6 +73,7 @@ const Icons = {
   GitWiki,
 
   // General use
+  Add,
   ArrowUp,
   ArrowDown,
   ArrowDropDown,

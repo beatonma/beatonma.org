@@ -114,14 +114,16 @@ const PublicEvents = (
   );
 };
 
+type CreateRefType = GroupedEventPayloads["create"][number]["ref_type"];
 const CreateEvents = (props: { payload: GroupedEventPayloads["create"] }) => {
   const { payload } = props;
 
   if (!payload.length) return null;
 
-  const icons: Record<string, AppIcon> = {
+  const icons: Record<CreateRefType, AppIcon> = {
     tag: "Tag",
     branch: "GitBranch",
+    repository: "GitCreate",
   };
 
   return (
@@ -133,7 +135,7 @@ const CreateEvents = (props: { payload: GroupedEventPayloads["create"] }) => {
           icon={icons[item.ref_type ?? ""]}
           tooltip={`New ${item.ref_type}`}
         >
-          {item.ref}
+          {item.ref || undefined}
         </InlineLink>
       ))}
     </>

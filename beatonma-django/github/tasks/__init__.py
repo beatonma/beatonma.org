@@ -1,6 +1,6 @@
 from celery import shared_task
 from github import api
-from github.models import CachedResponse, GithubEventUpdateCycle, GithubUserEvent
+from github.models import CachedResponse, GithubEventUpdateCycle
 
 from .update_events import update_github_user_events
 from .update_repositories import update_github_repository_cache
