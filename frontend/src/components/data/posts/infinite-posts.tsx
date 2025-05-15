@@ -11,11 +11,9 @@ import { Row } from "@/components/layout";
 import Loading from "@/components/loading";
 import usePagination, { Paginated } from "@/components/paginated";
 import { Select } from "@/components/selector";
-import type { SelectorDivProps } from "@/components/selector/types";
 import { navigationHref } from "@/navigation";
-import { Props } from "@/types/react";
+import { DivPropsNoChildren, Props } from "@/types/react";
 import { onlyIf } from "@/util/optional";
-import { addClass } from "@/util/transforms";
 import { PaginatedPostsProps } from "./paginated-posts";
 import Post from "./post";
 
@@ -34,30 +32,15 @@ export default function InfinitePosts(props: InfinitePostsProps) {
   const { feeds, init, query: defaultFilters } = props;
   const [query, setQuery] = useState(defaultFilters);
   const paged = usePagination("/api/posts/", { init, query });
-  const feedOptions = useMemo(
-    () =>
-      feeds?.map((it) => ({
-        display: it.name,
-        key: it.slug,
-        href: navigationHref("posts", { feed: it.slug }),
-      })),
-    [feeds],
-  );
 
   return (
     <>
-      {feedOptions?.length && (
-        <FeedSelector
-          className="text-sm mb-2"
-          selected={
-            feedOptions.find((it) => it.key === query?.feed) ?? feedOptions[0]
-          }
-          items={feedOptions}
-          onSelect={(it) => {
-            setQuery((prev) => ({ ...prev, feed: it.key }));
-          }}
-        />
-      )}
+      <FeedSelector
+        currentFeed={query?.feed}
+        feeds={feeds}
+        setFeed={(feed) => setQuery((prev) => ({ ...prev, feed }))}
+        className="text-sm mb-2 justify-self-center"
+      />
 
       {paged.items.map((post) => (
         <Post key={post.url} post={post} />
@@ -170,8 +153,36 @@ const LoadNext = <T,>(props: {
   );
 };
 
-const FeedSelector = (props: SelectorDivProps) => {
-  const { ...rest } = props;
+const FeedSelector = (
+  props: {
+    feeds: Feeds | undefined;
+    currentFeed: string | undefined;
+    setFeed: (feedSlug: string) => void;
+  } & DivPropsNoChildren,
+) => {
+  const { feeds, currentFeed, setFeed, ...rest } = props;
+  const feedOptions = useMemo(
+    () =>
+      feeds?.map((it) => ({
+        display: it.name,
+        key: it.slug,
+        href: navigationHref("posts", { feed: it.slug }),
+      })),
+    [feeds],
+  );
 
-  return <Select {...addClass(rest, "justify-self-center mb-2")} />;
+  if (!feedOptions) return null;
+
+  return (
+    <Select
+      {...rest}
+      selected={
+        feedOptions.find((it) => it.key === currentFeed) ?? feedOptions[0]
+      }
+      items={feedOptions}
+      onSelect={(it) => {
+        setFeed(it.key);
+      }}
+    />
+  );
 };
