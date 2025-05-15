@@ -17,6 +17,9 @@ import { addClass, formatUrl } from "@/util/transforms";
 interface ButtonContentProps {
   icon?: AppIcon | ReactNode;
   tooltip?: string;
+
+  /* If true, reverse content layout so the icon is on the right side of the button. */
+  reverseLayout?: boolean;
 }
 interface ButtonColors {
   colors?: string;
@@ -85,6 +88,7 @@ const BaseButton = (props: ButtonProps & ButtonColors) => {
     icon,
     tooltip,
     colors: _colors,
+    reverseLayout,
     children,
     ...rest
   } = addClass(
@@ -101,7 +105,9 @@ const BaseButton = (props: ButtonProps & ButtonColors) => {
   const content = (
     <>
       <span className="absolute size-full touch-target pointer:hidden" />
-      <ButtonContent icon={icon}>{children}</ButtonContent>
+      <ButtonContent icon={icon} reverseLayout={reverseLayout}>
+        {children}
+      </ButtonContent>
     </>
   );
 
@@ -152,11 +158,24 @@ const isButton = (obj: any): obj is Props<"button"> => {
 };
 
 const ButtonContent = (props: ButtonContentProps & ChildrenProps) => {
-  const { icon, children } = props;
+  const { icon, children, reverseLayout = false } = props;
 
   if (icon && React.Children.count(children) === 0)
     return <ButtonIcon icon={icon} />;
 
+  if (reverseLayout) {
+    // Put the icon to the right side of the button
+    return (
+      <div className="grid grid-cols-[1fr_auto] items-center overflow-hidden">
+        <div className="overflow-hidden overflow-ellipsis line-clamp-1 break-all">
+          {children}
+        </div>
+        <ButtonIcon icon={icon} className="ms-1" />
+      </div>
+    );
+  }
+
+  // Icon on the left side of the button by default.
   return (
     <div className="grid grid-cols-[auto_1fr] items-center overflow-hidden">
       <ButtonIcon icon={icon} className="me-1" />

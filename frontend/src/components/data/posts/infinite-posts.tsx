@@ -76,6 +76,7 @@ const NoscriptPageControls = (
             <InlineButton
               href={navigationHref("posts", { offset: next })}
               icon="ChevronRight"
+              reverseLayout={true}
             >
               Next
             </InlineButton>
