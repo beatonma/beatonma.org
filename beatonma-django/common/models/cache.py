@@ -22,6 +22,13 @@ class InvalidateCacheMixin(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+        self.invalidate_cache()
+
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        self.invalidate_cache()
+
+    def invalidate_cache(self):
         try:
             cache.delete_pattern(f"*{self.cache_key}*")
         except AttributeError:
