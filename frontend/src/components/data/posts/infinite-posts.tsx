@@ -1,11 +1,9 @@
 "use client";
 
 import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { Paged } from "@/api";
-import { GlobalState } from "@/api/types";
+import { GlobalState, Paged, PostPreview } from "@/api/types";
 import { InlineButton, TintedButton } from "@/components/button";
 import Callout from "@/components/callout";
-import { PostPreview } from "@/components/data/types";
 import { GridSpan } from "@/components/grid";
 import { Client } from "@/components/hooks/environment";
 import Icon from "@/components/icon";

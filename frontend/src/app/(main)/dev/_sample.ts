@@ -1,6 +1,4 @@
-import { ResponseOf } from "@/api";
-import { PostPreview } from "@/components/data/types";
-import { MediaFile } from "@/components/media/common";
+import type { GithubRecentEvents, MediaFile, PostPreview } from "@/api/types";
 
 export const LoremIpsum =
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque mattis, orci vel congue vehicula, velit metus cursus nisl, sed condimentum elit libero id diam. Cras pharetra quam vel nisl gravida blandit. Aliquam lorem tellus, mattis at mi dictum, interdum dictum dolor. Ut tempus mauris ut vulputate efficitur. Sed est ligula, aliquam nec porta non, dictum id neque. Donec ornare, nunc ac hendrerit pretium, elit magna sagittis dolor, vel aliquam ipsum lorem ac lorem. Quisque dignissim, dui nec facilisis euismod, lectus leo posuere ligula, sed tempus eros ante ut mi.";
@@ -476,7 +474,7 @@ export const SamplePosts: PostPreview[] = [
   },
 ];
 
-export const SampleGithub: ResponseOf<"/api/github/recent/"> = {
+export const SampleGithub: GithubRecentEvents = {
   events: [
     {
       type: "PushEvent",

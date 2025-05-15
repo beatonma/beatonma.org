@@ -1,8 +1,17 @@
-import { ResponseOf, schemas } from "@/api";
+import type {
+  GithubCreatePayload,
+  GithubIssuePayload,
+  GithubPrivateEvent,
+  GithubPullRequestPayload,
+  GithubPushPayload,
+  GithubRecentEvents,
+  GithubReleasePayload,
+  GithubWikiPayload,
+} from "@/api/types";
 
-export type GithubRecent = ResponseOf<"/api/github/recent/">;
+export type GithubRecent = GithubRecentEvents;
 export type GithubEvent = GithubRecent["events"][number];
-export type PrivateEvent = schemas["GithubPrivateEvent"];
+export type PrivateEvent = GithubPrivateEvent;
 export type PublicEvent = Exclude<GithubEvent, PrivateEvent>;
 export type GithubRepository = PublicEvent["repository"];
 
@@ -14,12 +23,12 @@ export type GroupedPrivateEvents = {
 };
 
 export interface GroupedEventPayloads {
-  create: schemas["GithubPublicCreateEvent"]["payload"][];
-  push: schemas["GithubPublicPushEvent"]["payload"];
-  pullRequest: schemas["GithubPublicPullRequestEvent"]["payload"][];
-  issue: schemas["GithubPublicIssueEvent"]["payload"][];
-  wiki: schemas["GithubPublicWikiEvent"]["payload"];
-  release: schemas["GithubPublicReleaseEvent"]["payload"][];
+  create: GithubCreatePayload[];
+  push: GithubPushPayload[];
+  pullRequest: GithubPullRequestPayload[];
+  issue: GithubIssuePayload[];
+  wiki: GithubWikiPayload[];
+  release: GithubReleasePayload[];
 }
 export interface GroupedPublicEvents {
   repository: PublicEvent["repository"];

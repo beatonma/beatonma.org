@@ -1,11 +1,6 @@
 import parseHtml from "html-react-parser";
 import Link from "next/link";
 import { CSSProperties } from "react";
-import LocalIFrame from "@/app/(main)/(posts)/_components/LocalIFrame";
-import { AutoHCard } from "@/app/_components/h-card";
-import { InlineLink } from "@/components/button";
-import { PublishingStatus } from "@/components/data/posts";
-import Post from "@/components/data/posts/post";
 import {
   AppDetail,
   AppPreview,
@@ -13,7 +8,12 @@ import {
   PostDetail,
   isApp,
   isChangelog,
-} from "@/components/data/types";
+} from "@/api/types";
+import LocalIFrame from "@/app/(main)/(posts)/_components/LocalIFrame";
+import { AutoHCard } from "@/app/_components/h-card";
+import { InlineLink } from "@/components/button";
+import { PublishingStatus } from "@/components/data/posts";
+import Post from "@/components/data/posts/post";
 import Webmentions from "@/components/data/webmentions";
 import { Date } from "@/components/datetime";
 import DangerousHtml from "@/components/html";

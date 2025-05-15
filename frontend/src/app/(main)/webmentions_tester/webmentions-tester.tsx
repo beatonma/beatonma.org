@@ -1,10 +1,8 @@
 "use client";
 
-import { ResponseOf } from "@/api";
-import { paths } from "@/api/api";
+import type { Path, Webmention, WebmentionTester } from "@/api/types";
 import { TintedButton } from "@/components/button";
 import Callout from "@/components/callout";
-import { Webmention } from "@/components/data/types";
 import Webmentions from "@/components/data/webmentions";
 import { parseDate } from "@/components/datetime";
 import { Row } from "@/components/layout";
@@ -15,8 +13,7 @@ import { onlyIf } from "@/util/optional";
 import { plural } from "@/util/plurals";
 import { addClass } from "@/util/transforms";
 
-type TempMention =
-  ResponseOf<"/api/webmentions_tester/">["temporary_outgoing_mentions"][number];
+type TempMention = WebmentionTester["temporary_outgoing_mentions"][number];
 type TempMentionStatus = TempMention["status"];
 
 interface TemporaryMentionsProps {
@@ -77,7 +74,7 @@ export default function WebmentionsTesterPage(props: WebmentionsTesterPage) {
 }
 
 const SubmitWebmentionForm = () => {
-  const actionPath: keyof paths = "/api/webmentions_tester/";
+  const actionPath: Path = "/api/webmentions_tester/";
 
   return (
     <form action={actionPath} method="post">

@@ -8,13 +8,13 @@ import {
   useRef,
   useState,
 } from "react";
-import {
+import { getPaginated } from "@/api";
+import type {
   PageItemType,
   PagedResponseOf,
-  type PathWithPagination,
-  type Query,
-  getPaginated,
-} from "@/api";
+  PathWithPagination,
+  Query,
+} from "@/api/client/types";
 
 interface AdjacentPages {
   next: number | null;

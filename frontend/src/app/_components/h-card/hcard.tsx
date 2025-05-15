@@ -1,5 +1,5 @@
 import React from "react";
-import { schemas } from "@/api";
+import { GlobalState } from "@/api/types";
 import { Date } from "@/components/datetime";
 import { Row } from "@/components/layout";
 import MediaView from "@/components/media/media-view";
@@ -11,7 +11,7 @@ import { onlyIf } from "@/util/optional";
 import { addClass, classes } from "@/util/transforms";
 import styles from "./hcard.module.css";
 
-type GlobalHCard = schemas["GlobalHCard"];
+type GlobalHCard = NonNullable<GlobalState["hcard"]>;
 
 export default function HCard(
   props: {

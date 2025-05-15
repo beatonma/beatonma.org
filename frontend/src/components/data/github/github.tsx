@@ -1,9 +1,9 @@
 import { InlineLink } from "@/components/button";
 import {
-  GithubRecent,
-  GroupedEventPayloads,
-  GroupedPrivateEvents,
-  GroupedPublicEvents,
+  type GithubRecent,
+  type GroupedEventPayloads,
+  type GroupedPrivateEvents,
+  type GroupedPublicEvents,
   isPrivateGroup,
 } from "@/components/data/github/types";
 import { groupEvents } from "@/components/data/github/util";

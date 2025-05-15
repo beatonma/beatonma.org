@@ -1,8 +1,15 @@
-import { Post, PostPreview } from "../types";
+import {
+  AppDetail,
+  ChangelogDetail,
+  PostDetail,
+  PostPreview,
+} from "@/api/types";
 import DangerousHtml from "@/components/html";
 import { DivPropsNoChildren } from "@/types/react";
 import { onlyIf } from "@/util/optional";
 import { addClass } from "@/util/transforms";
+
+type Post = PostPreview | PostDetail | AppDetail | ChangelogDetail;
 
 export const HtmlContent = (
   props: { post: Post } & Omit<DivPropsNoChildren, "dangerouslySetInnerHTML">,

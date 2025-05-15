@@ -1,10 +1,8 @@
 "use client";
 
 import { createContext } from "react";
-import { schemas } from "@/api";
+import { OnClickMedia } from "@/components/media/types";
 
-export type MediaFile = schemas["File"];
-export type OnClickMedia = (media: MediaFile) => void;
 export const OnClickMediaContext = createContext<OnClickMedia | undefined>(
   undefined,
 );

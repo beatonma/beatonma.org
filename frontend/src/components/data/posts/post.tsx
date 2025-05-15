@@ -1,6 +1,6 @@
 import Link from "next/link";
+import { PostPreview } from "@/api/types";
 import { InlineButton } from "@/components/button";
-import { PostPreview } from "@/components/data/types";
 import { Date, formatDate } from "@/components/datetime";
 import { Row } from "@/components/layout";
 import MediaPreview from "@/components/media/media-preview";

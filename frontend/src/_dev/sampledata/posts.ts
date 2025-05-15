@@ -1,6 +1,4 @@
-import { schemas } from "@/api";
-
-type PostPreview = schemas["PostPreview"];
+import { PostPreview } from "@/api/types";
 
 const choose = <T>(options: T[]): T =>
   options[Math.floor(options.length * Math.random())];

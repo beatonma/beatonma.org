@@ -8,10 +8,10 @@ import {
   useRef,
   useState,
 } from "react";
-import { SearchablePath } from "@/api";
+import { SearchablePath } from "@/api/client/types";
+import { PostPreview } from "@/api/types";
 import { Button } from "@/components/button";
 import { PostType } from "@/components/data/posts";
-import { PostPreview } from "@/components/data/types";
 import { Date } from "@/components/datetime";
 import { ScrimBackground } from "@/components/dialog/scrim";
 import { useClient } from "@/components/hooks/environment";

@@ -4,10 +4,11 @@ import { useState } from "react";
 import Dialog from "@/components/dialog";
 import MediaCarousel from "@/components/media/media-carousel";
 import { MediaThumbnail } from "@/components/media/media-view";
-import { TupleOf } from "@/types";
+import type { TupleOf } from "@/types";
 import { DivProps, DivPropsNoChildren } from "@/types/react";
 import { addClass } from "@/util/transforms";
-import { type MediaFile, OnClickMediaContext } from "./common";
+import { OnClickMediaContext } from "./context";
+import type { MediaFile } from "./types";
 
 type MediaGroup<N extends number> = TupleOf<MediaFile, N>;
 

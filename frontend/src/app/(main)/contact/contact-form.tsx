@@ -2,9 +2,6 @@
 
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { client } from "@/api";
-import Recaptcha, {
-  RecaptchaProps,
-} from "@/app/(main)/contact/_components/recaptcha";
 import { TintedButton } from "@/components/button";
 import { FormField } from "@/components/form";
 import { Row } from "@/components/layout";
@@ -13,6 +10,7 @@ import ExternalLink from "@/components/third-party/link";
 import RemoteContent from "@/components/third-party/remote-content";
 import { testId } from "@/util";
 import { onlyIf } from "@/util/optional";
+import Recaptcha, { RecaptchaProps } from "./_components/recaptcha";
 
 const TestTarget = {
   ContactForm: "contact_form",

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import { ResponseOf } from "@/api";
+import { GlobalState } from "@/api/types";
 import GlobalMotd from "@/app/(main)/_components/motd";
 import ReturnToTopButton from "@/app/(main)/_components/return-to-top";
 import GlobalSearch from "@/app/(main)/_components/search";
@@ -26,7 +26,7 @@ export default function MainLayout({
   state,
   children,
 }: Readonly<{
-  state?: ResponseOf<"/api/state/"> | Nullish;
+  state?: GlobalState | Nullish;
   children: React.ReactNode;
 }>) {
   return (

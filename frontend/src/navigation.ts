@@ -1,4 +1,4 @@
-import { Query } from "@/api";
+import { Query } from "@/api/types";
 
 type PostSearchParams = Query<"/api/posts/">;
 

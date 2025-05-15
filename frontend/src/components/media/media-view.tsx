@@ -5,14 +5,11 @@ import {
   useContext,
 } from "react";
 import Icon, { AppIcon } from "@/components/icon";
-import {
-  MediaFile,
-  OnClickMedia,
-  OnClickMediaContext,
-} from "@/components/media/common";
+import { OnClickMediaContext } from "@/components/media/context";
 import { DivProps, DivPropsNoChildren } from "@/types/react";
 import { onlyIf } from "@/util/optional";
 import { addClass, classes } from "@/util/transforms";
+import { MediaFile, OnClickMedia } from "./types";
 
 interface MediaProps {
   media: MediaFile;

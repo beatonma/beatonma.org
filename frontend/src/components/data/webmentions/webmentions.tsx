@@ -1,5 +1,5 @@
+import { type Webmention } from "@/api/types";
 import { InlineLink } from "@/components/button";
-import { type Webmention } from "@/components/data/types";
 import Optional from "@/components/optional";
 import ExternalLink from "@/components/third-party/link";
 import { DivPropsNoChildren } from "@/types/react";

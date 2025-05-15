@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { Query } from "@/api";
+import { Query } from "@/api/types";
 import Github from "@/app/(main)/(posts)/_components/github";
 import PointsOfInterest from "@/app/(main)/(posts)/_components/poi";
 import PaginatedPosts from "@/components/data/posts";

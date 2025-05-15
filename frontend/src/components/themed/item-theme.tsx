@@ -1,9 +1,8 @@
 import { CSSProperties } from "react";
-import { schemas } from "@/api";
+import { Theme } from "@/api/types";
 import getForegroundColor from "@/components/themed/color";
 import { Nullish } from "@/types";
 
-type Theme = schemas["Theme"];
 interface Themed {
   theme?: Theme | Nullish;
 }
