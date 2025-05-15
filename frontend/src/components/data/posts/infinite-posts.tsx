@@ -171,7 +171,7 @@ const FeedSelector = (
     [feeds],
   );
 
-  if (!feedOptions) return null;
+  if (!feedOptions?.length) return null;
 
   return (
     <Select
