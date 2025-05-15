@@ -48,7 +48,7 @@ export default async function Page({
     <main className={styles.mainFeedGrid}>
       <PaginatedPosts
         query={params}
-        className="[grid-area:posts] grid grid-cols-1 gap-8 h-feed"
+        className="[grid-area:posts] grid grid-cols-1 space-y-8 gap-x-8 h-feed"
       />
       <Optional
         value={showExtras}

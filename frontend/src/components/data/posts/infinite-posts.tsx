@@ -1,7 +1,8 @@
 "use client";
 
-import React, { ReactNode, useEffect, useRef } from "react";
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { Paged } from "@/api";
+import { GlobalState } from "@/api/types";
 import { InlineButton, TintedButton } from "@/components/button";
 import Callout from "@/components/callout";
 import { PostPreview } from "@/components/data/types";
@@ -11,25 +12,55 @@ import Icon from "@/components/icon";
 import { Row } from "@/components/layout";
 import Loading from "@/components/loading";
 import usePagination, { Paginated } from "@/components/paginated";
+import { Select } from "@/components/selector";
+import type { SelectorDivProps } from "@/components/selector/types";
 import { navigationHref } from "@/navigation";
 import { Props } from "@/types/react";
 import { onlyIf } from "@/util/optional";
+import { addClass } from "@/util/transforms";
 import { PaginatedPostsProps } from "./paginated-posts";
 import Post from "./post";
 
+type Feeds = GlobalState["feeds"];
+
 interface InfinitePostsProps extends PaginatedPostsProps {
   init: Paged<PostPreview>;
+  feeds?: Feeds;
 }
 
 /**
  * If scripts are allowed, pages are loaded automatically while scrolling.
- * Otherwise links are shown for manual navigation between pages..
+ * Otherwise links are shown for manual navigation between pages.
  */
 export default function InfinitePosts(props: InfinitePostsProps) {
-  const paged = usePagination("/api/posts/", props);
+  const { feeds, init, query: defaultFilters } = props;
+  const [query, setQuery] = useState(defaultFilters);
+  const paged = usePagination("/api/posts/", { init, query });
+  const feedOptions = useMemo(
+    () =>
+      feeds?.map((it) => ({
+        display: it.name,
+        key: it.slug,
+        href: navigationHref("posts", { feed: it.slug }),
+      })),
+    [feeds],
+  );
 
   return (
     <>
+      {feedOptions?.length && (
+        <FeedSelector
+          className="text-sm mb-2"
+          selected={
+            feedOptions.find((it) => it.key === query?.feed) ?? feedOptions[0]
+          }
+          items={feedOptions}
+          onSelect={(it) => {
+            setQuery((prev) => ({ ...prev, feed: it.key }));
+          }}
+        />
+      )}
+
       {paged.items.map((post) => (
         <Post key={post.url} post={post} />
       ))}
@@ -139,4 +170,10 @@ const LoadNext = <T,>(props: {
       {content}
     </GridSpan>
   );
+};
+
+const FeedSelector = (props: SelectorDivProps) => {
+  const { ...rest } = props;
+
+  return <Select {...addClass(rest, "justify-self-center mb-2")} />;
 };

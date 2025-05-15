@@ -1,5 +1,6 @@
 import { getOrNull } from "@/api";
 import { InlineButton } from "@/components/button";
+import hoverUnderlineStyles from "@/components/css/hover-underline.module.css";
 import { DivPropsNoChildren } from "@/types/react";
 import { addClass, formatUrl } from "@/util/transforms";
 import styles from "./poi.module.css";
@@ -15,7 +16,7 @@ export default async function PointsOfInterest(props: DivPropsNoChildren) {
       {...addClass(
         props,
         styles.poi,
-        "[--hover:var(--vibrant)]",
+        "[--hover:var(--vibrant)] [--underline-thickness:2px]",
         "font-normal [font-variant:all-small-caps]",
       )}
     >
@@ -23,7 +24,7 @@ export default async function PointsOfInterest(props: DivPropsNoChildren) {
 
       {poi.map((it) => (
         <InlineButton
-          className={styles.poiLink}
+          className={hoverUnderlineStyles.hoverUnderline}
           key={it.url}
           href={it.url}
           icon={it.icon}

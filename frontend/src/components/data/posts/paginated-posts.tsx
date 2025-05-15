@@ -1,4 +1,4 @@
-import { Query, getOrThrow } from "@/api";
+import { Query, getOrNull, getOrThrow } from "@/api";
 import Optional from "@/components/optional";
 import { DivPropsNoChildren } from "@/types/react";
 import { onlyIf } from "@/util/optional";
@@ -15,6 +15,7 @@ export default async function PaginatedPosts(
   const data = await getOrThrow("/api/posts/", {
     query,
   });
+  const state = await getOrNull("/api/state/");
 
   const title =
     onlyIf(query?.query, (q) => `'${q}'`) ??
@@ -24,7 +25,7 @@ export default async function PaginatedPosts(
   return (
     <div {...rest}>
       <Optional value={title} block={(_title) => <h2>{_title}</h2>} />
-      <InfinitePosts init={data} query={query} />
+      <InfinitePosts init={data} query={query} feeds={state?.feeds} />
     </div>
   );
 }

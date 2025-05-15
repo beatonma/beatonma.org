@@ -10,6 +10,7 @@ import Twitter from "./svg/external/ic_twitter.svg";
 import Wikipedia from "./svg/external/ic_wikipedia.svg";
 import MB from "./svg/internal/mb.svg";
 import ArrowDown from "./svg/material/arrow_down.svg";
+import ArrowDropDown from "./svg/material/arrow_dropdown.svg";
 import ArrowUp from "./svg/material/arrow_up.svg";
 import Attachment from "./svg/material/attachment.svg";
 import Check from "./svg/material/check.svg";
@@ -72,6 +73,7 @@ const Icons = {
   // General use
   ArrowUp,
   ArrowDown,
+  ArrowDropDown,
   Code,
   ChevronLeft,
   ChevronRight,

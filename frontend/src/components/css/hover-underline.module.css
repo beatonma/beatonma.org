@@ -1,0 +1,44 @@
+.hoverUnderline {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  margin-block: calc(2 * var(--underline-thickness));
+
+  &::after {
+    content: "";
+    background-color: var(--underline-color, var(--vibrant));
+    transition: transform 200ms ease-in-out;
+    transform-origin: bottom left;
+    position: absolute;
+    display: block;
+    height: var(--underline-thickness);
+    width: 100%;
+    left: 0;
+    margin-top: calc(var(--underline-thickness) + var(--underline-offset));
+    transform: scaleX(0);
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
+  }
+
+  &:is([data-selected="true"])::after {
+    transform: scaleX(1);
+  }
+}
+
+@property --underline-thickness {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 2px;
+}
+@property --underline-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: var(--vibrant);
+}
+@property --underline-offset {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0;
+}
