@@ -157,6 +157,7 @@ class ChangelogPostAdmin(BasePostAdmin):
 class FeedAdmin(BaseAdmin):
     editable_fields = [
         "is_published",
+        "published_at",
         "slug",
         "name",
     ]
