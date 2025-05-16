@@ -1,5 +1,6 @@
 import logging
 
+from common.util.tasks import dispatch_task
 from django.core.management import BaseCommand
 
 log = logging.getLogger(__name__)
@@ -38,4 +39,4 @@ class AsyncCommand(BaseCommand):
             log.info(
                 f"Dispatching function `{func}` to worker with kwargs={func_kwargs}."
             )
-            func.delay(**func_kwargs)
+            dispatch_task(func, **func_kwargs)

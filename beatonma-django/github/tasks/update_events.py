@@ -2,7 +2,6 @@ import logging
 import re
 from typing import Callable
 
-from celery import shared_task
 from django.conf import settings
 from django.db.models import Q
 from github import github_api
@@ -65,7 +64,6 @@ class UnknownRepository(Exception):
     pass
 
 
-@shared_task
 def update_github_user_events():
     url = f"https://api.github.com/users/{OWNER}/events"
 

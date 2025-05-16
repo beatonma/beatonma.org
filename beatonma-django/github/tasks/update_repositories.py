@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from celery import shared_task
 from celery.utils.log import get_task_logger
 from github import github_api
 from github.models import (
@@ -16,7 +15,6 @@ from pydantic import Field
 log = get_task_logger(__name__)
 
 
-@shared_task
 def update_github_repository_cache():
     url = "https://api.github.com/user/repos"
     params = {
