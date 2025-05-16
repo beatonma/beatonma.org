@@ -1,5 +1,5 @@
 export FILE_COMPOSE="compose.test.yml"
-export FILE_ENV=".env.production"
+export FILE_ENV=".env.dev"
 export BUILD_TYPE="test"
 
 usage="$(basename "$0") test

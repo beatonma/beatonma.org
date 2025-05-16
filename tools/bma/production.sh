@@ -22,6 +22,7 @@ docker_push() {
   run_command docker push fallofmath/beatonma:nginx
   run_command docker push fallofmath/beatonma:startup_checks
   run_command docker --context "$DOCKER_REMOTE_CONTEXT" compose -f compose.production.yml pull
+  run_command docker --context "$DOCKER_REMOTE_CONTEXT" compose -f compose.production.yml down
   run_command docker --context "$DOCKER_REMOTE_CONTEXT" compose -f compose.production.yml up -d
 }
 
@@ -37,7 +38,7 @@ certbot_init() {
     --name certbot_init \
     --volume letsencrypt_keys:/etc/letsencrypt:rw \
     --volume letsencrypt_webroot:/var/www/letsencrypt:rw \
-    --env-file "$file_env" \
+    --env-file "$FILE_ENV" \
     --entrypoint "" \
     -p 80:80 \
     certbot/certbot:latest \
@@ -50,7 +51,7 @@ certbot_renew() {
     --name certbot_renew \
     --volume letsencrypt_keys:/etc/letsencrypt:rw \
     --volume letsencrypt_webroot:/var/www/letsencrypt:rw \
-    --env-file "$file_env" \
+    --env-file "$FILE_ENV" \
     --entrypoint "" \
     certbot/certbot:latest \
     sh -c "certbot certonly --webroot -w /var/www/letsencrypt $*"
