@@ -100,4 +100,4 @@ class SearchMixin(models.Model):
     search_enabled: bool = True
     search_fields: list[str]
 
-    objects = SearchQuerySet.as_manager()
+    queryset_class = SearchQuerySet

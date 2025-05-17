@@ -6,12 +6,10 @@ from bs4 import BeautifulSoup
 from common.models import BaseModel, PublishedMixin, TaggableMixin
 from common.models.api import ApiEditable
 from common.models.cache import InvalidateCacheMixin
-from common.models.published import PublishedQuerySet
-from common.models.queryset import ExtendedModelQuerySet
 from common.util import regex
 from common.util.pipeline import PipelineItem
 from django.db import models
-from django.db.models import Manager
+from django.db.models import Manager, QuerySet
 from django.urls import reverse
 from main.models.formats import FormatMixin, Formats
 from main.models.link import LinkedMixin
@@ -24,7 +22,7 @@ from .feed import Feed, FeedsMixin
 type PostType = Literal["post", "app", "changelog"]
 
 
-class PostQuerySet(ExtendedModelQuerySet, PublishedQuerySet):
+class PostQuerySet(QuerySet):
     def posts_only(self):
         return self.exclude_subclasses_of(Post)
 
@@ -49,8 +47,7 @@ class BasePost(
 
     search_enabled = True
     search_fields = ("title", "content", "tags__name")
-
-    objects = PostQuerySet.as_manager()
+    queryset_class = PostQuerySet
 
     # At least one of the listed fields must have useful content before publishing.
     publishing_require_field = (

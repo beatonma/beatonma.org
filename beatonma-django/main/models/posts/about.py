@@ -7,7 +7,7 @@ class AboutQuerySet(PostQuerySet):
 
 
 class AboutPost(BasePost):
-    objects = AboutQuerySet.as_manager()
+    queryset_class = AboutQuerySet
 
     def get_absolute_url(self) -> str:
         return "/about/"

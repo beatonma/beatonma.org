@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 from typing import Optional
 
-from common.models import BaseModel, PublishedMixin
+from common.models import PublishedMixin
 from common.models.published import PublishedQuerySet
 from django.db import models
 from django.db.models import Q
@@ -25,10 +25,10 @@ class EphemeralQuerySet(PublishedQuerySet):
         return self.get_for_datetime(timezone.now())
 
 
-class EphemeralMixin(PublishedMixin, BaseModel):
+class EphemeralMixin(PublishedMixin, models.Model):
     """Represents something that only exists for some length of time."""
 
-    objects = EphemeralQuerySet.as_manager()
+    queryset_class = EphemeralQuerySet
 
     public_from = models.DateTimeField(null=True, blank=True)
     public_until = models.DateTimeField(null=True, blank=True)

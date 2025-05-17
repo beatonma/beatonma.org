@@ -27,7 +27,7 @@ class UploadedMediaMixin(models.Model):
     class Meta:
         abstract = True
 
-    objects = UploadedMediaQuerySet.as_manager()
+    queryset_class = UploadedMediaQuerySet
 
     file: models.FileField
     uploaded_file_fields = ("file",)

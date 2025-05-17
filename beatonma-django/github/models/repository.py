@@ -54,7 +54,7 @@ class GithubRepositoryQuerySet(PublishedQuerySet):
 
 
 class GithubRepository(PublishedMixin, TaggableMixin, BaseModel):
-    objects = GithubRepositoryQuerySet.as_manager()
+    queryset_class = GithubRepositoryQuerySet
     search_fields = ["name", "description"]
 
     id = models.PositiveIntegerField(unique=True, primary_key=True, editable=False)

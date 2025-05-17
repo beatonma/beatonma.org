@@ -13,7 +13,7 @@ class Feed(PublishedMixin, GlobalStateCacheMixin, BaseModel):
         return self.name
 
 
-class FeedsMixin(BaseModel):
+class FeedsMixin(models.Model):
     class Meta:
         abstract = True
 

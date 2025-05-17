@@ -18,7 +18,7 @@ class Singleton(BaseModel):
     class Meta:
         abstract = True
 
-    objects = SingletonQuerySet.as_manager()
+    queryset_class = SingletonQuerySet
 
     def save(self, *args, **kwargs):
         if (not self.pk) and self.__class__.objects.all().exists():

@@ -35,7 +35,7 @@ class PublishedMixin(SearchMixin, models.Model):
         abstract = True
         ordering = ("-published_at",)
 
-    objects = PublishedQuerySet.as_manager()
+    queryset_class = PublishedQuerySet
 
     """A list of fields which resolve to other PublishedMixin instances."""
     is_publishable_dependencies: Iterable[str] = None

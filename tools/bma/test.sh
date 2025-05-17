@@ -9,16 +9,31 @@ usage="$(basename "$0") test
 
 source ./tools/bma/common.sh
 
+
+jest() {
+  docker_compose run --rm --entrypoint="npm run jest" next
+}
+
+django() {
+  docker_compose run --rm --entrypoint="pytest $*" --env DJANGO_SETTINGS_MODULE="basetest.frontend_test_settings" django
+}
+
 unittests() {
-  docker_compose run --rm --entrypoint=pytest --env DJANGO_SETTINGS_MODULE="basetest.frontend_test_settings" --no-TTY django &
-  docker_compose run --rm --entrypoint="npm run jest" next &
-  wait
+  jest
+  django
 }
 
 run_action() {
   case "$1" in
     "-h" | "--help" | "?")
       log "$usage"
+      ;;
+    "django")
+      shift
+      django "$@"
+      ;;
+    "jest")
+      jest
       ;;
     "unit")
       unittests
