@@ -1,5 +1,8 @@
+from unittest.mock import patch
+
 import navigation
 from basetest.testcase import LocalTestCase
+from django.core.cache import cache
 from main.models import Post
 from main.tasks import sample_data
 
@@ -101,3 +104,12 @@ class WebpostHashtagTests(LocalTestCase):
             "https://youtube.com/watch?v=123456abcde",
             displaytext="youtube",
         )
+
+    def test_cache_invalidation(self):
+        with patch.object(cache, "delete_pattern") as f:
+            Post.objects.filter(title="note").update(title="NOTE")
+            f.assert_called_once()
+
+        with patch.object(cache, "delete_pattern") as f:
+            Post.objects.filter(title="note").delete()
+            f.assert_called_once()
