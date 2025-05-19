@@ -1,5 +1,5 @@
+from adminsortable2.admin import SortableAdminMixin
 from common.admin import BaseAdmin
-from common.models.util import implementations_of
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from main.admin.models import inline
@@ -104,6 +104,7 @@ class BasePostAdmin(BaseAdmin):
 
 @admin.register(AboutPost)
 class AboutPostAdmin(BasePostAdmin):
+    editable_fields = [x for x in BasePostAdmin.editable_fields if x != "feeds"]
     pass
 
 
@@ -154,12 +155,16 @@ class ChangelogPostAdmin(BasePostAdmin):
 
 
 @admin.register(Feed)
-class FeedAdmin(BaseAdmin):
+class FeedAdmin(SortableAdminMixin, BaseAdmin):
     editable_fields = [
         "is_published",
         "published_at",
         "slug",
         "name",
+    ]
+    list_display = [
+        "__str__",
+        "sort_order",
     ]
 
     @admin.display(description="Posts")

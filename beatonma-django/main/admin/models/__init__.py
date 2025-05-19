@@ -13,7 +13,6 @@ from .inline import LinkInline
 
 # Very simple admin pages may be registered here.
 register(AppResource)
-
 register(Link, list_display=["url", "label", "description"])
 register(Host, list_display=["name", "domain"])
 register(SiteHCard, editable_fields=["*"], inlines=[LinkInline])

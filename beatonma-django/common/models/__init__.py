@@ -121,4 +121,5 @@ class BaseModel(models.Model, metaclass=_BaseModelMeta):
 from .published import PublishedMixin
 from .search import SearchMixin
 from .singleton import Singleton
+from .sortable import SortableMixin
 from .taggable import TaggableMixin

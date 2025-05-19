@@ -1,9 +1,9 @@
-from common.models import BaseModel, PublishedMixin
+from common.models import BaseModel, PublishedMixin, SortableMixin
 from django.db import models
 from main.models.mixins.cache import GlobalStateCacheMixin
 
 
-class Feed(PublishedMixin, GlobalStateCacheMixin, BaseModel):
+class Feed(SortableMixin, PublishedMixin, GlobalStateCacheMixin, BaseModel):
     search_fields = []
 
     name = models.CharField(max_length=64, unique=True)

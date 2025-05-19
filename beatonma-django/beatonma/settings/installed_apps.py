@@ -12,6 +12,7 @@ _DJANGO_APPS = [
     "django.contrib.staticfiles",
 ]
 _THIRD_PARTY_APPS = [
+    "adminsortable2",
     "colorfield",
     "taggit",
     "django_extensions",

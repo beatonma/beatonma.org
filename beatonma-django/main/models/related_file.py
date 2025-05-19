@@ -2,7 +2,7 @@ from io import BytesIO
 from typing import Callable, Self
 
 import PIL
-from common.models import BaseModel
+from common.models import BaseModel, SortableMixin
 from common.models.api import ApiEditable
 from common.models.generic import GenericFkMixin
 from django.contrib.contenttypes.fields import GenericRelation
@@ -158,12 +158,10 @@ class UploadedFile(BaseUploadedFile):
     upload_to = "uploads"
 
 
-class RelatedFile(GenericFkMixin, BaseUploadedFile):
-    """Files that are uploaded"""
+class RelatedFile(SortableMixin, GenericFkMixin, BaseUploadedFile):
+    """Files for display alongside a Post or similar content."""
 
     upload_to = "related"
-
-    sort_order = models.PositiveSmallIntegerField(default=0)
 
 
 class RelatedFilesMixin(models.Model):

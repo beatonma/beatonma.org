@@ -2,6 +2,7 @@ import inspect
 import logging
 from typing import Iterator, Type
 
+from adminsortable2.admin import SortableAdminBase
 from django import forms
 from django.apps import apps
 from django.contrib import admin
@@ -33,7 +34,7 @@ class AdminWidgets:
         return " ".join([x for x in parts if x])
 
 
-class BaseAdmin(admin.ModelAdmin):
+class BaseAdmin(SortableAdminBase, admin.ModelAdmin):
     """
     Defaults:
      - automatically shows all fields of the model.

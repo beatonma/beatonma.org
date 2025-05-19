@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from common.models import BaseModel, PublishedMixin, TaggableMixin
 from common.models.api import ApiEditable
 from common.models.cache import InvalidateCacheMixin
+from common.models.queryset import ExtendedModelQuerySet
 from common.util import regex
 from common.util.pipeline import PipelineItem
 from django.db import models
@@ -22,7 +23,7 @@ from .feed import Feed, FeedsMixin
 type PostType = Literal["post", "app", "changelog"]
 
 
-class PostQuerySet(QuerySet):
+class PostQuerySet(ExtendedModelQuerySet, QuerySet):
     def posts_only(self):
         return self.exclude_subclasses_of(Post)
 
@@ -179,7 +180,7 @@ class Post(FeedsMixin, BasePost):
     default_feeds = [
         ("posts", "Everything"),
     ]
-    feeds = models.ManyToManyField(Feed, related_name="posts")
+    feeds = models.ManyToManyField(Feed, related_name="posts", blank=True)
 
     class Meta:
         ordering = ("-published_at",)

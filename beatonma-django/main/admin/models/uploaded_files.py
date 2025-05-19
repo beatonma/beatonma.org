@@ -35,6 +35,7 @@ class UploadedFileAdmin(BaseAdmin):
 
 @admin.register(RelatedFile)
 class RelatedFileAdmin(UploadedFileAdmin):
+    list_display = ["__str__", "target_object", "sort_order"]
     editable_fields = UploadedFileAdmin.editable_fields + [
         "sort_order",
     ]
