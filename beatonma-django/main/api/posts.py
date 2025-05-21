@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Literal
 
 from common.schema import Mention
+from common.util.url import enforce_trailing_slash
 from django.http import Http404, HttpRequest
 from django.shortcuts import get_object_or_404
 from django.views.decorators.cache import cache_page
@@ -102,6 +103,30 @@ class PostDetail(BasePost):
         return obj.get_absolute_url()
 
 
+class AboutPreview(PostPreview):
+    post_type: Literal["about"] = Field("about")
+    url: str = Field(alias="get_absolute_url")
+    path: str
+
+
+class AboutDetail(PostDetail):
+    post_type: Literal["about"] = Field("about")
+    path: str
+    parent: AboutPreview | None
+    siblings: list[AboutPreview]
+    children: list[AboutPreview]
+
+    @staticmethod
+    def resolve_children(obj):
+        return obj.children.published()
+
+    @staticmethod
+    def resolve_siblings(obj):
+        if obj.parent:
+            return obj.parent.children.published().exclude(pk=obj.pk)
+        return []
+
+
 class ChangelogDetail(PostDetail):
     post_type: Literal["changelog"] = Field("changelog")
     app: AppPreview
@@ -142,13 +167,20 @@ def changelog(request: HttpRequest, slug: str):
     return get_object_or_404(ChangelogPost, slug=slug)
 
 
-@router.get("/about/", response=PostDetail)
-def about(request: HttpRequest):
-    about_page = AboutPost.objects.get_current()
+@router.get("/about/", response=AboutDetail)
+def about_root(request: HttpRequest):
+    about_page = AboutPost.objects.root()
 
     if about_page:
         return about_page
     raise Http404()
+
+
+@router.get("/about/{path:path}", response=AboutDetail)
+def about(request: HttpRequest, path: str):
+    return get_object_or_404(
+        AboutPost.objects.published(), path=enforce_trailing_slash(path)
+    )
 
 
 @router.get("/posts/", response=list[PostPreview])

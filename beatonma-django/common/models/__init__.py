@@ -71,6 +71,8 @@ class _BaseModelMeta(ModelBase):
         class CombinedQuerySet(*qs_mixins, models.QuerySet):
             pass
 
+        CombinedQuerySet.__name__ = f"{model_class.__name__}QuerySet"
+
         return CombinedQuerySet.as_manager()
 
 

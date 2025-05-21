@@ -6,8 +6,10 @@ def contact():
     return "/contact/"
 
 
-def about():
-    return "/about/"
+def about(slug: str | None = None):
+    if slug:
+        return f"/about/{slug}/"
+    return f"/about/"
 
 
 def app(slug: str):

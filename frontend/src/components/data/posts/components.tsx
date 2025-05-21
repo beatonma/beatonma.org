@@ -1,25 +1,23 @@
-import {
-  AppDetail,
-  ChangelogDetail,
-  PostDetail,
-  PostPreview,
-} from "@/api/types";
+import { DetailedPost, PreviewPost } from "@/api/types";
 import DangerousHtml from "@/components/html";
 import { DivPropsNoChildren } from "@/types/react";
 import { onlyIf } from "@/util/optional";
 import { addClass } from "@/util/transforms";
 
-type Post = PostPreview | PostDetail | AppDetail | ChangelogDetail;
+type Post = PreviewPost | DetailedPost;
 
 export const HtmlContent = (
-  props: { post: Post } & Omit<DivPropsNoChildren, "dangerouslySetInnerHTML">,
+  props: { post: Pick<Post, "content_html"> } & Omit<
+    DivPropsNoChildren,
+    "dangerouslySetInnerHTML"
+  >,
 ) => {
   const { post, ...rest } = props;
   return <DangerousHtml html={post.content_html} {...rest} />;
 };
 
 export const PublishingStatus = (
-  props: { post: Post } & DivPropsNoChildren,
+  props: { post: Pick<Post, "is_published"> } & DivPropsNoChildren,
 ) => {
   const { post, ...rest } = addClass(props, "p-4 bg-red-600 text-white");
   return onlyIf(
@@ -28,7 +26,9 @@ export const PublishingStatus = (
   );
 };
 
-export const PostType = (props: { post: PostPreview } & DivPropsNoChildren) => {
+export const PostType = (
+  props: { post: Pick<Post, "post_type"> } & DivPropsNoChildren,
+) => {
   const { post, ...rest } = addClass(
     props,
     "text-xs badge badge-content border-1",

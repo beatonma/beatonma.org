@@ -62,6 +62,23 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** About Root */
+        get: operations["main_api_posts_about_root"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/about/{path}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         /** About */
         get: operations["main_api_posts_about"];
         put?: never;
@@ -457,6 +474,85 @@ export interface components {
             /** Version */
             version: string;
         };
+        /** AboutDetail */
+        AboutDetail: {
+            /**
+             * Post Type
+             * @default about
+             * @constant
+             */
+            post_type: "about";
+            /** Title */
+            title: string | null;
+            /** Url */
+            url: string;
+            /** Is Published */
+            is_published: boolean;
+            /**
+             * Published At
+             * Format: date-time
+             */
+            published_at: string;
+            theme?: components["schemas"]["Theme"] | null;
+            /** Hero Embedded Url */
+            hero_embedded_url: string | null;
+            hero_image: components["schemas"]["File"] | null;
+            /** Content Html */
+            content_html: string | null;
+            /** Content Script */
+            content_script: string | null;
+            /** Files */
+            files: components["schemas"]["File"][];
+            /** Subtitle */
+            subtitle?: string | null;
+            /** Hero Html */
+            hero_html: string | null;
+            /** Links */
+            links: components["schemas"]["Link"][];
+            /** Tags */
+            tags: components["schemas"]["Tag"][];
+            /** Mentions */
+            mentions: components["schemas"]["Mention"][];
+            parent: components["schemas"]["AboutPreview"] | null;
+            /** Path */
+            path: string;
+            /** Children */
+            children: components["schemas"]["AboutPreview"][];
+        };
+        /** AboutPreview */
+        AboutPreview: {
+            /**
+             * Post Type
+             * @default about
+             * @constant
+             */
+            post_type: "about";
+            /** Title */
+            title: string | null;
+            /** Url */
+            url: string;
+            /** Is Published */
+            is_published: boolean;
+            /**
+             * Published At
+             * Format: date-time
+             */
+            published_at: string;
+            theme?: components["schemas"]["Theme"] | null;
+            /** Hero Embedded Url */
+            hero_embedded_url: string | null;
+            hero_image: components["schemas"]["File"] | null;
+            /** Content Html */
+            content_html: string | null;
+            /** Content Script */
+            content_script: string | null;
+            /** Files */
+            files: components["schemas"]["File"][];
+            /** Is Preview */
+            is_preview: boolean;
+            /** Path */
+            path: string;
+        };
         /** Input */
         Input: {
             /**
@@ -511,7 +607,7 @@ export interface components {
             is_preview: boolean;
         };
         /** @enum {string} */
-        PostType: "post" | "app" | "changelog";
+        PostType: "post" | "app" | "changelog" | "about";
         /** WhoAmiISchema */
         WhoAmiISchema: {
             /**
@@ -637,7 +733,7 @@ export interface components {
              */
             ref_type: "branch" | "tag" | "repository";
             /** Ref */
-            ref: string;
+            ref: string | null;
         };
         /** GithubIssueEventPayload */
         GithubIssueEventPayload: {
@@ -911,7 +1007,7 @@ export interface operations {
             };
         };
     };
-    main_api_posts_about: {
+    main_api_posts_about_root: {
         parameters: {
             query?: never;
             header?: never;
@@ -926,7 +1022,29 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PostDetail"];
+                    "application/json": components["schemas"]["AboutDetail"];
+                };
+            };
+        };
+    };
+    main_api_posts_about: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                path: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AboutDetail"];
                 };
             };
         };

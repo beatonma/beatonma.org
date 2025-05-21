@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from common.models import BaseModel, PublishedMixin, TaggableMixin
 from common.models.api import ApiEditable
 from common.models.cache import InvalidateCacheMixin
+from common.models.published import PublishedQuerySet
 from common.models.queryset import ExtendedModelQuerySet
 from common.util import regex
 from common.util.pipeline import PipelineItem
@@ -20,10 +21,10 @@ from mentions.models.mixins import MentionableMixin
 
 from .feed import Feed, FeedsMixin
 
-type PostType = Literal["post", "app", "changelog"]
+type PostType = Literal["post", "app", "changelog", "about"]
 
 
-class PostQuerySet(ExtendedModelQuerySet, QuerySet):
+class PostQuerySet(ExtendedModelQuerySet, PublishedQuerySet, QuerySet):
     def posts_only(self):
         return self.exclude_subclasses_of(Post)
 
@@ -47,15 +48,15 @@ class BasePost(
     cache_key = "__post__"
 
     search_enabled = True
-    search_fields = ("title", "content", "tags__name")
+    search_fields = ["title", "content", "tags__name"]
     queryset_class = PostQuerySet
 
     # At least one of the listed fields must have useful content before publishing.
-    publishing_require_field = (
+    publishing_require_field = [
         "title",
         "content",
         "related_files",
-    )
+    ]
 
     hero_image = models.OneToOneField(
         "UploadedFile",

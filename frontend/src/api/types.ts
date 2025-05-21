@@ -14,16 +14,23 @@ export type AppPreview = schemas["AppPreview"];
 export type PostDetail = schemas["PostDetail"];
 export type AppDetail = schemas["AppDetail"];
 export type ChangelogDetail = schemas["ChangelogDetail"];
+export type AboutDetail = schemas["AboutDetail"];
+
+export type PreviewPost = PostPreview | AppPreview;
+export type DetailedPost =
+  | PostDetail
+  | AppDetail
+  | ChangelogDetail
+  | AboutDetail;
+
 export type Theme = schemas["Theme"];
 export type MediaFile = schemas["File"];
 
-export const isApp = (
-  post: PostDetail | AppDetail | ChangelogDetail,
-): post is AppDetail => post.post_type === "app";
+export const isApp = (post: DetailedPost): post is AppDetail =>
+  post.post_type === "app";
 
-export const isChangelog = (
-  post: PostDetail | AppDetail | ChangelogDetail,
-): post is ChangelogDetail => post.post_type === "changelog";
+export const isChangelog = (post: DetailedPost): post is ChangelogDetail =>
+  post.post_type === "changelog";
 
 // Github
 export type GithubRecentEvents = schemas["GithubRecentEvents"];

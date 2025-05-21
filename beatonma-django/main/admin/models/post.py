@@ -104,7 +104,9 @@ class BasePostAdmin(BaseAdmin):
 
 @admin.register(AboutPost)
 class AboutPostAdmin(BasePostAdmin):
-    editable_fields = [x for x in BasePostAdmin.editable_fields if x != "feeds"]
+    editable_fields = [x for x in BasePostAdmin.editable_fields if x != "feeds"] + [
+        "parent"
+    ]
     pass
 
 
