@@ -1,10 +1,8 @@
 import {
-  ComponentProps,
   ComponentPropsWithRef,
   ComponentPropsWithoutRef,
   Dispatch,
   ElementType,
-  JSX,
   ReactNode,
   SetStateAction,
 } from "react";
@@ -18,16 +16,29 @@ export interface ChildrenProps {
   children?: ReactNode;
 }
 
-export type Props<T extends ElementType = "div"> = ComponentPropsWithoutRef<T>;
-export type PropsWithRef<T extends ElementType = "div"> =
-  ComponentPropsWithRef<T>;
+/* Create a new type based on ElementType with additional or overriding attributes from Extra.
+ * In case of a shared attribute, the signature from Extra will be used instead of that from ElementType */
+export type Props<
+  Element extends ElementType = "div",
+  Extra extends object = object,
+> = Extra & Omit<ComponentPropsWithoutRef<Element>, keyof Extra>;
+
+/* Create a new type based on ElementType with additional or overriding attributes from Extra.
+ * In case of a shared attribute, the signature from Extra will be used instead of that from ElementType */
+export type PropsWithRef<
+  Element extends ElementType = "div",
+  Extra extends object = object,
+> = Extra & Omit<ComponentPropsWithRef<Element>, keyof Extra>;
+
+export type DivProps<Extra extends object = object> = Props<"div", Extra>;
+export type DivPropsNoChildren<Extra extends object = object> = Omit<
+  Props<"div", Extra>,
+  "children"
+>;
 
 export type PropsExcept<
-  T extends ElementType,
-  X extends keyof ComponentPropsWithoutRef<T>,
-> = Omit<Props<T>, X>;
-
-export type DivProps = Props;
-export type DivPropsNoChildren = PropsExcept<"div", "children">;
+  Element extends ElementType,
+  Except extends keyof ComponentPropsWithoutRef<Element>,
+> = Omit<Props<Element>, Except>;
 
 export type StateSetter<S> = Dispatch<SetStateAction<S>>;

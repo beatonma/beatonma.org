@@ -17,12 +17,13 @@ interface ThemeCss extends CSSProperties {
 }
 
 export default function itemTheme(
-  obj: Themed,
+  obj: Theme | Themed | Nullish,
   mergeInto?: CSSProperties,
 ): ThemeCss {
-  if (!obj.theme) return mergeInto ?? {};
+  const theme = isThemed(obj) ? obj.theme : obj;
+  if (!theme) return mergeInto ?? {};
 
-  const { vibrant, muted } = obj.theme;
+  const { vibrant, muted } = theme;
 
   return {
     "--vibrant": vibrant,
@@ -35,3 +36,6 @@ export default function itemTheme(
     ...(mergeInto ?? {}),
   } as CSSProperties;
 }
+
+const isThemed = (obj: Theme | Themed | Nullish): obj is Themed =>
+  !!obj && "theme" in obj;

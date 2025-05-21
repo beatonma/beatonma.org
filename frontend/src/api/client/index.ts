@@ -62,14 +62,30 @@ export const getOrThrow = async <P extends PathWithGet>(
   return data;
 };
 
+type Slug = string | string[] | undefined;
+export const resolveSlug = async (
+  slug: Slug | Promise<{ slug: Slug }>,
+): Promise<string | undefined> => {
+  const value = await slug;
+  let _slug: Slug;
+  if (typeof value === "object" && !Array.isArray(value)) {
+    _slug = value.slug;
+  } else {
+    _slug = value;
+  }
+
+  if (Array.isArray(_slug)) _slug = _slug.join("/");
+  return _slug || undefined;
+};
 export const getSlug = async <P extends PathWithSlug>(
   path: P,
-  slug: string | Promise<{ slug: string }>,
+  slug: Slug | Promise<{ slug: Slug }>,
   signal?: AbortSignal,
 ) => {
-  const resolvedSlug = typeof slug === "string" ? slug : (await slug).slug;
+  const resolved = await resolveSlug(slug);
+  if (!resolved) return notFound();
 
-  return getOr404(path, { path: { slug: resolvedSlug } }, signal);
+  return getOr404(path, { path: { slug: resolved } }, signal);
 };
 
 export const getPaginated = <P extends PathWithPagination>(

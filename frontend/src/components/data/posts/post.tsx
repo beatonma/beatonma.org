@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PostPreview } from "@/api/types";
-import { InlineButton } from "@/components/button";
+import { ButtonProps, InlineButton } from "@/components/button";
 import { Date, formatDate } from "@/components/datetime";
 import { Row } from "@/components/layout";
 import MediaPreview from "@/components/media/media-preview";
@@ -8,13 +8,11 @@ import Optional from "@/components/optional";
 import { ProseClassName } from "@/components/prose";
 import itemTheme from "@/components/themed/item-theme";
 import RemoteIFrame from "@/components/third-party/embedded";
-import { DivPropsNoChildren, Props } from "@/types/react";
+import { DivPropsNoChildren } from "@/types/react";
 import { addClass, classes } from "@/util/transforms";
 import { HtmlContent, PostType, PublishingStatus } from "./components";
 
-export default function Post(
-  props: { post: PostPreview } & DivPropsNoChildren,
-) {
+export default function Post(props: DivPropsNoChildren<{ post: PostPreview }>) {
   const { post, style, ...rest } = props;
   const themedStyle = { ...style, ...itemTheme(post) };
 
@@ -68,11 +66,9 @@ export default function Post(
   );
 }
 
-const LinkToPost = (
-  props: { post: PostPreview } & Props<typeof InlineButton>,
-) => {
+const LinkToPost = (props: { post: PostPreview } & ButtonProps) => {
   const { post, ...rest } = props;
-  const common: Props<typeof InlineButton> = {
+  const common: ButtonProps = {
     href: post.url,
     "aria-label": getLabelForPost(post),
     title: "Link to this post",
@@ -85,9 +81,7 @@ const LinkToPost = (
   return <InlineButton {...common} icon="Link" />;
 };
 
-const PostMediaPreview = (
-  props: { post: PostPreview } & DivPropsNoChildren,
-) => {
+const PostMediaPreview = (props: DivPropsNoChildren<{ post: PostPreview }>) => {
   const { post, ...rest } = props;
   if (!post.hero_embedded_url && !post.hero_image && !post.files.length)
     return null;
