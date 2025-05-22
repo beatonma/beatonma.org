@@ -1,4 +1,4 @@
-import { MaybeString, Nullish } from "@/types";
+import { Nullish } from "@/types";
 
 export const joinNonEmpty = (
   separator: string = " ",
@@ -19,7 +19,7 @@ export const addClass = <T extends { className?: string }>(
   className: classes(props.className, ...extraClasses),
 });
 
-export const capitalize = (value: MaybeString | null): string | null =>
+export const capitalize = (value: string | Nullish): string | null =>
   value ? value.slice(0, 1).toUpperCase() + value.slice(1) : null;
 
 export type UrlFormatStyle = "default" | "brand";

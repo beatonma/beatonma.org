@@ -9,7 +9,7 @@ interface ScrimProps {
   scrimColor?: string;
   onClose: () => void;
 }
-export default function Scrim(props: ScrimProps & Omit<DivProps, "onClick">) {
+export default function Scrim(props: DivProps<ScrimProps>) {
   const { isVisible, scrimColor, onClose, ...rest } = addClass(
     props,
     styles.dialogScrim,
@@ -32,7 +32,7 @@ export default function Scrim(props: ScrimProps & Omit<DivProps, "onClick">) {
   return <div data-is-open={isVisible} onClick={onClose} {...rest} />;
 }
 
-export function ScrimBackground(props: ScrimProps & DivProps) {
+export function ScrimBackground(props: DivProps<ScrimProps>) {
   const { isVisible, scrimColor, children, onClose, ...rest } = props;
 
   return (

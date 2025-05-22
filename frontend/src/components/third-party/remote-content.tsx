@@ -22,8 +22,7 @@ interface RemoteContentProps {
   content: () => ReactNode;
 }
 export default function RemoteContent(
-  props: RemoteContentProps &
-    Omit<DivPropsNoChildren, keyof RemoteContentProps>,
+  props: DivPropsNoChildren<RemoteContentProps>,
 ) {
   const { provider, content, ...rest } = props;
   const [isAllowed, setIsAllowed] = useState<boolean>();

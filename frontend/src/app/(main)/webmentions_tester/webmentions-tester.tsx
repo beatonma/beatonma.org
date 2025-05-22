@@ -93,7 +93,7 @@ const SubmitWebmentionForm = () => {
 };
 
 const TemporaryMentions = (
-  props: TemporaryMentionsProps & DivPropsNoChildren,
+  props: DivPropsNoChildren<TemporaryMentionsProps>,
 ) => {
   const { tempMentions, ...rest } = props;
 
@@ -152,7 +152,7 @@ const TimeDescription = (props: PropsExcept<"time", "children">) => {
 };
 
 const TempMentionStatus = (
-  props: { status: TempMentionStatus } & DivPropsNoChildren,
+  props: DivPropsNoChildren<{ status: TempMentionStatus }>,
 ) => {
   const { status, ...rest } = addClass(props, "text-sm max-w-128 w-full");
 
@@ -171,7 +171,7 @@ const TempMentionStatus = (
 };
 
 const ReceivedWebmentions = (
-  props: { mentions: Webmention[] } & DivPropsNoChildren,
+  props: DivPropsNoChildren<{ mentions: Webmention[] }>,
 ) => {
   const { mentions, ...rest } = props;
 

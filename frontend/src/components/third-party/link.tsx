@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Nullish } from "@/types";
-import { PropsExcept } from "@/types/react";
+import { Props, PropsExcept } from "@/types/react";
 import { onlyIf } from "@/util/optional";
 import { UrlFormatStyle, formatUrl, joinNonEmpty } from "@/util/transforms";
 
@@ -11,9 +11,10 @@ interface ExternalLinkProps {
 }
 export default function ExternalLink(
   props: ExternalLinkProps &
-    PropsExcept<typeof Link, "href"> & { href: string | Nullish } & {
-      formatStyle?: UrlFormatStyle;
-    },
+    Props<
+      typeof Link,
+      { href: string | Nullish; formatStyle?: UrlFormatStyle }
+    >,
 ) {
   const {
     href,

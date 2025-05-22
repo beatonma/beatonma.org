@@ -26,9 +26,7 @@ interface ButtonColors {
 }
 
 type ButtonLinkProps = ButtonContentProps &
-  PropsExcept<typeof ExternalLink, "onClick" | "href"> & {
-    href: string | Nullish;
-  };
+  Props<typeof ExternalLink, { href: string | Nullish }, "onClick">;
 
 export type ButtonProps = ButtonContentProps &
   (Props<"button"> | ButtonLinkProps | PropsExcept<"div", "onClick">);

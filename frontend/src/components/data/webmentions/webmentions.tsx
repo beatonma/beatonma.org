@@ -11,7 +11,7 @@ interface WebmentionsProps {
 }
 
 export default function Webmentions(
-  props: WebmentionsProps & DivPropsNoChildren,
+  props: DivPropsNoChildren<WebmentionsProps>,
 ) {
   const { mentions, ...rest } = addClass(
     props,
@@ -62,7 +62,7 @@ const Webmention = (props: WebmentionProps & DivPropsNoChildren) => {
 interface HCardProps {
   hcard: Webmention["hcard"];
 }
-const HCardAvatar = (props: HCardProps & DivPropsNoChildren) => {
+const HCardAvatar = (props: DivPropsNoChildren<HCardProps>) => {
   const { hcard, ...rest } = addClass(
     props,
     "rounded-md overflow-hidden surface-muted",
@@ -84,7 +84,7 @@ const HCardAvatar = (props: HCardProps & DivPropsNoChildren) => {
   );
 };
 
-const HCardLinkedName = (props: HCardProps & DivPropsNoChildren) => {
+const HCardLinkedName = (props: DivPropsNoChildren<HCardProps>) => {
   const { hcard, ...rest } = addClass(props, "font-bold text-current/70");
   if (!hcard || (!hcard.name && !hcard.homepage)) return null;
   return (

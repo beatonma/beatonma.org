@@ -49,6 +49,7 @@ type Post = Pick<
 type PostTitle = Pick<Post, "title" | "subtitle">;
 type PostHeroHtml = Pick<Post, "hero_html">;
 type PostMetadata = Pick<Post, "url">;
+type PostMainContent = Pick<Post, "content_html">;
 type PostLinks = Pick<Post, "links">;
 type PostTags = Pick<Post, "tags">;
 type PostInfo = Pick<Post, "published_at"> &
@@ -119,7 +120,7 @@ export default function PostPage(props: {
             )}
           />
 
-          <MainContent
+          <PostMainContent
             content_html={post.content_html}
             className={classes(
               "@container",
@@ -306,9 +307,7 @@ const Hero = (props: DivPropsNoChildren<PostHero>) => {
   );
 };
 
-const MainContent = (
-  props: Pick<Post, "content_html"> & DivPropsNoChildren,
-) => {
+const PostMainContent = (props: DivPropsNoChildren<PostMainContent>) => {
   const { content_html, ...rest } = props;
 
   if (!content_html) return null;

@@ -3,8 +3,8 @@ import { Nullish } from "@/types";
 import { DivPropsNoChildren } from "@/types/react";
 
 export default function DangerousHtml(
-  props: { html: string | Nullish } & Omit<
-    DivPropsNoChildren,
+  props: Omit<
+    DivPropsNoChildren<{ html: string | Nullish }>,
     "dangerouslySetInnerHTML"
   >,
 ) {

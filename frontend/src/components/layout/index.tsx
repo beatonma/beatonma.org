@@ -6,10 +6,10 @@ export const scrollableRow =
 export const Row = ({
   scrollable,
   ...rest
-}: DivProps & { scrollable?: boolean }) => (
+}: DivProps<{ scrollable?: boolean }>) => (
   <div {...addClass(rest, scrollable ? scrollableRow : "row")} />
 );
 
-export const Separator = (props: DivPropsNoChildren) => {
-  return <div {...addClass(props, "w-0.5 h-lh bg-hover")} />;
-};
+export const Separator = (props: DivPropsNoChildren) => (
+  <div {...addClass(props, "w-0.5 h-lh bg-hover")} />
+);

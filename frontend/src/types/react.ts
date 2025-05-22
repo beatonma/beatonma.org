@@ -6,39 +6,43 @@ import {
   ReactNode,
   SetStateAction,
 } from "react";
-import { MaybeString } from "./index";
 
 export interface ClassNameProps {
-  className?: MaybeString;
+  className?: string | undefined;
 }
 
 export interface ChildrenProps {
   children?: ReactNode;
 }
 
-/* Create a new type based on ElementType with additional or overriding attributes from Extra.
- * In case of a shared attribute, the signature from Extra will be used instead of that from ElementType */
+/* Create a type with the properties of Element and Extra, without the properties of Except.
+ * If a property is found on both Element and Extra, the signature from Extra will override. */
 export type Props<
   Element extends ElementType = "div",
   Extra extends object = object,
-> = Extra & Omit<ComponentPropsWithoutRef<Element>, keyof Extra>;
+  Except extends keyof ComponentPropsWithoutRef<Element> | keyof Extra = never,
+> = Extra & Omit<ComponentPropsWithoutRef<Element>, keyof Extra | Except>;
 
-/* Create a new type based on ElementType with additional or overriding attributes from Extra.
- * In case of a shared attribute, the signature from Extra will be used instead of that from ElementType */
+/* Create a type with the properties of Element and Extra, without the properties of Except.
+ * If a property is found on both Element and Extra, the signature from Extra will override. */
 export type PropsWithRef<
   Element extends ElementType = "div",
   Extra extends object = object,
-> = Extra & Omit<ComponentPropsWithRef<Element>, keyof Extra>;
+  Except extends keyof ComponentPropsWithoutRef<Element> | keyof Extra = never,
+> = Extra & Omit<ComponentPropsWithRef<Element>, keyof Extra | Except>;
 
-export type DivProps<Extra extends object = object> = Props<"div", Extra>;
-export type DivPropsNoChildren<Extra extends object = object> = Omit<
-  Props<"div", Extra>,
-  "children"
->;
+export type DivProps<
+  Extra extends object = object,
+  Except extends keyof ComponentPropsWithoutRef<"div"> | keyof Extra = never,
+> = Props<"div", Extra, Except>;
+export type DivPropsNoChildren<
+  Extra extends object = object,
+  Except extends keyof ComponentPropsWithoutRef<"div"> | keyof Extra = never,
+> = Props<"div", Extra, "children" | Except>;
 
 export type PropsExcept<
   Element extends ElementType,
   Except extends keyof ComponentPropsWithoutRef<Element>,
-> = Omit<Props<Element>, Except>;
+> = Props<Element, object, Except>;
 
 export type StateSetter<S> = Dispatch<SetStateAction<S>>;

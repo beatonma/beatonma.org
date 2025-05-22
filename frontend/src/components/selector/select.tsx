@@ -9,7 +9,7 @@ import { Button } from "@/components/button";
 import useKeyPress from "@/components/hooks/key";
 import { AppIcon } from "@/components/icon";
 import type { SelectorDivProps } from "@/components/selector/types";
-import { PropsExcept } from "@/types/react";
+import { DivProps, PropsExcept } from "@/types/react";
 import { onlyIf } from "@/util/optional";
 import { addClass } from "@/util/transforms";
 
@@ -41,7 +41,7 @@ interface PopupProps {
   contents: (onClosePopup: () => void) => ReactNode;
 }
 const Popup = (
-  props: PopupProps & PropsExcept<"div", "children" | "onBlur" | "onSelect">,
+  props: DivProps<PopupProps, "children" | "onBlur" | "onSelect">,
 ) => {
   const [isExpanded, setExpanded] = useState(false);
   const { anchor, anchorIcon, contents, ...rest } = addClass(

@@ -110,7 +110,7 @@ export interface RemoteIconProps {
   src: string;
   mask?: boolean;
 }
-export const RemoteIcon = (props: RemoteIconProps & DivPropsNoChildren) => {
+export const RemoteIcon = (props: DivPropsNoChildren<RemoteIconProps>) => {
   const { src, mask = true, style, ...rest } = addClass(props, "size-em");
 
   const maskStyle: CSSProperties = mask

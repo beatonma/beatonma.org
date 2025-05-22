@@ -13,5 +13,4 @@ export interface SelectorProps {
   onSelect: (selected: SelectorItem) => void;
 }
 
-export type SelectorDivProps = SelectorProps &
-  Omit<DivPropsNoChildren, keyof SelectorProps>;
+export type SelectorDivProps = DivPropsNoChildren<SelectorProps>;

@@ -73,7 +73,7 @@ const get = async (params: Promise<Params>) =>
   getSlug("/api/apps/{slug}/", params);
 
 const Changelogs = (
-  props: { app: AppDetail; insetsClass: string } & DivPropsNoChildren,
+  props: DivPropsNoChildren<{ app: AppDetail; insetsClass: string }>,
 ) => {
   const { app, insetsClass, ...rest } = props;
   if (!app.changelog.length) return null;

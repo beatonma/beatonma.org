@@ -15,7 +15,7 @@ type MediaGroup<N extends number> = TupleOf<MediaFile, N>;
 const PreviewMiniStyle = "aspect-square rounded-md border-2 border-current";
 
 export default function MediaPreview(
-  props: { media: MediaFile[] } & DivPropsNoChildren,
+  props: DivPropsNoChildren<{ media: MediaFile[] }>,
 ) {
   const { media, ...rest } = addClass(props, "size-full @container");
   const [fileIndex, setFileIndex] = useState<number | undefined>(undefined);
@@ -58,16 +58,14 @@ const MiniThumbnailOverlay = (props: DivProps) => {
   );
 };
 
-const PreviewOne = (
-  props: { media: MediaFile } & Omit<DivPropsNoChildren, "onClick">,
-) => {
+const PreviewOne = (props: DivPropsNoChildren<{ media: MediaFile }>) => {
   const { media, ...rest } = props;
   return (
     <MediaThumbnail media={media} {...addClass(rest, "overflow-hidden")} />
   );
 };
 
-const PreviewTwo = (props: { media: MediaGroup<2> } & DivPropsNoChildren) => {
+const PreviewTwo = (props: DivPropsNoChildren<{ media: MediaGroup<2> }>) => {
   const { media, ...rest } = addClass(props, "relative overflow-hidden");
 
   const [one, two] = media;
@@ -83,7 +81,7 @@ const PreviewTwo = (props: { media: MediaGroup<2> } & DivPropsNoChildren) => {
   );
 };
 
-const PreviewThree = (props: { media: MediaGroup<3> } & DivPropsNoChildren) => {
+const PreviewThree = (props: DivPropsNoChildren<{ media: MediaGroup<3> }>) => {
   const { media, ...rest } = addClass(props, "relative overflow-hidden");
 
   const [one, two, three] = media;
@@ -100,7 +98,7 @@ const PreviewThree = (props: { media: MediaGroup<3> } & DivPropsNoChildren) => {
   );
 };
 
-const PreviewFour = (props: { media: MediaGroup<4> } & DivProps) => {
+const PreviewFour = (props: DivProps<{ media: MediaGroup<4> }>) => {
   const { media, children, ...rest } = addClass(
     props,
     "grid grid-cols-2 grid-rows-2 *:aspect-square",
@@ -119,7 +117,7 @@ const PreviewFour = (props: { media: MediaGroup<4> } & DivProps) => {
   );
 };
 
-const PreviewMany = (props: { media: MediaFile[] } & DivPropsNoChildren) => {
+const PreviewMany = (props: DivPropsNoChildren<{ media: MediaFile[] }>) => {
   const { media, ...rest } = addClass(props, "relative");
 
   return (

@@ -5,7 +5,7 @@ import { DivPropsNoChildren } from "@/types/react";
 import { addClass } from "@/util/transforms";
 import styles from "./bar.module.css";
 
-export default function Bar(props: { progress?: number } & DivPropsNoChildren) {
+export default function Bar(props: DivPropsNoChildren<{ progress?: number }>) {
   const { progress, ...rest } = props;
 
   if (progress == null) return <IndeterminateLoadingBar {...rest} />;
@@ -18,7 +18,7 @@ const IndeterminateLoadingBar = (props: DivPropsNoChildren) => {
 };
 
 const ProgressLoadingBar = (
-  props: { progress: number } & DivPropsNoChildren,
+  props: DivPropsNoChildren<{ progress: number }>,
 ) => {
   const { progress, ...rest } = addClass(props, styles.loadingBarDeterminate);
   const [isVisible, setVisible] = useState(true);

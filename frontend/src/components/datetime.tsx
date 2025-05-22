@@ -62,12 +62,12 @@ export const formatDate = (
  * Displays nothing if either date fails to be interpreted as a valid Date.
  */
 export const DateRange = (
-  props: {
+  props: DivPropsNoChildren<{
     start: ParseableDate;
     end: ParseableDate;
     dateFormat?: DateFormat;
     capitalized?: boolean;
-  } & DivPropsNoChildren,
+  }>,
 ) => {
   const {
     start: _start,

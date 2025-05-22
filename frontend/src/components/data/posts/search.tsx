@@ -101,9 +101,7 @@ interface SearchUiProps extends SearchBarProps {
   items: PostPreview[];
   containerClassName?: string;
 }
-const SearchUI = (
-  props: SearchUiProps & Omit<DivPropsNoChildren, keyof SearchUiProps>,
-) => {
+const SearchUI = (props: DivPropsNoChildren<SearchUiProps>) => {
   const {
     query,
     setQuery,
@@ -184,7 +182,7 @@ interface SearchBarProps {
   isActive: boolean;
   setIsActive: StateSetter<boolean>;
 }
-const SearchBar = (props: SearchBarProps & DivPropsNoChildren) => {
+const SearchBar = (props: DivPropsNoChildren<SearchBarProps>) => {
   const { isActive, setIsActive, query, setQuery, ...rest } = props;
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -215,19 +213,17 @@ const SearchBar = (props: SearchBarProps & DivPropsNoChildren) => {
     </Row>
   );
 };
-const SearchForm = (props: PropsWithRef<"input">) => {
-  return (
-    <form action={navigationHref("posts")} method="get" className="w-full">
-      <input
-        name="query"
-        type="search"
-        placeholder={`Search ${process.env.NEXT_PUBLIC_SITE_NAME}`}
-        {...addClass(props, "w-full")}
-        {...testId(TestTarget.SearchInput)}
-      />
-    </form>
-  );
-};
+const SearchForm = (props: PropsWithRef<"input">) => (
+  <form action={navigationHref("posts")} method="get" className="w-full">
+    <input
+      name="query"
+      type="search"
+      placeholder={`Search ${process.env.NEXT_PUBLIC_SITE_NAME}`}
+      {...addClass(props, "w-full")}
+      {...testId(TestTarget.SearchInput)}
+    />
+  </form>
+);
 
 const Results = (props: {
   itemClassName: string;

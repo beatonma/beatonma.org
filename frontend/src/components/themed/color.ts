@@ -1,4 +1,4 @@
-import { MaybeString, Nullish } from "@/types";
+import { Nullish } from "@/types";
 
 type ThreeChannel = [number, number, number];
 
@@ -8,7 +8,7 @@ export default function getForegroundColor(
   backgroundColor: string | Nullish,
   foregroundColor?: string | Nullish,
   element?: HTMLElement | Nullish,
-): MaybeString {
+): string | undefined {
   if (!backgroundColor) return undefined;
 
   const resolvedBg = resolveToRgb(backgroundColor, element);

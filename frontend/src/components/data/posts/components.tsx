@@ -7,8 +7,8 @@ import { addClass } from "@/util/transforms";
 type Post = PreviewPost | DetailedPost;
 
 export const HtmlContent = (
-  props: { post: Pick<Post, "content_html"> } & Omit<
-    DivPropsNoChildren,
+  props: Omit<
+    DivPropsNoChildren<{ post: Pick<Post, "content_html"> }>,
     "dangerouslySetInnerHTML"
   >,
 ) => {
@@ -17,7 +17,7 @@ export const HtmlContent = (
 };
 
 export const PublishingStatus = (
-  props: { post: Pick<Post, "is_published"> } & DivPropsNoChildren,
+  props: DivPropsNoChildren<{ post: Pick<Post, "is_published"> }>,
 ) => {
   const { post, ...rest } = addClass(props, "p-4 bg-red-600 text-white");
   return onlyIf(
@@ -27,7 +27,7 @@ export const PublishingStatus = (
 };
 
 export const PostType = (
-  props: { post: Pick<Post, "post_type"> } & DivPropsNoChildren,
+  props: DivPropsNoChildren<{ post: Pick<Post, "post_type"> }>,
 ) => {
   const { post, ...rest } = addClass(
     props,

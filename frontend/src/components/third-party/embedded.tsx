@@ -25,7 +25,7 @@ interface EmbeddedRemoteContentProvider {
 type EmbeddedProviderProps = { contentId: string } & IFrameProps;
 
 export default function RemoteIFrame(
-  props: EmbeddedProps & Omit<DivPropsNoChildren, "content">,
+  props: Omit<DivPropsNoChildren<EmbeddedProps>, "content">,
 ) {
   const { src, iframeClassName, ...rest } = props;
   const [provider, setProvider] = useState<

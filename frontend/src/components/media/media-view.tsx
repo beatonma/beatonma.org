@@ -14,7 +14,7 @@ import { MediaFile, OnClickMedia } from "./types";
 interface MediaProps {
   media: MediaFile;
 }
-type MediaViewProps = MediaProps & DivPropsNoChildren;
+type MediaViewProps = DivPropsNoChildren<MediaProps>;
 
 interface ImageProps {
   image?: {
@@ -147,7 +147,7 @@ const BlobDownloadView = (props: MediaViewProps) => {
   );
 };
 
-const Placeholder = (props: { media: MediaFile } & DivProps) => {
+const Placeholder = (props: DivProps<{ media: MediaFile }>) => {
   const { media, children, ...rest } = addClass(
     props,
     "column items-center justify-center p-4 gap-1",

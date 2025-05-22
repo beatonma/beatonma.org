@@ -1,6 +1,4 @@
 export type Nullish = null | undefined;
-export type Maybe<T> = T | undefined;
-export type MaybeString = Maybe<string>;
 
 /**
  * Generate a tuple of type T with N values.

@@ -18,9 +18,7 @@ import styles from "./tooltip.module.css";
 interface TooltipProps {
   tooltip: string | Nullish;
 }
-export default function Tooltip(
-  props: TooltipProps & Omit<DivProps, keyof TooltipAttributes>,
-) {
+export default function Tooltip(props: DivProps<TooltipProps>) {
   const { tooltip, title, ...rest } = props;
   const isClient = useClient();
   const tooltipProps = useTooltip({ tooltip });

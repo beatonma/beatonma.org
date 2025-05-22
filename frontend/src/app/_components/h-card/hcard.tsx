@@ -14,10 +14,10 @@ import styles from "./hcard.module.css";
 type GlobalHCard = NonNullable<GlobalState["hcard"]>;
 
 export default function HCard(
-  props: {
+  props: DivPropsNoChildren<{
     hcard: GlobalHCard | Nullish;
     showDetail: boolean;
-  } & DivPropsNoChildren,
+  }>,
 ) {
   const { hcard, showDetail = false, ...rest } = props;
 
@@ -69,7 +69,7 @@ export default function HCard(
   );
 }
 
-const HCardImages = (props: { hcard: GlobalHCard } & DivPropsNoChildren) => {
+const HCardImages = (props: DivPropsNoChildren<{ hcard: GlobalHCard }>) => {
   const { hcard, ...rest } = props;
 
   if (!hcard.photo && !hcard.logo) return null;
@@ -98,9 +98,7 @@ const HCardImages = (props: { hcard: GlobalHCard } & DivPropsNoChildren) => {
   );
 };
 
-const HAdr = (
-  props: { hadr: GlobalHCard["location"] } & DivPropsNoChildren,
-) => {
+const HAdr = (props: DivPropsNoChildren<{ hadr: GlobalHCard["location"] }>) => {
   const { hadr, ...rest } = props;
 
   if (!hadr) return null;

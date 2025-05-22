@@ -154,11 +154,11 @@ const LoadNext = <T,>(props: {
 };
 
 const FeedSelector = (
-  props: {
+  props: DivPropsNoChildren<{
     feeds: Feeds | undefined;
     currentFeed: string | undefined;
     setFeed: (feedSlug: string) => void;
-  } & DivPropsNoChildren,
+  }>,
 ) => {
   const { feeds, currentFeed, setFeed, ...rest } = props;
   const feedOptions = useMemo(

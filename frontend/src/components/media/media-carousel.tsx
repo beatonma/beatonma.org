@@ -19,7 +19,7 @@ interface MediaCarouselProps {
   focusIndex?: number;
 }
 export default function MediaCarousel(
-  props: MediaCarouselProps & DivPropsNoChildren,
+  props: DivPropsNoChildren<MediaCarouselProps>,
 ) {
   const { media } = props;
   const isClient = useClient();
@@ -32,7 +32,7 @@ export default function MediaCarousel(
   );
 }
 
-const ControlledCarousel = (props: MediaCarouselProps & DivPropsNoChildren) => {
+const ControlledCarousel = (props: DivPropsNoChildren<MediaCarouselProps>) => {
   const { media, focusIndex: defaultFocusIndex, ...rest } = props;
   const [focusIndex, setFocusIndex] = useState(defaultFocusIndex ?? 0);
 
@@ -87,7 +87,7 @@ const ControlledCarousel = (props: MediaCarouselProps & DivPropsNoChildren) => {
   );
 };
 
-const NoscriptCarousel = (props: MediaCarouselProps & DivPropsNoChildren) => {
+const NoscriptCarousel = (props: DivPropsNoChildren<MediaCarouselProps>) => {
   const { media, focusIndex, ...rest } = props;
 
   return (
@@ -181,7 +181,7 @@ interface CarouselThumbnailsProps {
   onClickIndex: (index: number) => void;
 }
 const CarouselThumbnails = (
-  props: CarouselThumbnailsProps & DivPropsNoChildren,
+  props: DivPropsNoChildren<CarouselThumbnailsProps>,
 ) => {
   const { media, focusIndex, onClickIndex, ...rest } = addClass(
     props,

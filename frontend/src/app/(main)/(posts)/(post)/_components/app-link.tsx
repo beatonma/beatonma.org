@@ -3,14 +3,18 @@ import { AppPreview } from "@/api/types";
 import { RemoteIcon } from "@/components/icon";
 import Optional from "@/components/optional";
 import itemTheme from "@/components/themed/item-theme";
-import { PropsExcept } from "@/types/react";
+import { Props } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
 export const AppLink = (
-  props: {
-    app: Pick<AppPreview, "title" | "icon" | "url" | "theme">;
-    liveInstance: boolean;
-  } & PropsExcept<"a", "children" | "href">,
+  props: Props<
+    "a",
+    {
+      app: Pick<AppPreview, "title" | "icon" | "url" | "theme">;
+      liveInstance: boolean;
+    },
+    "children" | "href"
+  >,
 ) => {
   const {
     app,

@@ -9,7 +9,7 @@ export interface PaginatedPostsProps {
   query?: Query<"/api/posts/">;
 }
 export default async function PaginatedPosts(
-  props: PaginatedPostsProps & DivPropsNoChildren,
+  props: DivPropsNoChildren<PaginatedPostsProps>,
 ) {
   const { query, ...rest } = props;
 

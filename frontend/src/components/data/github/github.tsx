@@ -21,7 +21,7 @@ const TestTarget = {
 };
 
 export default function GithubActivity(
-  props: { activity: GithubRecent } & DivPropsNoChildren,
+  props: DivPropsNoChildren<{ activity: GithubRecent }>,
 ) {
   const { activity, ...rest } = props;
 
@@ -56,7 +56,7 @@ export default function GithubActivity(
   );
 }
 
-const EventHeadline = (props: { timestamp: number } & DivProps) => {
+const EventHeadline = (props: DivProps<{ timestamp: number }>) => {
   const { timestamp, children, ...rest } = props;
   return (
     <Row key={timestamp} {...addClass(rest, "gap-2 justify-between")}>
@@ -67,7 +67,7 @@ const EventHeadline = (props: { timestamp: number } & DivProps) => {
 };
 
 const PrivateEvents = (
-  props: { group: GroupedPrivateEvents } & DivPropsNoChildren,
+  props: DivPropsNoChildren<{ group: GroupedPrivateEvents }>,
 ) => {
   const { group, ...rest } = props;
 
@@ -88,7 +88,7 @@ const PrivateEvents = (
 };
 
 const PublicEvents = (
-  props: { group: GroupedPublicEvents } & DivPropsNoChildren,
+  props: DivPropsNoChildren<{ group: GroupedPublicEvents }>,
 ) => {
   const { group, ...rest } = props;
   const { create, release, issue, wiki, push, pullRequest } = group.events;
