@@ -103,11 +103,11 @@ class BasePostAdmin(BaseAdmin):
 
 
 @admin.register(AboutPost)
-class AboutPostAdmin(BasePostAdmin):
+class AboutPostAdmin(SortableAdminMixin, BasePostAdmin):
     editable_fields = [x for x in BasePostAdmin.editable_fields if x != "feeds"] + [
         "parent"
     ]
-    pass
+    list_display = BasePostAdmin.list_display + ["sort_order"]
 
 
 @admin.register(Post)

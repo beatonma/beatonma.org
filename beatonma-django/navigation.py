@@ -1,3 +1,6 @@
+from common.util.url import enforce_trailing_slash
+
+
 def home():
     return "/"
 
@@ -6,10 +9,8 @@ def contact():
     return "/contact/"
 
 
-def about(slug: str | None = None):
-    if slug:
-        return f"/about/{slug}/"
-    return f"/about/"
+def about(path: str | None = None):
+    return enforce_trailing_slash(f"/about/{path}")
 
 
 def app(slug: str):

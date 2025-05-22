@@ -5,7 +5,10 @@ import { resolveSlug } from "@/api/client";
 import { AboutDetail } from "@/api/types";
 import PostPage from "@/app/(main)/(posts)/(post)/_components/post";
 import { InlineLink } from "@/components/button";
+import Optional from "@/components/optional";
+import Prose from "@/components/prose";
 import { DivPropsNoChildren } from "@/types/react";
+import { classes } from "@/util/transforms";
 
 type Params = { params: Promise<{ slug: string[] | undefined }> };
 
@@ -29,7 +32,10 @@ const AboutPage = ({ about }: { about: AboutDetail }) => (
     post={about}
     customContent={{
       extraContent: (context) => (
-        <AboutNavigation className={context.insetsClass} about={about} />
+        <AboutNavigation
+          className={classes("card card-content surface-alt mt-16")}
+          about={about}
+        />
       ),
     }}
     options={{
@@ -40,13 +46,49 @@ const AboutPage = ({ about }: { about: AboutDetail }) => (
 
 const AboutNavigation = (props: DivPropsNoChildren<{ about: AboutDetail }>) => {
   const { about, ...rest } = props;
+
+  if (!about.parent && !about.children) return null;
+
   return (
     <div {...rest}>
-      {about.children.map((child) => (
-        <InlineLink key={child.title} href={child.url} icon={null}>
-          {child.title}
-        </InlineLink>
-      ))}
+      <Prose className="[--link-color:var(--fg)] text-sm">
+        <h2>Explore</h2>
+
+        <Optional
+          value={about.parent}
+          block={(parent) => (
+            <div>
+              <InlineLink href={parent.url} icon={null}>
+                {parent.title || "/about/"}
+              </InlineLink>
+            </div>
+          )}
+        />
+
+        <ul>
+          <li className="">
+            {"> "}
+            {about.title || "/about/"}
+          </li>
+          <ul>
+            {about.children.map((child) => (
+              <li key={child.path}>
+                <InlineLink href={child.url} icon={null}>
+                  {child.title}
+                </InlineLink>
+              </li>
+            ))}
+          </ul>
+
+          {about.siblings.map((sibling) => (
+            <li key={sibling.path}>
+              <InlineLink href={sibling.url} icon={null}>
+                {sibling.title}
+              </InlineLink>
+            </li>
+          ))}
+        </ul>
+      </Prose>
     </div>
   );
 };

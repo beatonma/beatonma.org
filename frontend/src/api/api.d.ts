@@ -513,9 +513,11 @@ export interface components {
             tags: components["schemas"]["Tag"][];
             /** Mentions */
             mentions: components["schemas"]["Mention"][];
-            parent: components["schemas"]["AboutPreview"] | null;
             /** Path */
             path: string;
+            parent: components["schemas"]["AboutPreview"] | null;
+            /** Siblings */
+            siblings: components["schemas"]["AboutPreview"][];
             /** Children */
             children: components["schemas"]["AboutPreview"][];
         };

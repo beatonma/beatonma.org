@@ -24,7 +24,7 @@ class AboutPost(SortableMixin, BasePost):
     path = models.CharField(max_length=255, null=True, blank=True)
 
     def get_absolute_url(self) -> str:
-        return navigation.about(slug=self.slug if self.parent else None)
+        return navigation.about(self.path)
 
     def save(self, *args, **kwargs):
         qs = AboutPost.objects.all()
@@ -95,3 +95,6 @@ class AboutPost(SortableMixin, BasePost):
             depth += 1
             if depth >= max_depth:
                 raise ValidationError("Ancestor tree validation reached its max_depth")
+
+    def __str__(self):
+        return f"About: {self.path or 'root'}"
