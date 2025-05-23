@@ -1,9 +1,10 @@
-import { Metadata } from "next";
+import { Metadata, ResolvingMetadata } from "next";
 import React from "react";
 import { getOr404 } from "@/api";
 import { resolveSlug } from "@/api/client";
 import { AboutDetail } from "@/api/types";
 import PostPage from "@/app/(main)/(posts)/(post)/_components/post";
+import { generatePostMetadata } from "@/app/(main)/(posts)/(post)/util";
 import { InlineLink } from "@/components/button";
 import Optional from "@/components/optional";
 import Prose from "@/components/prose";
@@ -18,14 +19,27 @@ export default async function Page(params: Params) {
   return <AboutPage about={about} />;
 }
 
-export async function generateMetadata(params: Params): Promise<Metadata> {
+export const generateMetadata = async (
+  params: Params,
+  parent: ResolvingMetadata,
+): Promise<Metadata> => {
   const post = await get(params);
+  const parentMeta = await parent;
+
+  const meta = await generatePostMetadata(post, {
+    title: post.title || "About",
+    description: post.subtitle || undefined,
+  });
 
   return {
-    title: post.title || "About",
-    description: post.subtitle,
+    ...meta,
+    openGraph: {
+      ...meta.openGraph,
+      images: parentMeta.openGraph?.images,
+    },
+    robots: !!post.parent ? { index: false } : undefined,
   };
-}
+};
 
 const AboutPage = ({ about }: { about: AboutDetail }) => (
   <PostPage
@@ -47,7 +61,7 @@ const AboutPage = ({ about }: { about: AboutDetail }) => (
 const AboutNavigation = (props: DivPropsNoChildren<{ about: AboutDetail }>) => {
   const { about, ...rest } = props;
 
-  if (!about.parent && !about.children) return null;
+  if (!about.parent && !about.children.length) return null;
 
   return (
     <div {...rest}>

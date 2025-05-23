@@ -13,6 +13,9 @@ source ./tools/bma/common.sh
 jest() {
   docker_compose run --rm --entrypoint="npm run jest" next
 }
+jestWatch() {
+  docker_compose --profile=watch run --rm jest
+}
 
 django() {
   docker_compose run --rm --entrypoint="pytest $*" --env DJANGO_SETTINGS_MODULE="basetest.frontend_test_settings" django
@@ -33,7 +36,7 @@ run_action() {
       django "$@"
       ;;
     "jest")
-      jest
+      jestWatch
       ;;
     "unit")
       unittests

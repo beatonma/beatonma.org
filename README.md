@@ -13,7 +13,7 @@ The backend uses [Django](https://www.djangoproject.com), [PostgreSQL](https://p
 ### Development
 - Populate `.env.dev` using `example.env` as a template.
 - Run `./bma dev up --watch`
-- Open `localhost:3001` (next.js with autorefresh), `localhost:8001` (django) or `localhost:81` (nginx) in your browser.
+- Open `localhost:3000` (next.js with autorefresh), `localhost:8000` (django) or `localhost:81` (nginx) in your browser.
 
 ### Tests
 - Run `./bma test` to run all unit tests and (Cypress) end-to-end tests.

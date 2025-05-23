@@ -1,21 +1,18 @@
 import { Metadata } from "next";
 import { CSSProperties } from "react";
-import { getSlug } from "@/api";
 import { AppDetail } from "@/api/types";
 import PostPage, { AppLink } from "@/app/(main)/(posts)/(post)/_components";
+import { SlugParams } from "@/app/(main)/(posts)/(post)/util";
 import LocalIFrame from "@/app/(main)/(posts)/_components/LocalIFrame";
 import Post from "@/components/data/posts/post";
 import Optional from "@/components/optional";
 import { Nullish } from "@/types";
 import { DivPropsNoChildren } from "@/types/react";
 import { classes } from "@/util/transforms";
+import { getApp } from "./get";
 
-interface Params {
-  slug: string;
-}
-
-export default async function Page({ params }: { params: Promise<Params> }) {
-  const app = await get(params);
+export default async function Page(params: SlugParams) {
+  const app = await getApp(params);
 
   return (
     <PostPage
@@ -56,21 +53,14 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   );
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<Params>;
-}): Promise<Metadata> {
-  const app = await get(params);
+export async function generateMetadata(params: SlugParams): Promise<Metadata> {
+  const app = await getApp(params);
 
   return {
     title: app.title,
     description: app.subtitle,
   };
 }
-
-const get = async (params: Promise<Params>) =>
-  getSlug("/api/apps/{slug}/", params);
 
 const Changelogs = (
   props: DivPropsNoChildren<{ app: AppDetail; insetsClass: string }>,

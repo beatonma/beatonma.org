@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "jest": "jest",
-    "jest:watch": "jest --watch"
+    "jest:watch": "jest --watchAll"
   },
   "dependencies": {
     "html-react-parser": "^5.2",

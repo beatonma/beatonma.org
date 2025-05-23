@@ -30,6 +30,19 @@ services:
       file: compose.common.yml
       service: next
 
+  jest:
+    <<: *common
+    build:
+      target: dev_nextjs
+    extends:
+      file: compose.common.yml
+      service: next
+    profiles:
+      - "watch"
+    entrypoint: ["npm", "run", "jest:watch"]
+    volumes:
+      - "./frontend:/app"
+
   nginx:
     <<: *common
     build:

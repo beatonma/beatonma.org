@@ -35,3 +35,6 @@ const searchParams = (params: Record<string, string | number> | undefined) => {
   );
   return `?${formatted}`;
 };
+
+export const absoluteUrl = (path: string | undefined): string | undefined =>
+  path ? `${process.env.NEXT_PUBLIC_SITE_BASE_URL}${path}` : undefined;

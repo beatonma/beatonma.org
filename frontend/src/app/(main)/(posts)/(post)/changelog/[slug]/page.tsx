@@ -1,17 +1,14 @@
 import { Metadata } from "next";
-import { getSlug } from "@/api";
 import { ChangelogDetail } from "@/api/types";
 import PostPage, { AppLink } from "@/app/(main)/(posts)/(post)/_components";
+import {
+  SlugParams,
+  generatePostMetadata,
+} from "@/app/(main)/(posts)/(post)/util";
+import { getChangelog } from "./get";
 
-interface Params {
-  slug: string;
-}
-
-const get = async (params: Promise<Params>) =>
-  getSlug("/api/changelog/{slug}/", params);
-
-export default async function Page({ params }: { params: Promise<Params> }) {
-  const changelog = await get(params);
+export default async function Page(params: SlugParams) {
+  const changelog = await getChangelog(params);
 
   const post: ChangelogDetail = {
     ...changelog,
@@ -30,15 +27,11 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   );
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<Params>;
-}): Promise<Metadata> {
-  const changelog = await get(params);
+export async function generateMetadata(params: SlugParams): Promise<Metadata> {
+  const changelog = await getChangelog(params);
 
-  return {
+  return generatePostMetadata(changelog, {
     title: `${changelog.app.title} ${changelog.version}`,
     description: `Changelog for app ${changelog.app.title} version ${changelog.version}`,
-  };
+  });
 }
