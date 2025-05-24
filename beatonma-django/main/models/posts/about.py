@@ -21,7 +21,7 @@ class AboutPost(SortableMixin, BasePost):
         related_name="children",
         related_query_name="child",
     )
-    path = models.CharField(max_length=255, null=True, blank=True)
+    path = models.CharField(max_length=255, default="", editable=False)
 
     def get_absolute_url(self) -> str:
         return navigation.about(self.path)

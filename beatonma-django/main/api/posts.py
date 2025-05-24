@@ -7,7 +7,7 @@ from common.util.url import enforce_trailing_slash
 from django.http import Http404, HttpRequest
 from django.shortcuts import get_object_or_404
 from django.views.decorators.cache import cache_page
-from main.models import AppPost, ChangelogPost, Post
+from main.models import AboutPost, AppPost, ChangelogPost, Post
 from main.models.mixins import ThemeableMixin
 from main.models.posts.post import BasePost as BasePost_Model
 from main.models.posts.post import PostType
@@ -15,7 +15,6 @@ from ninja import Field, Router, Schema
 from ninja.decorators import decorate_view
 from ninja.pagination import paginate
 
-from ..models.posts import AboutPost
 from .querysets import get_feed
 from .schema import File, Link
 
