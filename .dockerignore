@@ -1,17 +1,22 @@
 # Patterns
+*.env
 *.gitbundle
 frontend-tests*
 
-# Directories
-.github/
-.idea/
-cypress/screenshots/
-cypress/videos/
-tools/install
-tools/bma
 
+# Directories
+**/.git/
+**/.github/
+**/.idea/
+**/.next/
 **/__pycache__/
 **/dist/
 **/env/
 **/node_modules/
-**/.git
+
+**/cypress/screenshots/
+**/cypress/videos/
+
+raw-assets/
+tools/install/
+tools/bma/

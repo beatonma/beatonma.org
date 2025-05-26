@@ -133,7 +133,7 @@ services:
       file: compose.common.yml
       service: redis
 
-  server_startup_checks:
+  startup:
     image: fallofmath/beatonma:startup_checks
     build:
       target: production_server_checks

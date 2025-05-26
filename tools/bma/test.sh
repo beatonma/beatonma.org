@@ -18,7 +18,7 @@ jestWatch() {
 }
 
 django() {
-  docker_compose run --rm --entrypoint="pytest $*" --env DJANGO_SETTINGS_MODULE="basetest.frontend_test_settings" django
+  docker_compose run --rm --entrypoint="python -m pytest $*" --env DJANGO_SETTINGS_MODULE="basetest.frontend_test_settings" django
 }
 
 unittests() {

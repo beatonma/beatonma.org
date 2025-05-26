@@ -16,14 +16,11 @@ ENV PYTHONBUFFERED 1
 FROM node:${NODE_VERSION}-alpine AS core_nextjs
 
 RUN apk add curl
-RUN adduser -u 1001 -s /bin/sh -D app
-USER app
-
 WORKDIR /app
-COPY --chown=app:app ./frontend/package.json ./frontend/package-lock.json /app/
-RUN npm install
+COPY ./frontend/package.json ./frontend/package-lock.json /app/
+RUN npm ci && npm cache clean --force
 
-COPY --chown=app:app ./frontend /app
+COPY ./frontend /app
 
 ARG NEXT_PUBLIC_SITE_NAME
 ENV NEXT_PUBLIC_SITE_NAME=$NEXT_PUBLIC_SITE_NAME
@@ -33,30 +30,41 @@ ENV NEXT_PUBLIC_SITE_BASE_URL=$NEXT_PUBLIC_SITE_BASE_URL
 
 
 ###
-FROM python AS core_django
+FROM python AS builder_django
 
-RUN apk add \
-    curl \
+RUN apk add --no-cache \
     openssh-client \
     git \
-    build-base \
+    build-base
+
+RUN --mount=type=ssh \
+    --mount=type=cache,target=/root/.cache/pip,id=pipcache \
+    mkdir -p -m 0700 ~/.ssh \
+    && ssh-keyscan github.com >> ~/.ssh/known_hosts \
+    && pip install git+ssh://git@github.com/beatonma/bmanotify.git \
+                   git+ssh://git@github.com/beatonma/bmanotify-django.git
+
+COPY ./beatonma-django/requirements.txt /tmp/
+RUN --mount=type=cache,target=/root/.cache/pip,id=pipcache pip install -r /tmp/requirements.txt
+
+###
+FROM python AS core_django
+
+RUN apk add --no-cache \
+    curl \
     libwebp
 
-# Install private libraries from github.
-RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
-RUN --mount=type=ssh pip install git+ssh://git@github.com/beatonma/bmanotify.git
-RUN --mount=type=ssh pip install git+ssh://git@github.com/beatonma/bmanotify-django.git
+ARG PYTHON_VERSION
+COPY --from=builder_django /usr/local/lib/python${PYTHON_VERSION}/site-packages /usr/local/lib/python${PYTHON_VERSION}/site-packages
 
 WORKDIR /var/log/beatonma/
 WORKDIR /django
 
-COPY ./beatonma-django/requirements.txt /django/
-RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
+EXPOSE 8000
 
 
 ###
 FROM nginx:${NGINX_VERSION} AS core_nginx
-
 EXPOSE 80
 EXPOSE 443
 
@@ -68,21 +76,34 @@ EXPOSE 443
 ##################
 
 ###
-FROM core_nextjs AS production_nextjs
-
+FROM core_nextjs AS builder_production_nextjs
 RUN npm run build
-ENTRYPOINT ["npm", "run", "start"]
+
+###
+FROM node:${NODE_VERSION}-alpine AS production_nextjs
+
+RUN apk add curl --no-cache
+RUN addgroup -S app && adduser -S app -G app
+USER app
+WORKDIR /app
+
+COPY --from=builder_production_nextjs --chown=app:app /app/.next/standalone ./
+COPY --from=builder_production_nextjs --chown=app:app /app/package.json ./
+
+ENV HOSTNAME="0.0.0.0"
+ENV PORT="3000"
+EXPOSE 3000
+ENTRYPOINT ["node", "server.js"]
+
 
 ###
 FROM core_django AS production_core_django
-
 COPY ./beatonma-django /django
 
 
 ###
 FROM production_core_django AS production_django
 
-EXPOSE 8000
 COPY ./tools/docker/django/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
@@ -91,7 +112,7 @@ ENTRYPOINT ["/entrypoint.sh"]
 ###
 FROM production_core_django AS production_celery
 
-ENTRYPOINT ["celery", "-A", "beatonma", "worker", "-l", "info"]
+ENTRYPOINT ["python", "-m", "celery", "-A", "beatonma", "worker", "-l", "info"]
 
 
 ###
@@ -102,12 +123,14 @@ COPY ./tools/docker/nginx/templates/ /etc/nginx/templates/
 COPY ./tools/docker/nginx/entrypoint.sh /docker-entrypoint.d/40-letsencrypt-perms.sh
 RUN chmod +x /docker-entrypoint.d/40-letsencrypt-perms.sh
 
+COPY --from=builder_production_nextjs --chown=nginx:nginx /app/.next/static /var/www/static-nextjs
+COPY --from=builder_production_nextjs --chown=nginx:nginx /app/public /var/www/public-nextjs
+
 
 ###
 FROM python AS production_server_checks
 
-RUN --mount=type=cache,target=/root/.cache/pip pip install requests
-
+RUN --mount=type=cache,target=/root/.cache/pip,id=pipcache pip install requests
 COPY ./tools/docker/config_tests/ /tmp/config_tests/
 ENTRYPOINT ["python", "/tmp/config_tests/runtests.py"]
 
@@ -118,8 +141,7 @@ FROM production_core_django AS production_crontab
 WORKDIR /cron/
 COPY ./tools/docker/cron/cron-schedule /tmp/
 COPY ./tools/docker/cron/crontab/*.sh /cron/
-RUN chmod +x /cron/*.sh
-RUN crontab /tmp/cron-schedule
+RUN chmod +x /cron/*.sh && crontab /tmp/cron-schedule
 ENTRYPOINT ["crond", "-f"]
 
 
@@ -131,26 +153,22 @@ ENTRYPOINT ["crond", "-f"]
 
 ###
 FROM core_nextjs AS dev_nextjs
+RUN apk add curl --no-cache
 ENTRYPOINT ["npm", "run", "dev"]
 
 
 ###
 FROM core_django AS dev_django
-
 COPY ./tools/docker/django/entrypoint.dev.sh /
-
-EXPOSE 8000
 ENTRYPOINT ["/entrypoint.dev.sh"]
 
-################################################################################
+###
 FROM core_django AS dev_celery
-
-ENTRYPOINT ["celery", "-A", "beatonma", "worker", "-l", "info"]
+ENTRYPOINT ["python", "-m", "celery", "-A", "beatonma", "worker", "-l", "info"]
 
 
 ###
 FROM core_nginx AS dev_nginx
-
 COPY ./tools/docker/nginx/templates/ /etc/nginx/templates/
 COPY ./tools/docker/nginx/nginx.dev.conf /etc/nginx/nginx.conf
 

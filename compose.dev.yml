@@ -78,8 +78,6 @@ services:
     extends:
       file: compose.common.yml
       service: next
-    healthcheck:
-      test: curl --head --fail http://localhost:3000/health-check/ || exit 1
     depends_on:
       django:
           condition: service_healthy

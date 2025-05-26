@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   trailingSlash: true,
   async rewrites() {
     if (process.env.NODE_ENV === "development") {

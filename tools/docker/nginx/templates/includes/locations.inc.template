@@ -10,6 +10,17 @@ location /static {
     add_header Cache-Control "public";
 }
 
+location /_next/static {
+    alias /var/www/static-nextjs;
+    expires 1y;
+    add_header Cache-Control "public";
+}
+location /_next/public {
+    alias /var/www/public-nextjs;
+    expires 1y;
+    add_header Cache-Control "public";
+}
+
 # Server resources that are bundled alongside a webapp.
 location ~ ^/apps/.+?/live/.+$ {
     rewrite ^/apps/(.+?)/live/(.+) /media/apps/$1/$2 permanent;
