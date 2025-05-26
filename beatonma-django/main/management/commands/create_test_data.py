@@ -35,13 +35,25 @@ def _create_test_data():
         # Force pagination
         sample.create_post()
 
-    _generate(published=True)
-    _generate(published=False)
+    _generate_publishable(published=True)
+    _generate_publishable(published=False)
 
-    SiteHCard.objects.create(
-        name="Firstname Surname",
+    _generate_about()
+    _generate_microformat_content()
+    _generate_github()
+
+
+def _generate_about():
+    about_root = sample.create_about_page(
+        title="target",
+        content="<!-- h-card -->\n\nTestTarget about content with hcard",
+    )
+    sample.create_about_page(
+        parent=about_root, title="Leaf", content="about something specific"
     )
 
+
+def _generate_github():
     CachedResponse.objects.get_or_create(
         data={
             "events": [
@@ -69,7 +81,7 @@ def _create_test_data():
     )
 
 
-def _generate(published: bool):
+def _generate_publishable(published: bool):
     tags = ["sample-tag"]
 
     label = "TestTarget" if published else "__PRIVATE__ TestTarget"
@@ -77,10 +89,6 @@ def _generate(published: bool):
     def _slug(slug: str):
         return slug if published else f"__PRIVATE__{slug}"
 
-    sample.create_about_page(
-        description="target",
-        content="<!-- h-card -->\n\nTestTarget about content",
-    )
     sample.create_motd(
         f"{label} MOTD",
         f"{label} MOTD content",
@@ -133,6 +141,12 @@ def _generate(published: bool):
         description=f"{label} repo description",
         is_published=published,
         is_private=not published,
+    )
+
+
+def _generate_microformat_content():
+    SiteHCard.objects.create(
+        name="Firstname Surname",
     )
 
     sample.create_hcard(

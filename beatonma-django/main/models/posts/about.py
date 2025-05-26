@@ -40,6 +40,7 @@ class AboutPost(SortableMixin, BasePost):
                 raise ValidationError("root post must not have a parent")
 
             self.title = ""
+            self.subtitle = ""
             self.slug = "root"
             self._update_path(save=False)
             super().save(*args, **kwargs, update_fields=None)

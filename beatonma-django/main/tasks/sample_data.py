@@ -178,14 +178,16 @@ def create_changelog(
 
 
 def create_about_page(
-    description: str = None,
+    title: str = None,
     content: str = None,
+    parent: AboutPost = None,
 ) -> AboutPost:
     sample = samples.any_biography()
 
     about, _ = AboutPost.objects.get_or_create(
-        title=description or sample.summary,
+        title=title or sample.title,
         content=content or sample.content,
+        parent=parent,
     )
     return about
 
