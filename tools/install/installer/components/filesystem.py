@@ -9,18 +9,17 @@ class FilesystemInstaller(Installer):
     name = "filesystem"
 
     _DIRECTORIES = [
-        "/var/www",
-        "/var/www/static",
-        "/var/www/media",
         "/var/log/nginx",
+        "/var/www/media",
+        "/var/www/static",
     ]
 
     def install(self):
-        for dir in self._DIRECTORIES:
-            mkdir(dir, mode=775, owner=env.USERNAME, sudo=True)
+        for _dir in self._DIRECTORIES:
+            mkdir(_dir, mode=775, owner=env.USERNAME, sudo=True)
 
     def is_installed(self) -> bool:
-        for dir in self._DIRECTORIES:
-            if not os.path.exists(dir):
+        for _dir in self._DIRECTORIES:
+            if not os.path.exists(_dir):
                 return False
         return True

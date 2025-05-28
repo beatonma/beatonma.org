@@ -18,7 +18,7 @@ class Result:
     successful: bool = field(init=False)
 
     def __post_init__(self):
-        self.successful = self.code is None
+        self.successful = self.code == 0
         if self.output:
             log.debug(self.output)
 
