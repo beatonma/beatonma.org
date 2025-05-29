@@ -45,7 +45,7 @@ class BasePostAdmin(BaseAdmin):
         "published_at",
     ]
 
-    editable_fields = (
+    editable_fields = [
         "slug",
         "allow_outgoing_webmentions",
         "is_published",
@@ -63,9 +63,9 @@ class BasePostAdmin(BaseAdmin):
         "content_script",
         "tags",
         "feeds",
-    )
+    ]
 
-    field_order = (
+    field_order = [
         "is_published",
         "published_at",
         "slug",
@@ -81,14 +81,14 @@ class BasePostAdmin(BaseAdmin):
         "hero_image",
         "hero_embedded_url",
         "hero_html",
-    )
-    field_groups = (
+    ]
+    field_groups = [
         ("published_at", "is_published", "allow_outgoing_webmentions"),
         ("color_vibrant", "color_muted"),
         ("slug", "old_slug"),
         ("created_at", "modified_at"),
         ("id", "api_id"),
-    )
+    ]
 
     def attachments(self, obj):
         return obj.related_files.all().count()
@@ -122,7 +122,7 @@ class PostAdmin(BasePostAdmin):
 class AppPostAdmin(BasePostAdmin):
     inlines = PostAdmin.inlines + [inline.AppResourceInline]
 
-    editable_fields = PostAdmin.editable_fields + (
+    editable_fields = PostAdmin.editable_fields + [
         "icon",
         "codename",
         "script",
@@ -130,7 +130,7 @@ class AppPostAdmin(BasePostAdmin):
         "script_is_widget",
         "widget_style",
         "repository",
-    )
+    ]
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "script":
@@ -150,10 +150,10 @@ class AppPostAdmin(BasePostAdmin):
 
 @admin.register(ChangelogPost)
 class ChangelogPostAdmin(BasePostAdmin):
-    editable_fields = PostAdmin.editable_fields + (
+    editable_fields = PostAdmin.editable_fields + [
         "app",
         "version",
-    )
+    ]
 
 
 @admin.register(Feed)

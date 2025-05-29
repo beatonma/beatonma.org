@@ -78,7 +78,7 @@ class BaseAdmin(SortableAdminBase, admin.ModelAdmin):
         js = ["https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"]
         css = {"all": ["common/admin.css"]}
 
-    def __init__(self, model, admin_site):
+    def __init__(self, model: Type[models.Model], admin_site: admin.AdminSite):
         super().__init__(model, admin_site)
 
         if self.readonly_fields:
@@ -105,7 +105,9 @@ class BaseAdmin(SortableAdminBase, admin.ModelAdmin):
             )
             self.fields = None
 
-    def init_fields(self, model) -> tuple[list[str], list[str], list[str]]:
+    def init_fields(
+        self, model: Type[models.Model]
+    ) -> tuple[list[str], list[str], list[str]]:
         """Get all fields for this model, ordered by `field_order`."""
 
         def _is_excluded_class(x):
@@ -114,6 +116,7 @@ class BaseAdmin(SortableAdminBase, admin.ModelAdmin):
                 for cls in [
                     GenericRelation,
                     models.ManyToManyRel,
+                    models.ManyToOneRel,
                 ]
             )
 
