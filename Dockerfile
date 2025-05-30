@@ -199,6 +199,9 @@ ENTRYPOINT ["/entrypoint.sh"]
 ###
 FROM production_nextjs AS test_nextjs
 
+###
+FROM production_nginx AS test_nginx
+
 
 ###
 FROM cypress/included AS test_cypress

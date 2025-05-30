@@ -11,10 +11,10 @@ source ./tools/bma/common.sh
 
 
 jest() {
-  docker_compose run --rm --entrypoint="npm run jest" next
+  docker_compose run --rm --entrypoint="npm run jest" jest
 }
 jestWatch() {
-  docker_compose --profile=watch run --rm jest
+  docker_compose run --rm --entrypoint="npm run jest:watch" jest
 }
 
 django() {

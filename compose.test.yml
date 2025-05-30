@@ -37,16 +37,14 @@ services:
     extends:
       file: compose.common.yml
       service: next
-    profiles:
-      - "watch"
-    entrypoint: ["npm", "run", "jest:watch"]
+    entrypoint: ["npm", "run", "jest"]
     volumes:
       - "./frontend:/app"
 
   nginx:
     <<: *common
     build:
-      target: dev_nginx
+      target: test_nginx
     extends:
       file: compose.common.yml
       service: nginx

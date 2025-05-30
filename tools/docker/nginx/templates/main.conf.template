@@ -49,7 +49,7 @@ server {
     listen 80;
     listen [::]:80;
 
-    server_name localhost nginx-server-tests;
+    server_name localhost nginx nginx-server-tests;
 
     client_max_body_size 8M;
     client_body_timeout 5s;
