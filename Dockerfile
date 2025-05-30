@@ -57,9 +57,9 @@ RUN apk add --no-cache \
 ARG PYTHON_VERSION
 COPY --from=builder_django /usr/local/lib/python${PYTHON_VERSION}/site-packages /usr/local/lib/python${PYTHON_VERSION}/site-packages
 
-RUN addgroup --system django \
+RUN addgroup -g 19283 docker_bma \
     && mkdir -p /var/log/beatonma/ \
-    && chown :django /var/log/beatonma/ \
+    && chown :docker_bma /var/log/beatonma/ \
     && chmod 2775 /var/log/beatonma/
 WORKDIR /django
 
@@ -108,7 +108,7 @@ COPY ./beatonma-django /django
 FROM production_core_django AS production_django
 
 COPY ./tools/docker/django/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh && adduser -S django -G django
+RUN chmod +x /entrypoint.sh && adduser -S django -G docker_bma
 USER django
 
 ENTRYPOINT ["/entrypoint.sh"]
@@ -117,7 +117,7 @@ ENTRYPOINT ["/entrypoint.sh"]
 ###
 FROM production_core_django AS production_celery
 
-RUN adduser -S celery -G django
+RUN adduser -S celery -G docker_bma
 USER celery
 
 ENTRYPOINT ["python", "-m", "celery", "-A", "beatonma", "worker", "-l", "info"]
@@ -148,7 +148,7 @@ ENTRYPOINT ["python", "/tmp/config_tests/runtests.py"]
 ###
 FROM production_core_django AS production_crontab
 
-RUN adduser -S cronuser -G django
+RUN adduser -S cronuser -G docker_bma
 WORKDIR /cron/
 COPY ./tools/docker/cron/cron-schedule /tmp/
 COPY --chown=cronuser --chmod=+x ./tools/docker/cron/crontab/*.sh /cron/

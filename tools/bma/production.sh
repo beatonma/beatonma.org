@@ -3,6 +3,7 @@ export FILE_ENV=".env.production"
 export BUILD_TYPE="production"
 
 POSTGRES_CONTAINER_NAME="postgres"
+DOCKER_REMOTE_CONTEXT="bma"
 
 usage="$(basename "$0") production
   shell            Open a shell in the running Django container.
