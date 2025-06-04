@@ -6,6 +6,7 @@ import {
 } from "react";
 import Icon, { AppIcon } from "@/components/icon";
 import { OnClickMediaContext } from "@/components/media/context";
+import { getPlaintextSummaryFromHtml } from "@/components/opengraph/text";
 import { DivProps, DivPropsNoChildren } from "@/types/react";
 import { onlyIf } from "@/util/optional";
 import { addClass, classes } from "@/util/transforms";
@@ -92,7 +93,11 @@ const ImageView = (props: MediaViewProps & ImageProps) => {
     <MediaWrapper {...rest}>
       <img
         src={src}
-        alt={media.description ?? ""}
+        alt={
+          media.description
+            ? (getPlaintextSummaryFromHtml(media.description) ?? "")
+            : ""
+        }
         className={classes(fitStyle, "size-full")}
       />
     </MediaWrapper>

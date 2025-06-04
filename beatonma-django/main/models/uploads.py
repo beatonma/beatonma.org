@@ -10,36 +10,11 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.utils import timezone
 from main.forms import SanitizedFileField
-from main.models.mixins.media_upload import (
-    AUDIO_PATTERN,
-    IMAGE_PATTERN,
-    TEXT_PATTERN,
-    VIDEO_PATTERN,
-    UploadedMediaMixin,
-)
+from main.models.formats import Formats
+from main.models.mixins.media_upload import MediaType, UploadedMediaMixin
 from PIL import Image
 
 THUMBNAIL_SIZE = (800, 800)
-
-
-class MediaType(models.TextChoices):
-    Audio = "audio"
-    Video = "video"
-    Image = "image"
-    Text = "text"
-    Unknown = "unknown"
-
-    @classmethod
-    def from_filename(cls, filename: str) -> "MediaType":
-        if IMAGE_PATTERN.match(filename):
-            return MediaType.Image
-        if VIDEO_PATTERN.match(filename):
-            return MediaType.Video
-        if AUDIO_PATTERN.match(filename):
-            return MediaType.Audio
-        if TEXT_PATTERN.match(filename):
-            return MediaType.Text
-        return MediaType.Unknown
 
 
 def default_upload_to(instance: "BaseUploadedFile", filename) -> str:
@@ -89,7 +64,7 @@ class BaseUploadedFile(UploadedMediaMixin, ApiEditable, BaseModel):
     )
     type = models.CharField(
         max_length=10,
-        choices=MediaType,
+        choices=MediaType.choices,
         default=MediaType.Unknown,
     )
 
@@ -103,10 +78,12 @@ class BaseUploadedFile(UploadedMediaMixin, ApiEditable, BaseModel):
     def file_or_none(self):
         if self.file:
             return self.file
+        return None
 
     def thumbnail_or_none(self):
         if self.thumbnail:
             return self.thumbnail
+        return None
 
     def url(self):
         return self.file.url
@@ -116,6 +93,8 @@ class BaseUploadedFile(UploadedMediaMixin, ApiEditable, BaseModel):
             self.original_filename = self.file.name
 
         self.type = MediaType.from_filename(self.file.name)
+        if self.description:
+            self.description = Formats.to_html(self.description)
 
         if not self.thumbnail:
             self.generate_thumbnail(THUMBNAIL_SIZE)
@@ -169,9 +148,3 @@ class RelatedFilesMixin(models.Model):
         abstract = True
 
     related_files = GenericRelation(RelatedFile)
-
-    def file_urls(self) -> str:
-        return ";".join(self.file_url_list())
-
-    def file_url_list(self) -> list:
-        return [x.url() for x in self.related_files.all()]

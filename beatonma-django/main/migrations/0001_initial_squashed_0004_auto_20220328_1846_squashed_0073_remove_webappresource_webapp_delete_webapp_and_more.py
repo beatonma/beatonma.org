@@ -362,7 +362,7 @@ class Migration(migrations.Migration):
                 null=True,
                 quality=75,
                 size=(800, 800),
-                upload_to=main.models.related_file.default_upload_to,
+                upload_to=main.models.uploads.default_upload_to,
             ),
         ),
         migrations.AlterField(
@@ -381,7 +381,7 @@ class Migration(migrations.Migration):
             field=main.forms.sanitized_filefield.SanitizedFileField(
                 quality=75,
                 size=[2560, 2560],
-                upload_to=main.models.related_file.default_upload_to,
+                upload_to=main.models.uploads.default_upload_to,
             ),
         ),
         migrations.CreateModel(
@@ -412,7 +412,7 @@ class Migration(migrations.Migration):
                     main.forms.sanitized_filefield.SanitizedFileField(
                         quality=75,
                         size=[2560, 2560],
-                        upload_to=main.models.related_file.default_upload_to,
+                        upload_to=main.models.uploads.default_upload_to,
                     ),
                 ),
                 (
@@ -422,7 +422,7 @@ class Migration(migrations.Migration):
                         null=True,
                         quality=75,
                         size=(800, 800),
-                        upload_to=main.models.related_file.default_upload_to,
+                        upload_to=main.models.uploads.default_upload_to,
                     ),
                 ),
                 (

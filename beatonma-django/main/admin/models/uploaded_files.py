@@ -3,7 +3,7 @@ import logging
 from common.admin import BaseAdmin
 from django.contrib import admin
 from main.admin.util import media_preview
-from main.models.related_file import RelatedFile, UploadedFile
+from main.models.uploads import RelatedFile, UploadedFile
 
 log = logging.getLogger(__name__)
 

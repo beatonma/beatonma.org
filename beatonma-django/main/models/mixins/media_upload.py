@@ -16,6 +16,26 @@ IMAGE_PATTERN = re.compile(r".*\.(jpe?g|png|svg|webp)$")
 TEXT_PATTERN = re.compile(r".*\.(md|txt)$")
 
 
+class MediaType(models.TextChoices):
+    Audio = "audio"
+    Video = "video"
+    Image = "image"
+    Text = "text"
+    Unknown = "unknown"
+
+    @classmethod
+    def from_filename(cls, filename: str) -> "MediaType":
+        if IMAGE_PATTERN.match(filename):
+            return MediaType.Image
+        if VIDEO_PATTERN.match(filename):
+            return MediaType.Video
+        if AUDIO_PATTERN.match(filename):
+            return MediaType.Audio
+        if TEXT_PATTERN.match(filename):
+            return MediaType.Text
+        return MediaType.Unknown
+
+
 class UploadedMediaQuerySet(QuerySet):
     def delete(self):
         for resource in self.all():

@@ -1,4 +1,5 @@
-from main.models.related_file import BaseUploadedFile, MediaType
+from main.models.mixins.media_upload import MediaType
+from main.models.uploads import BaseUploadedFile
 from ninja import Field, Schema
 
 type Url = str

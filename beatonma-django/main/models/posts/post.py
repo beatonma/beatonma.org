@@ -16,7 +16,7 @@ from django.urls import reverse
 from main.models.formats import FormatMixin, Formats
 from main.models.link import LinkedMixin
 from main.models.mixins import ThemeableMixin
-from main.models.related_file import RelatedFilesMixin
+from main.models.uploads import RelatedFilesMixin
 from mentions.models.mixins import MentionableMixin
 
 from .feed import Feed, FeedsMixin

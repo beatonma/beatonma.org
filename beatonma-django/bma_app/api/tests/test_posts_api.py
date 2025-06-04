@@ -126,7 +126,7 @@ class CreatePostTests(ApiTestCase):
         response = self.post_request(
             content="api post with media",
             file=_file(),
-            file_description="Drf description",
+            file_description="<p>Drf description</p>",
         )
 
         self.assertEqual(response.status_code, http.STATUS_201_CREATED)
@@ -134,7 +134,7 @@ class CreatePostTests(ApiTestCase):
         file: RelatedFile = post.related_files.first()
 
         self.assertRegex(str(file.file), r"related/\d{4}/[-\w]+\.\w+$")
-        self.assertEqual(file.description, "Drf description")
+        self.assertEqual(file.description, "<p>Drf description</p>")
 
     def test_edit_post_partial(self):
         post = Post.objects.create(content="unchanged :)", is_published=False)
@@ -177,14 +177,14 @@ class PostMediaTests(ApiTestCase):
             {
                 "token": self.token,
                 "file": _file(),
-                "file_description": "Added later",
+                "file_description": "<p>Added later</p>",
             },
         )
 
         self.assertEqual(response.status_code, http.STATUS_201_CREATED)
         file: RelatedFile = post.related_files.first()
 
-        self.assertEqual(file.description, "Added later")
+        self.assertEqual(file.description, "<p>Added later</p>")
 
     def test_delete_media(self):
         post = Post.objects.create(content="delete the media")
@@ -209,7 +209,7 @@ class PostMediaTests(ApiTestCase):
         )
         self.assertEqual(response.status_code, http.STATUS_200_OK)
         file.refresh_from_db()
-        self.assertEqual(file.description, "edited!")
+        self.assertEqual(file.description, "<p>edited!</p>")
 
 
 def _file():
