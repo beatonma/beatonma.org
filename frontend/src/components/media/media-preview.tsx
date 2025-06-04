@@ -61,7 +61,11 @@ const MiniThumbnailOverlay = (props: DivProps) => {
 const PreviewOne = (props: DivPropsNoChildren<{ media: MediaFile }>) => {
   const { media, ...rest } = props;
   return (
-    <MediaThumbnail media={media} {...addClass(rest, "overflow-hidden")} />
+    <MediaThumbnail
+      media={media}
+      video={{ autoPlay: true, loop: true }}
+      {...addClass(rest, "overflow-hidden")}
+    />
   );
 };
 
@@ -72,7 +76,11 @@ const PreviewTwo = (props: DivPropsNoChildren<{ media: MediaGroup<2> }>) => {
 
   return (
     <div {...rest}>
-      <MediaThumbnail media={one} className="overflow-hidden" />
+      <MediaThumbnail
+        media={one}
+        className="overflow-hidden"
+        video={{ autoPlay: true, loop: true }}
+      />
 
       <MiniThumbnailOverlay>
         <MediaThumbnail media={two} className={`${PreviewMiniStyle}`} />
@@ -88,7 +96,11 @@ const PreviewThree = (props: DivPropsNoChildren<{ media: MediaGroup<3> }>) => {
 
   return (
     <div {...rest}>
-      <MediaThumbnail media={one} className="overflow-hidden" />
+      <MediaThumbnail
+        media={one}
+        className="overflow-hidden"
+        video={{ autoPlay: true, loop: true }}
+      />
 
       <MiniThumbnailOverlay>
         <MediaThumbnail media={two} className={PreviewMiniStyle} />

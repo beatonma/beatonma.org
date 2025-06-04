@@ -1,39 +1,27 @@
-import {
-  ComponentPropsWithoutRef,
-  MouseEvent,
-  ReactNode,
-  useContext,
-} from "react";
+import { MouseEvent, ReactNode, useContext } from "react";
 import Icon, { AppIcon } from "@/components/icon";
 import { OnClickMediaContext } from "@/components/media/context";
 import { getPlaintextSummaryFromHtml } from "@/components/opengraph/text";
-import { DivProps, DivPropsNoChildren } from "@/types/react";
+import { DivProps, DivPropsNoChildren, Props } from "@/types/react";
 import { onlyIf } from "@/util/optional";
 import { addClass, classes } from "@/util/transforms";
 import { MediaFile, OnClickMedia } from "./types";
 
-interface MediaProps {
-  media: MediaFile;
-}
-type MediaViewProps = DivPropsNoChildren<MediaProps>;
-
+type MediaProps = DivPropsNoChildren<{ media: MediaFile }>;
 interface ImageProps {
   image?: {
     useThumbnail?: boolean;
     fit?: MediaFile["fit"];
   };
 }
-type VideoOptions = Pick<
-  ComponentPropsWithoutRef<"video">,
-  "autoPlay" | "loop"
->;
+type VideoOptions = Pick<Props<"video">, "autoPlay" | "loop" | "controls"> & {
+  fit?: MediaFile["fit"];
+};
 interface VideoProps {
   video?: VideoOptions;
 }
 
-export default function MediaView(
-  props: MediaViewProps & ImageProps & VideoProps,
-) {
+export default function MediaView(props: MediaProps & ImageProps & VideoProps) {
   const { image, video, ...rest } = addClass(props, "relative");
 
   const views: Record<MediaFile["type"], () => ReactNode> = {
@@ -45,9 +33,11 @@ export default function MediaView(
   };
   return views[props.media.type]();
 }
-export const MediaThumbnail = (props: MediaViewProps & ImageProps) => {
+export const MediaThumbnail = (props: MediaProps & ImageProps & VideoProps) => {
   const {
     media,
+    image,
+    video,
     onClick: propsOnClick,
     ...rest
   } = addClass(props, "size-full");
@@ -60,21 +50,31 @@ export const MediaThumbnail = (props: MediaViewProps & ImageProps) => {
       handler(media);
     });
 
-  if (!media.thumbnail_url) {
-    return <Placeholder media={media} onClick={onClick} {...rest} />;
+  switch (media.type) {
+    case "image":
+      return (
+        <ImageView
+          media={media}
+          image={{ ...image, useThumbnail: true }}
+          onClick={onClick}
+          {...rest}
+        />
+      );
+    case "video":
+      return (
+        <VideoView
+          media={media}
+          video={{ ...video, controls: false, fit: "cover" }}
+          onClick={onClick}
+          {...rest}
+        />
+      );
+    default:
+      return <Placeholder media={media} onClick={onClick} {...rest} />;
   }
-
-  return (
-    <ImageView
-      media={props.media}
-      image={{ useThumbnail: true }}
-      onClick={onClick}
-      {...rest}
-    />
-  );
 };
 
-const ImageView = (props: MediaViewProps & ImageProps) => {
+const ImageView = (props: MediaProps & ImageProps) => {
   const { media, image, ...rest } = props;
   const useThumbnail = image?.useThumbnail ?? false;
 
@@ -104,11 +104,23 @@ const ImageView = (props: MediaViewProps & ImageProps) => {
   );
 };
 
-const VideoView = (props: MediaViewProps & VideoProps) => {
+const VideoView = (props: MediaProps & VideoProps) => {
   const { media, video, ...rest } = props;
+
+  const fitStyle = {
+    cover: "object-cover",
+    contain: "object-contain",
+  }[video?.fit ?? media.fit ?? "contain"];
+
   return (
     <MediaWrapper {...rest}>
-      <video className="size-full" src={media.url} muted controls {...video} />
+      <video
+        className={classes(fitStyle, "size-full")}
+        src={media.url}
+        muted
+        controls
+        {...video}
+      />
     </MediaWrapper>
   );
 };
@@ -117,7 +129,7 @@ const MediaWrapper = (props: DivPropsNoChildren) => {
   return <div {...addClass(props, "overflow-hidden [&>img,&>video]:m-0")} />;
 };
 
-const AudioView = (props: MediaViewProps) => {
+const AudioView = (props: MediaProps) => {
   const { media, ...rest } = props;
   return (
     <div {...rest}>
@@ -131,9 +143,9 @@ const AudioView = (props: MediaViewProps) => {
   );
 };
 
-const TextView = (props: MediaViewProps) => <BlobDownloadView {...props} />;
+const TextView = (props: MediaProps) => <BlobDownloadView {...props} />;
 
-const BlobDownloadView = (props: MediaViewProps) => {
+const BlobDownloadView = (props: MediaProps) => {
   const { media, ...rest } = addClass(props, "block");
 
   return (
