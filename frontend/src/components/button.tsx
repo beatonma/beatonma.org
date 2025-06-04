@@ -29,6 +29,7 @@ type ButtonLinkProps = ButtonContentProps &
   Props<typeof ExternalLink, { href: string | Nullish }, "onClick">;
 
 export type ButtonProps = ButtonContentProps &
+  ButtonColors &
   (Props<"button"> | ButtonLinkProps | PropsExcept<"div", "onClick">);
 
 /**
@@ -46,7 +47,7 @@ export const InlineButton = (props: ButtonProps) => {
 /**
  * A typical button with customisable colors.
  */
-export const Button = (props: ButtonProps & ButtonColors) => {
+export const Button = (props: ButtonProps) => {
   const { colors, ...rest } = addClass(
     props,
     "rounded-md px-2 py-1 min-w-[2em] min-h-[2em]",
@@ -81,7 +82,7 @@ export const InlineLink = (props: ButtonLinkProps) => {
   );
 };
 
-const BaseButton = (props: ButtonProps & ButtonColors) => {
+const BaseButton = (props: ButtonProps) => {
   const {
     icon,
     tooltip,

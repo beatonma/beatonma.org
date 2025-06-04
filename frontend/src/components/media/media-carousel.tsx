@@ -1,16 +1,17 @@
 "use client";
 
-import { ComponentPropsWithRef, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { Button } from "@/components/button";
 import { useFadeIn } from "@/components/hooks/animation";
 import { useClient } from "@/components/hooks/environment";
 import useSwipe from "@/components/hooks/swipe";
 import useWheel from "@/components/hooks/wheel";
+import { AppIcon } from "@/components/icon";
 import { Row } from "@/components/layout";
 import MediaView, { MediaThumbnail } from "@/components/media/media-view";
 import { MediaFile } from "@/components/media/types";
 import Optional from "@/components/optional";
-import { DivPropsNoChildren } from "@/types/react";
+import { DivPropsNoChildren, PropsWithRef } from "@/types/react";
 import { onlyIf } from "@/util/optional";
 import { addClass, classes } from "@/util/transforms";
 
@@ -62,19 +63,14 @@ const ControlledCarousel = (props: DivPropsNoChildren<MediaCarouselProps>) => {
   return (
     <div {...addClass(rest, "grid grid-cols-1 grid-rows-[1fr_auto] gap-4")}>
       <div
-        className="relative overflow-hidden max-h-full"
+        className="overflow-hidden max-h-full"
         {...swipeNavigation}
         {...wheelNavigation}
       >
-        <CarouselItem media={media[focusIndex]} />
-        <Optional
-          value={media.length > 1}
-          block={() => (
-            <CarouselControls
-              navigatePrevious={navigatePrevious}
-              navigateNext={navigateNext}
-            />
-          )}
+        <CarouselItem
+          media={media[focusIndex]}
+          navigatePrevious={media.length > 1 ? navigatePrevious : undefined}
+          navigateNext={media.length > 1 ? navigateNext : undefined}
         />
       </div>
 
@@ -108,12 +104,17 @@ const NoscriptCarousel = (props: DivPropsNoChildren<MediaCarouselProps>) => {
 };
 
 const CarouselItem = (
-  props: { media: MediaFile } & Omit<
-    ComponentPropsWithRef<"figure">,
+  props: PropsWithRef<
+    "figure",
+    {
+      media: MediaFile;
+      navigatePrevious?: (() => void) | undefined;
+      navigateNext?: (() => void) | undefined;
+    },
     "children"
   >,
 ) => {
-  const { ref, media, ...rest } = props;
+  const { ref, media, navigatePrevious, navigateNext, ...rest } = props;
   const animation = useFadeIn(media);
 
   return (
@@ -125,53 +126,61 @@ const CarouselItem = (
         animation,
       )}
     >
-      <MediaView
-        media={media}
-        image={{ fit: "contain" }}
-        video={{ autoPlay: true, loop: true }}
-        className="max-h-full min-w-64 self-center size-full overflow-hidden"
-      />
+      <div className="relative max-h-full overflow-hidden [--button-margin:--spacing(2)]">
+        <MediaView
+          media={media}
+          image={{ fit: "contain" }}
+          video={{ autoPlay: true, loop: true }}
+          className="max-h-full min-w-64 self-center size-full overflow-hidden"
+        />
+
+        <Optional
+          value={navigatePrevious}
+          block={(onClick) => (
+            <ControlButton
+              icon="ChevronLeft"
+              onClick={onClick}
+              className="absolute bottom-(--button-margin) left-(--button-margin)"
+            />
+          )}
+        />
+        <Optional
+          value={navigateNext}
+          block={(onClick) => (
+            <ControlButton
+              icon="ChevronRight"
+              onClick={onClick}
+              className="absolute bottom-(--button-margin) right-(--button-margin)"
+            />
+          )}
+        />
+      </div>
 
       {onlyIf(media.description, (description) => (
         <figcaption className="surface p-4 self-justify-center">
-          <p className="font-bold text-lg readable max-h-[3lh] overflow-y-auto scrollbar mx-auto">
-            {description}
-          </p>
+          <div
+            className="font-bold text-lg readable max-h-[3lh] overflow-y-auto scrollbar mx-auto"
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
         </figcaption>
       ))}
     </figure>
   );
 };
 
-interface CarouselControlsProps {
-  navigateNext: () => void;
-  navigatePrevious: () => void;
-}
-const CarouselControls = (props: CarouselControlsProps) => {
-  const { navigateNext, navigatePrevious } = props;
-
-  const buttonColors = "hover-surface-scrim";
-  const buttonClass = "text-2xl border-1 border-current/20";
-
+const ControlButton = (
+  props: DivPropsNoChildren<{ icon: AppIcon; onClick: () => void }>,
+) => {
+  const { icon, onClick, ...rest } = props;
   return (
-    <>
-      <div className="absolute bottom-0 start-0 m-2">
-        <Button
-          icon="ChevronLeft"
-          onClick={navigatePrevious}
-          colors={buttonColors}
-          className={buttonClass}
-        />
-      </div>
-      <div className="absolute bottom-0 end-0 m-2">
-        <Button
-          icon="ChevronRight"
-          onClick={navigateNext}
-          colors={buttonColors}
-          className={buttonClass}
-        />
-      </div>
-    </>
+    <div {...rest}>
+      <Button
+        icon={icon}
+        onClick={onClick}
+        colors="hover-surface-scrim"
+        className="text-2xl border-1 border-current/20"
+      />
+    </div>
   );
 };
 
