@@ -51,9 +51,9 @@ migrate</code> required for new fields.</p></div>
         )
 
     def test_markdown(self):
-        markdown = """This site uses Django, PostgreSQL, Celery and Redis on the back end. The front end is build with NextJS, Typescript, React and Tailwind. Nginx and Docker Compose tie it all together.
+        markdown = """This site uses [Django], [PostgreSQL], [Celery] and [Redis] on the back end. The front end is build with [NextJS], [Typescript], [React] and [Tailwind]. [Nginx] and [Docker Compose] tie it all together.
 
-beatonma.org is built with the indieweb in mind. It supports microformats and webmentions (via my django library, django-wm).
+[beatonma.org] is built with the [indieweb] in mind. It supports [microformats] and [webmentions] (via my django library, [django-wm]).
 
 beatonma.org is hosted on a VPS in the UK by a European company.
 """
@@ -87,23 +87,27 @@ library, <a href="https://github.com/beatonma/django-wm">django-wm</a>).</p>
             '<p>something about <a href="https://beatonma.org">beatonma.org</a>?</p>',
         )
         self.assert_md(
-            "something about redistributing redis!",
+            "something about redistributing [redis]!",
             '<p>something about redistributing <a href="https://redis.io">redis</a>!</p>',
         )
         self.assert_md(
-            "NGINX is a thing",
+            "Only react to [react], not React",
+            '<p>Only react to <a href="https://reactjs.org">react</a>, not React',
+        )
+        self.assert_md(
+            "[NGINX] is a thing",
             '<p><a href="https://www.nginx.com">NGINX</a> is a thing</p>',
         )
         self.assert_md(
-            "Tailwind",
+            "[Tailwind]",
             '<p><a href="https://tailwindcss.com">Tailwind</a></p>',
         )
         self.assert_md(
-            "tailwindcss",
+            "[tailwindcss]",
             '<p><a href="https://tailwindcss.com">tailwindcss</a></p>',
         )
         self.assert_md(
-            "Tailwind CSS",
+            "[Tailwind CSS]",
             '<p><a href="https://tailwindcss.com">Tailwind CSS</a></p>',
         )
 

@@ -121,7 +121,7 @@ class LinkifyKeywordsTests(BaseFormatsTestCase):
 
     def test_replace_similar(self):
         self.assert_html_links_to(
-            self.format_html("docker compose and docker should be different links"),
+            self.format_html("[docker compose] and [docker] should be different links"),
             {
                 "https://github.com/docker/compose",
                 "https://www.docker.com",
@@ -129,7 +129,7 @@ class LinkifyKeywordsTests(BaseFormatsTestCase):
         )
 
         self.assert_html(
-            "microformat and microformats",
+            "[microformat] and microformats",
             """<a href="https://microformats.org">microformat</a> and microformats""",
         )
 
@@ -148,14 +148,18 @@ class LinkifyKeywordsTests(BaseFormatsTestCase):
             "This is stuff about beatonma.org.",
             f"This is stuff about {self.EXPECTED_LINK}.",
         )
+        self.assert_html(
+            "This is stuff about [beatonma.org].",
+            f"This is stuff about {self.EXPECTED_LINK}.",
+        )
 
         linked = self.format_html(
-            """This site is powered by Django, Celery, Nginx and PostgreSQL, running as a Docker Compose project on
-            Lightsail.
+            """This site is powered by [Django], [Celery], [Nginx] and [PostgreSQL], running as a [Docker Compose] project on
+            [Lightsail].
 
-The front end is built with a mixture of Sass, React and Typescript, preprocessed with Gulp and Webpack.
+The front end is built with a mixture of [Sass], [React] and [Typescript], preprocessed with [Gulp] and [Webpack].
 
-beatonma.org is built with the Indieweb in mind. It supports Microformats and Webmentions (via my library, django-wm).""",
+beatonma.org is built with the [Indieweb] in mind. It supports [Microformats] and [Webmentions] (via my library, [django-wm]).""",
         )
         self.assert_html_links_to(linked, "https://beatonma.org", "beatonma.org")
         self.assert_html_links_to(

@@ -63,13 +63,34 @@ class LinkifyPattern:
     only_first: bool
 
     def __init__(
-        self, pattern: str, replacement: RegexReplacement, only_first: bool = False
+        self,
+        pattern: str,
+        replacement: RegexReplacement,
+        *,
+        require_brackets: bool = False,
+        only_first: bool = False,
     ):
-        self.pattern = re.compile(
-            rf"(^|(?<=\s|\())(?P<matched>{pattern})(?=$|[,.;:!?\s)])", re.IGNORECASE
-        )
+        if require_brackets:
+            self.pattern = re.compile(
+                rf"(^|(?<=\s|\())\[(?P<matched>{pattern})](?=$|[,.;:!?\s)])",
+                re.IGNORECASE,
+            )
+        else:
+            self.pattern = re.compile(
+                rf"(^|(?<=\s|\())\[?(?P<matched>{pattern})]?(?=$|[,.;:!?\s)])",
+                re.IGNORECASE,
+            )
         self.replacement = replacement
         self.only_first = only_first
+
+
+def LinkifyWordOrPhrase(
+    pattern: str, replacement: RegexReplacement, only_first: bool = False
+) -> LinkifyPattern:
+    """Linkify matches only if they are wrapped in [square brackets]."""
+    return LinkifyPattern(
+        pattern, replacement, only_first=only_first, require_brackets=True
+    )
 
 
 type LinkifyPatterns = Iterable[LinkifyPattern]
@@ -89,27 +110,27 @@ _LINKIFY_PATTERNS: LinkifyPatterns = [
     # Tags
     LinkifyPattern(rf"#(?P<tag>[a-zA-Z][-\w]+)", navigation.tag(tag=r"\g<tag>")),
     # keywords
-    LinkifyPattern(r"beatonma\.org", "https://beatonma.org", True),
-    LinkifyPattern(r"Celery", "https://docs.celeryq.dev", True),
-    LinkifyPattern(r"django-wm", "https://github.com/beatonma/django-wm", True),
-    LinkifyPattern(r"Django", "https://www.djangoproject.com", True),
-    LinkifyPattern(r"Docker Compose", "https://github.com/docker/compose", True),
-    LinkifyPattern(r"Docker", "https://www.docker.com", True),
-    LinkifyPattern(r"Gulp", "https://gulpjs.com", True),
-    LinkifyPattern(r"Indieweb", "https://indieweb.org", True),
-    LinkifyPattern(r"Lightsail", "https://aws.amazon.com/lightsail", True),
-    LinkifyPattern(r"Microformats?", "https://microformats.org", True),
-    LinkifyPattern(r"NextJS", "https://nextjs.org", True),
-    LinkifyPattern(r"NGINX", "https://www.nginx.com", True),
-    LinkifyPattern(r"PostgreSQL", "https://postgreql.org", True),
-    LinkifyPattern(r"React", "https://reactjs.org", True),
-    LinkifyPattern(r"Redis", "https://redis.io", True),
-    LinkifyPattern(r"SASS", "https://sass-lang.com", True),
-    LinkifyPattern(r"Tailwind( ?css)?", "https://tailwindcss.com", True),
-    LinkifyPattern(r"Typescript", "https://typescriptlang.org", True),
-    LinkifyPattern(r"Webpack", "https://webpack.js.org", True),
-    LinkifyPattern(r"Webmentions?", "https://indieweb.org/Webmention", True),
-    LinkifyPattern(URL_REGEX, r"\g<0>"),
+    LinkifyPattern(r"beatonma\.org", "https://beatonma.org", only_first=True),
+    LinkifyWordOrPhrase(r"Celery", "https://docs.celeryq.dev"),
+    LinkifyWordOrPhrase(r"django-wm", "https://github.com/beatonma/django-wm"),
+    LinkifyWordOrPhrase(r"Django", "https://www.djangoproject.com"),
+    LinkifyWordOrPhrase(r"Docker Compose", "https://github.com/docker/compose"),
+    LinkifyWordOrPhrase(r"Docker", "https://www.docker.com"),
+    LinkifyWordOrPhrase(r"Gulp", "https://gulpjs.com"),
+    LinkifyWordOrPhrase(r"Indieweb", "https://indieweb.org"),
+    LinkifyWordOrPhrase(r"Lightsail", "https://aws.amazon.com/lightsail"),
+    LinkifyWordOrPhrase(r"Microformats?", "https://microformats.org"),
+    LinkifyWordOrPhrase(r"NextJS", "https://nextjs.org"),
+    LinkifyWordOrPhrase(r"NGINX", "https://www.nginx.com"),
+    LinkifyWordOrPhrase(r"PostgreSQL", "https://postgreql.org"),
+    LinkifyWordOrPhrase(r"React", "https://reactjs.org"),
+    LinkifyWordOrPhrase(r"Redis", "https://redis.io"),
+    LinkifyWordOrPhrase(r"SASS", "https://sass-lang.com"),
+    LinkifyWordOrPhrase(r"Tailwind( ?css)?", "https://tailwindcss.com"),
+    LinkifyWordOrPhrase(r"Typescript", "https://typescriptlang.org"),
+    LinkifyWordOrPhrase(r"Webpack", "https://webpack.js.org"),
+    LinkifyWordOrPhrase(r"Webmentions?", "https://indieweb.org/Webmention"),
+    LinkifyPattern(URL_REGEX, r"\g<0>"),  # Raw links
 ]
 
 
