@@ -3,7 +3,7 @@ from unittest.mock import patch
 import navigation
 from basetest.testcase import LocalTestCase
 from django.core.cache import cache
-from main.models import Post
+from main.models import Feed, Post
 from main.tasks import sample_data
 
 
@@ -113,3 +113,6 @@ class WebpostHashtagTests(LocalTestCase):
         with patch.object(cache, "delete_pattern") as f:
             Post.objects.filter(title="note").delete()
             f.assert_called_once()
+
+    def test_default_feed_added_automatically(self):
+        Feed.objects.get(slug="posts")
