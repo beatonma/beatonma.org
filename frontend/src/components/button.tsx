@@ -194,5 +194,9 @@ const ButtonIcon = (props: ButtonContentProps & ClassNameProps) => {
     return <Icon icon={icon as AppIcon} {...rest} />;
   }
 
-  return <div {...addClass(rest, "size-em overflow-hidden")}>{icon}</div>;
+  return (
+    <div {...addClass(rest, "text-sm size-em leading-none overflow-hidden")}>
+      {icon}
+    </div>
+  );
 };

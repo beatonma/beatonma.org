@@ -175,6 +175,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/tags/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Tags */
+        get: operations["main_api_tags_tags"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/contact/": {
         parameters: {
             query?: never;
@@ -668,6 +685,13 @@ export interface components {
             region: string | null;
             /** Country */
             country: string | null;
+        };
+        /** TagDetail */
+        TagDetail: {
+            /** Name */
+            name: string;
+            /** Count */
+            count: number;
         };
         /** ContactForm */
         ContactForm: {
@@ -1171,6 +1195,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GlobalState"];
+                };
+            };
+        };
+    };
+    main_api_tags_tags: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TagDetail"][];
                 };
             };
         };
