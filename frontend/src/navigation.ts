@@ -11,6 +11,7 @@ const Navigation = {
   changelog: (slug: string) => `/changelog/${slug}/`,
   post: (slug: string) => `/posts/${slug}/`,
   posts: (params?: PostSearchParams) => `/${searchParams(params)}`,
+  feed: (params?: PostSearchParams) => `/feed/${searchParams(params)}`,
   tag: (tag: string) => Navigation.posts({ tag }),
   webmentionsTest: () => `/webmentions_tester/`,
 };
@@ -30,9 +31,11 @@ export const navigationHref = <T extends Navigable>(
 const searchParams = (params: Record<string, string | number> | undefined) => {
   if (!params) return "";
 
-  const formatted = Object.entries(params).map(
-    ([key, value]) => `${key}=${value}`,
-  );
+  const formatted = Object.entries(params)
+    .filter(([key, value]) => !!value)
+    .map(([key, value]) => `${key}=${value}`)
+    .join("&");
+  if (!formatted) return "";
   return `?${formatted}`;
 };
 

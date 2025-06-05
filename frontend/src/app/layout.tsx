@@ -11,12 +11,6 @@ export const metadata: Metadata = {
     template: `%s - ${process.env.NEXT_PUBLIC_SITE_NAME}`,
   },
   description: process.env.NEXT_PUBLIC_SITE_NAME,
-  alternates: {
-    canonical: "/",
-    types: {
-      "application/rss+xml": [{ url: "/feed/", title: "" }],
-    },
-  },
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
   },

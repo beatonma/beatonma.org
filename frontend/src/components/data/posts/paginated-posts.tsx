@@ -18,9 +18,12 @@ export default async function PaginatedPosts(
   });
   const state = await getOrNull("/api/state/");
 
-  const title =
-    onlyIf(query?.query, (q) => `'${q}'`) ??
-    onlyIf(query?.tag, (tag) => `#${tag}`);
+  const title = [
+    onlyIf(query?.tag, (tag) => `#${tag}`),
+    onlyIf(query?.query, (q) => `'${q}'`),
+  ]
+    .filter(Boolean)
+    .join(", ");
 
   // Hand off to InfinitePosts to handle pagination.
   return (

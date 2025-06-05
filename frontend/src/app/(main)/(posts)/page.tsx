@@ -4,6 +4,8 @@ import Github from "@/app/(main)/(posts)/_components/github";
 import PointsOfInterest from "@/app/(main)/(posts)/_components/poi";
 import PaginatedPosts from "@/components/data/posts";
 import Optional from "@/components/optional";
+import { navigationHref } from "@/navigation";
+import { onlyIf } from "@/util/optional";
 import { classes } from "@/util/transforms";
 import styles from "./page.module.css";
 
@@ -14,24 +16,43 @@ export async function generateMetadata({
 }: {
   searchParams: SearchParams;
 }): Promise<Metadata> {
-  const { query, tag } = (await searchParams)!;
+  const search = (await searchParams)!;
+  const { query, tag, feed } = search;
 
+  const alternates: Metadata["alternates"] = {
+    canonical: navigationHref("posts"),
+    types: {
+      "application/rss+xml": [
+        {
+          url: navigationHref("feed", { query, tag, feed }), // Link to feed with same filters applied, no pagination
+          title: "RSS feed",
+        },
+      ],
+    },
+  };
+
+  const description = ["Posts by Michael Beaton"];
+  if (feed) {
+    description.push(`categorised as '${feed}'`);
+  }
   if (tag) {
-    return {
-      title: `#${tag}`,
-      description: `Posts tagged with #${tag}`,
-    };
+    description.push(`tagged with #${tag}`);
   }
   if (query) {
-    return {
-      title: `${query}`,
-      description: `Results for search query '${query}'`,
-    };
+    description.push(`containing '${query}'`);
   }
+  const hasMultipleFilters =
+    [!!feed, !!tag, !!query].filter(Boolean).length > 1;
 
   return {
-    title: "Home",
-    description: "Posts by Michael Beaton",
+    title: hasMultipleFilters
+      ? "Posts"
+      : feed ||
+        onlyIf(query, `'${query}'`) ||
+        onlyIf(tag, `#${tag}`) ||
+        "Posts",
+    description: description.join(", "),
+    alternates,
   };
 }
 
