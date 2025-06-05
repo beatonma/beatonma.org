@@ -2,6 +2,7 @@ import re
 import uuid
 from typing import Literal
 
+import navigation
 from bs4 import BeautifulSoup
 from common.models import BaseModel, PublishedMixin, TaggableMixin
 from common.models.api import ApiEditable
@@ -12,7 +13,6 @@ from common.util import regex
 from common.util.pipeline import PipelineItem
 from django.db import models
 from django.db.models import Manager, QuerySet
-from django.urls import reverse
 from main.models.formats import FormatMixin, Formats
 from main.models.link import LinkedMixin
 from main.models.mixins import ThemeableMixin
@@ -148,7 +148,9 @@ class BasePost(
         return f"{self.published_at.strftime("%Y%m%d")}{uuid.uuid4().hex[:3]}"
 
     def get_absolute_url(self) -> str:
-        return reverse(self.qualified_name(), kwargs={"slug": self.slug})
+        raise NotImplementedError(
+            "Defer to function from `navigation` for to maintain consistency with frontend."
+        )
 
     @classmethod
     def resolve_from_url_kwargs(cls, slug: str):
@@ -182,6 +184,9 @@ class Post(FeedsMixin, BasePost):
         ("posts", "Everything"),
     ]
     feeds = models.ManyToManyField(Feed, related_name="posts", blank=True)
+
+    def get_absolute_url(self):
+        return navigation.post(self.slug)
 
     class Meta:
         ordering = ("-published_at",)

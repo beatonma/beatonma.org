@@ -4,6 +4,7 @@ import re
 from re import Match
 from urllib.parse import urljoin
 
+import navigation
 from bs4 import BeautifulSoup
 from common.models import BaseModel
 from common.models.generic import generic_fk
@@ -90,6 +91,9 @@ class AppPost(Post):
     def build_slug(self):
         return slugify(self.codename)
 
+    def get_absolute_url(self):
+        return navigation.app(self.slug)
+
     def save(self, *args, **kwargs):
         if self.pk:
             previous = AppPost.objects.get(pk=self.pk)
@@ -143,6 +147,9 @@ class ChangelogPost(Post):
     def build_slug(self):
         return slugify(f"{self.app.codename}_{self.version}".replace(".", "-"))
 
+    def get_absolute_url(self):
+        return navigation.changelog(self.slug)
+
     def extra_markdown_processors(self):
         extra = []
         if repo := self.app.repository:
@@ -171,7 +178,6 @@ class ChangelogPost(Post):
     def _linkify_github_issues(*, repo_url: str, markdown: str) -> str:
         def _sub(match: Match):
             issue = match.group("issue")
-            print(issue)
             href = urljoin(enforce_trailing_slash(repo_url), f"issues/{issue}")
             return f'<a href="{href}">#{issue}</a>'
 
