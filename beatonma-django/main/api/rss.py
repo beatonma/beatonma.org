@@ -1,6 +1,6 @@
 from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import Rss201rev2Feed
-from main.api.querysets import get_feed
+from main.api.querysets import get_feed, get_feed_filters
 
 
 class LatestUpdatesRichFeed(Rss201rev2Feed):
@@ -27,8 +27,14 @@ class LatestUpdatesFeed(Feed):
 
     feed_type = LatestUpdatesRichFeed
 
+    def get_object(self, request, *args, **kwargs):
+        self.filters = get_feed_filters(request.GET)
+        return None
+
     def items(self):
-        return get_feed()
+        feed = get_feed(**self.filters)
+        del self.filters
+        return feed
 
     def item_title(self, item):
         return item.title

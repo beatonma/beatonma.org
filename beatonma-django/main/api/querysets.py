@@ -9,14 +9,17 @@ log = logging.getLogger(__name__)
 type FeedItem = Post
 
 
+def get_feed_filters(params: dict) -> dict:
+    return {key: params.get(key) for key in ["query", "tag", "feed"]}
+
+
 def get_feed(
     *,
     query: str | None = None,
     tag: str | None = None,
     feed: str | None = None,
-    **kwargs,
 ) -> QuerySet[FeedItem]:
-    qs: QuerySet[FeedItem] = Post.objects.published().filter(**kwargs)
+    qs: QuerySet[FeedItem] = Post.objects.published()
 
     if feed:
         qs = qs.filter(feeds__slug=feed)
