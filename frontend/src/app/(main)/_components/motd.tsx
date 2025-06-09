@@ -5,9 +5,9 @@ import { Nullish } from "@/types";
 import { DivPropsNoChildren } from "@/types/react";
 
 export default function GlobalMotd(
-  props: { motd: string | Nullish } & Omit<
-    DivPropsNoChildren,
-    "dangerouslySetInnerHMTL"
+  props: DivPropsNoChildren<
+    { motd: string | Nullish },
+    "dangerouslySetInnerHTML"
   >,
 ) {
   const { motd: _motd, ...rest } = props;
