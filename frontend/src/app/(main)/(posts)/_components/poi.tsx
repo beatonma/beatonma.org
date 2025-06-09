@@ -2,7 +2,8 @@ import { getOrNull } from "@/api";
 import { InlineButton } from "@/components/button";
 import hoverUnderlineStyles from "@/components/css/hover-underline.module.css";
 import { DivPropsNoChildren } from "@/types/react";
-import { addClass, formatUrl } from "@/util/transforms";
+import { formatUrl } from "@/util/format/url";
+import { addClass } from "@/util/transforms";
 import styles from "./poi.module.css";
 
 export default async function PointsOfInterest(props: DivPropsNoChildren) {

@@ -3,8 +3,9 @@ import { InlineLink } from "@/components/button";
 import Optional from "@/components/optional";
 import ExternalLink from "@/components/third-party/link";
 import { DivPropsNoChildren } from "@/types/react";
+import { formatUrl } from "@/util/format/url";
 import { onlyIf } from "@/util/optional";
-import { addClass, formatUrl } from "@/util/transforms";
+import { addClass } from "@/util/transforms";
 
 interface WebmentionsProps {
   mentions: Webmention[];

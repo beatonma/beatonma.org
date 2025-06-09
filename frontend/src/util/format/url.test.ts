@@ -1,4 +1,4 @@
-import { formatUrl } from "@/util/transforms";
+import { formatUrl } from "@/util/format/url";
 
 describe("transforms", () => {
   test("formatUrl", () => {

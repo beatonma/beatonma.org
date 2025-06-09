@@ -12,7 +12,8 @@ import {
   Props,
   PropsExcept,
 } from "@/types/react";
-import { addClass, formatUrl } from "@/util/transforms";
+import { formatUrl } from "@/util/format/url";
+import { addClass } from "@/util/transforms";
 
 interface ButtonContentProps {
   icon?: AppIcon | ReactNode;

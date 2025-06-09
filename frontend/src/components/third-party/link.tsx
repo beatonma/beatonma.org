@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Nullish } from "@/types";
-import { Props, PropsExcept } from "@/types/react";
+import { Props } from "@/types/react";
+import { UrlFormatStyle, formatUrl } from "@/util/format/url";
 import { onlyIf } from "@/util/optional";
-import { UrlFormatStyle, formatUrl, joinNonEmpty } from "@/util/transforms";
+import { joinNonEmpty } from "@/util/transforms";
 
 interface ExternalLinkProps {
   follow?: boolean;

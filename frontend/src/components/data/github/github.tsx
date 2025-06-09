@@ -13,7 +13,7 @@ import { Row } from "@/components/layout";
 import ExternalLink from "@/components/third-party/link";
 import { DivProps, DivPropsNoChildren } from "@/types/react";
 import { testId } from "@/util";
-import { plural } from "@/util/plurals";
+import { plural } from "@/util/format/plurals";
 import { addClass } from "@/util/transforms";
 
 const TestTarget = {

@@ -1,7 +1,8 @@
 import { ComponentPropsWithoutRef } from "react";
 import { Nullish } from "@/types";
 import { DivPropsNoChildren } from "@/types/react";
-import { addClass, capitalize } from "@/util/transforms";
+import { capitalize } from "@/util/format/string";
+import { addClass } from "@/util/transforms";
 
 type ParseableDate = Date | string | number | Nullish;
 type DateFormat = "smart" | Intl.DateTimeFormat;

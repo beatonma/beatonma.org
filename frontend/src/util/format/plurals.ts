@@ -1,4 +1,4 @@
-import { int } from "@/components/number";
+import { int } from "./number";
 
 /**
  * [Single: ZeroOrMany]

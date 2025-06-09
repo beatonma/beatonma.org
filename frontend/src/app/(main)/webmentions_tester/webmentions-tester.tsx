@@ -9,8 +9,8 @@ import { Row } from "@/components/layout";
 import Prose from "@/components/prose";
 import ExternalLink from "@/components/third-party/link";
 import { DivPropsNoChildren, PropsExcept } from "@/types/react";
+import { plural } from "@/util/format/plurals";
 import { onlyIf } from "@/util/optional";
-import { plural } from "@/util/plurals";
 import { addClass } from "@/util/transforms";
 
 type TempMention = WebmentionTester["temporary_outgoing_mentions"][number];
