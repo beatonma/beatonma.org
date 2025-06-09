@@ -40,9 +40,9 @@ export default function MainLayout({
             className="[grid-area:title] whitespace-nowrap font-normal justify-self-start"
             id="top"
           >
-            <Link href={navigationHref("home")} className="no-underline">
+            <a href={navigationHref("home")} className="no-underline">
               {process.env.NEXT_PUBLIC_SITE_NAME}
-            </Link>
+            </a>
           </h1>
 
           <GlobalSearch containerClassName="[grid-area:search]" />
