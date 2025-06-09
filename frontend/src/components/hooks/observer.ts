@@ -1,17 +1,19 @@
 import { useEffect, useRef } from "react";
 
-export const useIntersectionObserverRef = <T extends HTMLElement>(
+export const useOnScrollIntoViewRef = <T extends HTMLElement = HTMLDivElement>(
   threshold: number,
-  onChange: (visibility: number) => void,
+  onScrollIntoView: () => void,
 ) => {
-  const infiniteScrollingRef = useRef<T>(null);
+  const elementRef = useRef<T>(null);
 
   useEffect(() => {
-    const target = infiniteScrollingRef.current;
+    const target = elementRef.current;
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          onChange(entry.intersectionRatio);
+          if (entry.isIntersecting) {
+            onScrollIntoView();
+          }
         }
       },
       { threshold },
@@ -26,7 +28,7 @@ export const useIntersectionObserverRef = <T extends HTMLElement>(
         observer.unobserve(target);
       }
     };
-  }, [threshold, onChange]);
+  }, [threshold, onScrollIntoView]);
 
-  return infiniteScrollingRef;
+  return elementRef;
 };

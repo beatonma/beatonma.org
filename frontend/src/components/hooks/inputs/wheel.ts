@@ -19,7 +19,7 @@ interface WheelHandlers {
   onWheelDown?: () => void;
   cooldownMillis?: number; // Cooldown between event firings
 }
-export default function useWheel(config: WheelHandlers): WheelEvents {
+export const useWheel = (config: WheelHandlers): WheelEvents => {
   const {
     onWheelLeft,
     onWheelRight,
@@ -74,4 +74,4 @@ export default function useWheel(config: WheelHandlers): WheelEvents {
   return {
     onWheel: onWheel,
   };
-}
+};

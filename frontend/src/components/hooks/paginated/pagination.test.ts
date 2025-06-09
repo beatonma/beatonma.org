@@ -5,7 +5,7 @@ import { generatePostPreviews } from "@/_dev/sampledata/posts";
 import {
   PaginationLoader,
   usePagination,
-} from "@/components/paginated/pagination";
+} from "@/components/hooks/paginated/pagination";
 
 const PageSize = 5;
 const data = generatePostPreviews(11);

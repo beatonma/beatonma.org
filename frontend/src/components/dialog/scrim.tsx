@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "@/components/dialog/dialog.module.css";
-import useKeyPress from "@/components/hooks/key";
+import { useKeyPress } from "@/components/hooks/inputs";
 import { DivProps } from "@/types/react";
 import { addClass } from "@/util/transforms";
 

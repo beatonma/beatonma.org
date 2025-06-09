@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import styles from "./animation.module.css";
+import styles from "./fade-in.module.css";
 
 /**
  * Returns a different (but equivalent) fade-in animation class each time

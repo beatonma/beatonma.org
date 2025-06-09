@@ -6,10 +6,10 @@ import React, {
   useState,
 } from "react";
 import { Button } from "@/components/button";
-import useKeyPress from "@/components/hooks/key";
+import { useKeyPress } from "@/components/hooks/inputs";
 import { AppIcon } from "@/components/icon";
 import type { SelectorDivProps } from "@/components/selector/types";
-import { DivProps, PropsExcept } from "@/types/react";
+import { DivProps } from "@/types/react";
 import { onlyIf } from "@/util/optional";
 import { addClass } from "@/util/transforms";
 

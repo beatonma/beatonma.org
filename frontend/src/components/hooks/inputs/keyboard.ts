@@ -6,7 +6,7 @@ type OnKeyPress = Record<
   (modifiers: Record<Modifier, boolean>) => void
 >;
 
-export default function useKeyPress(actions: OnKeyPress) {
+export const useKeyPress = (actions: OnKeyPress) => {
   useEffect(() => {
     const onKeyDown = (ev: KeyboardEvent) => {
       const action = actions[ev.key];
@@ -24,4 +24,4 @@ export default function useKeyPress(actions: OnKeyPress) {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [actions]);
-}
+};

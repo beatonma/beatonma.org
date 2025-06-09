@@ -1,15 +1,16 @@
 "use client";
 
-import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import React, { ReactNode, useMemo, useState } from "react";
 import { GlobalState, Paged, PostPreview } from "@/api/types";
 import { InlineButton, TintedButton } from "@/components/button";
 import Callout from "@/components/callout";
 import { GridSpan } from "@/components/grid";
 import { Client } from "@/components/hooks/environment";
+import { useOnScrollIntoViewRef } from "@/components/hooks/observer";
+import usePagination, { type Paginated } from "@/components/hooks/paginated";
 import Icon from "@/components/icon";
 import { Row } from "@/components/layout";
 import Loading from "@/components/loading";
-import usePagination, { Paginated } from "@/components/paginated";
 import { Select } from "@/components/selector";
 import { navigationHref } from "@/navigation";
 import { DivPropsNoChildren, Props } from "@/types/react";
@@ -105,33 +106,10 @@ const LoadNext = <T,>(props: {
   children?: ReactNode;
 }) => {
   const { pagination, endOfContent, children } = props;
-  const infiniteScrollingRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (pagination.error) return;
-    const target = infiniteScrollingRef.current;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            void pagination.loadNext?.();
-            return;
-          }
-        }
-      },
-      { threshold: 1 },
-    );
-
-    if (target) {
-      observer.observe(target);
-    }
-
-    return () => {
-      if (target) {
-        observer.unobserve(target);
-      }
-    };
-  }, [pagination, infiniteScrollingRef]);
+  const infiniteScrollingRef = useOnScrollIntoViewRef(1, () =>
+    pagination.loadNext?.(),
+  );
 
   let content;
   if (pagination.error) {

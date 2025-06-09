@@ -18,7 +18,7 @@ type SwipeTouchEvents = Pick<
   "onTouchStart" | "onTouchMove" | "onTouchEnd"
 >;
 
-export default function useSwipe(config: SwipeHandlers): SwipeTouchEvents {
+export const useSwipe = (config: SwipeHandlers): SwipeTouchEvents => {
   const [touchStartX, setTouchStartX] = useState<number>();
   const [touchEndX, setTouchEndX] = useState<number>();
   const [touchStartY, setTouchStartY] = useState<number>();
@@ -117,4 +117,4 @@ export default function useSwipe(config: SwipeHandlers): SwipeTouchEvents {
     onTouchMove,
     onTouchEnd,
   };
-}
+};

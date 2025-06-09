@@ -15,12 +15,12 @@ import { PostType } from "@/components/data/posts";
 import { Date } from "@/components/datetime";
 import { ScrimBackground } from "@/components/dialog/scrim";
 import { useClient } from "@/components/hooks/environment";
+import usePagination from "@/components/hooks/paginated";
 import DangerousHtml from "@/components/html";
 import { Row } from "@/components/layout";
 import Loading from "@/components/loading";
 import { MediaThumbnail } from "@/components/media/media-view";
 import Optional from "@/components/optional";
-import usePagination from "@/components/paginated";
 import itemTheme from "@/components/themed/item-theme";
 import { navigationHref } from "@/navigation";
 import {
