@@ -8,28 +8,12 @@ import {
   useRef,
   useState,
 } from "react";
-import { useClient } from "@/components/hooks/environment";
 import { Nullish } from "@/types";
-import { DivProps } from "@/types/react";
-import { onlyIf } from "@/util/optional";
 import { classes } from "@/util/transforms";
 import styles from "./tooltip.module.css";
 
 interface TooltipProps {
   tooltip: string | Nullish;
-}
-export default function Tooltip(props: DivProps<TooltipProps>) {
-  const { tooltip, title, ...rest } = props;
-  const isClient = useClient();
-  const tooltipProps = useTooltip({ tooltip });
-
-  return (
-    <div
-      title={onlyIf(!isClient, tooltip) ?? title}
-      {...rest}
-      {...tooltipProps}
-    />
-  );
 }
 
 interface ParentBounds {

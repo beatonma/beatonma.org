@@ -2,8 +2,8 @@
 
 import React, { ReactNode } from "react";
 import Icon, { type AppIcon } from "@/components/icon";
-import ExternalLink from "@/components/third-party/link";
-import { useTooltip } from "@/components/tooltip/tooltip";
+import { ExternalLink } from "@/components/third-party";
+import { useTooltip } from "@/components/tooltip";
 import { Nullish } from "@/types";
 import {
   ChildrenProps,

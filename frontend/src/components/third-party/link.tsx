@@ -10,13 +10,14 @@ interface ExternalLinkProps {
   opener?: boolean;
   referrer?: boolean;
 }
-export default function ExternalLink(
+
+export const ExternalLink = (
   props: ExternalLinkProps &
     Props<
       typeof Link,
       { href: string | Nullish; formatStyle?: UrlFormatStyle }
     >,
-) {
+) => {
   const {
     href,
     children,
@@ -46,4 +47,4 @@ export default function ExternalLink(
       {children ?? formatUrl(href, formatStyle)}
     </Link>
   );
-}
+};

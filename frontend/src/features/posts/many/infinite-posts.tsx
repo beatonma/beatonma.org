@@ -14,7 +14,7 @@ import { useOnScrollIntoViewRef } from "@/components/hooks/observer";
 import usePagination, { type Paginated } from "@/components/hooks/paginated";
 import Icon from "@/components/icon";
 import { Row } from "@/components/layout";
-import Loading from "@/components/loading";
+import { LoadingSpinner } from "@/components/loading";
 import { Select } from "@/components/selector";
 import { navigationHref } from "@/navigation";
 import { DivPropsNoChildren, Props } from "@/types/react";
@@ -120,7 +120,7 @@ const LoadNext = <T,>(props: {
       </Callout>
     );
   } else if (!pagination.hasMore) content = endOfContent;
-  else if (pagination.isLoading) content = <Loading />;
+  else if (pagination.isLoading) content = <LoadingSpinner />;
   else if (pagination.loadNext) content = children;
   else content = null;
 

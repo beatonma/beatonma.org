@@ -6,12 +6,10 @@ import {
   useEffect,
   useState,
 } from "react";
-import ExternalLink from "@/components/third-party/link";
-import RemoteContent, {
-  RemoteContentProvider,
-} from "@/components/third-party/remote-content";
 import { DivPropsNoChildren } from "@/types/react";
 import { addClass } from "@/util/transforms";
+import { ExternalLink } from "./link";
+import { RemoteContent, RemoteContentProvider } from "./remote-content";
 
 type IFrameProps = ComponentPropsWithoutRef<"iframe">;
 interface EmbeddedProps {
@@ -24,9 +22,9 @@ interface EmbeddedRemoteContentProvider {
 
 type EmbeddedProviderProps = { contentId: string } & IFrameProps;
 
-export default function RemoteIFrame(
-  props: Omit<DivPropsNoChildren<EmbeddedProps>, "content">,
-) {
+export const RemoteIFrame = (
+  props: DivPropsNoChildren<EmbeddedProps, "content">,
+) => {
   const { src, iframeClassName, ...rest } = props;
   const [provider, setProvider] = useState<
     RemoteContentProvider | null | undefined
@@ -59,7 +57,7 @@ export default function RemoteIFrame(
       {...addClass(rest, "border-dashed border-2 border-current/10")}
     />
   );
-}
+};
 
 const YoutubeContentProvider: EmbeddedRemoteContentProvider = {
   provider: (src, contentId) => ({

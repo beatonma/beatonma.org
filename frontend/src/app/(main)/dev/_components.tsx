@@ -8,11 +8,16 @@ import {
   TintedButton,
 } from "@/components/button";
 import Callout from "@/components/callout";
-import Icon, { _private as Icon_private } from "@/components/icon";
+import Icon from "@/components/icon";
+import { _private as Icon_private } from "@/components/icon/bundled";
 import { Row } from "@/components/layout";
-import Loading, { LoadingBar, LoadingSkeleton } from "@/components/loading";
+import {
+  LoadingBar,
+  LoadingSkeleton,
+  LoadingSpinner,
+} from "@/components/loading";
 import { ClassNameProps } from "@/types/react";
-import { addClass, classes } from "@/util/transforms";
+import { addClass } from "@/util/transforms";
 
 const Section = (
   props: { name?: string } & ComponentPropsWithoutRef<"section">,
@@ -104,7 +109,7 @@ export const Icons = () => {
 
 export const Loaders = () => (
   <Section name="Loading" className="space-y-2">
-    <Loading />
+    <LoadingSpinner />
     <LoadingBar />
     <LoadingBar progress={64} />
     <LoadingSkeleton className="min-h-[100px]" />

@@ -2,7 +2,7 @@ import { InlineLink } from "@/components/button";
 import { Date } from "@/components/datetime";
 import { AppIcon } from "@/components/icon";
 import { Row } from "@/components/layout";
-import ExternalLink from "@/components/third-party/link";
+import { ExternalLink } from "@/components/third-party";
 import { DivProps, DivPropsNoChildren } from "@/types/react";
 import { testId } from "@/util";
 import { plural } from "@/util/format/plurals";

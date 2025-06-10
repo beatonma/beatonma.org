@@ -2,7 +2,7 @@ import React from "react";
 import { GlobalState } from "@/api/types";
 import { Date } from "@/components/datetime";
 import { Row } from "@/components/layout";
-import ExternalLink from "@/components/third-party/link";
+import { ExternalLink } from "@/components/third-party";
 import { MediaView } from "@/features/media";
 import * as microformats from "@/microformats";
 import { Nullish } from "@/types";

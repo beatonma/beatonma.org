@@ -9,7 +9,7 @@ import DangerousHtml from "@/components/html";
 import { RemoteIcon } from "@/components/icon";
 import Optional from "@/components/optional";
 import { ProseClassName } from "@/components/prose";
-import RemoteIFrame from "@/components/third-party/embedded";
+import { RemoteIFrame } from "@/components/third-party";
 import { MediaCarousel, MediaView } from "@/features/media";
 import { itemTheme } from "@/features/themed";
 import { Webmentions } from "@/features/webmentions";

@@ -2,7 +2,7 @@
 
 import Script from "next/script";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import LoadingSkeleton from "@/components/loading";
+import { LoadingSkeleton } from "@/components/loading";
 import { testId } from "@/util";
 
 const TestTarget = {

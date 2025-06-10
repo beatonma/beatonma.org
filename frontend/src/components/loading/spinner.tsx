@@ -2,7 +2,7 @@ import { DivProps } from "@/types/react";
 import { addClass } from "@/util/transforms";
 import styles from "./spinner.module.css";
 
-export default function Spinner(props: DivProps) {
+export const LoadingSpinner = (props: DivProps) => {
   const { children, ...rest } = props;
   return (
     <div {...addClass(rest, styles.spinner)}>
@@ -17,4 +17,4 @@ export default function Spinner(props: DivProps) {
       </noscript>
     </div>
   );
-}
+};

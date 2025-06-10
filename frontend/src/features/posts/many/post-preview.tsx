@@ -5,7 +5,7 @@ import { Date, formatDate } from "@/components/datetime";
 import { Row } from "@/components/layout";
 import Optional from "@/components/optional";
 import { ProseClassName } from "@/components/prose";
-import RemoteIFrame from "@/components/third-party/embedded";
+import { RemoteIFrame } from "@/components/third-party";
 import { MediaGroupPreview } from "@/features/media";
 import { itemTheme } from "@/features/themed";
 import { DivPropsNoChildren } from "@/types/react";

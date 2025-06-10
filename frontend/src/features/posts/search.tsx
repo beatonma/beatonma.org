@@ -17,7 +17,7 @@ import { useClient } from "@/components/hooks/environment";
 import usePagination from "@/components/hooks/paginated";
 import DangerousHtml from "@/components/html";
 import { Row } from "@/components/layout";
-import Loading from "@/components/loading";
+import { LoadingSpinner } from "@/components/loading";
 import Optional from "@/components/optional";
 import { MediaThumbnail } from "@/features/media";
 import { itemTheme } from "@/features/themed";
@@ -236,7 +236,7 @@ const Results = (props: {
 }) => {
   const { items, itemClassName, isLoading, isQueryValid } = props;
 
-  if (isLoading) return <Loading className={itemClassName} />;
+  if (isLoading) return <LoadingSpinner className={itemClassName} />;
   if (isQueryValid && !items.length) {
     return <div className={itemClassName}>Nothing here!</div>;
   }

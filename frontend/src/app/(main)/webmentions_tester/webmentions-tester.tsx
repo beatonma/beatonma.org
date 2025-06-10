@@ -6,7 +6,7 @@ import Callout from "@/components/callout";
 import { parseDate } from "@/components/datetime";
 import { Row } from "@/components/layout";
 import Prose from "@/components/prose";
-import ExternalLink from "@/components/third-party/link";
+import { ExternalLink } from "@/components/third-party";
 import { Webmentions } from "@/features/webmentions";
 import { DivPropsNoChildren, PropsExcept } from "@/types/react";
 import { plural } from "@/util/format/plurals";

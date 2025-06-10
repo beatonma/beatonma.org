@@ -3,7 +3,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Button } from "@/components/button";
 import { Row } from "@/components/layout";
-import Loading from "@/components/loading";
+import { LoadingSpinner } from "@/components/loading";
 import Prose from "@/components/prose";
 import { DivPropsNoChildren } from "@/types/react";
 import { testId } from "@/util";
@@ -21,9 +21,10 @@ interface RemoteContentProps {
   provider: RemoteContentProvider;
   content: () => ReactNode;
 }
-export default function RemoteContent(
+
+export const RemoteContent = (
   props: DivPropsNoChildren<RemoteContentProps>,
-) {
+) => {
   const { provider, content, ...rest } = props;
   const [isAllowed, setIsAllowed] = useState<boolean>();
 
@@ -36,7 +37,7 @@ export default function RemoteContent(
     setSavedPreference(provider, isAllowed);
   }, [provider, isAllowed]);
 
-  if (isAllowed === undefined) return <Loading />;
+  if (isAllowed === undefined) return <LoadingSpinner />;
   if (isAllowed) return <>{content()}</>;
 
   return (
@@ -58,7 +59,7 @@ export default function RemoteContent(
       </Row>
     </Prose>
   );
-}
+};
 
 const storageKeyOf = (provider: RemoteContentProvider) =>
   `remotecontentprovider__${provider.domain}`;

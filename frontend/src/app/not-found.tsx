@@ -4,7 +4,7 @@ import Link from "next/link";
 import { permanentRedirect, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { client } from "@/api";
-import Loading from "@/components/loading";
+import { LoadingSpinner } from "@/components/loading";
 import Prose from "@/components/prose";
 import { navigationHref } from "@/navigation";
 import { Nullish } from "@/types";
@@ -35,9 +35,9 @@ export default function NotFound() {
   if (redirectTo === undefined)
     return (
       <MainLayout>
-        <Loading>
+        <LoadingSpinner>
           <strong>Checking for redirects...</strong>
-        </Loading>
+        </LoadingSpinner>
       </MainLayout>
     );
 
