@@ -5,18 +5,20 @@ export const LoremIpsum =
 
 export const SampleMedia: MediaFile[] = [
   {
+    url: "/media/uploads/2025/hero-200209-rubberneck-ci-660b_VD1vzzk.jpg",
+    thumbnail_url:
+      "/media/uploads/2025/hero-200209-rubberneck-ci-660b-thumb_71F9bwo.webp",
+    type: "image",
+    name: "uploads/2025/hero-200209-rubberneck-ci-660b-thumb_71F9bwo.webp",
+    description:
+      "Landscape image of Rubberneck FX loop companion, this is a very long description which probably flows onto multiple lines and may need to scroll.",
+    fit: null,
+  },
+  {
     url: "/media/related/2025/45f545.jpg",
     thumbnail_url: "/media/related/2025/45f545-thumb.webp",
     type: "image",
     name: "related/2022/45f545.jpg",
-    description: "",
-    fit: null,
-  },
-  {
-    url: "/media/related/2025/ab909e.jpg",
-    thumbnail_url: "/media/related/2025/ab909e-thumb.webp",
-    type: "image",
-    name: "related/2022/ab909e.jpg",
     description: "",
     fit: null,
   },
@@ -46,6 +48,49 @@ export const SampleMedia: MediaFile[] = [
   },
 ];
 
+export const SampleMediaMixed: MediaFile[] = [
+  {
+    url: "/media/uploads/2025/640x360_ocean_silent_fwyNfWP.mp4",
+    thumbnail_url: undefined,
+    type: "video",
+    name: "uploads/2025/640x360_ocean_silent_fwyNfWP.mp4",
+    description: "",
+    fit: null,
+  },
+  {
+    url: "/media/uploads/2025/file_example_MP3_700KB.mp3",
+    thumbnail_url: undefined,
+    type: "audio",
+    name: "uploads/2025/file_example_MP3_700KB.mp3",
+    description: "",
+    fit: null,
+  },
+  {
+    url: "/media/uploads/2025/sample.md",
+    thumbnail_url: undefined,
+    type: "text",
+    name: "uploads/2025/sample.md",
+    description: "",
+    fit: null,
+  },
+  {
+    url: "/media/uploads/2025/sample-text.zip",
+    thumbnail_url: undefined,
+    type: "unknown",
+    name: "uploads/2025/sample-text.zip",
+    description: "",
+    fit: null,
+  },
+  {
+    url: "/media/uploads/2025/a6934c_QKNMT0X.png",
+    thumbnail_url: "/media/uploads/2025/a6934c-thumb_Qsgam6H.webp",
+    type: "image",
+    name: "related/2021/fe7cae.jpg",
+    description: "",
+    fit: null,
+  },
+];
+
 const PostWithMediaTemplate: PostPreview = {
   post_type: "post",
   title: "Tailwind Prose",
@@ -60,9 +105,12 @@ const PostWithMediaTemplate: PostPreview = {
   files: [],
   is_preview: true,
 };
-export const SamplePostsWithMedia: PostPreview[] = [...Array(5).keys()].map(
-  (n) => ({ ...PostWithMediaTemplate, files: SampleMedia.slice(0, n) }),
-);
+export const SamplePostsWithMedia: PostPreview[] = [...Array(5).keys()]
+  .map((n) => [
+    { ...PostWithMediaTemplate, files: SampleMedia.slice(0, n) },
+    { ...PostWithMediaTemplate, files: SampleMediaMixed.slice(0, n) },
+  ])
+  .flat();
 
 export const SamplePosts: PostPreview[] = [
   {

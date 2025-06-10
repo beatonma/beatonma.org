@@ -15,7 +15,7 @@ import { itemTheme } from "@/features/themed";
 import { Webmentions } from "@/features/webmentions";
 import { navigationHref } from "@/navigation";
 import { Nullish } from "@/types";
-import { DivPropsNoChildren } from "@/types/react";
+import { ClassNameProps, DivPropsNoChildren } from "@/types/react";
 import { addClass, classes } from "@/util/transforms";
 import { PublishingStatus } from "../components";
 import styles from "./post.module.css";
@@ -266,7 +266,7 @@ const HeroHtml = (props: DivPropsNoChildren<PostHeroHtml>) => {
   return <DangerousHtml html={hero_html} {...rest} />;
 };
 
-const Hero = (props: DivPropsNoChildren<PostHero>) => {
+const Hero = (props: ClassNameProps & PostHero) => {
   const { hero_embedded_url, hero_image, customHero, ...rest } = props;
 
   if (hero_embedded_url) {

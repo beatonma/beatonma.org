@@ -62,17 +62,13 @@ const ControlledCarousel = (props: DivPropsNoChildren<MediaCarouselProps>) => {
 
   return (
     <div {...addClass(rest, "grid grid-cols-1 grid-rows-[1fr_auto] gap-4")}>
-      <div
-        className="overflow-hidden max-h-full"
+      <CarouselItem
+        media={media[focusIndex]}
+        navigatePrevious={media.length > 1 ? navigatePrevious : undefined}
+        navigateNext={media.length > 1 ? navigateNext : undefined}
         {...swipeNavigation}
         {...wheelNavigation}
-      >
-        <CarouselItem
-          media={media[focusIndex]}
-          navigatePrevious={media.length > 1 ? navigatePrevious : undefined}
-          navigateNext={media.length > 1 ? navigateNext : undefined}
-        />
-      </div>
+      />
 
       <CarouselThumbnails
         media={media}
@@ -122,16 +118,16 @@ const CarouselItem = (
       ref={ref}
       {...addClass(
         rest,
-        "card grid grid-rows-[1fr_auto] grid-cols-1 justify-center bg-neutral-900/50 overflow-hidden size-full",
+        "card grid grid-rows-[1fr_auto] grid-cols-1 justify-center bg-neutral-900/50 overflow-hidden",
         animation,
       )}
     >
-      <div className="relative max-h-full overflow-hidden [--button-margin:--spacing(2)]">
+      <div className="relative overflow-hidden [--button-margin:--spacing(2)]">
         <MediaView
           media={media}
           image={{ fit: "contain" }}
           video={{ autoPlay: true, loop: true }}
-          className="max-h-full min-w-64 self-center size-full overflow-hidden"
+          className="min-w-64 self-center size-full"
         />
 
         <Optional
@@ -159,7 +155,7 @@ const CarouselItem = (
       {onlyIf(media.description, (description) => (
         <figcaption className="surface p-4 self-justify-center">
           <div
-            className="font-bold text-lg readable max-h-[3lh] overflow-y-auto scrollbar mx-auto"
+            className="text-md readable max-h-[3lh] overflow-y-auto scrollbar mx-auto"
             dangerouslySetInnerHTML={{ __html: description }}
           />
         </figcaption>
@@ -194,13 +190,13 @@ const CarouselThumbnails = (
 ) => {
   const { media, focusIndex, onClickIndex, ...rest } = addClass(
     props,
-    "gap-4 *:shrink-0 overflow-x-auto px-edge",
+    "gap-4 px-edge",
   );
 
   if (media.length < 2) return null;
 
   return (
-    <Row {...rest}>
+    <Row scrollable {...rest}>
       {media.map((item, index) => (
         <MediaThumbnail
           className={classes(
