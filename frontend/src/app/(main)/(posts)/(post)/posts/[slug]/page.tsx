@@ -1,9 +1,6 @@
 import { Metadata } from "next";
-import PostPage from "@/app/(main)/(posts)/(post)/_components/post";
-import {
-  type SlugParams,
-  generatePostMetadata,
-} from "@/app/(main)/(posts)/(post)/util";
+import { PostPage } from "@/features/posts";
+import { type SlugParams, generatePostMetadata } from "../../util";
 import { getPost } from "./get";
 
 export default async function Page(params: SlugParams) {

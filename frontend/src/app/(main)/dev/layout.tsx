@@ -1,6 +1,6 @@
 import { InlineButton } from "@/components/button";
 import { Row, Separator } from "@/components/layout";
-import ThemeController from "@/components/themed/light-dark";
+import { ThemeController } from "@/features/themed";
 
 export default function RootLayout({
   children,

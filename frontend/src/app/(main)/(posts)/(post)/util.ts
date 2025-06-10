@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { getSlug } from "@/api";
 import type { PathWithSlug } from "@/api/client/types";
 import { DetailedPost } from "@/api/types";
-import { getPlaintextSummaryFromHtml } from "@/components/opengraph/text";
+import { getPlaintextSummaryFromHtml } from "@/util/format/string";
 
 export type SlugParams = { params: Promise<{ slug: string }> };
 

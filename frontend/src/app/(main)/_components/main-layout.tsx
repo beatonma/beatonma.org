@@ -1,4 +1,3 @@
-import Link from "next/link";
 import React from "react";
 import { GlobalState } from "@/api/types";
 import GlobalMotd from "@/app/(main)/_components/motd";
@@ -8,7 +7,7 @@ import styles from "@/app/(main)/layout.module.css";
 import HCard from "@/app/_components/h-card/hcard";
 import { Button } from "@/components/button";
 import { Row } from "@/components/layout";
-import ThemeController from "@/components/themed/light-dark";
+import { ThemeController } from "@/features/themed";
 import { navigationHref } from "@/navigation";
 import { Nullish } from "@/types";
 import { classes } from "@/util/transforms";

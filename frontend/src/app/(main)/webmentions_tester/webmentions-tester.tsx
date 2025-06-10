@@ -3,11 +3,11 @@
 import type { Path, Webmention, WebmentionTester } from "@/api/types";
 import { TintedButton } from "@/components/button";
 import Callout from "@/components/callout";
-import Webmentions from "@/components/data/webmentions";
 import { parseDate } from "@/components/datetime";
 import { Row } from "@/components/layout";
 import Prose from "@/components/prose";
 import ExternalLink from "@/components/third-party/link";
+import { Webmentions } from "@/features/webmentions";
 import { DivPropsNoChildren, PropsExcept } from "@/types/react";
 import { plural } from "@/util/format/plurals";
 import { onlyIf } from "@/util/optional";

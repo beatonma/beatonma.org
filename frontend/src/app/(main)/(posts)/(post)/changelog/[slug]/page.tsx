@@ -1,10 +1,8 @@
 import { Metadata } from "next";
 import { ChangelogDetail } from "@/api/types";
-import PostPage, { AppLink } from "@/app/(main)/(posts)/(post)/_components";
-import {
-  SlugParams,
-  generatePostMetadata,
-} from "@/app/(main)/(posts)/(post)/util";
+import { PostPage } from "@/features/posts";
+import { AppLink } from "../../_components";
+import { SlugParams, generatePostMetadata } from "../../util";
 import { getChangelog } from "./get";
 
 export default async function Page(params: SlugParams) {

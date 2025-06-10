@@ -1,14 +1,13 @@
 import { Metadata } from "next";
 import { CSSProperties } from "react";
 import { AppDetail } from "@/api/types";
-import PostPage, { AppLink } from "@/app/(main)/(posts)/(post)/_components";
-import { SlugParams } from "@/app/(main)/(posts)/(post)/util";
-import LocalIFrame from "@/app/(main)/(posts)/_components/LocalIFrame";
-import Post from "@/components/data/posts/post";
 import Optional from "@/components/optional";
+import { PostPage, PostPreview } from "@/features/posts";
 import { Nullish } from "@/types";
 import { DivPropsNoChildren } from "@/types/react";
 import { classes } from "@/util/transforms";
+import { AppLink, LocalIFrame } from "../../_components";
+import { SlugParams } from "../../util";
 import { getApp } from "./get";
 
 export default async function Page(params: SlugParams) {
@@ -74,7 +73,7 @@ const Changelogs = (
 
       <div className="space-y-8">
         {app.changelog.map((entry) => (
-          <Post key={entry.url} post={{ ...entry, is_preview: false }} />
+          <PostPreview key={entry.url} post={{ ...entry, is_preview: false }} />
         ))}
       </div>
     </div>

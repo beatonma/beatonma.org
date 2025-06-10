@@ -1,12 +1,11 @@
 import { Metadata } from "next";
 import { Query } from "@/api/types";
-import Github from "@/app/(main)/(posts)/_components/github";
-import PointsOfInterest from "@/app/(main)/(posts)/_components/poi";
-import PaginatedPosts from "@/components/data/posts";
 import Optional from "@/components/optional";
+import { PaginatedPosts } from "@/features/posts";
 import { navigationHref } from "@/navigation";
 import { onlyIf } from "@/util/optional";
 import { classes } from "@/util/transforms";
+import { Github, PointsOfInterest } from "./_components";
 import styles from "./page.module.css";
 
 type SearchParams = Promise<Query<"/api/posts/">>;

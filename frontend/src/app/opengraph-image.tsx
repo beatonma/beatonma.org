@@ -1,4 +1,4 @@
-import { opengraphImage } from "@/components/opengraph/image";
+import { opengraphImage } from "@/features/nextjs";
 
 /**
  * Site-wide default opengraph image.

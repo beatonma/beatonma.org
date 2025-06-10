@@ -52,7 +52,7 @@
     "importOrder": [
       "<THIRD_PARTY_MODULES>",
       "^@/(.*)$",
-      "^\\./.*$",
+      "^\\.+/.*$",
       "^(.*)\\.css$"
     ],
     "importOrderSortSpecifiers": true

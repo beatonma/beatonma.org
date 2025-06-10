@@ -2,7 +2,7 @@ import Link from "next/link";
 import { AppPreview } from "@/api/types";
 import { RemoteIcon } from "@/components/icon";
 import Optional from "@/components/optional";
-import itemTheme from "@/components/themed/item-theme";
+import { itemTheme } from "@/features/themed";
 import { Props } from "@/types/react";
 import { addClass } from "@/util/transforms";
 

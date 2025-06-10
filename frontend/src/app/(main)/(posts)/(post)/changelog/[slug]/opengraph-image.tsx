@@ -1,5 +1,5 @@
 import { SlugParams } from "@/app/(main)/(posts)/(post)/util";
-import { opengraphImage } from "@/components/opengraph/image";
+import { opengraphImage } from "@/features/nextjs";
 import { getChangelog } from "./get";
 
 export default async function Image(params: SlugParams) {

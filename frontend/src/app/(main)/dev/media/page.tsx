@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { SampleMedia, SamplePostsWithMedia } from "@/app/(main)/dev/_sample";
-import Post from "@/components/data/posts/post";
-import MediaCarousel from "@/components/media/media-carousel";
+import { MediaCarousel } from "@/features/media";
+import { PostPreview } from "@/features/posts/many/post-preview";
 
 export const metadata: Metadata = {
   title: "Media components",
@@ -18,7 +18,7 @@ export default async function Page() {
 
       <div className="max-w-[60ch] space-y-8">
         {SamplePostsWithMedia.map((post) => (
-          <Post post={post} key={post.files.length} />
+          <PostPreview post={post} key={post.files.length} />
         ))}
       </div>
     </div>

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { SamplePosts } from "@/app/(main)/dev/_sample";
-import { _private } from "@/components/data/posts/search";
+import { _private } from "@/features/posts/search";
 
 export default function SampleSearch() {
   const [query, setQuery] = useState("test");

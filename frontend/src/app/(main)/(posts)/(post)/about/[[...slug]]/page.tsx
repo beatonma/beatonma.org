@@ -3,13 +3,13 @@ import React from "react";
 import { getOr404 } from "@/api";
 import { resolveSlug } from "@/api/client";
 import { AboutDetail } from "@/api/types";
-import PostPage from "@/app/(main)/(posts)/(post)/_components/post";
-import { generatePostMetadata } from "@/app/(main)/(posts)/(post)/util";
 import { InlineLink } from "@/components/button";
 import Optional from "@/components/optional";
 import Prose from "@/components/prose";
+import { PostPage } from "@/features/posts";
 import { DivPropsNoChildren } from "@/types/react";
 import { classes } from "@/util/transforms";
+import { generatePostMetadata } from "../../util";
 
 type Params = { params: Promise<{ slug: string[] | undefined }> };
 
