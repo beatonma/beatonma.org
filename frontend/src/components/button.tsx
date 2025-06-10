@@ -166,8 +166,8 @@ const ButtonContent = (props: ButtonContentProps & ChildrenProps) => {
   if (reverseLayout) {
     // Put the icon to the right side of the button
     return (
-      <div className="grid grid-cols-[1fr_auto] items-center overflow-hidden">
-        <div className="overflow-hidden overflow-ellipsis line-clamp-1 break-all">
+      <div className="grid grid-cols-[1fr_auto] items-center">
+        <div className="overflow-ellipsis line-clamp-1 break-all">
           {children}
         </div>
         <ButtonIcon icon={icon} className="ms-1" />
@@ -177,9 +177,9 @@ const ButtonContent = (props: ButtonContentProps & ChildrenProps) => {
 
   // Icon on the left side of the button by default.
   return (
-    <div className="grid grid-cols-[auto_1fr] items-center overflow-hidden">
+    <div className="grid grid-cols-[auto_1fr] items-center">
       <ButtonIcon icon={icon} className="me-1" />
-      <div className="col-start-2 overflow-hidden overflow-ellipsis line-clamp-1 break-all">
+      <div className="col-start-2 overflow-ellipsis line-clamp-1 break-all">
         {children}
       </div>
     </div>
@@ -195,9 +195,5 @@ const ButtonIcon = (props: ButtonContentProps & ClassNameProps) => {
     return <Icon icon={icon as AppIcon} {...rest} />;
   }
 
-  return (
-    <div {...addClass(rest, "text-sm size-em leading-none overflow-hidden")}>
-      {icon}
-    </div>
-  );
+  return <div {...addClass(rest, "text-sm size-em leading-none")}>{icon}</div>;
 };

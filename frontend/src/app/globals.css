@@ -60,7 +60,8 @@
 
 @layer base {
   *:focus-visible {
-    @apply outline-on-background outline-1 -outline-offset-4 outline-dashed;
+    @apply outline-focus-visible-1 outline-3 outline-offset-4 outline-dashed;
+    @apply ring-focus-visible-2 ring-2 ring-offset-0;
   }
   html {
     scrollbar-width: thin;
@@ -85,10 +86,6 @@
 
     &:hover {
       @apply underline;
-    }
-
-    &:focus-visible {
-      outline-offset: 0;
     }
   }
 
@@ -253,7 +250,7 @@
 }
 
 @utility card {
-  @apply overflow-hidden shadow-sm sm:rounded-md;
+  @apply shadow-sm sm:rounded-md;
 }
 @utility card-hover {
   @apply card transition-shadow hover:shadow-md;

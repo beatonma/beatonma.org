@@ -110,6 +110,9 @@
   --on-input: var(--on-input-light);
   --vibrant-on-input: var(--vibrant-on-input-light);
   --muted-on-input: var(--muted-on-input-light);
+
+  --focus-visible-1: #ec0762;
+  --focus-visible-2: #100f0f;
 }
 
 @utility colorscheme-dark {
@@ -142,6 +145,9 @@
   --on-input: var(--on-input-dark);
   --vibrant-on-input: var(--vibrant-on-input-dark);
   --muted-on-input: var(--muted-on-input-dark);
+
+  --focus-visible-1: #ff78b0;
+  --focus-visible-2: #0ceaea;
 }
 
 @theme {
@@ -205,6 +211,9 @@
   --color-bg: var(--bg);
   --color-fg: var(--fg);
   --color-hover: color-mix(in srgb, var(--hover, var(--fg)) 10%, transparent);
+
+  --color-focus-visible-1: var(--focus-visible-1);
+  --color-focus-visible-2: var(--focus-visible-2);
 }
 
 :root {
