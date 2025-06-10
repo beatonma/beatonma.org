@@ -77,6 +77,7 @@ const ControlledSearch = <P extends SearchablePath>(
     () => ({
       load: isActive && isQueryValid(query),
       query: { query: query },
+      updateBrowserLocation: false,
     }),
     [isActive, query],
   );

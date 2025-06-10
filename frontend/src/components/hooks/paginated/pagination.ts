@@ -44,6 +44,11 @@ interface PaginationConfig<P extends PathWithPagination> {
   /** Query parameters passed to the data source when loading new data.
    * Changing this value will clear the existing data and trigger a fresh reload. */
   query?: Query<P> | undefined;
+
+  /**
+   * If true, update the browser URL to reflect changes in query parameters.
+   */
+  updateBrowserLocation?: boolean;
 }
 
 /** Used to track changes in usePagination inputs. */
@@ -106,7 +111,10 @@ export const usePagination = <P extends PathWithPagination>(
   const setIsLoading = useSyncState(isLoadingRef, _setIsLoading);
   const setError = useSyncState(errorRef, _setError);
 
-  const updateQueryInBrowser = useUpdateLocationQuery(config?.query ?? {});
+  const updateQueryInBrowser = useUpdateLocationQuery(
+    config?.updateBrowserLocation ?? true,
+    config?.query ?? {},
+  );
 
   const reset = useCallback(
     async (reason?: string) => {
@@ -221,11 +229,13 @@ const useSyncState = <T>(ref: RefObject<T>, stateSetter: StateSetter<T>) =>
   );
 
 const useUpdateLocationQuery = <P extends PathWithPagination>(
+  updateBrowserLocation: boolean,
   init: Query<P>,
 ) => {
   const [query, setQuery] = useState(init);
 
   useEffect(() => {
+    if (!updateBrowserLocation) return;
     const url = new URL(window.location.href);
     const search = url.searchParams;
 
@@ -238,7 +248,7 @@ const useUpdateLocationQuery = <P extends PathWithPagination>(
     });
 
     window.history.replaceState(null, "", url);
-  }, [query]);
+  }, [query, updateBrowserLocation]);
 
   return setQuery;
 };
