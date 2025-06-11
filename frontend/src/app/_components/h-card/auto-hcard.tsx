@@ -1,12 +1,12 @@
 import { getOrNull } from "@/api";
 import { PropsExcept } from "@/types/react";
-import HCard from "./hcard";
+import { GlobalHCard } from "./hcard";
 
-export default async function AutoHCard(
-  props: PropsExcept<typeof HCard, "hcard">,
-) {
+export const AutoHCard = async (
+  props: PropsExcept<typeof GlobalHCard, "hcard">,
+) => {
   const state = await getOrNull("/api/state/");
   const hcard = state?.hcard;
 
-  return <HCard hcard={hcard} {...props} />;
-}
+  return <GlobalHCard hcard={hcard} {...props} />;
+};

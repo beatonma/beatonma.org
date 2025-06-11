@@ -13,12 +13,12 @@ import styles from "./hcard.module.css";
 
 type GlobalHCard = NonNullable<GlobalState["hcard"]>;
 
-export default function HCard(
+export const GlobalHCard = (
   props: DivPropsNoChildren<{
     hcard: GlobalHCard | Nullish;
     showDetail: boolean;
   }>,
-) {
+) => {
   const { hcard, showDetail = false, ...rest } = props;
 
   if (!hcard) return null;
@@ -67,7 +67,7 @@ export default function HCard(
       </div>
     </div>
   );
-}
+};
 
 const HCardImages = (props: DivPropsNoChildren<{ hcard: GlobalHCard }>) => {
   const { hcard, ...rest } = props;

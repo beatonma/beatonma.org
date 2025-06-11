@@ -310,7 +310,12 @@ const PostMainContent = (props: DivPropsNoChildren<PostMainContent>) => {
 
           const value = domNode.nodeValue.trim();
           if (value === "h-card") {
-            return <AutoHCard showDetail={true} />;
+            return (
+              <AutoHCard
+                showDetail={true}
+                className="[&_img]:m-0" // Reset image margin introduced by prose container
+              />
+            );
           }
 
           const remote = (

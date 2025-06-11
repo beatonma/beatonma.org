@@ -1,4 +1,2 @@
-import AutoHCard from "./auto-hcard";
-import HCard from "./hcard";
-
-export { HCard, AutoHCard };
+export { AutoHCard } from "./auto-hcard";
+export { GlobalHCard } from "./hcard";

@@ -4,7 +4,7 @@ import GlobalMotd from "@/app/(main)/_components/motd";
 import ReturnToTopButton from "@/app/(main)/_components/return-to-top";
 import GlobalSearch from "@/app/(main)/_components/search";
 import styles from "@/app/(main)/layout.module.css";
-import HCard from "@/app/_components/h-card/hcard";
+import { GlobalHCard } from "@/app/_components/h-card";
 import { Button } from "@/components/button";
 import { Row } from "@/components/layout";
 import { ThemeController } from "@/features/themed";
@@ -60,7 +60,11 @@ export default function MainLayout({
         {children}
 
         <footer className="mx-auto pb-8">
-          <HCard hcard={state?.hcard} showDetail={false} className="hidden!" />
+          <GlobalHCard
+            hcard={state?.hcard}
+            showDetail={false}
+            className="hidden!"
+          />
           <ReturnToTopButton />
         </footer>
       </div>
