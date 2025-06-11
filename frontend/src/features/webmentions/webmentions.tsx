@@ -2,7 +2,7 @@ import { type Webmention } from "@/api/types";
 import { InlineLink } from "@/components/button";
 import Optional from "@/components/optional";
 import { ExternalLink } from "@/components/third-party";
-import { DivPropsNoChildren } from "@/types/react";
+import { ClassNameProps, DivPropsNoChildren } from "@/types/react";
 import { formatUrl } from "@/util/format/url";
 import { onlyIf } from "@/util/optional";
 import { addClass } from "@/util/transforms";
@@ -43,7 +43,7 @@ const Webmention = (props: WebmentionProps & DivPropsNoChildren) => {
       <HCardAvatar hcard={mention.hcard} className="col-start-1 me-2 size-12" />
       <div className="col-start-2">
         <HCardLinkedName hcard={mention.hcard} />
-        <InlineLink href={mention.source_url} />
+        <InlineLink icon={null} href={mention.source_url} />
       </div>
 
       <Optional
@@ -61,25 +61,22 @@ const Webmention = (props: WebmentionProps & DivPropsNoChildren) => {
 interface HCardProps {
   hcard: Webmention["hcard"];
 }
-const HCardAvatar = (props: DivPropsNoChildren<HCardProps>) => {
+const HCardAvatar = (props: HCardProps & ClassNameProps) => {
   const { hcard, ...rest } = addClass(
     props,
-    "rounded-md overflow-hidden surface-muted",
+    "rounded-md surface-muted",
     "aspect-square place-content-center text-center font-bold",
     "border-2 border-current/20 select-none",
   );
-  return (
-    <div {...rest}>
-      {hcard?.avatar ? (
-        <img
-          src={hcard.avatar}
-          alt={undefined}
-          className="size-full overflow-hidden"
-        />
-      ) : (
-        (hcard?.name || formatUrl(hcard?.homepage) || "?")?.[0]
-      )}
-    </div>
+
+  return hcard?.avatar ? (
+    <img
+      src={hcard.avatar}
+      alt={`Image for h-card ${hcard?.name ?? ""}`}
+      {...rest}
+    />
+  ) : (
+    <div {...rest}>{(hcard?.name || formatUrl(hcard?.homepage) || "?")[0]}</div>
   );
 };
 

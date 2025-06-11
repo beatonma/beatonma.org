@@ -1,4 +1,9 @@
-import type { GithubRecentEvents, MediaFile, PostPreview } from "@/api/types";
+import type {
+  GithubRecentEvents,
+  MediaFile,
+  PostPreview,
+  Webmention,
+} from "@/api/types";
 
 export const LoremIpsum =
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque mattis, orci vel congue vehicula, velit metus cursus nisl, sed condimentum elit libero id diam. Cras pharetra quam vel nisl gravida blandit. Aliquam lorem tellus, mattis at mi dictum, interdum dictum dolor. Ut tempus mauris ut vulputate efficitur. Sed est ligula, aliquam nec porta non, dictum id neque. Donec ornare, nunc ac hendrerit pretium, elit magna sagittis dolor, vel aliquam ipsum lorem ac lorem. Quisque dignissim, dui nec facilisis euismod, lectus leo posuere ligula, sed tempus eros ante ut mi.";
@@ -1429,3 +1434,55 @@ export const SampleGithub: GithubRecentEvents = {
     },
   ],
 };
+
+export const SampleWebmentions: Webmention[] = [
+  {
+    source_url: "https://beatonma.org/post/a",
+    date: "2020-05-16",
+    type: null,
+    quote: null,
+    hcard: null,
+  },
+  {
+    source_url: "https://beatonma.org/post/b",
+    date: "2020-05-16",
+    type: "u-like-of",
+    quote: null,
+    hcard: {
+      name: "Michael",
+      avatar: null,
+      homepage: "https://beatonma.org",
+    },
+  },
+  {
+    source_url: "https://beatonma.org/post/c",
+    date: "2020-05-16",
+    type: "u-like-of",
+    quote: null,
+    hcard: {
+      name: "Michael",
+      avatar: "/media/uploads/2025/avatar.jpg",
+      homepage: "https://beatonma.org",
+    },
+  },
+  {
+    source_url: "https://beatonma.org/post/d",
+    date: "2020-05-16",
+    type: "u-like-of",
+    quote:
+      "This article was super interesting and I have a lot to say about it",
+    hcard: null,
+  },
+  {
+    source_url: "https://beatonma.org/post/e",
+    date: "2020-05-16",
+    type: "u-like-of",
+    quote:
+      "This article was super interesting and I have a lot to say about it",
+    hcard: {
+      name: "Michael",
+      avatar: "/media/uploads/2025/avatar.jpg",
+      homepage: "https://beatonma.org",
+    },
+  },
+];
