@@ -1,0 +1,30 @@
+@custom-variant touch (@media(pointer: coarse));
+@custom-variant pointer (@media(pointer: fine));
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+
+  @media (prefers-color-scheme: dark) or (prefers-color-scheme: no-preference) {
+    &:where([data-theme="system"], [data-theme="system"] *) {
+      @slot;
+    }
+  }
+}
+@custom-variant light {
+  &:where([data-theme="light"], [data-theme="light"] *) {
+    @slot;
+  }
+
+  @media (prefers-color-scheme: light) {
+    &:where([data-theme="system"], [data-theme="system"] *) {
+      @slot;
+    }
+  }
+}
+@custom-variant hover {
+  &:hover,
+  &:focus-visible {
+    @slot;
+  }
+}

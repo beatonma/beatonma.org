@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+/* General tailwind */
+@import "./custom-variant.css";
+@import "./color.css";
+@import "./base.css";
+@import "./components.css";
+@import "./utilities.css";
+
+/* Features */
+@import "./features/window-insets.css";
+@import "./features/code-syntax-highlighting.css";
+@import "./features/typography.css";
+@import "./features/template-callout.css";
+
+@theme {
+  --spacing-px: 1px;
+  --spacing-ch: 0.5ch;
+  --spacing-em: 1em;
+  --spacing-lh: 1lh;
+  --spacing-readable: 80ch;
+}
+
+:root {
+  --max-width: 100vw;
+  --max-height: 100vh;
+  --tooltip-max-width: 180px;
+}

@@ -1,0 +1,39 @@
+@layer components {
+  .row {
+    @apply flex flex-row items-center;
+  }
+
+  .column {
+    @apply flex flex-col;
+  }
+
+  .overflow-auto,
+  .overflow-x-auto,
+  .overflow-y-auto {
+    @media (pointer: coarse) {
+      scrollbar-width: none;
+    }
+    @media (pointer: fine) {
+      scrollbar-width: thin;
+    }
+
+    ::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+  }
+
+  .scrollbar {
+    @media (pointer: coarse) {
+      scrollbar-width: thin;
+    }
+    @media (pointer: fine) {
+      scrollbar-width: auto;
+    }
+  }
+
+  @media (pointer: fine) {
+    * {
+      scrollbar-color: var(--muted) var(--background);
+    }
+  }
+}
