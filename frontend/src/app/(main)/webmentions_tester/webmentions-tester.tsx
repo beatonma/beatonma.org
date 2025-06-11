@@ -2,10 +2,10 @@
 
 import type { Path, Webmention, WebmentionTester } from "@/api/types";
 import { TintedButton } from "@/components/button";
-import Callout from "@/components/callout";
+import { Callout } from "@/components/callout";
 import { parseDate } from "@/components/datetime";
 import { Row } from "@/components/layout";
-import Prose from "@/components/prose";
+import { Prose } from "@/components/prose";
 import { ExternalLink } from "@/components/third-party";
 import { Webmentions } from "@/features/webmentions";
 import { DivPropsNoChildren, PropsExcept } from "@/types/react";
@@ -23,7 +23,7 @@ interface WebmentionsTesterPage extends TemporaryMentionsProps {
   mentions: Webmention[];
 }
 
-export default function WebmentionsTesterPage(props: WebmentionsTesterPage) {
+export const WebmentionsTesterPage = (props: WebmentionsTesterPage) => {
   const { mentions, tempMentions } = props;
 
   return (
@@ -71,7 +71,7 @@ export default function WebmentionsTesterPage(props: WebmentionsTesterPage) {
       </section>
     </div>
   );
-}
+};
 
 const SubmitWebmentionForm = () => {
   const actionPath: Path = "/api/webmentions_tester/";

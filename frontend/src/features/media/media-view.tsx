@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import Icon, { AppIcon } from "@/components/icon";
+import { AppIcon, Icon } from "@/components/icon";
 import { DivProps, Props } from "@/types/react";
 import { getPlaintextSummaryFromHtml } from "@/util/format/string";
 import { onlyIf } from "@/util/optional";

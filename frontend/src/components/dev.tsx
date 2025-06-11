@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import Callout from "@/components/callout";
+import { Callout } from "@/components/callout";
 import { DivProps } from "@/types/react";
 
-export default function Todo(props: DivProps) {
+export const Todo = (props: DivProps) => {
   const { children, ...rest } = props;
 
   useEffect(() => {
@@ -17,4 +17,4 @@ export default function Todo(props: DivProps) {
       {children}
     </Callout>
   );
-}
+};

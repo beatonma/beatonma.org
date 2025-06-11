@@ -39,7 +39,8 @@ interface RecaptchaCallbacks {
   onExpired: () => void;
   onError: () => void;
 }
-export default function Recaptcha(props: RecaptchaProps & RecaptchaCallbacks) {
+
+export const Recaptcha = (props: RecaptchaProps & RecaptchaCallbacks) => {
   const { recaptchaPublicSiteKey, onSuccess, onError, onExpired } = props;
   const [isLoaded, setIsLoaded] = useState(false);
   const containerId = useId();
@@ -94,4 +95,4 @@ export default function Recaptcha(props: RecaptchaProps & RecaptchaCallbacks) {
       />
     </div>
   );
-}
+};

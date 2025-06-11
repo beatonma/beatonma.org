@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import styles from "@/components/dialog/dialog.module.css";
 import { useKeyPress } from "@/components/hooks/inputs";
 import { DivProps } from "@/types/react";
 import { addClass } from "@/util/transforms";
+import styles from "./dialog.module.css";
 
 interface ScrimProps {
   isVisible: boolean;
   scrimColor?: string;
   onClose: () => void;
 }
-export default function Scrim(props: DivProps<ScrimProps>) {
+
+export const Scrim = (props: DivProps<ScrimProps>) => {
   const { isVisible, scrimColor, onClose, ...rest } = addClass(
     props,
     styles.dialogScrim,
@@ -30,9 +31,9 @@ export default function Scrim(props: DivProps<ScrimProps>) {
 
   if (!hasBeenVisible) return null;
   return <div data-is-open={isVisible} onClick={onClose} {...rest} />;
-}
+};
 
-export function ScrimBackground(props: DivProps<ScrimProps>) {
+export const ScrimBackground = (props: DivProps<ScrimProps>) => {
   const { isVisible, scrimColor, children, onClose, ...rest } = props;
 
   return (
@@ -41,4 +42,4 @@ export function ScrimBackground(props: DivProps<ScrimProps>) {
       <div className="relative z-[110]">{children}</div>
     </div>
   );
-}
+};

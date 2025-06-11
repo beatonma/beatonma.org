@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode, useCallback, useState } from "react";
-import Dialog from "@/components/dialog";
+import { Dialog } from "@/components/dialog";
 import type { TupleOf } from "@/types";
 import { DivProps, DivPropsNoChildren, Props } from "@/types/react";
 import { addClass } from "@/util/transforms";

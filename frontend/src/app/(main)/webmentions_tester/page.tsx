@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { getOrThrow } from "@/api";
-import WebmentionsTesterPage from "@/app/(main)/webmentions_tester/webmentions-tester";
 import { navigationHref } from "@/navigation";
+import { WebmentionsTesterPage } from "./webmentions-tester";
 
 export const metadata: Metadata = {
   title: "Webmentions Tester",

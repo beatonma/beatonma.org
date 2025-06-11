@@ -1,6 +1,6 @@
 import { getOrNull, getOrThrow } from "@/api";
 import { Query } from "@/api/types";
-import Optional from "@/components/optional";
+import { Optional } from "@/components/optional";
 import { DivPropsNoChildren } from "@/types/react";
 import { onlyIf } from "@/util/optional";
 import { InfinitePosts } from "./infinite-posts";

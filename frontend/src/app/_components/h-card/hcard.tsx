@@ -1,4 +1,3 @@
-import React from "react";
 import { GlobalState } from "@/api/types";
 import { Date } from "@/components/datetime";
 import { Row } from "@/components/layout";

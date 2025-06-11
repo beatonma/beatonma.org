@@ -1,6 +1,6 @@
 import { type Webmention } from "@/api/types";
 import { InlineLink } from "@/components/button";
-import Optional from "@/components/optional";
+import { Optional } from "@/components/optional";
 import { ExternalLink } from "@/components/third-party";
 import { ClassNameProps, DivPropsNoChildren } from "@/types/react";
 import { formatUrl } from "@/util/format/url";

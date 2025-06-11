@@ -5,7 +5,8 @@ type CalloutLevel = "tip" | "important" | "info" | "warn" | "caution";
 interface CalloutProps {
   level: CalloutLevel;
 }
-export default function Callout(props: DivProps<CalloutProps>) {
+
+export const Callout = (props: DivProps<CalloutProps>) => {
   const { level, ...rest } = props;
   const levelStyle: Record<CalloutLevel, string> = {
     tip: "template-callout-tip",
@@ -16,4 +17,4 @@ export default function Callout(props: DivProps<CalloutProps>) {
   };
 
   return <div {...addClass(rest, levelStyle[level])} />;
-}
+};

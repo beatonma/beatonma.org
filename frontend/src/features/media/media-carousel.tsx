@@ -7,7 +7,7 @@ import { useClient } from "@/components/hooks/environment";
 import { useSwipe, useWheel } from "@/components/hooks/inputs";
 import { AppIcon } from "@/components/icon";
 import { Row } from "@/components/layout";
-import Optional from "@/components/optional";
+import { Optional } from "@/components/optional";
 import { DivPropsNoChildren, PropsWithRef } from "@/types/react";
 import { onlyIf } from "@/util/optional";
 import { addClass, classes } from "@/util/transforms";

@@ -7,8 +7,8 @@ import {
   InlineLink,
   TintedButton,
 } from "@/components/button";
-import Callout from "@/components/callout";
-import Icon from "@/components/icon";
+import { Callout } from "@/components/callout";
+import { Icon } from "@/components/icon";
 import { _private as Icon_private } from "@/components/icon/bundled";
 import { Row } from "@/components/layout";
 import {

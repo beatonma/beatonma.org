@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { Query } from "@/api/types";
-import Optional from "@/components/optional";
+import { Optional } from "@/components/optional";
 import { PaginatedPosts } from "@/features/posts";
 import { navigationHref } from "@/navigation";
 import { onlyIf } from "@/util/optional";

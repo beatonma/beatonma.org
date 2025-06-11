@@ -4,7 +4,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { Button } from "@/components/button";
 import { Row } from "@/components/layout";
 import { LoadingSpinner } from "@/components/loading";
-import Prose from "@/components/prose";
+import { Prose } from "@/components/prose";
 import { DivPropsNoChildren } from "@/types/react";
 import { testId } from "@/util";
 

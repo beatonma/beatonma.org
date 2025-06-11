@@ -5,11 +5,11 @@ import { client } from "@/api";
 import { TintedButton } from "@/components/button";
 import { FormField } from "@/components/form";
 import { Row } from "@/components/layout";
-import Prose from "@/components/prose";
+import { Prose } from "@/components/prose";
 import { ExternalLink, RemoteContent } from "@/components/third-party";
 import { testId } from "@/util";
 import { onlyIf } from "@/util/optional";
-import Recaptcha, { RecaptchaProps } from "./_components/recaptcha";
+import { Recaptcha, RecaptchaProps } from "./_components/recaptcha";
 
 const TestTarget = {
   ContactForm: "contact_form",
@@ -21,7 +21,7 @@ const TestTarget = {
 const TextInputClassName = "w-full";
 
 type ContactFormProps = RecaptchaProps;
-export default function ContactPage(props: ContactFormProps) {
+export const ContactPage = (props: ContactFormProps) => {
   const [isMessageSent, setIsMessageSent] = useState(false);
 
   return (
@@ -64,7 +64,7 @@ export default function ContactPage(props: ContactFormProps) {
       </div>
     </Prose>
   );
-}
+};
 
 const MessageSentOK = () => {
   return (

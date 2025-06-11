@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Script from "next/script";
 import { getSlug } from "@/api";
-import DangerousHtml from "@/components/html";
+import { DangerousHtml } from "@/components/html";
 
 interface Params {
   slug: string;

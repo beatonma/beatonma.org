@@ -1,8 +1,8 @@
 "use client";
 
 import underlineStyles from "@/components/css/hover-underline.module.css";
-import type { SelectorDivProps } from "@/components/selector/types";
 import { addClass, classes } from "@/util/transforms";
+import type { SelectorDivProps } from "./types";
 
 export const TabBar = (props: SelectorDivProps) => {
   const { selected, items, onSelect, ...rest } = props;

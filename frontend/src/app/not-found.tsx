@@ -5,10 +5,10 @@ import { permanentRedirect, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { client } from "@/api";
 import { LoadingSpinner } from "@/components/loading";
-import Prose from "@/components/prose";
+import { Prose } from "@/components/prose";
 import { navigationHref } from "@/navigation";
 import { Nullish } from "@/types";
-import MainLayout from "./(main)/_components/main-layout";
+import { MainLayout } from "./(main)/_components/main-layout";
 
 export default function NotFound() {
   const path = usePathname();

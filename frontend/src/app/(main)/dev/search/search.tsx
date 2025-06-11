@@ -4,7 +4,7 @@ import { useState } from "react";
 import { SamplePosts } from "@/app/(main)/dev/_sample";
 import { _private } from "@/features/posts/search";
 
-export default function SampleSearch() {
+export const SampleSearch = () => {
   const [query, setQuery] = useState("test");
   const [isVisible, setIsVisible] = useState(true);
 
@@ -18,4 +18,4 @@ export default function SampleSearch() {
       items={SamplePosts}
     />
   );
-}
+};

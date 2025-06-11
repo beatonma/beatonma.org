@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { CSSProperties } from "react";
 import { AppDetail } from "@/api/types";
-import Optional from "@/components/optional";
+import { Optional } from "@/components/optional";
 import { PostPage, PostPreview } from "@/features/posts";
 import { Nullish } from "@/types";
 import { DivPropsNoChildren } from "@/types/react";

@@ -1,10 +1,4 @@
-import React, {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/button";
 import { useKeyPress } from "@/components/hooks/inputs";
 import { AppIcon } from "@/components/icon";

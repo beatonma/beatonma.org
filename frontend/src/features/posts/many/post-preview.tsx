@@ -3,7 +3,7 @@ import { type PostPreview as PostPreviewType } from "@/api/types";
 import { ButtonProps, InlineButton } from "@/components/button";
 import { Date, formatDate } from "@/components/datetime";
 import { Row } from "@/components/layout";
-import Optional from "@/components/optional";
+import { Optional } from "@/components/optional";
 import { ProseClassName } from "@/components/prose";
 import { RemoteIFrame } from "@/components/third-party";
 import { MediaGroupPreview } from "@/features/media";

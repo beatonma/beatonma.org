@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/button";
 import { onlyIf } from "@/util/optional";
 
-export default function ReturnToTopButton() {
+export const ReturnToTopButton = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(true);
 
@@ -27,4 +27,4 @@ export default function ReturnToTopButton() {
       </Button>
     </div>
   );
-}
+};

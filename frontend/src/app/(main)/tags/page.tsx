@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { getOrNull } from "@/api";
 import { InlineLink } from "@/components/button";
-import Prose from "@/components/prose";
+import { Prose } from "@/components/prose";
 import { navigationHref } from "@/navigation";
 
 export const metadata: Metadata = {

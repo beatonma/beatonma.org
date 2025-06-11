@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import ContactPage from "./contact-form";
+import { ContactPage } from "./contact-form";
 
 export const metadata: Metadata = {
   title: "Contact me",

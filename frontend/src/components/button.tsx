@@ -1,7 +1,7 @@
 "use client";
 
-import React, { ReactNode } from "react";
-import Icon, { type AppIcon } from "@/components/icon";
+import { Children as ReactChildren, ReactNode } from "react";
+import { type AppIcon, Icon } from "@/components/icon";
 import { ExternalLink } from "@/components/third-party";
 import { useTooltip } from "@/components/tooltip";
 import { Nullish } from "@/types";
@@ -160,7 +160,7 @@ const isButton = (obj: any): obj is Props<"button"> => {
 const ButtonContent = (props: ButtonContentProps & ChildrenProps) => {
   const { icon, children, reverseLayout = false } = props;
 
-  if (icon && React.Children.count(children) === 0)
+  if (icon && ReactChildren.count(children) === 0)
     return <ButtonIcon icon={icon} />;
 
   if (reverseLayout) {

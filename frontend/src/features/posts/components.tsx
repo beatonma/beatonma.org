@@ -1,5 +1,5 @@
 import { DetailedPost, PreviewPost } from "@/api/types";
-import DangerousHtml from "@/components/html";
+import { DangerousHtml } from "@/components/html";
 import { DivPropsNoChildren } from "@/types/react";
 import { onlyIf } from "@/util/optional";
 import { addClass } from "@/util/transforms";

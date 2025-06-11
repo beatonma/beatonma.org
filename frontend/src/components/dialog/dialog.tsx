@@ -8,9 +8,9 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/button";
-import Scrim from "@/components/dialog/scrim";
 import { useClient } from "@/components/hooks/environment";
 import { addClass } from "@/util/transforms";
+import { Scrim } from "./scrim";
 
 const DialogPortalContainerId = "dialog_portal_container";
 
@@ -19,10 +19,10 @@ interface DialogProps {
   onClose: () => void;
 }
 
-export default function Dialog(
+export const Dialog = (
   props: DialogProps &
     Omit<ComponentPropsWithoutRef<"dialog">, keyof DialogProps | "onClick">,
-) {
+) => {
   const { isOpen, onClose, children, ...rest } = props;
   const containerRef = useRef<HTMLDivElement | null>(null);
   const isClient = useClient();
@@ -92,4 +92,4 @@ export default function Dialog(
     </Scrim>,
     containerRef.current!,
   );
-}
+};

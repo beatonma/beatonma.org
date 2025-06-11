@@ -7,10 +7,11 @@ interface OptionalProps<T> {
   also?: boolean;
   block: (value: T) => ReactNode;
 }
-export default function Optional<T>(props: OptionalProps<T>) {
+
+export const Optional = <T,>(props: OptionalProps<T>) => {
   const { value, also, block } = props;
 
   if (also === false) return null;
 
   return onlyIf(value, block);
-}
+};

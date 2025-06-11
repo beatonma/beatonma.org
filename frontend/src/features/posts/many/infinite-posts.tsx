@@ -1,18 +1,18 @@
 "use client";
 
-import React, { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import {
   GlobalState,
   Paged,
   type PostPreview as PostPreviewType,
 } from "@/api/types";
 import { InlineButton, TintedButton } from "@/components/button";
-import Callout from "@/components/callout";
+import { Callout } from "@/components/callout";
 import { GridSpan } from "@/components/grid";
 import { Client } from "@/components/hooks/environment";
 import { useOnScrollIntoViewRef } from "@/components/hooks/observer";
-import usePagination, { type Paginated } from "@/components/hooks/paginated";
-import Icon from "@/components/icon";
+import { type Paginated, usePagination } from "@/components/hooks/paginated";
+import { Icon } from "@/components/icon";
 import { Row } from "@/components/layout";
 import { LoadingSpinner } from "@/components/loading";
 import { Select } from "@/components/selector";

@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import SampleSearch from "@/app/(main)/dev/search/search";
+import { SampleSearch } from "./search";
 
 export const metadata: Metadata = {
   title: "Search",

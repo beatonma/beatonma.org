@@ -1,5 +1,1 @@
-import { usePagination } from "./pagination";
-
-export { type Paginated } from "./pagination";
-
-export default usePagination;
+export { usePagination, type Paginated } from "./pagination";

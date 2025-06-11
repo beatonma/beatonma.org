@@ -14,11 +14,11 @@ import { Button } from "@/components/button";
 import { Date } from "@/components/datetime";
 import { ScrimBackground } from "@/components/dialog/scrim";
 import { useClient } from "@/components/hooks/environment";
-import usePagination from "@/components/hooks/paginated";
-import DangerousHtml from "@/components/html";
+import { usePagination } from "@/components/hooks/paginated";
+import { DangerousHtml } from "@/components/html";
 import { Row } from "@/components/layout";
 import { LoadingSpinner } from "@/components/loading";
-import Optional from "@/components/optional";
+import { Optional } from "@/components/optional";
 import { MediaThumbnail } from "@/features/media";
 import { itemTheme } from "@/features/themed";
 import { navigationHref } from "@/navigation";
@@ -47,9 +47,7 @@ interface SearchProps<P extends SearchablePath> {
 type SearchDivProps<P extends SearchablePath> = SearchProps<P> &
   Omit<DivPropsNoChildren, keyof SearchProps<P>>;
 
-export default function Search<P extends SearchablePath>(
-  props: SearchDivProps<P>,
-) {
+export const Search = <P extends SearchablePath>(props: SearchDivProps<P>) => {
   const isClient = useClient();
 
   return isClient ? (
@@ -57,7 +55,7 @@ export default function Search<P extends SearchablePath>(
   ) : (
     <NoscriptSearch {...props} />
   );
-}
+};
 
 const NoscriptSearch = <P extends SearchablePath>(props: SearchDivProps<P>) => {
   return (

@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { InlineLink } from "@/components/button";
 import { Client } from "@/components/hooks/environment";
 import { Row } from "@/components/layout";
-import type { SelectorDivProps } from "@/components/selector/types";
+import type { SelectorDivProps } from "./types";
 
 const NoscriptSelect = (props: SelectorDivProps) => {
   const { selected, items, onSelect, ...rest } = props;

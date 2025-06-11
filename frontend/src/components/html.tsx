@@ -1,13 +1,13 @@
-import Optional from "@/components/optional";
+import { Optional } from "@/components/optional";
 import { Nullish } from "@/types";
 import { DivPropsNoChildren } from "@/types/react";
 
-export default function DangerousHtml(
+export const DangerousHtml = (
   props: Omit<
     DivPropsNoChildren<{ html: string | Nullish }>,
     "dangerouslySetInnerHTML"
   >,
-) {
+) => {
   const { html, ...rest } = props;
 
   return (
@@ -16,4 +16,4 @@ export default function DangerousHtml(
       block={(__html) => <div dangerouslySetInnerHTML={{ __html }} {...rest} />}
     />
   );
-}
+};

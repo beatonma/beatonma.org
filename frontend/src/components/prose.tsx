@@ -3,6 +3,6 @@ import { addClass } from "@/util/transforms";
 
 export const ProseClassName = "readable prose";
 
-export default function Prose(props: DivProps) {
-  return <div {...addClass(props, ProseClassName)} />;
-}
+export const Prose = (props: DivProps) => (
+  <div {...addClass(props, ProseClassName)} />
+);
