@@ -9,7 +9,7 @@ export default function Todo(props: DivProps) {
 
   useEffect(() => {
     console.log(`TODO ${children}`);
-  }, []);
+  }, [children]);
 
   return (
     <Callout level="warn" {...rest}>

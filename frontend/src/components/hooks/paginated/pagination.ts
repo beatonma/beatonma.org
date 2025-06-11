@@ -173,6 +173,7 @@ export const usePagination = <P extends PathWithPagination>(
     setError,
     setIsLoading,
     setState,
+    updateQueryInBrowser,
   ]);
 
   useEffect(() => {

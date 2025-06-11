@@ -29,7 +29,7 @@ export default function NotFound() {
       .catch((e) => {
         setRedirectTo(null);
       });
-  }, []);
+  }, [path]);
 
   if (redirectTo) return permanentRedirect(redirectTo);
   if (redirectTo === undefined)
