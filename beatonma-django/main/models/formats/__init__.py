@@ -84,6 +84,7 @@ class Formats(models.IntegerChoices):
         html = markdown2.markdown(
             markdown,
             extras=[
+                "code-friendly",  # Disable _emphasis_ and __strong__ syntax.
                 "cuddled-lists",  # Don't require blank line before markdown lists
                 "fenced-code-blocks",  # Code syntax highlighting
                 "footnotes",
