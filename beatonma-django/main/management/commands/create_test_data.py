@@ -1,4 +1,3 @@
-import logging
 from datetime import date
 
 from common.models import BaseModel
@@ -8,9 +7,6 @@ from github.management.commands import sample_github_data as sample_github
 from github.models import CachedResponse
 from main.models import SiteHCard
 from main.tasks import sample_data as sample
-
-log = logging.getLogger(__name__)
-
 
 TESTDATA_DATE = date.today()
 
