@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   RefObject,
   useCallback,
@@ -234,11 +235,13 @@ const useUpdateLocationQuery = <P extends PathWithPagination>(
   init: Query<P>,
 ) => {
   const [query, setQuery] = useState(init);
+  const router = useRouter();
+  const path = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (!updateBrowserLocation) return;
-    const url = new URL(window.location.href);
-    const search = url.searchParams;
+    const search = new URLSearchParams(searchParams);
 
     Object.entries(query ?? {}).forEach(([k, v]) => {
       if (v) {
@@ -247,9 +250,8 @@ const useUpdateLocationQuery = <P extends PathWithPagination>(
         search.delete(k);
       }
     });
-
-    window.history.replaceState(null, "", url);
-  }, [query, updateBrowserLocation]);
+    router.replace(`${path}?${search}`, { scroll: false });
+  }, [router, searchParams, path, query, updateBrowserLocation]);
 
   return setQuery;
 };
