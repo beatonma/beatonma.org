@@ -96,7 +96,7 @@ export const PostPage = (props: {
                 hero_image={post.hero_image}
                 hero_embedded_url={post.hero_embedded_url}
                 customHero={customContent?.customHero}
-                className="[grid-area:hero] max-h-[50vh] card surface"
+                className="[grid-area:hero] max-h-[50vh] card surface w-full"
               />
             )}
           />

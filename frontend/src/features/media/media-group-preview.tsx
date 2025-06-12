@@ -19,7 +19,7 @@ const PreviewMiniStyle = "aspect-square rounded-md border-2 border-current";
 export const MediaGroupPreview = (
   props: DivPropsNoChildren<{ media: MediaFile[] }, "onClick">,
 ) => {
-  const { media, ...rest } = props;
+  const { media, ...rest } = addClass(props, "overflow-hidden");
   const [fileIndex, setFileIndex] = useState<number | undefined>(undefined);
 
   const onClickMedia = useCallback(
@@ -110,6 +110,7 @@ const PreviewOne = (props: PreviewProps<1>) => {
         media={media[0]}
         onClickMedia={onClickMedia}
         video={{ autoPlay: true, loop: true }}
+        className="size-full"
       />
     </div>
   );
