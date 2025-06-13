@@ -108,6 +108,4 @@ class UploadedMediaMixin(models.Model):
             os.makedirs(os.path.dirname(absolute_target), exist_ok=True)
             os.rename(absolute_source, absolute_target)
 
-        result = str(absolute_target.relative_to(settings.MEDIA_ROOT))
-        log.info(f"RESULT: {result}")
         return str(absolute_target.relative_to(settings.MEDIA_ROOT))

@@ -10,10 +10,16 @@ from django.db.models import QuerySet
 from django.utils.text import slugify
 from github.tests.sampledata import create_sample_language
 from main.models import AboutPost, AppPost, ChangelogPost, MessageOfTheDay, Post
-from main.tasks import samples
-from main.tasks.samples.tags import SAMPLE_TAGS
 from mentions.models import HCard, Webmention
 from mentions.models.mixins import IncomingMentionType, MentionableMixin
+
+from .apps import any_app_name, any_app_type, any_changelog, any_language
+from .bio import any_biography
+from .motd import any_motd
+from .names import any_name, any_username
+from .posts import any_post
+from .tags import SAMPLE_TAGS, any_tag
+from .urls import any_homepage, any_url, any_urlpath
 
 now = datetime.now(tz=timezone.utc)
 
@@ -91,7 +97,7 @@ def create_post(
     slug: str = None,
     feeds: list[str] = None,
 ) -> Post:
-    sample = samples.any_post()
+    sample = any_post()
     created_at = _timestamp(date=date)
     post, _ = Post.objects.get_or_create(
         title=_choose(title, sample.title),
@@ -123,7 +129,7 @@ def create_app(
     slug: str = None,
 ) -> AppPost:
     created_at = _timestamp(date=date)
-    title = _choose(title, samples.any_app_name())
+    title = _choose(title, any_app_name())
 
     app, _ = AppPost.objects.get_or_create(
         title=title,
@@ -153,7 +159,7 @@ def create_changelog(
     slug: str = None,
 ) -> ChangelogPost:
     created_at = _timestamp(date=date)
-    sample = samples.any_changelog()
+    sample = any_changelog()
 
     if not app:
         app = create_app()
@@ -182,7 +188,7 @@ def create_about_page(
     content: str = None,
     parent: AboutPost = None,
 ) -> AboutPost:
-    sample = samples.any_biography()
+    sample = any_biography()
 
     about, _ = AboutPost.objects.get_or_create(
         title=title or sample.title,
@@ -197,7 +203,7 @@ def create_motd(
     content_html: str = None,
     is_published: bool = True,
 ) -> MessageOfTheDay:
-    sample = samples.any_motd()
+    sample = any_motd()
 
     motd, _ = MessageOfTheDay.objects.get_or_create(
         description=title or sample.title,
@@ -250,7 +256,7 @@ def generate_webmentions_for(
                 hcard if force_hcard or random.random() > 0.3 else None
             ),  # Sometimes no hcard
             target_url=target.get_absolute_url(),
-            source_url=urljoin(hcard.homepage, samples.any_urlpath()),
+            source_url=urljoin(hcard.homepage, any_urlpath()),
             post_type=random.choice([x.value for x in IncomingMentionType]),
             target_object=target,
             quote=quote,
@@ -269,8 +275,8 @@ def create_hcard(card: HCardConfig = None):
         )
     else:
         HCard.objects.create(
-            name=samples.any_name(),
-            homepage=samples.any_homepage(),
+            name=any_name(),
+            homepage=any_homepage(),
             avatar="https://i.pravatar.cc/64",  # Random avatar 64px in size
         )
 
