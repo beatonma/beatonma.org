@@ -1,9 +1,10 @@
 import logging
 import re
+from datetime import datetime
 from typing import Callable
 
+from common.util import http
 from django.conf import settings
-from django.db.models import Q
 from github import github_api
 from github.events import GithubEvent
 from github.models.api import GithubPollingEvent
@@ -64,45 +65,64 @@ class UnknownRepository(Exception):
     pass
 
 
-def update_github_user_events():
-    url = f"https://api.github.com/users/{OWNER}/events"
+def _update_events(url: str, update_cycle: GithubEventUpdateCycle) -> None:
+    if not _polling_allowed(url):
+        return
 
-    if _polling_allowed():
+    def _try_create_event(data: dict) -> GithubUserEvent | None:
+        try:
+            return _create_event(update_cycle, Event.model_validate(data))
+
+        except UnwantedEvent as e:
+            log.debug(f"Skipping event {e}")
+
+        except (UnknownRepository, UnknownUser) as e:
+            log.warning(f"Failed to create event: {e}")
+
+        except Exception as e:
+            log.warning(f"Failed to handle event {data}: {e}")
+            raise e
+
+    response = github_api.for_each(url, _try_create_event)
+
+    if response.status_code == http.STATUS_304_NOT_MODIFIED:
+        return
+
+    _remember_polling(url, response.headers)
+
+
+def update_github_user_events(
+    *, username: str = OWNER, update_cycle: GithubEventUpdateCycle = None
+):
+    if not update_cycle:
         update_cycle = GithubEventUpdateCycle.objects.create()
 
-        def _try_create_event(data: dict) -> GithubUserEvent | None:
-            try:
-                return _create_event(update_cycle, Event.model_validate(data))
+    url: str = f"https://api.github.com/users/{username}/events"
 
-            except UnwantedEvent as e:
-                log.debug(f"Skipping event {e}")
-
-            except (UnknownRepository, UnknownUser) as e:
-                log.warning(f"Failed to create event: {e}")
-
-            except Exception as e:
-                log.warning(f"Failed to handle event {data}: {e}")
-                raise e
-
-        response = github_api.for_each(url, _try_create_event)
-
-        if response is None:
-            # 304 Not Modified
-            update_cycle.delete()
-            return
-
-        _remember_polling(url, response.headers)
-
-        _flush_caches()
-    else:
-        log.warning("Polling is disallowed")
+    _update_events(url, update_cycle)
 
 
-def _polling_allowed() -> bool:
+def update_repository_events(
+    *, update_cycle: GithubEventUpdateCycle = None, changed_since: datetime = None
+):
+    if not update_cycle:
+        update_cycle = GithubEventUpdateCycle.objects.create()
+    repos = GithubRepository.objects.all()
+    if changed_since:
+        repos = repos.filter(updated_at__gt=changed_since)
+
+    for repo in repos:
+        url = f"https://api.github.com/repos/{repo.full_name}/events"
+        _update_events(url, update_cycle)
+
+
+def _polling_allowed(url: str) -> bool:
     """Check if the previous polling was sufficiently long ago.
 
     Polling interval is defined in X-Poll-Interval header."""
-    previous_poll: GithubPollingEvent | None = GithubPollingEvent.objects.first()
+    previous_poll: GithubPollingEvent | None = GithubPollingEvent.objects.filter(
+        url=url
+    ).first()
     if previous_poll and not previous_poll.elapsed():
         log.warning(
             f"Github polling event denied until at least {previous_poll.elapses_at}"
@@ -135,22 +155,26 @@ def _create_event(
     owner = _get_user(data.actor)
     repo = _get_repo(data.repo)
 
-    event = GithubUserEvent.objects.create(
-        update_cycle=parent,
+    event, created = GithubUserEvent.objects.get_or_create(
         github_id=data.id,
-        user=owner,
-        repository=repo,
-        type=event_type,
-        created_at=data.created_at,
-        is_public=data.is_public,
+        defaults={
+            "update_cycle": parent,
+            "user": owner,
+            "repository": repo,
+            "type": event_type,
+            "created_at": data.created_at,
+            "is_public": data.is_public,
+        },
     )
 
-    try:
-        create_payload(event_type, event, data.payload)
+    if created:
+        try:
+            create_payload(event_type, event, data.payload)
 
-    except UnwantedEvent:
-        # Back-track to delete the event with an unwanted payload.
-        event.delete()
+        except UnwantedEvent:
+            # Back-track to delete the event with an unwanted payload.
+            event.delete()
+    return event
 
 
 def _get_user(user: User) -> GithubUser:
@@ -218,12 +242,12 @@ def _create_push_payload(event: GithubUserEvent, payload: PushEvent):
     commits = payload.commits
 
     api_url_regex = re.compile(
-        r"^(https://)(api\.)(github\.com/)(repos/)(.*?)$",
+        r"^(https://)api\.(github\.com/)repos/(.*?)$",
         re.MULTILINE,
     )
 
     def api_to_html_url(url):
-        return re.sub(api_url_regex, r"\g<1>\g<3>\g<5>", url)
+        return re.sub(api_url_regex, r"\g<1>\g<2>\g<3>", url)
 
     for commit in commits:
         GithubCommit.objects.create(
@@ -294,10 +318,3 @@ def _create_release_event(event: GithubUserEvent, payload: ReleaseEvent):
         return
 
     raise UnwantedEvent("ReleaseEvent must be action=published")
-
-
-def _flush_caches():
-    """Delete all but the newest event data."""
-    latest = GithubEventUpdateCycle.objects.all().order_by("-created_at").first()
-
-    GithubEventUpdateCycle.objects.filter(~Q(id=latest.pk)).delete()

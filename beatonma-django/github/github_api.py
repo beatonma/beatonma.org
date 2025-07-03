@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import Callable
 
 import requests
+from common.util import http
 from django.conf import settings
 from github.models import GithubETag
 from github.tasks.util import parse_datetime
@@ -34,7 +35,7 @@ def _get(request: requests.PreparedRequest) -> requests.Response:
     return _session.send(request)
 
 
-def get_if_changed(url, params=None, headers=None) -> requests.Response | None:
+def get_if_changed(url, params=None, headers=None) -> requests.Response:
     """If data has not changed since the last time we asked, return None."""
 
     if params is None:
@@ -59,16 +60,17 @@ def get_if_changed(url, params=None, headers=None) -> requests.Response | None:
 
     response = _get(request)
 
+    log.info(f"[{response.status_code}] {url}")
+
     if response.status_code == 304:  # HTTP 304 Not Modified
-        return None
+        return response
 
     elif response.status_code != 200:
         raise GithubApiException(
-            f"Unexpected status code [{response.status_code}]: {url}"
+            f"Unexpected status code [{response.status_code}]: {url} | {response}"
         )
 
     response_headers = _parse_response_headers(response.headers)
-
     _remember(request.url, response_headers)
 
     return response
@@ -79,13 +81,13 @@ def for_each(
     block: Callable[[dict], None],
     params=None,
     headers=None,
-) -> requests.Response | None:
+) -> requests.Response:
     """Run [block] with each object in the response list of data."""
 
     response = get_if_changed(url, params, headers)
 
-    if response is None:
-        return None
+    if response.status_code == http.STATUS_304_NOT_MODIFIED:
+        return response
 
     data: list[dict] | None = response.json()
 
@@ -96,13 +98,12 @@ def for_each(
         next_page_link = response.links.get("next")
         if next_page_link:
             time.sleep(0.5)
-            next_page = get_if_changed(next_page_link.get("url"), headers=headers)
+            response = get_if_changed(next_page_link.get("url"), headers=headers)
 
-            if next_page is None:
+            if response.status_code == http.STATUS_304_NOT_MODIFIED:
                 break
 
-            response = next_page
-            data = next_page.json()
+            data = response.json()
 
         else:
             break

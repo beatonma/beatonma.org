@@ -78,7 +78,7 @@ class GithubApiTest(LocalTestCase):
 
             # ETag matches previous request-> content unchanged -> response 304 Not Modified -> return None
             response = github_api.get_if_changed(URL)
-            self.assertIsNone(response)
+            self.assertEqual(response.status_code, 304)
 
             # Change our etag to simulate a change in response etag
             GithubETag.objects.update(

@@ -1,5 +1,6 @@
+from datetime import datetime
+
 from basetest.testcase import LocalTestCase
-from django.utils import timezone
 from django.utils.timezone import get_current_timezone
 from github.models import GithubLanguage, GithubLicense, GithubRepository, GithubUser
 from github.models.events import (
@@ -270,7 +271,7 @@ SAMPLE_WIKI_EVENT = Event.model_validate(
 
 
 def _datetime(year, month, day, hour=0, minute=0, second=0):
-    return timezone.datetime(
+    return datetime(
         year,
         month,
         day,
@@ -423,22 +424,3 @@ class UpdateEventsTest(LocalTestCase):
         )
         self.assertEqual(event_data.action, "created")
         self.assertEqual(event_data.name, "Home")
-
-
-class FlushCacheTests(LocalTestCase):
-    def test_flush_caches(self):
-        GithubEventUpdateCycle.objects.create(created_at=_datetime(2022, 3, 1))
-        GithubEventUpdateCycle.objects.create(created_at=_datetime(2022, 3, 2))
-
-        # This one is most recent -> should persist
-        latest = GithubEventUpdateCycle.objects.create(
-            created_at=_datetime(2022, 3, 3, 5)
-        )
-        GithubEventUpdateCycle.objects.create(created_at=_datetime(2022, 3, 2, 13))
-        GithubEventUpdateCycle.objects.create(created_at=_datetime(2022, 3, 3))
-
-        update_events._flush_caches()
-
-        objs = GithubEventUpdateCycle.objects.all()
-        self.assertEqual(objs.count(), 1)
-        self.assertEqual(objs.first(), latest)

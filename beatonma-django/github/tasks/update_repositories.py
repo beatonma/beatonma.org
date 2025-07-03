@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from celery.utils.log import get_task_logger
+from common.util import http
 from github import github_api
 from github.models import (
     GithubLanguage,
@@ -86,7 +87,7 @@ def _update_repository(obj: dict):
     )
 
     if created:
-        repo.is_published = not data.private
+        repo.is_published = not data.is_private
         repo.save(update_fields=["is_published"])
 
     repo.tags.add(*data.topics)
@@ -101,7 +102,7 @@ def _update_languages(repo: GithubRepository):
 
     try:
         response = github_api.get_if_changed(url)
-        if response is None:
+        if response.status_code == http.STATUS_304_NOT_MODIFIED:
             return
 
     except github_api.GithubApiException as e:

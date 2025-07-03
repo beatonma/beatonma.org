@@ -1,7 +1,6 @@
 from datetime import datetime
-from typing import Literal
+from typing import Iterable, Literal
 
-from django.db.models import QuerySet
 from django.http import Http404, HttpRequest
 from django.utils.timezone import get_current_timezone
 from github.events import GithubEvent
@@ -143,11 +142,11 @@ def get_github_events(request: HttpRequest):
     return cached_response.data
 
 
-def build_response(events: QuerySet[GithubUserEvent]) -> GithubRecentEvents:
+def build_response(events: Iterable[GithubUserEvent]) -> GithubRecentEvents:
     """Combine consecutive private events into a single summary object."""
 
     aggregator: _PrivateEventsSummary | None = None
-    results: list[dict] = []
+    results: list[Schema] = []
 
     def store_private_summary():
         nonlocal aggregator
