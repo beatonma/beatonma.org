@@ -7,6 +7,7 @@ DOCKER_REMOTE_CONTEXT="bma"
 
 usage="$(basename "$0") production
   shell            Open a shell in the running Django container.
+  push             Build and push images to production server.
   export           Export database and media files to a backup archive.
   import FILE      Restore database and media files from a backup archive.
   certbot init     Configure certbot in a new installation.
