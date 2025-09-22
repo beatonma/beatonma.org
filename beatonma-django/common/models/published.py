@@ -17,8 +17,8 @@ class PublishedQuerySet(SearchQuerySet):
     def filter(self, *args, **kwargs):
         return cast(PublishedQuerySet, super().filter(*args, **kwargs))
 
-    def build_search_filter(self, *args, **kwargs) -> QuerySet:
-        return super().build_search_filter(*args, **kwargs).filter(is_published=True)
+    def _build_search_filter(self, *args, **kwargs) -> QuerySet:
+        return super()._build_search_filter(*args, **kwargs).filter(is_published=True)
 
     def published(self):
         return self.filter(is_published=True, published_at__lte=timezone.now())

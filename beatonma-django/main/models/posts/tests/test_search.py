@@ -3,16 +3,6 @@ from main.models import Post
 from main.tasks import sample_data
 
 
-def _words(query: str):
-    words = query.strip().split()
-    return Post.objects.search_words(words)
-
-
-def _fragments(query: str):
-    words = query.strip().split()
-    return Post.objects.search_fragments(words)
-
-
 def _search(query: str):
     return Post.objects.search(query)
 
@@ -39,24 +29,10 @@ class SearchQueryTests(LocalTestCase):
         sample_data.create_post(title=None, content="private", is_published=False)
 
 
-class PartialSearchTests(SearchQueryTests):
-    def test_search_all_words_required(self):
-        self._assert_results("photography basics chickens", 1, _words)
-        self._assert_results("turkeys basics photography", 1, _words)
-        self._assert_results("photography chickens basics capture learn", 1, _words)
-        self._assert_results("photography basics champagne chickens", 0, _words)
-        self._assert_results("photography turkey basics chickens", 0, _words)
-
-    def test_search_word_fragments(self):
-        self._assert_results("chick", 1, _fragments)
-        self._assert_results("duck", 0, _fragments)
-        self._assert_results("basic photo fundamental", 2, _fragments)
-        self._assert_results("basic photo ducks", 0, _fragments)
-
-
 class FullSearchTests(SearchQueryTests):
     def test_search_word_order_is_agnostic(self):
         self._assert_results("photography basics", 2)
+        self._assert_results("basic photography", 2)
 
     def test_search_single_word(self):
         self._assert_results("chickens", 1)
@@ -76,3 +52,11 @@ class PrivateSearchTests(SearchQueryTests):
         self._assert_results("public", 1)
         self._assert_results("private", 0)
         self._assert_results("p", 3)
+
+
+class QueryEscapeTests(SearchQueryTests):
+    def test_sanitization(self):
+        self._assert_results("((Also ducks)", 2)
+        self._assert_results("'Also ducks", 2)
+        self._assert_results("'Also ducks\"", 2)
+        self._assert_results("HLxv))%2C).%2C%2C)%27%22", 0)

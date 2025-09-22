@@ -1,4 +1,5 @@
 import operator
+import re
 from functools import reduce
 from typing import Callable
 
@@ -10,6 +11,9 @@ _WORD_BOUNDARY_REGEX = {
     "sqlite": r"\b",
     "postgresql": r"\y",
 }.get(_DB_VENDOR, r"\b")
+
+QUERY_MAX_LENGTH = 64
+QUERY_MAX_WORDS = 5
 
 
 class SearchQuerySet(QuerySet):
@@ -30,16 +34,24 @@ class SearchQuerySet(QuerySet):
         if not self._search_enabled or not self._search_fields:
             return self.none()
 
-        words = query.strip().split()
-
-        word_results = self.search_words(words)
+        words = self._parse_words(query)
+        word_results = self._search_words(words)
 
         if word_results.exists():
             return word_results
 
-        return self.search_anything(words)
+        return self._search_anything(words)
 
-    def build_search_filter(
+    @staticmethod
+    def _parse_words(query: str) -> list[str]:
+        query = re.sub(r"[^a-zA-Z0-9 ]+", "", query)
+        query = query[:QUERY_MAX_LENGTH]
+        words = query.strip().split()
+        words = [re.escape(word) for word in words]
+
+        return words[:QUERY_MAX_WORDS]
+
+    def _build_search_filter(
         self,
         words: list[str],
         fields: list[str],
@@ -60,30 +72,30 @@ class SearchQuerySet(QuerySet):
 
         return self._apply_distinct(self.filter(q_filter))
 
-    def search_words(self, words: list[str]) -> QuerySet:
+    def _search_words(self, words: list[str]) -> QuerySet:
         """Filter for any fields that match all the words in the query.
 
         A match is a whole word: 'sample' will not match 'samples'."""
-        return self.build_search_filter(
-            [f"{_WORD_BOUNDARY_REGEX}{word}{_WORD_BOUNDARY_REGEX}" for word in words],
+        return self._build_search_filter(
+            [rf"{_WORD_BOUNDARY_REGEX}{word}{_WORD_BOUNDARY_REGEX}" for word in words],
             self._search_fields,
             "__iregex",
             operator.and_,
             operator.or_,
         )
 
-    def search_fragments(self, words: list[str]) -> QuerySet:
+    def _search_fragments(self, words: list[str]) -> QuerySet:
         """Filter for any fields that contain all the word fragments in query.
 
         This is more lenient than _search_words: 'sample' will match 'samples'."""
 
-        return self.build_search_filter(
+        return self._build_search_filter(
             words, self._search_fields, "__icontains", operator.and_, operator.or_
         )
 
-    def search_anything(self, words: list[str]) -> QuerySet:
+    def _search_anything(self, words: list[str]) -> QuerySet:
         """Filter for any word matching any field."""
-        return self.build_search_filter(
+        return self._build_search_filter(
             words, self._search_fields, "__icontains", operator.or_, operator.or_
         )
 
