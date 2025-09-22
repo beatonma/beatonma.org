@@ -40,7 +40,7 @@ class CreateEventPayload(_EventPayload):
     ref: str | None
     ref_type: Literal["branch", "tag", "repository"]
     master_branch: str
-    description: str
+    description: str | None
     pusher_type: str
 
 

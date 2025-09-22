@@ -13,38 +13,41 @@ _sample_repo_id: int = 1
 
 
 def __sample_repo_id() -> int:
+    # id field is retrieved from API, not auto-incremented.
     global _sample_repo_id
     _sample_repo_id += 1
     return _sample_repo_id
 
 
-def create_sample_repository(
+def get_sample_repository(
     name: str,
     is_private: bool,
-    is_published: bool,
+    is_published: bool | None = None,
+    id: int | None = None,
     description: str = None,
+    owner: GithubUser | None = None,
 ):
     repo, _ = GithubRepository.objects.get_or_create(
         name=name,
         defaults={
-            "id": __sample_repo_id(),  # Field is retrieved from API, not auto-incremented.
+            "id": id or __sample_repo_id(),
             "url": "https://fake-github.com/beatonma/my-repo",
             "full_name": name,
             "description": description,
             "is_private": is_private,
-            "is_published": is_published,
+            "is_published": not is_private if is_published is None else is_published,
             "updated_at": timezone.now(),
             "size_kb": random.randint(1, 20480),
-            "primary_language": create_sample_language(),
-            "license": generate_sample_license(),
-            "owner": generate_sample_user(),
+            "primary_language": get_sample_language(),
+            "license": get_sample_license(),
+            "owner": owner or get_sample_user(),
         },
     )
 
     return repo
 
 
-def create_sample_language(name: str = None):
+def get_sample_language(name: str = None):
     lang, _ = GithubLanguage.objects.get_or_create(
         name=name or random.choice(LANGUAGES)
     )
@@ -52,7 +55,7 @@ def create_sample_language(name: str = None):
     return lang
 
 
-def generate_sample_license():
+def get_sample_license():
     _license, _ = GithubLicense.objects.get_or_create(
         key="mit",
         defaults={"name": "MIT License", "url": "https://api.github.com/licenses/mit"},
@@ -60,9 +63,9 @@ def generate_sample_license():
     return _license
 
 
-def generate_sample_user():
+def get_sample_user():
     user, _ = GithubUser.objects.get_or_create(
-        id=1,
+        id=12682046,
         defaults={
             "username": "beatonma",
             "url": "https://fake-github.com/beatonma/",

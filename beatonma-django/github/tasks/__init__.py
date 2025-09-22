@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from celery import shared_task
-from contact.tasks import send_notification
+from contact.tasks.contact import send_error
 from github import api
 from github.models import CachedResponse, GithubEventUpdateCycle, GithubUserEvent
 
@@ -26,9 +26,7 @@ def update_github_repos_and_events():
 
         prebuild_cached_response()
     except Exception as e:
-        send_notification(
-            "Github update error", str(e), color="#C70036", important=True
-        )
+        send_error("Github update error", e)
         raise e
 
 
@@ -37,7 +35,12 @@ def prebuild_cached_response():
     events = GithubUserEvent.objects.all()
 
     if events.exists():
-        CachedResponse.objects.all().delete()
-        CachedResponse.objects.create(
-            data=api.build_response(events[:100]).model_dump()
-        )
+        try:
+            new_response = CachedResponse.objects.create(
+                data=api.build_response(events[:100]).model_dump()
+            )
+
+            # Remove previous response(s)
+            CachedResponse.objects.exclude(pk=new_response.pk).delete()
+        except Exception as e:
+            send_error("Failed to build Github CachedResponse", e)

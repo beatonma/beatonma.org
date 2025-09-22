@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 from github.models import CachedResponse
-from github.tests.sampledata import create_sample_repository
+from github.tests.sampledata import get_sample_repository
 
 sample_data = {
     "events": [
@@ -436,13 +436,13 @@ class Command(BaseCommand):
 
 
 def _create_repositories():
-    public_repo = create_sample_repository(
+    public_repo = get_sample_repository(
         name="Github project repo",
         description="A sample github repository",
         is_published=True,
         is_private=False,
     )
-    private_repo = create_sample_repository(
+    private_repo = get_sample_repository(
         name="PRIVATE_REPOSITORY",
         description="THIS SHOULD NEVER BE PUBLICLY VISIBLE",
         is_published=True,

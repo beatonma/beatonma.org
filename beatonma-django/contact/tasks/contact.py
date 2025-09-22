@@ -1,4 +1,5 @@
 import logging
+import traceback
 
 from bmanotify_django.tasks import dispatch_fcm_notification
 from bmanotify_django.tasks.dispatch import NoRegisteredDevice
@@ -35,6 +36,17 @@ def send_notification(
         )
     except Exception as e:
         log(logging.ERROR, f"send_notification error: {e}")
+
+
+def send_error(title: str, exception: BaseException):
+    formatted_error = f"""{str(exception)}\n{traceback.format_exception(exception)}"""
+    log(logging.ERROR, formatted_error)
+    send_notification(
+        title,
+        body=formatted_error,
+        color="#C70036",
+        important=True,
+    )
 
 
 @shared_task

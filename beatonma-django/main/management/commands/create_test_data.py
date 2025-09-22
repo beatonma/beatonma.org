@@ -132,7 +132,7 @@ def _generate_publishable(published: bool):
         date=TESTDATA_DATE,
         slug=_slug("test-changelog"),
     )
-    sample_github.create_sample_repository(
+    sample_github.get_sample_repository(
         name=f"{label} Repo",
         description=f"{label} repo description",
         is_published=published,

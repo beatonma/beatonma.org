@@ -8,7 +8,7 @@ from common.models import TaggableMixin
 from common.models.util import implementations_of
 from django.db.models import QuerySet
 from django.utils.text import slugify
-from github.tests.sampledata import create_sample_language
+from github.tests.sampledata import get_sample_language
 from main.models import AboutPost, AppPost, ChangelogPost, MessageOfTheDay, Post
 from mentions.models import HCard, Webmention
 from mentions.models.mixins import IncomingMentionType, MentionableMixin
@@ -29,7 +29,7 @@ __all__ = [
     "create_app",
     "create_changelog",
     "create_hcard",
-    "create_sample_language",
+    "get_sample_language",
     "generate_hcards",
     "generate_posts",
     "generate_webmentions_for",

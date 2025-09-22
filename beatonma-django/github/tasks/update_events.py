@@ -69,26 +69,33 @@ def _update_events(url: str, update_cycle: GithubEventUpdateCycle) -> None:
     if not _polling_allowed(url):
         return
 
-    def _try_create_event(data: dict) -> GithubUserEvent | None:
-        try:
-            return _create_event(update_cycle, Event.model_validate(data))
-
-        except UnwantedEvent as e:
-            log.debug(f"Skipping event {e}")
-
-        except (UnknownRepository, UnknownUser) as e:
-            log.warning(f"Failed to create event: {e}")
-
-        except Exception as e:
-            log.warning(f"Failed to handle event {data}: {e}")
-            raise e
-
-    response = github_api.for_each(url, _try_create_event)
+    response = github_api.for_each(
+        url,
+        lambda data: _try_create_event(data, update_cycle),
+    )
 
     if response.status_code == http.STATUS_304_NOT_MODIFIED:
         return
 
     _remember_polling(url, response.headers)
+
+
+def _try_create_event(
+    data: dict,
+    update_cycle: GithubEventUpdateCycle,
+) -> GithubUserEvent | None:
+    try:
+        return _create_event(update_cycle, Event.model_validate(data))
+
+    except UnwantedEvent as e:
+        log.debug(f"Skipping event {e}")
+
+    except (UnknownRepository, UnknownUser) as e:
+        log.warning(f"Failed to create event: {e}")
+
+    except Exception as e:
+        log.warning(f"Failed to handle event {data}: {e}")
+        raise e
 
 
 def update_github_user_events(
@@ -191,9 +198,11 @@ def _get_repo(repo: Repo) -> GithubRepository:
         raise UnknownRepository(f"Unknown repository: {repo.name} [{repo.id}")
 
 
-def create_payload[
-    T: _EventPayload
-](event_type: str, event: GithubUserEvent, data: dict,):
+def create_payload[T: _EventPayload](
+    event_type: str,
+    event: GithubUserEvent,
+    data: dict,
+):
     """Spec: https://docs.github.com/en/developers/webhooks-and-events/events/github-event-types"""
 
     func: Callable[[GithubUserEvent, T], None]
