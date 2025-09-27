@@ -104,6 +104,9 @@ def _send_notification(
 ):
     sound = "important" if important else None
 
+    if len(body) >= 1024:
+        body = body[:1023] + "…"
+
     dispatch_fcm_notification(
         account=settings.BMA_NOTIFICATIONS_ACCOUNT,
         message_title=title,
