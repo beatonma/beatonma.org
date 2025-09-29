@@ -205,6 +205,7 @@ class AppResource(UploadedMediaMixin, BaseModel):
     file = models.FileField(
         upload_to=appresource_upload_to,
         storage=OverwriteStorage(),
+        max_length=255,
     )
 
     def save(self, *args, **kwargs):
