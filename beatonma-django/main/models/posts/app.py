@@ -80,6 +80,12 @@ class AppPost(Post):
             "embedded widget - use to apply a background or padding."
         ),
     )
+    widget_data = models.CharField(
+        max_length=1024,
+        blank=True,
+        null=True,
+        help_text=_("Optional data passed to widget via URL search params."),
+    )
     script_is_widget = models.BooleanField(
         default=False,
         help_text=_(

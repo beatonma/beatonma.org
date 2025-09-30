@@ -391,8 +391,7 @@ export interface components {
             script_html: components["schemas"]["UnsafeHtml"] | null;
             /** Is Widget */
             is_widget: boolean;
-            /** Widget Style */
-            widget_style: string | null;
+            widget_data: components["schemas"]["HtmlAttribute"] | null;
             widget_style: components["schemas"]["HtmlAttribute"] | null;
         };
         /** AppPreview */

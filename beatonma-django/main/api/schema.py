@@ -1,5 +1,6 @@
 import re
 from typing import Annotated
+from urllib.parse import quote
 
 from django.utils import html
 from main.models.mixins.media_upload import MediaType
@@ -12,6 +13,7 @@ type UnsafeHtml = str
 type HtmlAttribute = Annotated[str, AfterValidator(html.escape)]
 type HexColor = Annotated[str, AfterValidator(_validate_hex_color)]
 type Url = Annotated[str, AfterValidator(_validate_url)]
+type UrlSearchParams = Annotated[str, AfterValidator(_validate_url_searchparams)]
 
 
 class File(Schema):
@@ -40,3 +42,7 @@ def _validate_url(url: str) -> str:
     if url.startswith("/") or "://" in url:
         return url
     raise ValueError(f"URL must be absolute, or relative to root (got '{url}')")
+
+
+def _validate_url_searchparams(params: str) -> str:
+    return quote(params, safe="&=")

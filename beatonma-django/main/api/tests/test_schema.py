@@ -1,5 +1,5 @@
 from basetest.testcase import SimpleTestCase
-from main.api.schema import HexColor, HtmlAttribute, Url
+from main.api.schema import HexColor, HtmlAttribute, Url, UrlSearchParams
 from ninja import Schema
 from pydantic import ValidationError
 
@@ -46,3 +46,12 @@ class SchemaTests(SimpleTestCase):
             Foo.model_validate({"attr": "background: #ff0000;"}).attr,
             "background: #ff0000;",
         )
+
+    def test_UrlSearchParams(self):
+        class Foo(Schema):
+            params: UrlSearchParams
+
+        self.assertEqual(
+            Foo.model_validate({"params": "a=1&b=2&3=abc"}).params, "a=1&b=2&3=abc"
+        )
+        self.assertEqual(Foo.model_validate({"params": "one two"}).params, "one%20two")

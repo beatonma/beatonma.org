@@ -5,7 +5,7 @@ import { Optional } from "@/components/optional";
 import { PostPage, PostPreview } from "@/features/posts";
 import { Nullish } from "@/types";
 import { DivPropsNoChildren } from "@/types/react";
-import { classes } from "@/util/transforms";
+import { classes, joinNonEmpty } from "@/util/transforms";
 import { AppLink, LocalIFrame } from "../../_components";
 import { SlugParams } from "../../util";
 import { getApp } from "./get";
@@ -39,7 +39,7 @@ export default async function Page(params: SlugParams) {
               <div style={style} className={classes(className, "w-full")}>
                 <LocalIFrame
                   style={iframeStyle(style)}
-                  src={`${app.url}/live`}
+                  src={joinNonEmpty("?", `${app.url}/live`, app.widget_data)}
                   title={`Live instance of app '${app.title}'`}
                   className="w-full"
                 />

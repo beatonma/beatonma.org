@@ -16,7 +16,8 @@ from ninja.decorators import decorate_view
 from ninja.pagination import paginate
 
 from .querysets import get_feed
-from .schema import File, HexColor, HtmlAttribute, Link, PlainText, UnsafeHtml, Url
+from .schema import (File, HexColor, HtmlAttribute, Link, PlainText,
+                     UnsafeHtml, Url, UrlSearchParams)
 
 log = logging.getLogger(__name__)
 router = Router(tags=["Posts"])
@@ -144,7 +145,7 @@ class AppDetail(PostDetail):
     script: Url | None = Field(alias="script.file.url", default=None)
     script_html: UnsafeHtml | None
     is_widget: bool = Field(alias="script_is_widget")
-    widget_style: str | None
+    widget_data: UrlSearchParams | None
     widget_style: HtmlAttribute | None
 
     @staticmethod

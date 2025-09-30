@@ -128,6 +128,7 @@ class AppPostAdmin(BasePostAdmin):
         "script",
         "script_html",
         "script_is_widget",
+        "widget_data",
         "widget_style",
         "repository",
     ]
