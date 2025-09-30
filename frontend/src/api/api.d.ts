@@ -253,10 +253,8 @@ export interface components {
             url: components["schemas"]["Url"];
             thumbnail_url?: components["schemas"]["Url"];
             type: components["schemas"]["MediaType"];
-            /** Name */
-            name?: string | null;
-            /** Description */
-            description: string | null;
+            name?: components["schemas"]["PlainText"] | null;
+            description: components["schemas"]["PlainText"] | null;
             fit: components["schemas"]["ImageFit"] | null;
         };
         /** HCard */
@@ -268,6 +266,7 @@ export interface components {
             /** Homepage */
             homepage: string | null;
         };
+        HexColor: string;
         /**
          * ImageFit
          * @enum {string}
@@ -283,12 +282,9 @@ export interface components {
         IncomingMentionType: "u-bookmark-of" | "u-like-of" | "u-listen-of" | "u-in-reply-to" | "u-repost-of" | "u-translation-of" | "u-watch-of";
         /** Link */
         Link: {
-            /** Url */
-            url: string;
-            /** Label */
-            label?: string | null;
-            /** Description */
-            description?: string | null;
+            url: components["schemas"]["Url"];
+            label?: components["schemas"]["PlainText"] | null;
+            description?: components["schemas"]["PlainText"] | null;
             icon?: components["schemas"]["Url"] | null;
         };
         /**
@@ -311,6 +307,7 @@ export interface components {
              */
             date: string;
         };
+        PlainText: string;
         /** PostDetail */
         PostDetail: {
             /**
@@ -319,10 +316,8 @@ export interface components {
              * @constant
              */
             post_type: "post";
-            /** Title */
-            title: string | null;
-            /** Url */
-            url: string;
+            title: components["schemas"]["PlainText"] | null;
+            url: components["schemas"]["Url"];
             /** Is Published */
             is_published: boolean;
             /**
@@ -331,19 +326,14 @@ export interface components {
              */
             published_at: string;
             theme?: components["schemas"]["Theme"] | null;
-            /** Hero Embedded Url */
-            hero_embedded_url: string | null;
+            hero_embedded_url: components["schemas"]["Url"] | null;
             hero_image: components["schemas"]["File"] | null;
-            /** Content Html */
-            content_html: string | null;
-            /** Content Script */
-            content_script: string | null;
+            content_html: components["schemas"]["UnsafeHtml"] | null;
+            content_script: components["schemas"]["UnsafeHtml"] | null;
             /** Files */
             files: components["schemas"]["File"][];
-            /** Subtitle */
-            subtitle?: string | null;
-            /** Hero Html */
-            hero_html: string | null;
+            subtitle?: components["schemas"]["PlainText"] | null;
+            hero_html: components["schemas"]["UnsafeHtml"] | null;
             /** Links */
             links: components["schemas"]["Link"][];
             /** Tags */
@@ -353,16 +343,14 @@ export interface components {
         };
         /** Tag */
         Tag: {
-            /** Name */
-            name: string;
+            name: components["schemas"]["PlainText"];
         };
         /** Theme */
         Theme: {
-            /** Muted */
-            muted?: string | null;
-            /** Vibrant */
-            vibrant?: string | null;
+            muted?: components["schemas"]["HexColor"] | null;
+            vibrant?: components["schemas"]["HexColor"] | null;
         };
+        UnsafeHtml: string;
         Url: string;
         /** AppDetail */
         AppDetail: {
@@ -372,10 +360,8 @@ export interface components {
              * @constant
              */
             post_type: "app";
-            /** Title */
-            title: string | null;
-            /** Url */
-            url: string;
+            title: components["schemas"]["PlainText"] | null;
+            url: components["schemas"]["Url"];
             /** Is Published */
             is_published: boolean;
             /**
@@ -384,19 +370,14 @@ export interface components {
              */
             published_at: string;
             theme?: components["schemas"]["Theme"] | null;
-            /** Hero Embedded Url */
-            hero_embedded_url: string | null;
+            hero_embedded_url: components["schemas"]["Url"] | null;
             hero_image: components["schemas"]["File"] | null;
-            /** Content Html */
-            content_html: string | null;
-            /** Content Script */
-            content_script: string | null;
+            content_html: components["schemas"]["UnsafeHtml"] | null;
+            content_script: components["schemas"]["UnsafeHtml"] | null;
             /** Files */
             files: components["schemas"]["File"][];
-            /** Subtitle */
-            subtitle?: string | null;
-            /** Hero Html */
-            hero_html: string | null;
+            subtitle?: components["schemas"]["PlainText"] | null;
+            hero_html: components["schemas"]["UnsafeHtml"] | null;
             /** Links */
             links: components["schemas"]["Link"][];
             /** Tags */
@@ -406,14 +387,13 @@ export interface components {
             /** Changelog */
             changelog: components["schemas"]["ChangelogDetail"][];
             icon: components["schemas"]["File"] | null;
-            /** Script */
-            script?: string | null;
-            /** Script Html */
-            script_html: string | null;
+            script?: components["schemas"]["Url"] | null;
+            script_html: components["schemas"]["UnsafeHtml"] | null;
             /** Is Widget */
             is_widget: boolean;
             /** Widget Style */
             widget_style: string | null;
+            widget_style: components["schemas"]["HtmlAttribute"] | null;
         };
         /** AppPreview */
         AppPreview: {
@@ -423,10 +403,8 @@ export interface components {
              * @constant
              */
             post_type: "app";
-            /** Title */
-            title: string | null;
-            /** Url */
-            url: string;
+            title: components["schemas"]["PlainText"] | null;
+            url: components["schemas"]["Url"];
             /** Is Published */
             is_published: boolean;
             /**
@@ -435,13 +413,10 @@ export interface components {
              */
             published_at: string;
             theme?: components["schemas"]["Theme"] | null;
-            /** Hero Embedded Url */
-            hero_embedded_url: string | null;
+            hero_embedded_url: components["schemas"]["Url"] | null;
             hero_image: components["schemas"]["File"] | null;
-            /** Content Html */
-            content_html: string | null;
-            /** Content Script */
-            content_script: string | null;
+            content_html: components["schemas"]["UnsafeHtml"] | null;
+            content_script: components["schemas"]["UnsafeHtml"] | null;
             /** Files */
             files: components["schemas"]["File"][];
             /** Is Preview */
@@ -456,10 +431,8 @@ export interface components {
              * @constant
              */
             post_type: "changelog";
-            /** Title */
-            title: string | null;
-            /** Url */
-            url: string;
+            title: components["schemas"]["PlainText"] | null;
+            url: components["schemas"]["Url"];
             /** Is Published */
             is_published: boolean;
             /**
@@ -468,19 +441,14 @@ export interface components {
              */
             published_at: string;
             theme?: components["schemas"]["Theme"] | null;
-            /** Hero Embedded Url */
-            hero_embedded_url: string | null;
+            hero_embedded_url: components["schemas"]["Url"] | null;
             hero_image: components["schemas"]["File"] | null;
-            /** Content Html */
-            content_html: string | null;
-            /** Content Script */
-            content_script: string | null;
+            content_html: components["schemas"]["UnsafeHtml"] | null;
+            content_script: components["schemas"]["UnsafeHtml"] | null;
             /** Files */
             files: components["schemas"]["File"][];
-            /** Subtitle */
-            subtitle?: string | null;
-            /** Hero Html */
-            hero_html: string | null;
+            subtitle?: components["schemas"]["PlainText"] | null;
+            hero_html: components["schemas"]["UnsafeHtml"] | null;
             /** Links */
             links: components["schemas"]["Link"][];
             /** Tags */
@@ -488,9 +456,9 @@ export interface components {
             /** Mentions */
             mentions: components["schemas"]["Mention"][];
             app: components["schemas"]["AppPreview"];
-            /** Version */
-            version: string;
+            version: components["schemas"]["PlainText"];
         };
+        HtmlAttribute: string;
         /** AboutDetail */
         AboutDetail: {
             /**
@@ -499,10 +467,8 @@ export interface components {
              * @constant
              */
             post_type: "about";
-            /** Title */
-            title: string | null;
-            /** Url */
-            url: string;
+            title: components["schemas"]["PlainText"] | null;
+            url: components["schemas"]["Url"];
             /** Is Published */
             is_published: boolean;
             /**
@@ -511,19 +477,14 @@ export interface components {
              */
             published_at: string;
             theme?: components["schemas"]["Theme"] | null;
-            /** Hero Embedded Url */
-            hero_embedded_url: string | null;
+            hero_embedded_url: components["schemas"]["Url"] | null;
             hero_image: components["schemas"]["File"] | null;
-            /** Content Html */
-            content_html: string | null;
-            /** Content Script */
-            content_script: string | null;
+            content_html: components["schemas"]["UnsafeHtml"] | null;
+            content_script: components["schemas"]["UnsafeHtml"] | null;
             /** Files */
             files: components["schemas"]["File"][];
-            /** Subtitle */
-            subtitle?: string | null;
-            /** Hero Html */
-            hero_html: string | null;
+            subtitle?: components["schemas"]["PlainText"] | null;
+            hero_html: components["schemas"]["UnsafeHtml"] | null;
             /** Links */
             links: components["schemas"]["Link"][];
             /** Tags */
@@ -546,10 +507,8 @@ export interface components {
              * @constant
              */
             post_type: "about";
-            /** Title */
-            title: string | null;
-            /** Url */
-            url: string;
+            title: components["schemas"]["PlainText"] | null;
+            url: components["schemas"]["Url"];
             /** Is Published */
             is_published: boolean;
             /**
@@ -558,13 +517,10 @@ export interface components {
              */
             published_at: string;
             theme?: components["schemas"]["Theme"] | null;
-            /** Hero Embedded Url */
-            hero_embedded_url: string | null;
+            hero_embedded_url: components["schemas"]["Url"] | null;
             hero_image: components["schemas"]["File"] | null;
-            /** Content Html */
-            content_html: string | null;
-            /** Content Script */
-            content_script: string | null;
+            content_html: components["schemas"]["UnsafeHtml"] | null;
+            content_script: components["schemas"]["UnsafeHtml"] | null;
             /** Files */
             files: components["schemas"]["File"][];
             /** Is Preview */
@@ -601,10 +557,8 @@ export interface components {
         /** PostPreview */
         PostPreview: {
             post_type: components["schemas"]["PostType"];
-            /** Title */
-            title: string | null;
-            /** Url */
-            url: string;
+            title: components["schemas"]["PlainText"] | null;
+            url: components["schemas"]["Url"];
             /** Is Published */
             is_published: boolean;
             /**
@@ -613,13 +567,10 @@ export interface components {
              */
             published_at: string;
             theme?: components["schemas"]["Theme"] | null;
-            /** Hero Embedded Url */
-            hero_embedded_url: string | null;
+            hero_embedded_url: components["schemas"]["Url"] | null;
             hero_image: components["schemas"]["File"] | null;
-            /** Content Html */
-            content_html: string | null;
-            /** Content Script */
-            content_script: string | null;
+            content_html: components["schemas"]["UnsafeHtml"] | null;
+            content_script: components["schemas"]["UnsafeHtml"] | null;
             /** Files */
             files: components["schemas"]["File"][];
             /** Is Preview */

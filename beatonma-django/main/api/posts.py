@@ -16,32 +16,32 @@ from ninja.decorators import decorate_view
 from ninja.pagination import paginate
 
 from .querysets import get_feed
-from .schema import File, Link
+from .schema import File, HexColor, HtmlAttribute, Link, PlainText, UnsafeHtml, Url
 
 log = logging.getLogger(__name__)
 router = Router(tags=["Posts"])
 
 
 class Theme(Schema):
-    muted: str | None = None
-    vibrant: str | None = None
+    muted: HexColor | None = None
+    vibrant: HexColor | None = None
 
 
 class Tag(Schema):
-    name: str
+    name: PlainText
 
 
 class BasePost(Schema):
     post_type: PostType
-    title: str | None
-    url: str
+    title: PlainText | None
+    url: Url
     is_published: bool
     published_at: datetime
     theme: Theme | None = None
-    hero_embedded_url: str | None
+    hero_embedded_url: Url | None
     hero_image: File | None
-    content_html: str | None
-    content_script: str | None
+    content_html: UnsafeHtml | None
+    content_script: UnsafeHtml | None
     files: list[File]
 
     @staticmethod
@@ -91,8 +91,8 @@ class AppPreview(PostPreview):
 
 class PostDetail(BasePost):
     post_type: Literal["post"] = Field("post")
-    subtitle: str | None = None
-    hero_html: str | None
+    subtitle: PlainText | None = None
+    hero_html: UnsafeHtml | None
     links: list[Link]
     tags: list[Tag]
     mentions: list[Mention] = Field(alias="get_mentions")
@@ -104,7 +104,7 @@ class PostDetail(BasePost):
 
 class AboutPreview(PostPreview):
     post_type: Literal["about"] = Field("about")
-    url: str = Field(alias="get_absolute_url")
+    url: Url = Field(alias="get_absolute_url")
     path: str
 
 
@@ -129,7 +129,7 @@ class AboutDetail(PostDetail):
 class ChangelogDetail(PostDetail):
     post_type: Literal["changelog"] = Field("changelog")
     app: AppPreview
-    version: str
+    version: PlainText
 
     @staticmethod
     def resolve_url(obj):
@@ -138,13 +138,14 @@ class ChangelogDetail(PostDetail):
 
 class AppDetail(PostDetail):
     post_type: Literal["app"] = Field("app")
-    hero_html: str | None
+    hero_html: UnsafeHtml | None
     changelog: list[ChangelogDetail] = Field(alias="changelogs")
     icon: File | None
-    script: str | None = Field(alias="script.file.url", default=None)
-    script_html: str | None
+    script: Url | None = Field(alias="script.file.url", default=None)
+    script_html: UnsafeHtml | None
     is_widget: bool = Field(alias="script_is_widget")
     widget_style: str | None
+    widget_style: HtmlAttribute | None
 
     @staticmethod
     def resolve_url(obj):
