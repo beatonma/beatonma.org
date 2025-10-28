@@ -1,12 +1,14 @@
 import logging
-import re
 from datetime import datetime
 from typing import Callable
 
-from common.util import http
 from django.conf import settings
+from requests.structures import CaseInsensitiveDict
+
+from common.util import http
 from github import github_api
 from github.events import GithubEvent
+from github.github_api import GithubBreakForEach
 from github.models.api import GithubPollingEvent
 from github.models.events import (
     GithubCommit,
@@ -19,19 +21,7 @@ from github.models.events import (
     GithubWikiPayload,
 )
 from github.models.repository import GithubRepository, GithubUser
-from github.tasks.api_models import (
-    CreateEventPayload,
-    Event,
-    IssuesEvent,
-    PullRequestEvent,
-    PushEvent,
-    ReleaseEvent,
-    Repo,
-    User,
-    WikiEvent,
-    _EventPayload,
-)
-from requests.structures import CaseInsensitiveDict
+from github.tasks import api_models
 
 log = logging.getLogger(__name__)
 
@@ -46,6 +36,31 @@ SUPPORTED_EVENTS = [
     GithubEvent.PushEvent,
     GithubEvent.ReleaseEvent,
 ]
+
+
+def update_github_user_events(
+    *, username: str = OWNER, update_cycle: GithubEventUpdateCycle = None
+):
+    if not update_cycle:
+        update_cycle = GithubEventUpdateCycle.objects.create()
+
+    url: str = f"https://api.github.com/users/{username}/events"
+
+    _update_events(url, update_cycle)
+
+
+def update_repository_events(
+    *, update_cycle: GithubEventUpdateCycle = None, changed_since: datetime = None
+):
+    if not update_cycle:
+        update_cycle = GithubEventUpdateCycle.objects.create()
+    repos = GithubRepository.objects.all()
+    if changed_since:
+        repos = repos.filter(updated_at__gt=changed_since)
+
+    for repo in repos:
+        url = f"https://api.github.com/repos/{repo.full_name}/events"
+        _update_events(url, update_cycle)
 
 
 class UnwantedEvent(Exception):
@@ -85,7 +100,7 @@ def _try_create_event(
     update_cycle: GithubEventUpdateCycle,
 ) -> GithubUserEvent | None:
     try:
-        return _create_event(update_cycle, Event.model_validate(data))
+        return _create_event(update_cycle, api_models.Event.model_validate(data))
 
     except UnwantedEvent as e:
         log.debug(f"Skipping event {e}")
@@ -96,31 +111,6 @@ def _try_create_event(
     except Exception as e:
         log.warning(f"Failed to handle event {data}: {e}")
         raise e
-
-
-def update_github_user_events(
-    *, username: str = OWNER, update_cycle: GithubEventUpdateCycle = None
-):
-    if not update_cycle:
-        update_cycle = GithubEventUpdateCycle.objects.create()
-
-    url: str = f"https://api.github.com/users/{username}/events"
-
-    _update_events(url, update_cycle)
-
-
-def update_repository_events(
-    *, update_cycle: GithubEventUpdateCycle = None, changed_since: datetime = None
-):
-    if not update_cycle:
-        update_cycle = GithubEventUpdateCycle.objects.create()
-    repos = GithubRepository.objects.all()
-    if changed_since:
-        repos = repos.filter(updated_at__gt=changed_since)
-
-    for repo in repos:
-        url = f"https://api.github.com/repos/{repo.full_name}/events"
-        _update_events(url, update_cycle)
 
 
 def _polling_allowed(url: str) -> bool:
@@ -148,7 +138,7 @@ def _remember_polling(url: str, headers: CaseInsensitiveDict):
 
 def _create_event(
     parent: GithubEventUpdateCycle,
-    data: Event,
+    data: api_models.Event,
 ) -> GithubUserEvent | None:
     if data.actor.login != OWNER:
         return None
@@ -184,21 +174,21 @@ def _create_event(
     return event
 
 
-def _get_user(user: User) -> GithubUser:
+def _get_user(user: api_models.User) -> GithubUser:
     try:
         return GithubUser.objects.get(id=user.id)
     except GithubUser.DoesNotExist:
         raise UnknownUser(f"Unknown github user: {user.login} [{user.id}]")
 
 
-def _get_repo(repo: Repo) -> GithubRepository:
+def _get_repo(repo: api_models.Repo) -> GithubRepository:
     try:
         return GithubRepository.objects.get(id=repo.id)
     except GithubRepository.DoesNotExist:
         raise UnknownRepository(f"Unknown repository: {repo.name} [{repo.id}")
 
 
-def create_payload[T: _EventPayload](
+def create_payload[T: api_models.EventPayload](
     event_type: str,
     event: GithubUserEvent,
     data: dict,
@@ -209,27 +199,27 @@ def create_payload[T: _EventPayload](
     payload: T
 
     if event_type == GithubEvent.CreateEvent:
-        payload = CreateEventPayload.model_validate(data)
+        payload = api_models.CreateEventPayload.model_validate(data)
         func = _create_create_payload
 
     elif event_type == GithubEvent.WikiEvent:
-        payload = WikiEvent.model_validate(data)
+        payload = api_models.WikiEvent.model_validate(data)
         func = _create_wiki_payload
 
     elif event_type == GithubEvent.IssuesEvent:
-        payload = IssuesEvent.model_validate(data)
+        payload = api_models.IssuesEvent.model_validate(data)
         func = _create_issues_payload
 
     elif event_type == GithubEvent.PullRequestEvent:
-        payload = PullRequestEvent.model_validate(data)
+        payload = api_models.PullRequestEvent.model_validate(data)
         func = _create_pullrequest_payload
 
     elif event_type == GithubEvent.PushEvent:
-        payload = PushEvent.model_validate(data)
+        payload = api_models.PushEvent.model_validate(data)
         func = _create_push_payload
 
     elif event_type == GithubEvent.ReleaseEvent:
-        payload = ReleaseEvent.model_validate(data)
+        payload = api_models.ReleaseEvent.model_validate(data)
         func = _create_release_event
 
     else:
@@ -238,75 +228,102 @@ def create_payload[T: _EventPayload](
     func(event, payload)
 
 
-def _create_create_payload(event: GithubUserEvent, payload: CreateEventPayload):
-    GithubCreatePayload.objects.create(
+def _create_create_payload(
+    event: GithubUserEvent, payload: api_models.CreateEventPayload
+):
+    GithubCreatePayload.objects.get_or_create(
         event=event,
         ref=payload.ref,
         ref_type=payload.ref_type,
-        created_at=event.created_at,
+        defaults={
+            "created_at": event.created_at,
+        },
     )
 
 
-def _create_push_payload(event: GithubUserEvent, payload: PushEvent):
-    commits = payload.commits
+def _create_push_payload(event: GithubUserEvent, payload: api_models.PushEvent):
+    current_ref = payload.head
+    previous_ref = payload.before
 
-    api_url_regex = re.compile(
-        r"^(https://)api\.(github\.com/)repos/(.*?)$",
-        re.MULTILINE,
-    )
+    def _create_commit(raw_commit_data: dict) -> None:
+        commit_data: api_models.Commit = api_models.Commit.model_validate(
+            raw_commit_data
+        )
+        sha = commit_data.sha
 
-    def api_to_html_url(url):
-        return re.sub(api_url_regex, r"\g<1>\g<2>\g<3>", url)
+        if sha == previous_ref:
+            raise GithubBreakForEach(f"Previous commit SHA reached: {sha}")
 
-    for commit in commits:
-        GithubCommit.objects.create(
-            sha=commit.sha,
-            message=commit.message,
-            url=api_to_html_url(commit.url),
+        commit, created = GithubCommit.objects.update_or_create(
             event=event,
+            sha=sha,
+            defaults={
+                "created_at": commit_data.timestamp,
+                "message": commit_data.message,
+                "url": commit_data.html_url,
+            },
         )
 
+        if not created:
+            raise GithubBreakForEach(f"GithubCommit already retrieved: {sha}")
 
-def _create_pullrequest_payload(event: GithubUserEvent, payload: PullRequestEvent):
+    github_api.for_each(
+        github_api.url_repository_commits(event.repository.full_name, current_ref),
+        _create_commit,
+    )
+
+
+def _create_pullrequest_payload(
+    event: GithubUserEvent, payload: api_models.PullRequestEvent
+):
     if payload.action == "closed":
-        pull_request = payload.pull_request
+        response = github_api.get_if_changed(
+            github_api.url_repository_pullrequest(
+                event.repository.full_name, payload.number
+            )
+        )
 
+        pull_request = api_models.PullRequest.model_validate(response.json())
         if pull_request.is_merged:
-            GithubPullRequestMergedPayload.objects.create(
+            GithubPullRequestMergedPayload.objects.get_or_create(
                 event=event,
-                url=pull_request.html_url,
                 number=pull_request.number,
-                merged_at=pull_request.merged_at,
-                additions_count=pull_request.additions,
-                deletions_count=pull_request.deletions,
-                changed_files_count=pull_request.changed_files,
+                defaults={
+                    "url": pull_request.html_url,
+                    "merged_at": pull_request.merged_at,
+                    "additions_count": pull_request.additions,
+                    "deletions_count": pull_request.deletions,
+                    "changed_files_count": pull_request.changed_files,
+                },
             )
             return
 
     raise UnwantedEvent("PullRequest must be action=closed and is_merged=True.")
 
 
-def _create_issues_payload(event: GithubUserEvent, payload: IssuesEvent):
+def _create_issues_payload(event: GithubUserEvent, payload: api_models.IssuesEvent):
     action = payload.action
 
     if action == "closed":
         issue = payload.issue
-        GithubIssueClosedPayload.objects.create(
+        GithubIssueClosedPayload.objects.get_or_create(
             event=event,
             number=issue.number,
-            url=issue.html_url,
-            closed_at=issue.closed_at,
+            defaults={
+                "url": issue.html_url,
+                "closed_at": issue.closed_at,
+            },
         )
         return
 
     raise UnwantedEvent("IssuesEvent must be action=closed")
 
 
-def _create_wiki_payload(event: GithubUserEvent, payload: WikiEvent):
+def _create_wiki_payload(event: GithubUserEvent, payload: api_models.WikiEvent):
     pages = payload.pages
 
     for page in pages:
-        GithubWikiPayload.objects.create(
+        GithubWikiPayload.objects.get_or_create(
             event=event,
             url=page.html_url,
             action=page.action,
@@ -314,15 +331,17 @@ def _create_wiki_payload(event: GithubUserEvent, payload: WikiEvent):
         )
 
 
-def _create_release_event(event: GithubUserEvent, payload: ReleaseEvent):
+def _create_release_event(event: GithubUserEvent, payload: api_models.ReleaseEvent):
     if payload.action == "published":
         release = payload.release
-        GithubReleasePublishedPayload.objects.create(
+        GithubReleasePublishedPayload.objects.get_or_create(
             event=event,
-            url=release.html_url,
             name=release.name,
-            description=release.description,
-            published_at=release.published_at,
+            defaults={
+                "url": release.html_url,
+                "description": release.description,
+                "published_at": release.published_at,
+            },
         )
         return
 

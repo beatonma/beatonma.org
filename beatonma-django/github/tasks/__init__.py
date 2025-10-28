@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from celery import shared_task
+
 from contact.tasks.contact import send_error
 from github import api
 from github.models import CachedResponse, GithubEventUpdateCycle, GithubUserEvent
@@ -21,8 +22,6 @@ def update_github_repos_and_events():
         update_github_repository_cache()
         update_github_user_events(update_cycle=cycle)
         update_repository_events(update_cycle=cycle, changed_since=previous_update)
-
-        print(cycle.events.all())
 
         prebuild_cached_response()
     except Exception as e:

@@ -2,7 +2,7 @@ import datetime
 from unittest.mock import patch
 
 import requests
-from basetest.testcase import LocalTestCase, NetworkTestCase
+from basetest.testcase import LocalTestCase
 from github import github_api
 from github.models import GithubETag
 
@@ -51,6 +51,21 @@ class _MockResponse:
             self.status_code = 200
 
 
+class MockJsonResponse:
+    def __init__(
+        self,
+        request: requests.PreparedRequest,
+        json_data: dict | list[dict],
+        status_code: int = 200,
+    ):
+        self.headers = {**SAMPLE_RESPONSE_HEADERS}
+        self.status_code = status_code
+        self.json_data = json_data
+
+    def json(self) -> dict:
+        return self.json_data
+
+
 class GithubApiTest(LocalTestCase):
     def test_parse_response_headers(self):
         headers = SAMPLE_RESPONSE_HEADERS
@@ -87,20 +102,3 @@ class GithubApiTest(LocalTestCase):
             # ETag no longer matches -> content has changed -> response OK
             response = github_api.get_if_changed(URL)
             self.assertEqual(response.status_code, 200)
-
-
-class GithubApiTestActual(NetworkTestCase):
-    def test_foreach(self):
-        items_seen = 0
-        names = []
-
-        def _for_obj(obj):
-            nonlocal items_seen, names
-            items_seen += 1
-            names.append(obj.get("full_name"))
-
-        github_api.for_each("https://api.github.com/user/repos?sort=updated", _for_obj)
-
-        print(names)
-        self.assertEqual(items_seen, 41)
-        raise Exception("Just checking...")

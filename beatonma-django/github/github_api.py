@@ -5,8 +5,10 @@ from datetime import datetime
 from typing import Callable
 
 import requests
-from common.util import http
 from django.conf import settings
+from pydantic import ValidationError
+
+from common.util import http
 from github.models import GithubETag
 from github.tasks.util import parse_datetime
 
@@ -18,6 +20,12 @@ _session = requests.Session()
 
 
 class GithubApiException(Exception):
+    pass
+
+
+class GithubBreakForEach(Exception):
+    """Raise during `github_api.for_each` to exit the update loop."""
+
     pass
 
 
@@ -92,8 +100,16 @@ def for_each(
     data: list[dict] | None = response.json()
 
     while data is not None:
-        for obj in data:
-            block(obj)
+        try:
+            for obj in data:
+                try:
+                    block(obj)
+                except GithubBreakForEach as e:
+                    # `block` has determined that the update should not continue further
+                    log.debug(f"github_api.for_each exiting early ({url}): {e}")
+                    return response
+        except ValidationError as e:
+            log.error(f"Schema ValidationError with data '{data}' | Error: {e}")
 
         next_page_link = response.links.get("next")
         if next_page_link:
@@ -109,6 +125,18 @@ def for_each(
             break
 
     return response
+
+
+def url_repository_commits(full_repository_name: str, start_ref: str = None) -> str:
+    """full_repository_name must be of the format `owner/repository_name`."""
+    query = f"?sha={start_ref}" if start_ref else ""
+
+    return f"https://api.github.com/repos/{full_repository_name}/commits{query}"
+
+
+def url_repository_pullrequest(full_repository_name: str, number: int) -> str:
+    """full_repository_name must be of the format `owner/repository_name`."""
+    return f"https://api.github.com/repos/{full_repository_name}/pulls/{number}"
 
 
 def _get_existing_etag(url: str) -> GithubETag | None:

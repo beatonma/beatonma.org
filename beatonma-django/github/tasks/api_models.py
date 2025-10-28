@@ -4,6 +4,10 @@ from typing import Literal
 from ninja import Schema
 from pydantic import Field
 
+from github.tasks.util import parse_datetime
+
+type SHA = str
+
 
 class User(Schema):
     id: int
@@ -30,14 +34,14 @@ class Event(Schema):
     created_at: datetime | None
 
 
-class _EventPayload(Schema):
+class EventPayload(Schema):
     pass
 
 
-class CreateEventPayload(_EventPayload):
+class CreateEventPayload(EventPayload):
     """https://docs.github.com/en/rest/using-the-rest-api/github-event-types?apiVersion=2022-11-28#createevent"""
 
-    ref: str | None
+    ref: SHA | None
     ref_type: Literal["branch", "tag", "repository"]
     master_branch: str
     description: str | None
@@ -48,11 +52,11 @@ class WikiPage(Schema):
     page_name: str
     title: str
     action: Literal["created", "edited"]
-    sha: str
+    sha: SHA
     html_url: str
 
 
-class WikiEvent(_EventPayload):
+class WikiEvent(EventPayload):
     """https://docs.github.com/en/rest/using-the-rest-api/github-event-types?apiVersion=2022-11-28#gollumevent"""
 
     pages: list[WikiPage]
@@ -64,7 +68,7 @@ class Issue(Schema):
     closed_at: datetime | None
 
 
-class IssuesEvent(_EventPayload):
+class IssuesEvent(EventPayload):
     """https://docs.github.com/en/rest/using-the-rest-api/github-event-types?apiVersion=2022-11-28#issuesevent"""
 
     action: str
@@ -81,25 +85,38 @@ class PullRequest(Schema):
     changed_files: int
 
 
-class PullRequestEvent(_EventPayload):
+class PullRequestEvent(EventPayload):
     """https://docs.github.com/en/rest/using-the-rest-api/github-event-types?apiVersion=2022-11-28#pullrequestevent"""
 
-    action: str
-    pull_request: PullRequest
+    action: Literal[
+        "opened", "closed", "reopened", "assigned", "unassigned", "labeled", "unlabeled"
+    ]
+    number: int
 
 
 class Commit(Schema):
-    sha: str
-    author: dict
+    """https://docs.github.com/en/rest/commits/commits?apiVersion=2022-11-28&versionId=free-pro-team%40latest&category=git&subcategory=commits"""
+
+    sha: SHA
     message: str
-    distinct: bool
-    url: str
+    api_url: str = Field(validation_alias="url")
+    html_url: str
+    timestamp: datetime
+
+    @staticmethod
+    def resolve_message(obj) -> str:
+        return obj["commit"]["message"]
+
+    @staticmethod
+    def resolve_timestamp(obj) -> datetime:
+        return parse_datetime(obj["commit"]["committer"]["date"])
 
 
-class PushEvent(_EventPayload):
-    """https://docs.github.com/en/rest/using-the-rest-api/github-event-types?apiVersion=2022-11-28#pushevent"""
+class PushEvent(EventPayload):
+    """https://docs.github.com/en/rest/using-the-rest-api/github-event-types?apiVersion=2022-11-28#event-payload-object-for-pushevent"""
 
-    commits: list[Commit]
+    head: SHA
+    before: SHA
 
 
 class Release(Schema):
@@ -109,8 +126,8 @@ class Release(Schema):
     published_at: datetime | None
 
 
-class ReleaseEvent(_EventPayload):
+class ReleaseEvent(EventPayload):
     """https://docs.github.com/en/rest/using-the-rest-api/github-event-types?apiVersion=2022-11-28#releaseevent"""
 
-    action: str
+    action: Literal["published"]
     release: Release

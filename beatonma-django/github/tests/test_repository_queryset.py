@@ -3,7 +3,7 @@ from github.management.commands.sample_github_data import get_sample_repository
 from github.models import GithubRepository
 
 
-class GithubRepositoryQueryTest(LocalTestCase):
+class GithubRepositoryQuerySetTest(LocalTestCase):
     def setUp(self):
         get_sample_repository(
             name="private public",
