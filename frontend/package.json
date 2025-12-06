@@ -13,7 +13,7 @@
   "dependencies": {
     "html-react-parser": "^5.2",
     "next": "^15.5",
-    "openapi-fetch": "^0.14",
+    "openapi-fetch": "^0.15",
     "react": "^19.0",
     "react-dom": "^19.0"
   },
@@ -24,7 +24,7 @@
     "@testing-library/dom": "^10.4",
     "@testing-library/jest-dom": "^6.6",
     "@testing-library/react": "^16.3",
-    "@trivago/prettier-plugin-sort-imports": "^5.2",
+    "@trivago/prettier-plugin-sort-imports": "^6.0",
     "@types/jest": "^30.0",
     "@types/node": "^24",
     "@types/react": "^19",
@@ -36,7 +36,7 @@
     "jest-environment-jsdom": "^29.7",
     "openapi-typescript": "^7.6",
     "prettier": "^3.5",
-    "prettier-plugin-tailwindcss": "^0.6",
+    "prettier-plugin-tailwindcss": "^0.7",
     "stylelint": "^16.16",
     "stylelint-config-recommended": "^17",
     "stylelint-config-tailwindcss": "^1.0",
