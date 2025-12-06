@@ -1,6 +1,5 @@
 "use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   RefObject,
   useCallback,
@@ -16,6 +15,7 @@ import type {
   PathWithPagination,
   Query,
 } from "@/api/client/types";
+import { useUpdateLocationQuery } from "@/components/hooks/paginated/browser";
 import { StateSetter } from "@/types/react";
 
 interface AdjacentPages {
@@ -229,29 +229,3 @@ const useSyncState = <T>(ref: RefObject<T>, stateSetter: StateSetter<T>) =>
     },
     [ref, stateSetter],
   );
-
-const useUpdateLocationQuery = <P extends PathWithPagination>(
-  updateBrowserLocation: boolean,
-  init: Query<P>,
-) => {
-  const [query, setQuery] = useState(init);
-  const router = useRouter();
-  const path = usePathname();
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    if (!updateBrowserLocation) return;
-    const search = new URLSearchParams(searchParams);
-
-    Object.entries(query ?? {}).forEach(([k, v]) => {
-      if (v) {
-        search.set(k, `${v}`);
-      } else {
-        search.delete(k);
-      }
-    });
-    router.replace(`${path}?${search}`, { scroll: false });
-  }, [router, searchParams, path, query, updateBrowserLocation]);
-
-  return setQuery;
-};

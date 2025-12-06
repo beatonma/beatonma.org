@@ -10,6 +10,15 @@ import {
 const PageSize = 5;
 const data = generatePostPreviews(11);
 
+jest.mock("./browser", () => {
+  return {
+    /* Prevent calls to useRouter from next/navigation during unit tests. */
+    useUpdateLocationQuery: () => {
+      return () => console.info("mocked: useUpdateLocationQuery");
+    },
+  };
+});
+
 const loader: PaginationLoader<"/api/posts/"> = async (
   path,
   params,
