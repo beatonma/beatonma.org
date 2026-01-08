@@ -17,7 +17,7 @@ log = get_task_logger(__name__)
 
 
 def update_github_repository_cache():
-    url = "https://api.github.com/user/repos"
+    url = github_api.url_user_repositories()
     params = {
         "sort": "updated",
     }
@@ -96,9 +96,7 @@ def _update_repository(obj: dict):
 
 
 def _update_languages(repo: GithubRepository):
-    username = repo.owner.username
-
-    url = f"https://api.github.com/repos/{username}/{repo.name}/languages"
+    url = github_api.url_repository_languages(repo.full_name)
 
     try:
         response = github_api.get_if_changed(url)

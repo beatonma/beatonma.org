@@ -44,7 +44,7 @@ def update_github_user_events(
     if not update_cycle:
         update_cycle = GithubEventUpdateCycle.objects.create()
 
-    url: str = f"https://api.github.com/users/{username}/events"
+    url = github_api.url_user_events(username)
 
     _update_events(url, update_cycle)
 
@@ -59,7 +59,7 @@ def update_repository_events(
         repos = repos.filter(updated_at__gt=changed_since)
 
     for repo in repos:
-        url = f"https://api.github.com/repos/{repo.full_name}/events"
+        url = github_api.url_repository_events(repo.full_name)
         _update_events(url, update_cycle)
 
 

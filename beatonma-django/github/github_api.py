@@ -127,6 +127,14 @@ def for_each(
     return response
 
 
+def url_user_events(username: str) -> str:
+    return f"https://api.github.com/users/{username}/events"
+
+
+def url_repository_events(full_repository_name: str) -> str:
+    return f"https://api.github.com/repos/{full_repository_name}/events"
+
+
 def url_repository_commits(full_repository_name: str, start_ref: str = None) -> str:
     """full_repository_name must be of the format `owner/repository_name`."""
     query = f"?sha={start_ref}" if start_ref else ""
@@ -137,6 +145,16 @@ def url_repository_commits(full_repository_name: str, start_ref: str = None) -> 
 def url_repository_pullrequest(full_repository_name: str, number: int) -> str:
     """full_repository_name must be of the format `owner/repository_name`."""
     return f"https://api.github.com/repos/{full_repository_name}/pulls/{number}"
+
+
+def url_user_repositories() -> str:
+    """Endpoint to retrieve list of repositories for the authenticated user."""
+    return "https://api.github.com/user/repos"
+
+
+def url_repository_languages(full_repository_name: str) -> str:
+    """full_repository_name must be of the format `owner/repository_name`."""
+    return f"https://api.github.com/repos/{full_repository_name}/languages"
 
 
 def _get_existing_etag(url: str) -> GithubETag | None:

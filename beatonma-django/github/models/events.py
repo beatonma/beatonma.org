@@ -17,8 +17,8 @@ class GithubEventUpdateCycle(BaseModel):
 
 
 class GithubUserEvent(BaseModel):
-    """Each event in the event stream returned by
-    https://api.github.com/users/{OWNER}/events will create"""
+    """Each event in the event stream returned by github_api.url_user_events
+    will create an instance of this model, and an associated GithubEventPayload."""
 
     github_id = models.CharField(max_length=128)
     type = models.CharField(max_length=128)
