@@ -89,7 +89,14 @@ class PullRequestEvent(EventPayload):
     """https://docs.github.com/en/rest/using-the-rest-api/github-event-types?apiVersion=2022-11-28#pullrequestevent"""
 
     action: Literal[
-        "opened", "closed", "reopened", "assigned", "unassigned", "labeled", "unlabeled"
+        "opened",
+        "closed",
+        "reopened",
+        "assigned",
+        "unassigned",
+        "labeled",
+        "unlabeled",
+        "merged",
     ]
     number: int
 
