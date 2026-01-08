@@ -1,8 +1,8 @@
 """beatonma URL Configuration."""
 
+from beatonma.settings import environment
 from bma_app.api import api as bma_app_api
 from contact.api import router as contact_router
-from debug_toolbar.toolbar import debug_toolbar_urls
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -43,5 +43,9 @@ urlpatterns = (
     + redirects
     + local_urlpatterns
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    + debug_toolbar_urls()
 )
+
+if environment.DEBUG and not environment.TESTING:
+    from debug_toolbar.toolbar import debug_toolbar_urls
+
+    urlpatterns += debug_toolbar_urls()
