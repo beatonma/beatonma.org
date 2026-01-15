@@ -42,7 +42,6 @@ class GithubETag(BaseModel):
     url = models.URLField(unique=True, primary_key=True, editable=False)
     etag = models.CharField(
         max_length=256,
-        unique=True,
         editable=False,
     )
     timestamp = models.DateTimeField(editable=False)
