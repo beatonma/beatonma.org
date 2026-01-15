@@ -12,8 +12,9 @@ import { Nullish } from "@/types";
 import { classes } from "@/util/transforms";
 import styles from "./tooltip.module.css";
 
+export type Tooltip = string | Nullish;
 interface TooltipProps {
-  tooltip: string | Nullish;
+  tooltip: Tooltip;
 }
 
 interface ParentBounds {
@@ -79,7 +80,7 @@ export const useTooltip = (props: TooltipProps): TooltipAttributes => {
 const createTooltipElement = (props: {
   parentBounds: ParentBounds;
   id: string;
-  tooltip: string | Nullish;
+  tooltip: Tooltip;
   className: string;
 }) => {
   const { parentBounds, id, tooltip, className } = props;

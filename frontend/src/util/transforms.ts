@@ -2,10 +2,10 @@ import { Nullish } from "@/types";
 
 export const joinNonEmpty = (
   separator: string = " ",
-  ...parts: (string | undefined | null)[]
+  ...parts: (string | Nullish)[]
 ) => parts.filter(Boolean).join(separator) || undefined;
 
-export const classes = (...classNames: (string | undefined | null)[]) =>
+export const classes = (...classNames: (string | Nullish)[]) =>
   joinNonEmpty(" ", ...classNames);
 
 /**

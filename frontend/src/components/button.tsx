@@ -4,6 +4,7 @@ import { Children as ReactChildren, ReactNode } from "react";
 import { type AppIcon, Icon } from "@/components/icon";
 import { ExternalLink } from "@/components/third-party";
 import { useTooltip } from "@/components/tooltip";
+import { type Tooltip } from "@/components/tooltip";
 import { Nullish } from "@/types";
 import {
   ChildrenProps,
@@ -17,7 +18,7 @@ import { addClass } from "@/util/transforms";
 
 interface ButtonContentProps {
   icon?: AppIcon | ReactNode;
-  tooltip?: string;
+  tooltip?: Tooltip;
 
   /* If true, reverse content layout so the icon is on the right side of the button. */
   reverseLayout?: boolean;
