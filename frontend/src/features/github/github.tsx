@@ -29,7 +29,7 @@ export const GithubActivity = (
 
   return (
     <div
-      {...addClass(rest, "@container px-edge")}
+      {...addClass(rest, "@container px-edge space-y-2")}
       {...testId(TestTarget.GithubActivity)}
     >
       <h3>
@@ -37,7 +37,7 @@ export const GithubActivity = (
           href={`https://github.com/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}`}
         >{`github/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}`}</ExternalLink>
       </h3>
-      <div className="space-y-2">
+      <div className="space-y-2 max-h-[450px] overflow-y-auto overflow-x-hidden">
         {grouped.map((group) => {
           if (isPrivateGroup(group)) {
             return <PrivateEvents key={group.timestamp} group={group} />;
