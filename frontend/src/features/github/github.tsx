@@ -133,9 +133,9 @@ const CreateEvents = (props: { payload: GroupedEventPayloads["create"] }) => {
           href={null}
           key={`${item.ref_type}-${item.ref}`}
           icon={icons[item.ref_type ?? ""]}
-          tooltip={`New ${item.ref_type}`}
+          tooltip={`New ${item.ref_type}: ${item.ref}`}
         >
-          {item.ref || undefined}
+          {item.ref_type === "repository" ? item.ref || undefined : undefined}
         </InlineLink>
       ))}
     </>
