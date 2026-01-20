@@ -142,7 +142,7 @@
   .prose picture {
     margin-block: 2em;
 
-    > img: {
+    > img {
       margin-block: 0;
     }
   }
@@ -279,6 +279,8 @@
   .prose-a,
   .prose a {
     /*@apply text-vibrant;*/
+
+    /*noinspection CssUnresolvedCustomProperty*/
     color: var(--link-color, var(--vibrant));
     font-weight: 500;
 

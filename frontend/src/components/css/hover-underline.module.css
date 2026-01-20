@@ -1,3 +1,8 @@
+/*
+Optional local overrides:
+--underline-color: If defined, sets the underline color (default: --vibrant)
+ */
+
 .hoverUnderline {
   position: relative;
   display: inline-block;
@@ -6,6 +11,7 @@
 
   &::after {
     content: "";
+    /*noinspection CssUnresolvedCustomProperty*/
     background-color: var(--underline-color, var(--vibrant));
     transition: transform 200ms ease-in-out;
     transform-origin: bottom left;
@@ -31,11 +37,6 @@
   syntax: "<length>";
   inherits: true;
   initial-value: 2px;
-}
-@property --underline-color {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: var(--vibrant);
 }
 @property --underline-offset {
   syntax: "<length>";

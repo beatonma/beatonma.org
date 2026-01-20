@@ -62,6 +62,7 @@
 }
 
 @utility -hover-background {
+  /*noinspection CssUnresolvedCustomProperty*/
   background-color: color-mix(in srgb, var(--hover, var(--fg)) 10%, var(--bg));
 }
 

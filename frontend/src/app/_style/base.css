@@ -5,11 +5,13 @@
   }
 
   ::selection {
+    /*noinspection CssUnresolvedCustomProperty*/
     background-color: color-mix(
       in srgb,
       var(--selection-bg, var(--fg)) 20%,
       var(--fg)
     );
+    /*noinspection CssUnresolvedCustomProperty*/
     color: color-mix(in srgb, var(--selection-fg, var(--bg)) 20%, var(--bg));
   }
 
@@ -32,6 +34,7 @@
   }
 
   a {
+    /*noinspection CssUnresolvedCustomProperty*/
     color: var(--link-color, inherit);
 
     &:hover {

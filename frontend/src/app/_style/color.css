@@ -1,5 +1,13 @@
 /* Common colours for content. */
 
+/*
+Optional local overrides:
+
+--hover: Override container color of hovered elements (default: --fg).
+--selection-fg, --selection-bg: If defined, override colours of ::selection content (defaults: --bg, --fg respectively)
+--link-color: if defined, override text color of <a/> elements.
+*/
+
 @utility surface-colors {
   /* Light variants */
   --background-light: var(--color-stone-200);
@@ -210,6 +218,7 @@
 
   --color-bg: var(--bg);
   --color-fg: var(--fg);
+  /*noinspection CssUnresolvedCustomProperty*/
   --color-hover: color-mix(in srgb, var(--hover, var(--fg)) 10%, transparent);
 
   --color-focus-visible-1: var(--focus-visible-1);
@@ -231,25 +240,4 @@
   --vibrant: var(--vibrant-on-background);
   --muted: var(--muted-on-background);
   accent-color: var(--vibrant-on-background);
-}
-
-@property --hover {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: none;
-}
-@property --selection-fg {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: none;
-}
-@property --selection-bg {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: none;
-}
-@property --link-color {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: none;
 }
