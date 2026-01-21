@@ -1,4 +1,5 @@
 ARG NODE_VERSION=25
+ARG PYTHON_VERSION=3.14
 ARG NGINX_VERSION=latest
 
 ##########################
