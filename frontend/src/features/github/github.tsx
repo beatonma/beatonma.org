@@ -6,7 +6,7 @@ import { ExternalLink } from "@/components/third-party";
 import { DivProps, DivPropsNoChildren } from "@/types/react";
 import { testId } from "@/util";
 import { plural } from "@/util/format/plurals";
-import { addClass } from "@/util/transforms";
+import { addClass, classes } from "@/util/transforms";
 import {
   type GithubRecent,
   type GroupedEventPayloads,
@@ -26,10 +26,11 @@ export const GithubActivity = (
   const { activity, ...rest } = props;
 
   const grouped = groupEvents(activity.events);
+  const itemClass = "pe-2";
 
   return (
     <div
-      {...addClass(rest, "@container px-edge space-y-2")}
+      {...addClass(rest, "@container px-edge space-y-4")}
       {...testId(TestTarget.GithubActivity)}
     >
       <h3>
@@ -37,16 +38,25 @@ export const GithubActivity = (
           href={`https://github.com/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}`}
         >{`github/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}`}</ExternalLink>
       </h3>
-      <div className="space-y-2 max-h-[450px] overflow-y-auto overflow-x-hidden">
+      <div className="space-y-2 h-full max-h-[450px] overflow-y-auto overflow-x-hidden">
         {grouped.map((group) => {
           if (isPrivateGroup(group)) {
-            return <PrivateEvents key={group.timestamp} group={group} />;
+            return (
+              <PrivateEvents
+                key={group.timestamp}
+                group={group}
+                className={classes(itemClass, "text-xs my-3")}
+              />
+            );
           } else {
             return (
               <PublicEvents
                 key={group.timestamp}
                 group={group}
-                className="hover-extra-background before:-inset-1"
+                className={classes(
+                  itemClass,
+                  "hover-extra-background before:-inset-1",
+                )}
               />
             );
           }
@@ -61,7 +71,7 @@ const EventHeadline = (props: DivProps<{ timestamp: number }>) => {
   return (
     <Row key={timestamp} {...addClass(rest, "gap-2 justify-between")}>
       {children}
-      <Date className="text-sm @max-sm:hidden" date={timestamp} />
+      <Date className="text-xs @max-sm:hidden" date={timestamp} />
     </Row>
   );
 };
@@ -76,13 +86,14 @@ const PrivateEvents = (
       timestamp={group.timestamp}
       {...addClass(rest, "text-current/80")}
     >
-      {plural("change", group.changeCount)} in{" "}
+      ({plural("change", group.changeCount)} in{" "}
       {plural(
         "repository",
         group.repositoryCount,
         (repos) =>
           `${group.repositoryCount === 1 ? "a " : group.repositoryCount} private ${repos}`,
       )}
+      )
     </EventHeadline>
   );
 };
@@ -102,7 +113,7 @@ const PublicEvents = (
         </strong>
       </EventHeadline>
 
-      <Row className="gap-3 *:shrink-0 overflow-x-auto overflow-y-hidden text-current/80">
+      <Row scrollable className="gap-3 text-current/80">
         <CreateEvents payload={create} />
         <PushEvents payload={push} />
         <PullRequestEvents payload={pullRequest} />
