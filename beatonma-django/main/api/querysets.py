@@ -1,12 +1,10 @@
 import logging
 
 from django.db.models import Case, CharField, QuerySet, Value, When
+
 from main.models.posts.post import Post
 
 log = logging.getLogger(__name__)
-
-
-type FeedItem = Post
 
 
 def get_feed_filters(params: dict) -> dict:
@@ -18,8 +16,8 @@ def get_feed(
     query: str | None = None,
     tag: str | None = None,
     feed: str | None = None,
-) -> QuerySet[FeedItem]:
-    qs: QuerySet[FeedItem] = Post.objects.published()
+) -> QuerySet[Post]:
+    qs = Post.objects.published()
 
     if feed:
         qs = qs.filter(feeds__slug=feed)

@@ -1,5 +1,6 @@
-from common.models import BaseModel, PublishedMixin, SortableMixin
 from django.db import models
+
+from common.models import BaseModel, PublishedMixin, SortableMixin
 from main.models.mixins.cache import GlobalStateCacheMixin
 
 
@@ -32,3 +33,11 @@ class FeedsMixin(models.Model):
     def add_feed(self, name: str, slug: str):
         f, _ = Feed.objects.get_or_create(slug=slug, defaults={"name": name})
         self.feeds.add(f)
+
+    @classmethod
+    def get_default_feeds(cls) -> list[Feed]:
+        feeds = []
+        for slug, name in cls.default_feeds:
+            f, _ = Feed.objects.get_or_create(slug=slug, defaults={"name": name})
+            feeds.append(f)
+        return feeds

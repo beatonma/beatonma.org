@@ -1,8 +1,9 @@
 from unittest.mock import patch
 
+from django.core.cache import cache
+
 import navigation
 from basetest.testcase import LocalTestCase
-from django.core.cache import cache
 from main.models import Feed, Post
 from main.tasks import sample_data
 
@@ -115,4 +116,5 @@ class WebpostHashtagTests(LocalTestCase):
             f.assert_called_once()
 
     def test_default_feed_added_automatically(self):
-        Feed.objects.get(slug="posts")
+        feed = Feed.objects.get(slug="posts")
+        self.assert_length(feed.posts.all(), 5)

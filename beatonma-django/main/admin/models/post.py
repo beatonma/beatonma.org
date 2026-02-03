@@ -1,7 +1,8 @@
 from adminsortable2.admin import SortableAdminMixin
-from common.admin import BaseAdmin
 from django.contrib import admin
 from django.utils.safestring import mark_safe
+
+from common.admin import BaseAdmin
 from main.admin.models import inline
 from main.admin.util import pluralize
 from main.models import AboutPost, AppPost, ChangelogPost, Feed, Post
@@ -100,6 +101,11 @@ class BasePostAdmin(BaseAdmin):
         if db_field.name in ["content_script", "content", "content_html", "hero_html"]:
             kwargs["widget"] = self.widgets.textarea("font-mono!")
         return super().formfield_for_dbfield(db_field, **kwargs)
+
+    def get_changeform_initial_data(self, request):
+        initial = super().get_changeform_initial_data(request)
+        initial["feeds"] = [x.pk for x in self.model.get_default_feeds()]
+        return initial
 
 
 @admin.register(AboutPost)
