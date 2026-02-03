@@ -2,11 +2,12 @@ from datetime import date
 
 from django.http import HttpRequest
 from django.views.decorators.cache import cache_page
-from main.models import Feed, MessageOfTheDay, PointsOfInterest, SiteHCard
-from main.models.mixins.cache import GlobalStateCacheMixin
 from ninja import Router, Schema
 from ninja.decorators import decorate_view
 from pydantic import Field
+
+from main.models import Feed, MessageOfTheDay, PointsOfInterest, SiteHCard
+from main.models.mixins.cache import GlobalStateCacheMixin
 
 from .schema import File, Link
 
@@ -40,6 +41,7 @@ class GlobalHCard(Schema):
 class FeedSchema(Schema):
     name: str
     slug: str
+    description: str | None
 
 
 class GlobalState(Schema):

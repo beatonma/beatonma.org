@@ -23,6 +23,7 @@ import { PaginatedPostsProps } from "./paginated-posts";
 import { PostPreview } from "./post-preview";
 
 type Feeds = GlobalState["feeds"];
+type Feed = Feeds[number];
 
 interface InfinitePostsProps extends PaginatedPostsProps {
   init: Paged<PostPreviewType>;
@@ -34,14 +35,22 @@ export const InfinitePosts = (props: InfinitePostsProps) => {
   const [query, setQuery] = useState(defaultFilters);
   const paged = usePagination("/api/posts/", { init, query });
 
+  const currentFeed = query?.feed
+    ? feeds?.find((it) => it.slug === query.feed)
+    : feeds?.[0];
+
   return (
     <>
       <FeedSelector
-        currentFeed={query?.feed}
+        currentFeed={currentFeed}
         feeds={feeds}
         setFeed={(feed) => setQuery((prev) => ({ ...prev, feed }))}
         className="text-sm mb-2 justify-self-center"
       />
+
+      {onlyIf(currentFeed?.description, (feedDescription) => (
+        <div className="text-xs justify-self-center">{feedDescription}</div>
+      ))}
 
       {paged.items.map((post) => (
         <PostPreview key={post.url} post={post} />
@@ -134,7 +143,7 @@ const LoadNext = <T,>(props: {
 const FeedSelector = (
   props: DivPropsNoChildren<{
     feeds: Feeds | undefined;
-    currentFeed: string | undefined;
+    currentFeed: Feed | undefined;
     setFeed: (feedSlug: string) => void;
   }>,
 ) => {
@@ -155,7 +164,7 @@ const FeedSelector = (
     <Select
       {...rest}
       selected={
-        feedOptions.find((it) => it.key === currentFeed) ?? feedOptions[0]
+        feedOptions.find((it) => it.key === currentFeed?.slug) ?? feedOptions[0]
       }
       items={feedOptions}
       onSelect={(it) => {

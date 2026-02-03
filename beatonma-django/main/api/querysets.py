@@ -2,6 +2,7 @@ import logging
 
 from django.db.models import Case, CharField, QuerySet, Value, When
 
+from main.models.posts.feed import FeedsMixin
 from main.models.posts.post import Post
 
 log = logging.getLogger(__name__)
@@ -21,6 +22,9 @@ def get_feed(
 
     if feed:
         qs = qs.filter(feeds__slug=feed)
+    else:
+        qs = qs.filter(feeds__slug=FeedsMixin.DEFAULT_FEED_SLUG)
+
     if query:
         qs = qs.search(query)
     if tag:

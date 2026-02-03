@@ -170,6 +170,7 @@ class FeedAdmin(SortableAdminMixin, BaseAdmin):
         "published_at",
         "slug",
         "name",
+        "description",
     ]
     list_display = [
         "__str__",

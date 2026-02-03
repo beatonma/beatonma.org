@@ -391,7 +391,7 @@ export interface components {
             script_html: components["schemas"]["UnsafeHtml"] | null;
             /** Is Widget */
             is_widget: boolean;
-            widget_data: components["schemas"]["HtmlAttribute"] | null;
+            widget_data: components["schemas"]["UrlSearchParams"] | null;
             widget_style: components["schemas"]["HtmlAttribute"] | null;
         };
         /** AppPreview */
@@ -458,6 +458,7 @@ export interface components {
             version: components["schemas"]["PlainText"];
         };
         HtmlAttribute: string;
+        UrlSearchParams: string;
         /** AboutDetail */
         AboutDetail: {
             /**
@@ -602,6 +603,8 @@ export interface components {
             name: string;
             /** Slug */
             slug: string;
+            /** Description */
+            description: string | null;
         };
         /** GlobalHCard */
         GlobalHCard: {
@@ -1028,9 +1031,9 @@ export interface operations {
     main_api_posts_post_feed: {
         parameters: {
             query?: {
-                query?: string;
-                tag?: string;
-                feed?: string;
+                query?: string | null;
+                tag?: string | null;
+                feed?: string | null;
                 limit?: number;
                 offset?: number;
             };
