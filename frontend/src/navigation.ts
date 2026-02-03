@@ -28,7 +28,9 @@ export const navigationHref = <T extends Navigable>(
   return (Navigation[type] as P)(...args);
 };
 
-const searchParams = (params: Record<string, string | number> | undefined) => {
+const searchParams = (
+  params: Record<string, string | number | null> | undefined,
+) => {
   if (!params) return "";
 
   const formatted = Object.entries(params)

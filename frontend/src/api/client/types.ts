@@ -68,15 +68,9 @@ export type PathWithPagination = PathWithPaginationOf<unknown>;
  */
 type PathWithSearch = {
   [P in Path]: paths[P] extends {
-    get: {
-      parameters: infer Parameters;
-    };
+    get: { parameters: { query?: { query?: string | null } } };
   }
-    ? Parameters extends { query?: never }
-      ? never
-      : Parameters extends { query?: { query?: string } }
-        ? P
-        : never
+    ? P
     : never;
 }[Path];
 

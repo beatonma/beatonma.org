@@ -23,6 +23,7 @@ import { MediaThumbnail } from "@/features/media";
 import { itemTheme } from "@/features/themed";
 import { navigationHref } from "@/navigation";
 import {
+  DivProps,
   DivPropsNoChildren,
   Props,
   PropsWithRef,
@@ -44,8 +45,7 @@ interface SearchProps<P extends SearchablePath> {
   containerClassName?: string;
   defaultQuery?: string;
 }
-type SearchDivProps<P extends SearchablePath> = SearchProps<P> &
-  Omit<DivPropsNoChildren, keyof SearchProps<P>>;
+type SearchDivProps<P extends SearchablePath> = DivProps<SearchProps<P>>;
 
 export const Search = <P extends SearchablePath>(props: SearchDivProps<P>) => {
   const isClient = useClient();
