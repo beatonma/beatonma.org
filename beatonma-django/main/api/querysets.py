@@ -23,7 +23,8 @@ def get_feed(
     if feed:
         qs = qs.filter(feeds__slug=feed)
     else:
-        qs = qs.filter(feeds__slug=FeedsMixin.DEFAULT_FEED_SLUG)
+        # If a feed is not specified, default to main 'posts' feed.
+        qs = qs.filter(feeds__slug=Post.DEFAULT_FEED_SLUG)
 
     if query:
         qs = qs.search(query)

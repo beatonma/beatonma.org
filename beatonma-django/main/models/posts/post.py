@@ -181,8 +181,10 @@ class BasePost(
 
 
 class Post(FeedsMixin, BasePost):
+    DEFAULT_FEED_SLUG = "posts"
+
     default_feeds = FeedsMixin.default_feeds + [
-        ("posts", "Posts"),
+        (DEFAULT_FEED_SLUG, "Posts"),
     ]
     feeds = models.ManyToManyField(Feed, related_name="posts", blank=True)
 
