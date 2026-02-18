@@ -13,12 +13,11 @@
   "dependencies": {
     "html-react-parser": "^5.2",
     "next": "^16.1",
-    "openapi-fetch": "^0.15",
+    "openapi-fetch": "^0.17",
     "react": "^19.0",
     "react-dom": "^19.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
     "@svgr/webpack": "^8.1",
     "@swc/core": "^1.15.10",
     "@tailwindcss/postcss": "^4.1",
@@ -32,7 +31,6 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "^16.1",
-    "eslint-plugin-react": "^7.37",
     "jest": "^30.2",
     "jest-environment-jsdom": "^30.2",
     "openapi-typescript": "^7.6",
