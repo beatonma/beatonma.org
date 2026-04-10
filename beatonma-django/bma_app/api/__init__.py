@@ -1,10 +1,11 @@
 import logging
 
-from common.util import http
 from django.http import HttpRequest
 from ninja import NinjaAPI
 from ninja.pagination import RouterPaginated
 from ninja.security.apikey import APIKeyBase
+
+from common.util import http
 
 from .. import auth
 from .docs import router as docs_router

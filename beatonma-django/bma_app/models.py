@@ -1,8 +1,9 @@
 import uuid
 
-from common.models import BaseModel
 from django.contrib.auth.models import User
 from django.db import models
+
+from common.models import BaseModel
 
 
 class ApiToken(BaseModel):

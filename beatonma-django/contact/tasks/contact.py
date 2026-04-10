@@ -5,9 +5,10 @@ from bmanotify_django.tasks import dispatch_fcm_notification
 from bmanotify_django.tasks.dispatch import NoRegisteredDevice
 from celery import shared_task
 from celery.utils.log import get_task_logger
-from common.util.tasks import dispatch_task
 from django.conf import settings
 from django.core.mail import send_mail
+
+from common.util.tasks import dispatch_task
 
 django_log = logging.getLogger(__name__)
 task_log = get_task_logger(f"{__name__}.tasks")

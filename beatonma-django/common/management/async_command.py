@@ -1,7 +1,8 @@
 import logging
 
-from common.util.tasks import dispatch_task
 from django.core.management import BaseCommand
+
+from common.util.tasks import dispatch_task
 
 log = logging.getLogger(__name__)
 

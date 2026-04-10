@@ -2,17 +2,18 @@ from io import BytesIO
 from typing import Callable, Self
 
 import PIL
-from common.models import BaseModel, SortableMixin
-from common.models.api import ApiEditable
-from common.models.generic import GenericFkMixin
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.utils import timezone
+from PIL import Image
+
+from common.models import BaseModel, SortableMixin
+from common.models.api import ApiEditable
+from common.models.generic import GenericFkMixin
 from main.forms import SanitizedFileField
 from main.models.formats import Formats
 from main.models.mixins.media_upload import MediaType, UploadedMediaMixin
-from PIL import Image
 
 THUMBNAIL_SIZE = (800, 800)
 

@@ -1,8 +1,9 @@
 from typing import Type
 
-from common.models.util import implementations_of
 from django.db import models
 from django.db.models import QuerySet
+
+from common.models.util import implementations_of
 
 
 class ExtendedModelQuerySet(QuerySet):

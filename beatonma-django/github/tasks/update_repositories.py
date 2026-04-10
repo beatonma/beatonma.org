@@ -1,6 +1,9 @@
 from datetime import datetime
 
 from celery.utils.log import get_task_logger
+from ninja import Schema
+from pydantic import Field
+
 from common.util import http
 from github import github_api
 from github.models import (
@@ -10,8 +13,6 @@ from github.models import (
     GithubRepository,
     GithubUser,
 )
-from ninja import Schema
-from pydantic import Field
 
 log = get_task_logger(__name__)
 

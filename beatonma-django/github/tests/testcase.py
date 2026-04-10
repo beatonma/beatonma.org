@@ -2,6 +2,7 @@ import datetime
 from unittest.mock import patch
 
 import requests
+
 from basetest.testcase import LocalTestCase
 from github import github_api
 from github.models import GithubETag

@@ -1,5 +1,6 @@
-from common.admin import BaseAdmin
 from django.contrib import admin
+
+from common.admin import BaseAdmin
 from webmentions_tester.models import TemporaryMention
 
 

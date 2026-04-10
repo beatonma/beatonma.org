@@ -1,10 +1,11 @@
 import logging
 
+from django.http import HttpRequest
+from ninja import Field, Router, Schema
+
 from common.util.tasks import dispatch_task
 from contact.tasks import send_webmail
 from contact.tasks.recaptcha import UnverifiedRecaptcha, verify_recaptcha
-from django.http import HttpRequest
-from ninja import Field, Router, Schema
 
 router = Router(tags=["Contact"])
 

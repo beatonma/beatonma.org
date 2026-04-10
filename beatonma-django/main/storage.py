@@ -1,8 +1,8 @@
 import logging
 import os
 
-from django.core.files.storage import FileSystemStorage
 from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 
 log = logging.getLogger(__name__)
 

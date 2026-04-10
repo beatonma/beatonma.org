@@ -1,8 +1,6 @@
 import logging
 from datetime import datetime
 
-from common.schema import Mention
-from common.util.url import to_absolute_url
 from django.http import HttpRequest
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -11,6 +9,9 @@ from mentions.models import Webmention
 from mentions.tasks import handle_outgoing_webmentions
 from ninja import Form, Router, Schema
 from pydantic import Field
+
+from common.schema import Mention
+from common.util.url import to_absolute_url
 from webmentions_tester.models import TemporaryMention
 
 log = logging.getLogger(__name__)

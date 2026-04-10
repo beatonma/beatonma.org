@@ -1,4 +1,5 @@
 from django.utils.safestring import mark_safe
+
 from main.models.mixins.media_upload import IMAGE_PATTERN, VIDEO_PATTERN
 
 

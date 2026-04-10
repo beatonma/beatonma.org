@@ -3,16 +3,17 @@ from datetime import datetime
 from typing import Annotated
 from uuid import UUID
 
+from django.http import HttpRequest, HttpResponse
+from ninja import File, Form, Router, Schema, UploadedFile
+from ninja.pagination import paginate
+from pydantic import AfterValidator
+
 from bma_app.api.pagination import OffsetPagination
 from bma_app.api.schemas import PostSchema
 from bma_app.api.util import no_null_dict
 from common.models.generic import generic_fk
 from common.util.time import coerce_tzdatetime
-from django.http import HttpRequest, HttpResponse
 from main.models import Post, RelatedFile
-from ninja import File, Form, Router, Schema, UploadedFile
-from ninja.pagination import paginate
-from pydantic import AfterValidator
 
 log = logging.getLogger(__name__)
 router = Router()

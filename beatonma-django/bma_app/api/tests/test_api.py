@@ -1,13 +1,14 @@
 import json
 
+from django.contrib.auth.models import User
+from django.http import HttpResponse
+from django.urls import reverse
+
 from basetest.testcase import LocalTestCase
 from bma_app import auth
 from bma_app.api import api
 from bma_app.models import ApiToken
 from common.util import http
-from django.contrib.auth.models import User
-from django.http import HttpResponse
-from django.urls import reverse
 
 
 class ApiTestCase(LocalTestCase):

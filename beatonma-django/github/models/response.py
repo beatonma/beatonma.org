@@ -1,6 +1,7 @@
-from common.models import BaseModel
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
+
+from common.models import BaseModel
 
 
 class CachedResponse(BaseModel):

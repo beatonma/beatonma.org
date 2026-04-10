@@ -3,9 +3,10 @@ from typing import Iterable, Literal
 
 from django.http import Http404, HttpRequest
 from django.utils.timezone import get_current_timezone
+from ninja import Router, Schema
+
 from github.events import GithubEvent
 from github.models import CachedResponse, GithubUserEvent
-from ninja import Router, Schema
 
 router = Router(tags=["Github"])
 

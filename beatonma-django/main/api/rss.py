@@ -1,5 +1,6 @@
 from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import Rss201rev2Feed
+
 from main.api.querysets import get_feed, get_feed_filters
 
 

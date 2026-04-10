@@ -1,8 +1,9 @@
 from datetime import date
 
+from django.core.management import BaseCommand
+
 from common.models import BaseModel
 from common.models.util import implementations_of
-from django.core.management import BaseCommand
 from github.management.commands import sample_github_data as sample_github
 from github.models import CachedResponse
 from main.models import SiteHCard

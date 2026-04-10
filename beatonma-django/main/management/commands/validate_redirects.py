@@ -1,7 +1,8 @@
 import requests
-from common.util.url import to_absolute_url
 from django.contrib.redirects.models import Redirect
 from django.core.management import BaseCommand
+
+from common.util.url import to_absolute_url
 
 
 class Command(BaseCommand):

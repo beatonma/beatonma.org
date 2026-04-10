@@ -1,9 +1,10 @@
 import math
 
-from common.models import BaseModel, PublishedMixin, TaggableMixin
-from common.models.published import PublishedQuerySet
 from django.db import models
 from django.db.models import UniqueConstraint
+
+from common.models import BaseModel, PublishedMixin, TaggableMixin
+from common.models.published import PublishedQuerySet
 
 
 class GithubLanguage(BaseModel):

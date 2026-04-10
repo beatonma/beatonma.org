@@ -1,7 +1,8 @@
-import navigation
-from common.models import SortableMixin
 from django.core.exceptions import ValidationError
 from django.db import models
+
+import navigation
+from common.models import SortableMixin
 from main.models.posts.post import BasePost, PostQuerySet
 
 

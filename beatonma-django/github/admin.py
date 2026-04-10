@@ -1,5 +1,6 @@
-from common.admin import BaseAdmin, register_models_to_default_admin
 from django.contrib import admin
+
+from common.admin import BaseAdmin, register_models_to_default_admin
 from github.models import GithubRepository
 
 

@@ -4,17 +4,18 @@ import re
 from re import Match
 from urllib.parse import urljoin
 
-import navigation
 from bs4 import BeautifulSoup
+from django.conf import settings
+from django.db import models
+from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
+
+import navigation
 from common.models import BaseModel
 from common.models.generic import generic_fk
 from common.util import regex
 from common.util.pipeline import PipelineItem
 from common.util.url import enforce_trailing_slash
-from django.conf import settings
-from django.db import models
-from django.utils.text import slugify
-from django.utils.translation import gettext_lazy as _
 from github.models import GithubRepository
 from main.models import Link
 from main.models.mixins.media_upload import UploadedMediaMixin

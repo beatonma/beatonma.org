@@ -1,11 +1,12 @@
 from typing import Iterable
 from urllib.parse import urlparse
 
-from common.models import BaseModel, SortableMixin
-from common.models.generic import GenericFkMixin
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.db.models import UniqueConstraint
+
+from common.models import BaseModel, SortableMixin
+from common.models.generic import GenericFkMixin
 from main.models.mixins import StyleableSvgMixin
 
 DESCRIPTION_CHOICES = (

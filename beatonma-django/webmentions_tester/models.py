@@ -1,11 +1,12 @@
 from datetime import timedelta
 
-from common.models import BaseModel
-from common.util.time import coerce_tzdatetime
 from django.conf import settings
 from django.db import models
 from django.db.models import QuerySet
 from django.utils import timezone
+
+from common.models import BaseModel
+from common.util.time import coerce_tzdatetime
 
 
 def get_temp_webmention_ttl_seconds() -> int:

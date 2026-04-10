@@ -1,6 +1,7 @@
+from django.contrib import admin
+
 from common.admin import BaseAdmin
 from contact.models.webmailmessage import WebmailMessage
-from django.contrib import admin
 
 
 @admin.action(description="Mark as read")

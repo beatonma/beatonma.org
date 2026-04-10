@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from common.util.time import coerce_tzdatetime
 from dateutil import parser as dateparser
+
+from common.util.time import coerce_tzdatetime
 
 
 def parse_datetime(text: str) -> datetime | None:

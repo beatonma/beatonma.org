@@ -1,6 +1,7 @@
 import random
 
 from django.utils import timezone
+
 from github.models import GithubLanguage, GithubLicense, GithubRepository, GithubUser
 
 LANGUAGES = [

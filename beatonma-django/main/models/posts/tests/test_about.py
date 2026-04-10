@@ -1,5 +1,6 @@
-from basetest.testcase import LocalTestCase
 from django.core.exceptions import ValidationError
+
+from basetest.testcase import LocalTestCase
 from main.models import AboutPost
 
 

@@ -4,6 +4,7 @@ Prompt:
     Now can I get a list of 10 names that might be suitable for an app, browser
     extension, backend library, or python utility
 """
+
 import random
 from dataclasses import dataclass
 

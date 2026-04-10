@@ -1,6 +1,7 @@
+from django.db import models
+
 from common import microformats
 from common.models import BaseModel, Singleton
-from django.db import models
 from main.models.link import LinkedMixin
 from main.models.mixins.cache import GlobalStateCacheMixin
 

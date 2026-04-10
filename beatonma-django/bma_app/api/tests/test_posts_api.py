@@ -2,6 +2,11 @@ import re
 import uuid
 from datetime import datetime
 
+from django.core.files import File
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.http import HttpResponse
+from django.urls import reverse
+
 from bma_app import auth
 from bma_app.api import api
 from bma_app.api.tests.test_api import ApiTestCase
@@ -9,10 +14,6 @@ from bma_app.api.util import no_null_dict
 from common.models.generic import generic_fk
 from common.util import http
 from common.util.time import tzdatetime
-from django.core.files import File
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.http import HttpResponse
-from django.urls import reverse
 from main.models import Post, RelatedFile
 
 api_namespace = api.urls_namespace

@@ -1,7 +1,8 @@
 import logging
 
-from common.models import BaseModel
 from django.db import models
+
+from common.models import BaseModel
 from main.models.mixins.cache import GlobalStateCacheMixin
 from main.models.mixins.ephemeral import EphemeralMixin
 

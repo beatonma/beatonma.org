@@ -1,7 +1,8 @@
 import logging
 
-from common.admin import BaseAdmin
 from django.contrib import admin
+
+from common.admin import BaseAdmin
 from main.admin.util import media_preview
 from main.models.uploads import RelatedFile, UploadedFile
 

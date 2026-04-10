@@ -3,6 +3,7 @@ from typing import Type
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
 from github.models import GithubReleasePublishedPayload
 from main.models import AppPost, ChangelogPost
 

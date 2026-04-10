@@ -2,8 +2,9 @@ import re
 from dataclasses import dataclass
 from typing import Callable, Iterable
 
-import navigation
 from bs4 import BeautifulSoup, Comment, NavigableString, PageElement
+
+import navigation
 from common.util.html import find_links_in_soup
 
 URL_REGEX = (

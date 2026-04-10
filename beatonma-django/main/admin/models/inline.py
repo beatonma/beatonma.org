@@ -1,11 +1,12 @@
 from adminsortable2.admin import CustomInlineFormSetMixin, SortableInlineAdminMixin
-from common.models.generic import generic_fk
 from django.contrib import admin
 from django.contrib.admin import TabularInline
 from django.contrib.contenttypes.admin import GenericStackedInline, GenericTabularInline
 from django.contrib.contenttypes.forms import BaseGenericInlineFormSet
 from django.db.models import Max
 from django.db.models.functions import Coalesce
+
+from common.models.generic import generic_fk
 from main.admin.util import media_preview
 from main.models import AppResource, Link, RelatedFile
 

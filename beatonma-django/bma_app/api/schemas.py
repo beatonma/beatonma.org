@@ -1,9 +1,10 @@
 from datetime import datetime
 from uuid import UUID
 
-from main.models.mixins.media_upload import MediaType
 from ninja import Schema
 from pydantic import Field
+
+from main.models.mixins.media_upload import MediaType
 
 
 class ApiEditableSchema(Schema):

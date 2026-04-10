@@ -4,14 +4,15 @@ from datetime import date as Date
 from datetime import datetime, timezone
 from urllib.parse import urljoin
 
-from common.models import TaggableMixin
-from common.models.util import implementations_of
 from django.db.models import QuerySet
 from django.utils.text import slugify
-from github.tests.sampledata import get_sample_language
-from main.models import AboutPost, AppPost, ChangelogPost, MessageOfTheDay, Post
 from mentions.models import HCard, Webmention
 from mentions.models.mixins import IncomingMentionType, MentionableMixin
+
+from common.models import TaggableMixin
+from common.models.util import implementations_of
+from github.tests.sampledata import get_sample_language
+from main.models import AboutPost, AppPost, ChangelogPost, MessageOfTheDay, Post
 
 from .apps import any_app_name, any_app_type, any_changelog, any_language
 from .bio import any_biography

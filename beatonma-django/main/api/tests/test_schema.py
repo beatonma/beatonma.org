@@ -1,7 +1,8 @@
-from basetest.testcase import SimpleTestCase
-from main.api.schema import HexColor, HtmlAttribute, Url, UrlSearchParams
 from ninja import Schema
 from pydantic import ValidationError
+
+from basetest.testcase import SimpleTestCase
+from main.api.schema import HexColor, HtmlAttribute, Url, UrlSearchParams
 
 
 class SchemaTests(SimpleTestCase):

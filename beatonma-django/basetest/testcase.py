@@ -4,12 +4,13 @@ from typing import Iterable, Sized, Type
 from unittest import skipIf
 
 import pytest
-from common.util.html import html_parser
 from django.conf import settings
 from django.db import models
 from django.db.models import QuerySet
 from django.test import SimpleTestCase as DjangoSimpleTestCase
 from django.test import TestCase
+
+from common.util.html import html_parser
 
 __all__ = ["SimpleTestCase", "LocalTestCase", "NetworkTestCase"]
 
@@ -26,7 +27,7 @@ class SimpleTestCase(DjangoSimpleTestCase):
         self.assertEqual(
             size,
             expected,
-            msg=f"Expected {expected} items, got {(size)}: {items} {msg}",
+            msg=f"Expected {expected} items, got {size}: {items} {msg}",
         )
 
     def assert_is_empty(self, items: Sized, msg: str = ""):
@@ -97,9 +98,12 @@ class DatabaseTestCase(SimpleTestCase, TestCase):
         for text in content:
             self.assertContains(response, text)
 
-    def assert_exists[
-        T: models.Model
-    ](self, model_class: Type[T], count: int = 1, **query,) -> T | QuerySet[T]:
+    def assert_exists[T: models.Model](
+        self,
+        model_class: Type[T],
+        count: int = 1,
+        **query,
+    ) -> T | QuerySet[T]:
         """Assert that the expected number of model instances exist and return it/them."""
 
         qs: QuerySet[T]

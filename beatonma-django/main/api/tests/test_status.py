@@ -1,5 +1,6 @@
-from basetest.testcase import LocalTestCase
 from django.urls import reverse
+
+from basetest.testcase import LocalTestCase
 
 
 class StatusTests(LocalTestCase):

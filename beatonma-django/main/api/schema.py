@@ -3,10 +3,11 @@ from typing import Annotated
 from urllib.parse import quote
 
 from django.utils import html
-from main.models.mixins.media_upload import MediaType
-from main.models.uploads import BaseUploadedFile
 from ninja import Field, Schema
 from pydantic import AfterValidator
+
+from main.models.mixins.media_upload import MediaType
+from main.models.uploads import BaseUploadedFile
 
 type PlainText = str
 type UnsafeHtml = str

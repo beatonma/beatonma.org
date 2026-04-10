@@ -1,5 +1,6 @@
-from common.models import BaseModel
 from django.db.models import QuerySet
+
+from common.models import BaseModel
 
 
 class SingletonError(Exception):

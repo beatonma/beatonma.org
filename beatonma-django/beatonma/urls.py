@@ -1,13 +1,14 @@
 """beatonma URL Configuration."""
 
-from beatonma.settings import environment
-from bma_app.api import api as bma_app_api
-from contact.api import router as contact_router
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import RedirectView
+
+from beatonma.settings import environment
+from bma_app.api import api as bma_app_api
+from contact.api import router as contact_router
 from github.api import router as github_router
 from main.api import public_api
 from webmentions_tester.api import router as webmentions_tester_router

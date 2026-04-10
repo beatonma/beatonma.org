@@ -1,11 +1,12 @@
 import logging
 from uuid import UUID
 
+from django.http import HttpRequest
+from ninja import Router, Schema
+
 from bma_app.api.schemas import MediaSchema
 from common.util import http
-from django.http import HttpRequest
 from main.models import RelatedFile
-from ninja import Router, Schema
 
 log = logging.getLogger(__name__)
 router = Router()

@@ -1,8 +1,9 @@
 import logging
 
-from common.models import BaseModel
 from django.db import models
 from django.db.models import QuerySet
+
+from common.models import BaseModel
 
 log = logging.getLogger(__name__)
 

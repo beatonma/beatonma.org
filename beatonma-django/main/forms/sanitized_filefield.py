@@ -14,8 +14,9 @@ from typing import Callable
 from django.conf import settings
 from django.core.files.base import ContentFile, File
 from django.db.models import FileField
-from main.forms import RandomFilename
 from PIL import Image, ImageFile
+
+from main.forms import RandomFilename
 
 IMAGE_PATTERN = re.compile(r"(.*)\.(jpg|jpeg|png)")
 

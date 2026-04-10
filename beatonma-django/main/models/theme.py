@@ -1,5 +1,6 @@
-from common.models import BaseModel
 from django.db import models
+
+from common.models import BaseModel
 from main.models.mixins import ThemeableMixin
 from main.models.mixins.ephemeral import EphemeralMixin
 

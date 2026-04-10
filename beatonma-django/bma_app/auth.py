@@ -1,9 +1,10 @@
 import logging
 
-from bma_app.models import ApiToken
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.http import HttpRequest
+
+from bma_app.models import ApiToken
 
 log = logging.getLogger(__name__)
 

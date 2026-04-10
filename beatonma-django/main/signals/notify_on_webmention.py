@@ -1,7 +1,8 @@
-from contact.tasks import send_notification
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from mentions.models import Webmention
+
+from contact.tasks import send_notification
 
 
 @receiver(post_save, sender=Webmention, dispatch_uid="notify_on_new_webmention")

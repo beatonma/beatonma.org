@@ -2,11 +2,12 @@ import logging
 from datetime import datetime
 from typing import Optional
 
-from common.models import PublishedMixin
-from common.models.published import PublishedQuerySet
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
+
+from common.models import PublishedMixin
+from common.models.published import PublishedQuerySet
 
 log = logging.getLogger(__name__)
 

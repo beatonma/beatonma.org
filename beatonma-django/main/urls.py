@@ -3,9 +3,10 @@ from typing import Type
 from django.shortcuts import get_object_or_404, render
 from django.urls import path
 from django.views import View
+from mentions.helpers import mentions_re_path
+
 from main.models import AppPost, ChangelogPost
 from main.models.posts.post import BasePost, Post
-from mentions.helpers import mentions_re_path
 
 from .api.rss import LatestUpdatesFeed
 

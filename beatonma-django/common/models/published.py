@@ -1,10 +1,11 @@
 import logging
 from typing import Iterable, cast
 
-from common.models.search import SearchMixin, SearchQuerySet
 from django.db import models
 from django.db.models import F, QuerySet
 from django.utils import timezone
+
+from common.models.search import SearchMixin, SearchQuerySet
 
 log = logging.getLogger(__name__)
 

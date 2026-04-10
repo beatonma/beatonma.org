@@ -1,4 +1,5 @@
 from django.core.management import BaseCommand
+
 from github.models import CachedResponse
 from github.tests.sampledata import get_sample_repository
 

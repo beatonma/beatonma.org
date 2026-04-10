@@ -1,6 +1,7 @@
-from common.models import BaseModel
 from django.db import models
 from django.db.models import QuerySet
+
+from common.models import BaseModel
 from github.events import GithubEvent
 from github.models.repository import GithubRepository, GithubUser
 

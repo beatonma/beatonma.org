@@ -2,9 +2,10 @@ import re
 
 import markdown2
 from bs4 import BeautifulSoup
+from django.db import models
+
 from common.util.html import html_parser
 from common.util.pipeline import PipelineItem, apply_pipeline
-from django.db import models
 
 from . import html as Html
 from . import markdown as Markdown

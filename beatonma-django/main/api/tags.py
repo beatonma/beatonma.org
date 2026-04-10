@@ -1,9 +1,10 @@
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count
 from django.http import HttpRequest
-from main.models import Post
 from ninja import Router, Schema
 from taggit.models import Tag
+
+from main.models import Post
 
 router = Router(tags=["Tags"])
 

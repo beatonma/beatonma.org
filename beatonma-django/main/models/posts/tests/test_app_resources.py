@@ -1,8 +1,9 @@
 import os
 
-from basetest.testcase import LocalTestCase
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
+
+from basetest.testcase import LocalTestCase
 from main.models import AppPost, AppResource
 
 

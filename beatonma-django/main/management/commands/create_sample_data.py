@@ -1,8 +1,9 @@
 from django.core.management import BaseCommand
+from taggit.models import Tag
+
 from github.models import CachedResponse
 from main.models import AboutPost, AppPost, ChangelogPost, Post
 from main.tasks.sample_data import generate_posts
-from taggit.models import Tag
 
 
 class Command(BaseCommand):
