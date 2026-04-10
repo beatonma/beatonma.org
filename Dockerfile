@@ -13,9 +13,13 @@ FROM python:${PYTHON_VERSION}-alpine AS python
 ENV PYTHONBUFFERED 1
 
 ###
-FROM node:${NODE_VERSION}-alpine AS core_nextjs
+FROM node:${NODE_VERSION}-slim AS node
+RUN apt update
 
-RUN apk add curl
+###
+FROM node AS core_nextjs
+
+RUN apt install -y curl
 WORKDIR /app
 COPY ./frontend/package.json ./frontend/package-lock.json /app/
 RUN npm ci && npm cache clean --force
@@ -83,10 +87,10 @@ FROM core_nextjs AS builder_production_nextjs
 RUN npm run build
 
 ###
-FROM node:${NODE_VERSION}-alpine AS production_nextjs
+FROM node AS production_nextjs
 
-RUN apk add curl --no-cache
-RUN addgroup -S app && adduser -S app -G app
+RUN apt install -y curl
+RUN groupadd -r app &&  useradd -r -g app app
 USER app
 WORKDIR /app
 
@@ -164,7 +168,7 @@ ENTRYPOINT ["crond", "-f"]
 
 ###
 FROM core_nextjs AS dev_nextjs
-RUN apk add curl --no-cache
+RUN apt install -y curl
 ENTRYPOINT ["npm", "run", "dev"]
 
 
