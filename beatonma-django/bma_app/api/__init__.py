@@ -41,6 +41,7 @@ api = NinjaAPI(
     auth=TokenAuth(),
 )
 api.add_router("/", docs_router)
+setattr(docs_router, "api_instance", api)
 api.add_router("/notes/", notes_router)
 api.add_router("/media/", media_router)
 

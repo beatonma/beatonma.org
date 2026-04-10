@@ -7,9 +7,9 @@ router = Router()
 
 @router.get("/", include_in_schema=False)
 def docs(request: HttpRequest):
-    return openapi_view(request, router.api)
+    return openapi_view(request, getattr(router, "api_instance"))
 
 
 @router.get("/openapi.json", url_name="openapi-json", include_in_schema=False)
 def json(request: HttpRequest):
-    return openapi_json(request, router.api)
+    return openapi_json(request, getattr(router, "api_instance"))
