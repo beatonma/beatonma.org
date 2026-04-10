@@ -256,6 +256,8 @@ export interface components {
             name?: components["schemas"]["PlainText"] | null;
             description: components["schemas"]["PlainText"] | null;
             fit: components["schemas"]["ImageFit"] | null;
+            /** Is Nsfw */
+            is_nsfw: boolean;
         };
         /** HCard */
         HCard: {

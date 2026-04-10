@@ -132,3 +132,36 @@
     content: --value([*]);
   }
 }
+
+@layer utility {
+  span.nsfw,
+  p.nsfw,
+  div.nsfw {
+    background-color: currentColor;
+
+    &:hover {
+      background: none;
+    }
+  }
+
+  img.nsfw,
+  video.nsfw {
+    @apply transition-all;
+    filter: blur(10) grayscale(0.6);
+    scale: 0.9;
+
+    &:hover {
+      filter: blur(0) grayscale(0);
+      scale: 1;
+    }
+  }
+
+  img.nsfw-preview {
+    @apply transition-all;
+    filter: blur(4) grayscale(0.6);
+
+    &:hover {
+      filter: blur(0);
+    }
+  }
+}

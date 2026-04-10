@@ -75,6 +75,10 @@ class BaseUploadedFile(UploadedMediaMixin, ApiEditable, BaseModel):
         default="",
         help_text="File content description",
     )
+    is_nsfw = models.BooleanField(
+        default=False,
+        help_text="If true, require user action to render this file.",
+    )
 
     def file_or_none(self):
         if self.file:

@@ -7,7 +7,6 @@ import { useClient } from "@/components/hooks/environment";
 import { useSwipe, useWheel } from "@/components/hooks/inputs";
 import { AppIcon } from "@/components/icon";
 import { Row } from "@/components/layout";
-import { Optional } from "@/components/optional";
 import { DivPropsNoChildren, PropsWithRef } from "@/types/react";
 import { onlyIf } from "@/util/optional";
 import { addClass, classes } from "@/util/transforms";
@@ -118,7 +117,7 @@ const CarouselItem = (
       ref={ref}
       {...addClass(
         rest,
-        "card grid grid-rows-[1fr_auto] grid-cols-1 justify-center bg-neutral-900/50 overflow-hidden",
+        "relative card grid grid-rows-[1fr_auto] grid-cols-1 justify-center bg-neutral-900/50 overflow-hidden group",
         animation,
       )}
     >
@@ -130,27 +129,27 @@ const CarouselItem = (
           className="min-w-64 self-center size-full"
         />
 
-        <Optional
-          value={navigatePrevious}
-          block={(onClick) => (
-            <ControlButton
-              icon="ChevronLeft"
-              onClick={onClick}
-              className="absolute bottom-(--button-margin) left-(--button-margin)"
-            />
-          )}
-        />
-        <Optional
-          value={navigateNext}
-          block={(onClick) => (
-            <ControlButton
-              icon="ChevronRight"
-              onClick={onClick}
-              className="absolute bottom-(--button-margin) right-(--button-margin)"
-            />
-          )}
-        />
+        {onlyIf(navigatePrevious, (onClick) => (
+          <ControlButton
+            icon="ChevronLeft"
+            onClick={onClick}
+            className="absolute bottom-(--button-margin) left-(--button-margin)"
+          />
+        ))}
+
+        {onlyIf(navigateNext, (onClick) => (
+          <ControlButton
+            icon="ChevronRight"
+            onClick={onClick}
+            className="absolute bottom-(--button-margin) right-(--button-margin)"
+          />
+        ))}
       </div>
+      {onlyIf(media.is_nsfw, () => (
+        <div className=" transition-opacity text-sm absolute pointer-events-none surface-scrim chip chip-content group-hover:opacity-0 mx-auto self-center justify-self-center">
+          nsfw: hover to view
+        </div>
+      ))}
 
       {onlyIf(media.description, (description) => (
         <figcaption className="surface p-4 self-justify-center">
@@ -198,15 +197,19 @@ const CarouselThumbnails = (
   return (
     <Row scrollable {...rest}>
       {media.map((item, index) => (
-        <MediaThumbnail
+        <div
+          key={item.url}
           className={classes(
-            "aspect-square rounded-md w-32 border-2",
+            "rounded-md w-32 border-2 overflow-hidden bg-input",
             index === focusIndex ? "border-vibrant" : "border-transparent",
           )}
-          key={item.url}
-          media={item}
-          onClick={() => onClickIndex(index)}
-        />
+        >
+          <MediaThumbnail
+            className="aspect-square"
+            media={item}
+            onClick={() => onClickIndex(index)}
+          />
+        </div>
       ))}
     </Row>
   );

@@ -24,6 +24,7 @@ class File(Schema):
     name: PlainText | None = Field(alias="original_filename", default=None)
     description: PlainText | None
     fit: BaseUploadedFile.ImageFit | None
+    is_nsfw: bool
 
 
 class Link(Schema):
