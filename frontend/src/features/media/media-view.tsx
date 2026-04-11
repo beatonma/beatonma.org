@@ -22,11 +22,13 @@ interface VideoProps {
   video?: VideoOptions;
 }
 
-export const MediaView = (props: MediaProps & ImageProps & VideoProps) => {
-  const { image, video, ...rest } = addClass(
+export const MediaView = (
+  props: { nsfwStyle?: string } & MediaProps & ImageProps & VideoProps,
+) => {
+  const { image, video, nsfwStyle, ...rest } = addClass(
     props,
     "relative",
-    onlyIf(props.media.is_nsfw, "nsfw"),
+    onlyIf(props.media.is_nsfw, props.nsfwStyle ?? "nsfw-noscript"),
   );
 
   const views: Record<MediaFile["type"], () => ReactNode> = {
@@ -38,10 +40,13 @@ export const MediaView = (props: MediaProps & ImageProps & VideoProps) => {
   };
   return views[props.media.type]();
 };
-export const MediaThumbnail = (props: MediaProps & ImageProps & VideoProps) => {
-  const { media, image, video, ...rest } = addClass(
+export const MediaThumbnail = (
+  props: { nsfwStyle: string } & MediaProps & ImageProps & VideoProps,
+) => {
+  const { media, image, video, nsfwStyle, ...rest } = addClass(
     props,
-    onlyIf(props.media.is_nsfw, "nsfw-preview"),
+    "media-thumbnail",
+    onlyIf(props.media.is_nsfw, props.nsfwStyle),
   );
 
   switch (media.type) {

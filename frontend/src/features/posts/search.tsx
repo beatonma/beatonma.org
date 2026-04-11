@@ -272,6 +272,7 @@ const Result = (props: { post: PostPreview } & Props<"a">) => {
           <MediaThumbnail
             media={media}
             className="w-16 h-16 aspect-square ms-4 rounded-md"
+            nsfwStyle="nsfw-8"
           />
         )}
       />

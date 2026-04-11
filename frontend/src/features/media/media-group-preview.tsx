@@ -14,12 +14,13 @@ type OnClickThumbnailProps = { onClickMedia: (media: MediaFile) => void };
 type PreviewProps<N extends number> = DivProps<{ media: MediaGroup<N> }> &
   OnClickThumbnailProps;
 
-const PreviewMiniStyle = "aspect-square rounded-md border-2 border-current";
+const NsfwStyleLarge = "nsfw-16";
+const NsfwStyleSmall = "nsfw-4";
 
 export const MediaGroupPreview = (
   props: DivPropsNoChildren<{ media: MediaFile[] }, "onClick">,
 ) => {
-  const { media, ...rest } = addClass(props, "overflow-hidden");
+  const { media, ...rest } = addClass(props, "surface-muted overflow-hidden");
   const [fileIndex, setFileIndex] = useState<number | undefined>(undefined);
 
   const onClickMedia = useCallback(
@@ -95,11 +96,20 @@ const Thumbnail = (
     />
   );
 };
-
-const MiniThumbnailOverlay = (props: DivProps) => (
-  <div
-    {...addClass(props, "absolute column gap-2 bottom-0 right-0 m-2 w-1/6")}
-  />
+const MiniThumbnail = (
+  props: Props<
+    typeof MediaThumbnail,
+    OnClickThumbnailProps,
+    "nsfwStyle" | "className"
+  >,
+) => (
+  <div className="surface-scrim border-2 border-transparent rounded-md overflow-hidden">
+    <Thumbnail
+      {...props}
+      className="w-16 aspect-square "
+      nsfwStyle={NsfwStyleSmall}
+    />
+  </div>
 );
 
 const PreviewOne = (props: PreviewProps<1>) => {
@@ -111,6 +121,7 @@ const PreviewOne = (props: PreviewProps<1>) => {
         onClickMedia={onClickMedia}
         video={{ autoPlay: true, loop: true }}
         className="size-full"
+        nsfwStyle={NsfwStyleLarge}
       />
     </div>
   );
@@ -127,15 +138,17 @@ const PreviewTwo = (props: PreviewProps<2>) => {
         media={one}
         onClickMedia={onClickMedia}
         video={{ autoPlay: true, loop: true }}
+        nsfwStyle={NsfwStyleLarge}
       />
 
-      <MiniThumbnailOverlay>
-        <Thumbnail
+      <AdditionalHint>
+        <MiniThumbnail
           media={two}
           onClickMedia={onClickMedia}
-          className={`${PreviewMiniStyle}`}
+          // className={SmallPreviewStyle}
+          // nsfwStyle={NsfwStyleSmall}
         />
-      </MiniThumbnailOverlay>
+      </AdditionalHint>
     </div>
   );
 };
@@ -151,20 +164,23 @@ const PreviewThree = (props: PreviewProps<3>) => {
         media={one}
         onClickMedia={onClickMedia}
         video={{ autoPlay: true, loop: true }}
+        nsfwStyle={NsfwStyleLarge}
       />
 
-      <MiniThumbnailOverlay>
-        <Thumbnail
+      <AdditionalHint>
+        <MiniThumbnail
           media={two}
           onClickMedia={onClickMedia}
-          className={PreviewMiniStyle}
+          // className={SmallPreviewStyle}
+          // nsfwStyle={NsfwStyleSmall}
         />
-        <Thumbnail
+        <MiniThumbnail
           media={three}
           onClickMedia={onClickMedia}
-          className={PreviewMiniStyle}
+          // className={SmallPreviewStyle}
+          // nsfwStyle={NsfwStyleSmall}
         />
-      </MiniThumbnailOverlay>
+      </AdditionalHint>
     </div>
   );
 };
@@ -175,11 +191,32 @@ const PreviewFour = (props: PreviewProps<4>) => {
   const [one, two, three, four] = media;
 
   return (
-    <div {...addClass(rest, "grid grid-cols-2 grid-rows-2 *:aspect-square")}>
-      <Thumbnail media={one} onClickMedia={onClickMedia} />
-      <Thumbnail media={two} onClickMedia={onClickMedia} />
-      <Thumbnail media={three} onClickMedia={onClickMedia} />
-      <Thumbnail media={four} onClickMedia={onClickMedia} />
+    <div
+      {...addClass(
+        rest,
+        "grid grid-cols-2 grid-rows-2 *:[.media-thumbnail]:aspect-square",
+      )}
+    >
+      <Thumbnail
+        media={one}
+        onClickMedia={onClickMedia}
+        nsfwStyle={NsfwStyleLarge}
+      />
+      <Thumbnail
+        media={two}
+        onClickMedia={onClickMedia}
+        nsfwStyle={NsfwStyleLarge}
+      />
+      <Thumbnail
+        media={three}
+        onClickMedia={onClickMedia}
+        nsfwStyle={NsfwStyleLarge}
+      />
+      <Thumbnail
+        media={four}
+        onClickMedia={onClickMedia}
+        nsfwStyle={NsfwStyleLarge}
+      />
       {children}
     </div>
   );
@@ -195,9 +232,23 @@ const PreviewMany = (
       media={media.slice(0, 4) as MediaGroup<4>}
       {...addClass(rest, "relative")}
     >
-      <div className="absolute surface-scrim chip chip-content bottom-0 right-0 m-2">
-        +{media.length - 4}
-      </div>
+      <AdditionalHint className="text-xs surface-scrim chip chip-content pointer-events-none">
+        +{media.length - 4} more
+      </AdditionalHint>
     </PreviewFour>
+  );
+};
+
+const AdditionalHint = (props: DivProps) => {
+  const { children, ...rest } = addClass(props);
+  return (
+    <div
+      {...addClass(
+        rest,
+        "absolute bottom-0 right-0 m-2 empty:hidden row gap-x-2",
+      )}
+    >
+      {children}
+    </div>
   );
 };

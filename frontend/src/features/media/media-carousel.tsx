@@ -1,13 +1,14 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/button";
+import { CheckBox } from "@/components/form";
 import { useFadeIn } from "@/components/hooks/animation";
 import { useClient } from "@/components/hooks/environment";
 import { useSwipe, useWheel } from "@/components/hooks/inputs";
 import { AppIcon } from "@/components/icon";
 import { Row } from "@/components/layout";
-import { DivPropsNoChildren, PropsWithRef } from "@/types/react";
+import { DivPropsNoChildren, PropsWithRef, StateSetter } from "@/types/react";
 import { onlyIf } from "@/util/optional";
 import { addClass, classes } from "@/util/transforms";
 import { MediaThumbnail, MediaView } from "./media-view";
@@ -35,19 +36,27 @@ export const MediaCarousel = (
 const ControlledCarousel = (props: DivPropsNoChildren<MediaCarouselProps>) => {
   const { media, focusIndex: defaultFocusIndex, ...rest } = props;
   const [focusIndex, setFocusIndex] = useState(defaultFocusIndex ?? 0);
+  const [showNsfw, setShowNsfw] = useState(false);
+
+  const focussedMedia = useMemo(() => media[focusIndex], [focusIndex, media]);
+  const mediaLength = useMemo(() => media.length, [media]);
+  const hasNsfw: boolean = useMemo(
+    () => media.find((it) => it.is_nsfw) !== undefined,
+    [media],
+  );
 
   const navigatePrevious = useCallback(() => {
     setFocusIndex((prev) => {
       const target = prev - 1;
-      return target < 0 ? media.length - 1 : target;
+      return target < 0 ? mediaLength - 1 : target;
     });
-  }, [media]);
+  }, [mediaLength]);
   const navigateNext = useCallback(() => {
     setFocusIndex((prev) => {
       const target = prev + 1;
-      return target >= media.length ? 0 : target;
+      return target >= mediaLength ? 0 : target;
     });
-  }, [media]);
+  }, [mediaLength]);
 
   const swipeNavigation = useSwipe({
     onSwipeLeft: navigateNext,
@@ -62,11 +71,19 @@ const ControlledCarousel = (props: DivPropsNoChildren<MediaCarouselProps>) => {
   return (
     <div {...addClass(rest, "grid grid-cols-1 grid-rows-[1fr_auto] gap-4")}>
       <CarouselItem
-        media={media[focusIndex]}
-        navigatePrevious={media.length > 1 ? navigatePrevious : undefined}
-        navigateNext={media.length > 1 ? navigateNext : undefined}
+        media={focussedMedia}
+        navigatePrevious={mediaLength > 1 ? navigatePrevious : undefined}
+        navigateNext={mediaLength > 1 ? navigateNext : undefined}
+        nsfwClass={showNsfw ? "" : "nsfw-16"}
         {...swipeNavigation}
         {...wheelNavigation}
+      />
+
+      <ContentControls
+        hasNsfw={hasNsfw}
+        showNsfw={showNsfw}
+        setShowNsfw={setShowNsfw}
+        className="px-edge"
       />
 
       <CarouselThumbnails
@@ -91,7 +108,7 @@ const NoscriptCarousel = (props: DivPropsNoChildren<MediaCarouselProps>) => {
         )}
       >
         {media.map((item, index) => (
-          <CarouselItem key={item.url} media={item} />
+          <CarouselItem key={item.url} media={item} nsfwClass="nsfw-noscript" />
         ))}
       </div>
     </noscript>
@@ -103,13 +120,15 @@ const CarouselItem = (
     "figure",
     {
       media: MediaFile;
+      nsfwClass: string;
       navigatePrevious?: (() => void) | undefined;
       navigateNext?: (() => void) | undefined;
     },
     "children"
   >,
 ) => {
-  const { ref, media, navigatePrevious, navigateNext, ...rest } = props;
+  const { ref, media, navigatePrevious, navigateNext, nsfwClass, ...rest } =
+    props;
   const animation = useFadeIn(media);
 
   return (
@@ -127,6 +146,7 @@ const CarouselItem = (
           image={{ fit: "contain" }}
           video={{ autoPlay: true, loop: true }}
           className="min-w-64 self-center size-full"
+          nsfwStyle={nsfwClass}
         />
 
         {onlyIf(navigatePrevious, (onClick) => (
@@ -145,16 +165,11 @@ const CarouselItem = (
           />
         ))}
       </div>
-      {onlyIf(media.is_nsfw, () => (
-        <div className=" transition-opacity text-sm absolute pointer-events-none surface-scrim chip chip-content group-hover:opacity-0 mx-auto self-center justify-self-center">
-          nsfw: hover to view
-        </div>
-      ))}
 
       {onlyIf(media.description, (description) => (
-        <figcaption className="surface p-4 self-justify-center">
+        <figcaption className=" self-justify-center p-2">
           <div
-            className="text-md readable max-h-[3lh] overflow-y-auto scrollbar mx-auto"
+            className="text-md readable max-h-[3lh] overflow-y-auto scrollbar mx-auto border-2 border-muted p-4 rounded-md"
             dangerouslySetInnerHTML={{ __html: description }}
           />
         </figcaption>
@@ -187,15 +202,12 @@ interface CarouselThumbnailsProps {
 const CarouselThumbnails = (
   props: DivPropsNoChildren<CarouselThumbnailsProps>,
 ) => {
-  const { media, focusIndex, onClickIndex, ...rest } = addClass(
-    props,
-    "gap-4 px-edge",
-  );
+  const { media, focusIndex, onClickIndex, ...rest } = props;
 
   if (media.length < 2) return null;
 
   return (
-    <Row scrollable {...rest}>
+    <Row scrollable {...addClass(rest, "gap-4 px-edge")}>
       {media.map((item, index) => (
         <div
           key={item.url}
@@ -208,9 +220,32 @@ const CarouselThumbnails = (
             className="aspect-square"
             media={item}
             onClick={() => onClickIndex(index)}
+            nsfwStyle="blur-[4px] grayscale-70"
           />
         </div>
       ))}
     </Row>
+  );
+};
+
+const ContentControls = (
+  props: DivPropsNoChildren<{
+    hasNsfw: boolean;
+    showNsfw: boolean;
+    setShowNsfw: StateSetter<boolean>;
+  }>,
+) => {
+  const { hasNsfw, showNsfw, setShowNsfw, ...rest } = props;
+  if (!hasNsfw) return null;
+
+  return (
+    <div {...rest}>
+      <CheckBox
+        isChecked={showNsfw}
+        setChecked={setShowNsfw}
+        label="Show nsfw"
+        className="w-fit chip chip-content surface-muted"
+      />
+    </div>
   );
 };

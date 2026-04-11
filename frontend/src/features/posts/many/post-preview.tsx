@@ -20,7 +20,7 @@ export const PostPreview = (
 
   return (
     <article style={themedStyle} {...addClass(rest, "h-entry")}>
-      <div className="card-hover surface relative isolate">
+      <div className="card-hover surface relative isolate overflow-hidden">
         <Link
           href={post.url}
           className="absolute inset-0 z-0"
@@ -100,19 +100,9 @@ const PostMediaPreview = (
     );
   }
   if (post.hero_image) {
-    return (
-      <MediaGroupPreview
-        media={[post.hero_image]}
-        {...addClass(rest, "surface-muted")}
-      />
-    );
+    return <MediaGroupPreview media={[post.hero_image]} {...rest} />;
   }
-  return (
-    <MediaGroupPreview
-      media={post.files}
-      {...addClass(rest, "surface-muted")}
-    />
-  );
+  return <MediaGroupPreview media={post.files} {...rest} />;
 };
 
 /** If a post does not have a title, try to build something descriptive. */

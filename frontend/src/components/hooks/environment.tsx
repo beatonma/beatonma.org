@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { ChildrenProps } from "@/types/react";
 
 /**
- * If return value is true then we are in a javascript-enabled client environment.
- * Otherwise, server or
+ * If return value is true then we are in a reactive client environment.
  */
 export const useClient = () => {
   const [isMounted, setIsMounted] = useState(false);

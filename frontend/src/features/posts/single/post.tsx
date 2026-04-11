@@ -290,6 +290,7 @@ const Hero = (props: ClassNameProps & PostHero) => {
         <MediaView
           media={hero}
           video={{ autoPlay: true, loop: true }}
+          nsfwStyle="nsfw-16"
           {...rest}
         />
       )}
