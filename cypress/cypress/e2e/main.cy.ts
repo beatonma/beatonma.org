@@ -8,7 +8,7 @@ describe("Index page displays correctly", () => {
   });
 
   it("Displays main widgets", () => {
-    cy.get("h1").contains(Cypress.env("NEXT_PUBLIC_SITE_NAME"));
+    cy.get("h1").contains(Cypress.expose("NEXT_PUBLIC_SITE_NAME"));
     cy.get(TestTarget.Search.Button);
   });
 
@@ -19,6 +19,6 @@ describe("Index page displays correctly", () => {
   });
 
   it("Displays github feed", () => {
-    cy.contains(`github/${Cypress.env("NEXT_PUBLIC_GITHUB_USERNAME")}`);
+    cy.contains(`github/${Cypress.expose("NEXT_PUBLIC_GITHUB_USERNAME")}`);
   });
 });

@@ -18,6 +18,7 @@ export const SampleMedia: MediaFile[] = [
     description:
       "Landscape image of Rubberneck FX loop companion, this is a very long description which probably flows onto multiple lines and may need to scroll.",
     fit: null,
+    is_nsfw: false,
   },
   {
     url: "/media/related/2025/45f545.jpg",
@@ -26,6 +27,7 @@ export const SampleMedia: MediaFile[] = [
     name: "related/2022/45f545.jpg",
     description: "",
     fit: null,
+    is_nsfw: false,
   },
   {
     url: "/media/related/2025/3466a3.jpg",
@@ -34,6 +36,7 @@ export const SampleMedia: MediaFile[] = [
     name: "related/2022/3466a3.jpg",
     description: "",
     fit: null,
+    is_nsfw: false,
   },
   {
     url: "/media/uploads/2025/hero-131610_0T5SIVu.jpg",
@@ -42,6 +45,7 @@ export const SampleMedia: MediaFile[] = [
     name: "related/2021/46tMTWJ.jpg",
     description: "",
     fit: null,
+    is_nsfw: false,
   },
   {
     url: "/media/related/2025/fe7cae.jpg",
@@ -50,6 +54,7 @@ export const SampleMedia: MediaFile[] = [
     name: "related/2021/fe7cae.jpg",
     description: "",
     fit: null,
+    is_nsfw: false,
   },
 ];
 
@@ -61,6 +66,7 @@ export const SampleMediaMixed: MediaFile[] = [
     name: "uploads/2025/640x360_ocean_silent_fwyNfWP.mp4",
     description: "",
     fit: null,
+    is_nsfw: false,
   },
   {
     url: "/media/uploads/2025/file_example_MP3_700KB.mp3",
@@ -69,6 +75,7 @@ export const SampleMediaMixed: MediaFile[] = [
     name: "uploads/2025/file_example_MP3_700KB.mp3",
     description: "",
     fit: null,
+    is_nsfw: false,
   },
   {
     url: "/media/uploads/2025/sample.md",
@@ -77,6 +84,7 @@ export const SampleMediaMixed: MediaFile[] = [
     name: "uploads/2025/sample.md",
     description: "",
     fit: null,
+    is_nsfw: false,
   },
   {
     url: "/media/uploads/2025/sample-text.zip",
@@ -85,6 +93,7 @@ export const SampleMediaMixed: MediaFile[] = [
     name: "uploads/2025/sample-text.zip",
     description: "",
     fit: null,
+    is_nsfw: false,
   },
   {
     url: "/media/uploads/2025/a6934c_QKNMT0X.png",
@@ -93,6 +102,7 @@ export const SampleMediaMixed: MediaFile[] = [
     name: "related/2021/fe7cae.jpg",
     description: "",
     fit: null,
+    is_nsfw: false,
   },
 ];
 
@@ -170,6 +180,7 @@ export const SamplePosts: PostPreview[] = [
         name: "Capture.JPG",
         description: "",
         fit: null,
+        is_nsfw: false,
       },
     ],
     is_preview: false,
@@ -207,6 +218,7 @@ export const SamplePosts: PostPreview[] = [
         name: "uxSbl.jpeg",
         description: "",
         fit: null,
+        is_nsfw: false,
       },
       {
         url: "/media/related/2025/2188b0.jpeg",
@@ -215,6 +227,7 @@ export const SamplePosts: PostPreview[] = [
         name: "9ffkm.jpeg",
         description: "",
         fit: null,
+        is_nsfw: false,
       },
     ],
     is_preview: false,
@@ -267,6 +280,7 @@ export const SamplePosts: PostPreview[] = [
         name: "PXL_20240328_205909119.PORTRAIT.jpg",
         description: "",
         fit: null,
+        is_nsfw: false,
       },
     ],
     is_preview: false,
@@ -361,6 +375,7 @@ export const SamplePosts: PostPreview[] = [
         name: "PXL_20231221_222657475.jpg",
         description: "",
         fit: null,
+        is_nsfw: false,
       },
     ],
     is_preview: false,
@@ -385,6 +400,7 @@ export const SamplePosts: PostPreview[] = [
         name: "jpeg",
         description: "",
         fit: null,
+        is_nsfw: false,
       },
     ],
     is_preview: false,
