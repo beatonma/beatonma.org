@@ -1,8 +1,15 @@
-import { defineConfig } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import { defineConfig, globalIgnores } from "eslint/config";
 
-export default defineConfig([
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
   {
-    files: ["**/*.tsx", "**/*.t{s,sx}"],
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-vars": "off",
@@ -12,3 +19,5 @@ export default defineConfig([
     },
   },
 ]);
+
+export default eslintConfig;
