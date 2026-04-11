@@ -240,7 +240,7 @@ const PreviewMany = (
 };
 
 const AdditionalHint = (props: DivProps) => {
-  const { children, ...rest } = addClass(props);
+  const { children, ...rest } = props;
   return (
     <div
       {...addClass(

@@ -113,18 +113,15 @@ export const PostPage = (props: {
             options={options}
             extraInfo={customContent?.extraInfo}
             className={classes(
-              "@container [grid-area:info] text-sm xl:text-end xl:*:justify-end xl:*:justify-self-end",
+              "@container [grid-area:info] text-sm xl:text-end xl:*:justify-end xl:*:justify-self-end xl:pe-edge",
               Insets,
-              "xl:pe-edge",
             )}
           />
 
           <PostMainContent
             content_html={post.content_html}
             className={classes(
-              "@container",
-              "[grid-area:content]",
-              "e-content",
+              "@container [grid-area:content] e-content",
               ProseClassName,
               Insets,
             )}
@@ -245,7 +242,7 @@ const Tag = ({ tag }: { tag: PostDetail["tags"][number] }) => (
 );
 
 const PostWebmentions = (props: DivPropsNoChildren<PostMentions>) => {
-  const { mentions, ...rest } = addClass(props);
+  const { mentions, ...rest } = props;
   return (
     <Optional
       value={mentions}

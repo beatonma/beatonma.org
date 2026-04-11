@@ -9,7 +9,6 @@ import {
   useState,
 } from "react";
 import { Nullish } from "@/types";
-import { classes } from "@/util/transforms";
 import styles from "./tooltip.module.css";
 
 export type Tooltip = string | Nullish;
@@ -58,15 +57,15 @@ export const useTooltip = (props: TooltipProps): TooltipAttributes => {
         id,
         tooltip,
         className:
-          classes(
-            "opacity-0 fixed surface-vibrant chip chip-content my-0.5",
-            "text-sm text-center font-bold",
-            "max-w-(--tooltip-max-width)",
-          ) ?? "",
+          "opacity-0 fixed surface-vibrant chip chip-content my-0.5 " +
+          "text-sm text-center font-bold " +
+          "max-w-(--tooltip-max-width)",
       });
     } else {
       document.getElementById(id)?.remove();
     }
+
+    return () => document.getElementById(id)?.remove();
   }, [isVisible, tooltip, id]);
 
   if (!tooltip) return {};

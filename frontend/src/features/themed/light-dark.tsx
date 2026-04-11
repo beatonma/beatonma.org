@@ -41,7 +41,7 @@ export const ThemeController = (
     <Button
       icon={icon}
       onClick={() => setMode(nextTheme(mode) ?? "system")}
-      title={`Cycle theme (${mode})`}
+      tooltip={`Cycle theme (${mode})`}
       {...props}
     />
   );

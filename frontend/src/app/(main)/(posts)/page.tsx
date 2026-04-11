@@ -4,7 +4,6 @@ import { Optional } from "@/components/optional";
 import { PaginatedPosts } from "@/features/posts";
 import { navigationHref } from "@/navigation";
 import { onlyIf } from "@/util/optional";
-import { classes } from "@/util/transforms";
 import { Github, PointsOfInterest } from "./_components";
 import styles from "./page.module.css";
 
@@ -75,11 +74,9 @@ export default async function Page({
         block={() => (
           <>
             <PointsOfInterest
-              className={classes(
-                "[grid-area:poi] [--poi-gap:calc(var(--spacing)*4)] gap-x-(--poi-gap)",
-                "row gap-x-4 *:shrink-0 overflow-x-auto overflow-y-hidden max-xl:px-edge",
-                "xl:flex-wrap",
-              )}
+              className="[grid-area:poi] [--poi-gap:calc(var(--spacing)*4)] gap-x-(--poi-gap)
+            row gap-x-4 *:shrink-0 overflow-x-auto overflow-y-hidden max-xl:px-edge
+            xl:flex-wrap"
             />
             <Github className="[grid-area:github] max-xl:card max-xl:card-content max-xl:surface-alt" />
           </>

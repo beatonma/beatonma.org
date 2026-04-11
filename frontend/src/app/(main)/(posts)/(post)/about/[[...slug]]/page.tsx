@@ -7,7 +7,6 @@ import { Optional } from "@/components/optional";
 import { Prose } from "@/components/prose";
 import { PostPage } from "@/features/posts";
 import { DivPropsNoChildren } from "@/types/react";
-import { classes } from "@/util/transforms";
 import { generatePostMetadata } from "../../util";
 
 type Params = { params: Promise<{ slug: string[] | undefined }> };
@@ -46,7 +45,7 @@ const AboutPage = ({ about }: { about: AboutDetail }) => (
     customContent={{
       extraContent: (context) => (
         <AboutNavigation
-          className={classes("card card-content surface-alt mt-16")}
+          className="card card-content surface-alt mt-16"
           about={about}
         />
       ),
