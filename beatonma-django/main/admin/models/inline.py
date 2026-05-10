@@ -44,7 +44,7 @@ class RelatedFileInline(_SortableGenericInline, GenericStackedInline):
     fields = (
         ("file", "get_preview", "thumbnail", "get_thumbnail"),
         ("description",),
-        ("fit", "is_nsfw"),
+        ("fit", "is_nsfw", "is_preview_allowed", "is_standalone"),
     )
     readonly_fields = ("get_preview", "get_thumbnail")
     preview_style = "max-width:150px;max-height:150px;"

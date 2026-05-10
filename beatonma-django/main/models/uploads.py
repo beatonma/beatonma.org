@@ -79,6 +79,15 @@ class BaseUploadedFile(UploadedMediaMixin, ApiEditable, BaseModel):
         default=False,
         help_text="If true, require user action to render this file.",
     )
+    is_preview_allowed = models.BooleanField(
+        default=True,
+        help_text="If false, this file should be excluded from preview UIs.",
+    )
+    is_standalone = models.BooleanField(
+        default=False,
+        help_text="If true, this file should not be grouped for viewing with other files "
+        "- it will be rendered or otherwise linked to in some custom manner.",
+    )
 
     def file_or_none(self):
         if self.file:

@@ -17,6 +17,8 @@ class UploadedFileAdmin(BaseAdmin):
         "description",
         "fit",
         "is_nsfw",
+        "is_preview_allowed",
+        "is_standalone",
     ]
     field_groups = [
         ("file", "_field_file_preview"),

@@ -70,10 +70,6 @@ class BasePost(Schema):
             return obj.changelogpost.get_absolute_url()
         return obj.get_absolute_url()
 
-    @staticmethod
-    def resolve_files(obj):
-        return obj.related_files.all().order_by("sort_order")
-
 
 class PostPreview(BasePost):
     is_preview: bool
@@ -88,6 +84,10 @@ class PostPreview(BasePost):
     @staticmethod
     def resolve_is_preview(obj):
         return bool(obj.preview_html)
+
+    @staticmethod
+    def resolve_files(obj):
+        return obj.related_files.filter(is_preview_allowed=True).order_by("sort_order")
 
 
 class AppPreview(PostPreview):
@@ -110,6 +110,10 @@ class PostDetail(BasePost):
     @staticmethod
     def resolve_url(obj):
         return obj.get_absolute_url()
+
+    @staticmethod
+    def resolve_files(obj):
+        return obj.related_files.filter(is_standalone=False).order_by("sort_order")
 
 
 class AboutPreview(PostPreview):
