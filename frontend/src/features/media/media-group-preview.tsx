@@ -88,13 +88,32 @@ const Thumbnail = (
 ) => {
   const { media, onClickMedia, ...rest } = props;
 
-  return (
-    <MediaThumbnail
-      media={media}
-      onClick={() => onClickMedia(media)}
-      {...rest}
-    />
-  );
+  const showPlayIcon =
+    props.media.duration_seconds && props.video?.autoPlay !== true;
+
+  if (showPlayIcon) {
+    return (
+      <div className="relative">
+        <MediaThumbnail
+          media={media}
+          onClick={() => onClickMedia(media)}
+          {...rest}
+        />
+        <div
+          className="size-2 rounded-full absolute inset-2 justify-self-end bg-red-700/70"
+          title="Video"
+        />
+      </div>
+    );
+  } else {
+    return (
+      <MediaThumbnail
+        media={media}
+        onClick={() => onClickMedia(media)}
+        {...rest}
+      />
+    );
+  }
 };
 const MiniThumbnail = (
   props: Props<
@@ -114,12 +133,13 @@ const MiniThumbnail = (
 
 const PreviewOne = (props: PreviewProps<1>) => {
   const { media, onClickMedia, ...rest } = props;
+  const file = media[0];
   return (
     <div {...rest}>
       <Thumbnail
-        media={media[0]}
+        media={file}
         onClickMedia={onClickMedia}
-        video={{ autoPlay: true, loop: true }}
+        video={{ autoPlay: !file.is_nsfw, loop: true }}
         className="size-full"
         nsfwStyle={NsfwStyleLarge}
       />
@@ -137,17 +157,12 @@ const PreviewTwo = (props: PreviewProps<2>) => {
       <Thumbnail
         media={one}
         onClickMedia={onClickMedia}
-        video={{ autoPlay: true, loop: true }}
+        video={{ autoPlay: !one.is_nsfw, loop: true }}
         nsfwStyle={NsfwStyleLarge}
       />
 
       <AdditionalHint>
-        <MiniThumbnail
-          media={two}
-          onClickMedia={onClickMedia}
-          // className={SmallPreviewStyle}
-          // nsfwStyle={NsfwStyleSmall}
-        />
+        <MiniThumbnail media={two} onClickMedia={onClickMedia} />
       </AdditionalHint>
     </div>
   );
@@ -163,23 +178,13 @@ const PreviewThree = (props: PreviewProps<3>) => {
       <Thumbnail
         media={one}
         onClickMedia={onClickMedia}
-        video={{ autoPlay: true, loop: true }}
+        video={{ autoPlay: !one.is_nsfw, loop: true }}
         nsfwStyle={NsfwStyleLarge}
       />
 
       <AdditionalHint>
-        <MiniThumbnail
-          media={two}
-          onClickMedia={onClickMedia}
-          // className={SmallPreviewStyle}
-          // nsfwStyle={NsfwStyleSmall}
-        />
-        <MiniThumbnail
-          media={three}
-          onClickMedia={onClickMedia}
-          // className={SmallPreviewStyle}
-          // nsfwStyle={NsfwStyleSmall}
-        />
+        <MiniThumbnail media={two} onClickMedia={onClickMedia} />
+        <MiniThumbnail media={three} onClickMedia={onClickMedia} />
       </AdditionalHint>
     </div>
   );

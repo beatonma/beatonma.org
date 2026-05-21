@@ -26,6 +26,12 @@ class File(Schema):
     fit: BaseUploadedFile.ImageFit | None
     is_nsfw: bool
     aspect_ratio: float | None
+    duration_seconds: int | None
+
+    @staticmethod
+    def resolve_duration_seconds(file):
+        if duration := file.duration:
+            return duration.seconds
 
 
 class Link(Schema):

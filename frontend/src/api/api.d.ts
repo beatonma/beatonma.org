@@ -260,6 +260,8 @@ export interface components {
             is_nsfw: boolean;
             /** Aspect Ratio */
             aspect_ratio: number | null;
+            /** Duration Seconds */
+            duration_seconds: number | null;
         };
         /** HCard */
         HCard: {

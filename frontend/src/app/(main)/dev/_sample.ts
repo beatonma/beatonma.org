@@ -20,6 +20,7 @@ export const SampleMedia: MediaFile[] = [
     fit: null,
     is_nsfw: false,
     aspect_ratio: null,
+    duration_seconds: null,
   },
   {
     url: "/media/related/2025/45f545.jpg",
@@ -30,6 +31,7 @@ export const SampleMedia: MediaFile[] = [
     fit: null,
     is_nsfw: false,
     aspect_ratio: null,
+    duration_seconds: null,
   },
   {
     url: "/media/related/2025/3466a3.jpg",
@@ -40,6 +42,7 @@ export const SampleMedia: MediaFile[] = [
     fit: null,
     is_nsfw: false,
     aspect_ratio: null,
+    duration_seconds: null,
   },
   {
     url: "/media/uploads/2025/hero-131610_0T5SIVu.jpg",
@@ -50,6 +53,7 @@ export const SampleMedia: MediaFile[] = [
     fit: null,
     is_nsfw: false,
     aspect_ratio: null,
+    duration_seconds: null,
   },
   {
     url: "/media/related/2025/fe7cae.jpg",
@@ -60,6 +64,7 @@ export const SampleMedia: MediaFile[] = [
     fit: null,
     is_nsfw: false,
     aspect_ratio: null,
+    duration_seconds: null,
   },
 ];
 
@@ -73,6 +78,7 @@ export const SampleMediaMixed: MediaFile[] = [
     fit: null,
     is_nsfw: false,
     aspect_ratio: null,
+    duration_seconds: null,
   },
   {
     url: "/media/uploads/2025/file_example_MP3_700KB.mp3",
@@ -83,6 +89,7 @@ export const SampleMediaMixed: MediaFile[] = [
     fit: null,
     is_nsfw: false,
     aspect_ratio: null,
+    duration_seconds: null,
   },
   {
     url: "/media/uploads/2025/sample.md",
@@ -93,6 +100,7 @@ export const SampleMediaMixed: MediaFile[] = [
     fit: null,
     is_nsfw: false,
     aspect_ratio: null,
+    duration_seconds: null,
   },
   {
     url: "/media/uploads/2025/sample-text.zip",
@@ -103,6 +111,7 @@ export const SampleMediaMixed: MediaFile[] = [
     fit: null,
     is_nsfw: false,
     aspect_ratio: null,
+    duration_seconds: null,
   },
   {
     url: "/media/uploads/2025/a6934c_QKNMT0X.png",
@@ -113,6 +122,7 @@ export const SampleMediaMixed: MediaFile[] = [
     fit: null,
     is_nsfw: false,
     aspect_ratio: null,
+    duration_seconds: null,
   },
 ];
 
@@ -192,6 +202,7 @@ export const SamplePosts: PostPreview[] = [
         fit: null,
         is_nsfw: false,
         aspect_ratio: null,
+        duration_seconds: null,
       },
     ],
     is_preview: false,
@@ -231,6 +242,7 @@ export const SamplePosts: PostPreview[] = [
         fit: null,
         is_nsfw: false,
         aspect_ratio: null,
+        duration_seconds: null,
       },
       {
         url: "/media/related/2025/2188b0.jpeg",
@@ -241,6 +253,7 @@ export const SamplePosts: PostPreview[] = [
         fit: null,
         is_nsfw: false,
         aspect_ratio: null,
+        duration_seconds: null,
       },
     ],
     is_preview: false,
@@ -295,6 +308,7 @@ export const SamplePosts: PostPreview[] = [
         fit: null,
         is_nsfw: false,
         aspect_ratio: null,
+        duration_seconds: null,
       },
     ],
     is_preview: false,
@@ -391,6 +405,7 @@ export const SamplePosts: PostPreview[] = [
         fit: null,
         is_nsfw: false,
         aspect_ratio: null,
+        duration_seconds: null,
       },
     ],
     is_preview: false,
@@ -417,6 +432,7 @@ export const SamplePosts: PostPreview[] = [
         fit: null,
         is_nsfw: false,
         aspect_ratio: null,
+        duration_seconds: null,
       },
     ],
     is_preview: false,

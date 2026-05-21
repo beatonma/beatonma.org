@@ -8,6 +8,7 @@ import { useSwipe, useWheel } from "@/components/hooks/inputs";
 import { AppIcon } from "@/components/icon";
 import { Row } from "@/components/layout";
 import { DivPropsNoChildren, PropsWithRef, StateSetter } from "@/types/react";
+import { formatMediaDuration } from "@/util/format/duration";
 import { onlyIf } from "@/util/optional";
 import { addClass, classes } from "@/util/transforms";
 import { MediaThumbnail, MediaView } from "./media-view";
@@ -215,12 +216,13 @@ const CarouselThumbnails = (
       {onlyIf(navigatePrevious, (onClick) => (
         <ControlButton icon="ChevronLeft" onClick={onClick} />
       ))}
+
       <Row scrollable className="gap-x-2 pb-4">
         {media.map((item, index) => (
           <div
             key={item.url}
             className={classes(
-              "rounded-md size-32 border-2 overflow-hidden bg-input",
+              "relative rounded-md size-32 border-2 overflow-hidden bg-input",
               index === focusIndex ? "border-vibrant" : "border-transparent",
             )}
           >
@@ -230,9 +232,16 @@ const CarouselThumbnails = (
               onClick={() => onClickIndex(index)}
               nsfwStyle="blur-[4px] grayscale-70"
             />
+
+            {onlyIf(item.duration_seconds, (duration) => (
+              <div className="absolute text-xs bg-scrim bottom-1 right-1 text-on-scrim chip chip-content">
+                {formatMediaDuration(duration)}
+              </div>
+            ))}
           </div>
         ))}
       </Row>
+
       {onlyIf(navigateNext, (onClick) => (
         <ControlButton icon="ChevronRight" onClick={onClick} />
       ))}
