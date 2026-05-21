@@ -1,3 +1,6 @@
+import logging
+from dataclasses import dataclass
+from datetime import timedelta
 from io import BytesIO
 from typing import Callable, Self
 
@@ -7,6 +10,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.utils import timezone
 from PIL import Image
+from pymediainfo import MediaInfo
 
 from common.models import BaseModel, SortableMixin
 from common.models.api import ApiEditable
@@ -14,6 +18,8 @@ from common.models.generic import GenericFkMixin
 from main.forms import SanitizedFileField
 from main.models.formats import Formats
 from main.models.mixins.media_upload import MediaType, UploadedMediaMixin
+
+log = logging.getLogger(__name__)
 
 THUMBNAIL_SIZE = (800, 800)
 
@@ -26,6 +32,17 @@ def default_upload_to(instance: "BaseUploadedFile", filename) -> str:
 
     year = timezone.now().strftime("%Y")
     return f"{upload_to}/{year}/{filename}"
+
+
+@dataclass
+class _MediaInfo:
+    width: int | None
+    height: int | None
+    duration: float | None
+
+    def aspect_ratio(self) -> float | None:
+        if self.width and self.height:
+            return self.width / self.height
 
 
 class BaseUploadedFile(UploadedMediaMixin, ApiEditable, BaseModel):
@@ -68,6 +85,15 @@ class BaseUploadedFile(UploadedMediaMixin, ApiEditable, BaseModel):
         choices=MediaType.choices,
         default=MediaType.Unknown,
     )
+    width = models.PositiveSmallIntegerField(null=True, blank=True)
+    height = models.PositiveSmallIntegerField(null=True, blank=True)
+    aspect_ratio = models.DecimalField(
+        max_digits=6,
+        decimal_places=3,
+        null=True,
+        blank=True,
+    )
+    duration = models.DurationField(null=True, blank=True)
 
     description = models.CharField(
         max_length=255,
@@ -112,6 +138,13 @@ class BaseUploadedFile(UploadedMediaMixin, ApiEditable, BaseModel):
 
         if not self.thumbnail:
             self.generate_thumbnail(THUMBNAIL_SIZE)
+
+        if metadata := self._get_metadata():
+            self.width = metadata.width
+            self.height = metadata.height
+            self.aspect_ratio = metadata.aspect_ratio()
+            self.duration = metadata.duration
+
         super().save(*args, **kwargs)
 
     def generate_thumbnail(self, size: tuple[int, int] | None = None):
@@ -139,6 +172,29 @@ class BaseUploadedFile(UploadedMediaMixin, ApiEditable, BaseModel):
         )
 
         self.thumbnail.save(thumb_name, thumb_file, save=False)
+
+    def _get_metadata(self) -> _MediaInfo:
+        info = MediaInfo.parse(self.file)
+
+        width: int | None = None
+        height: int | None = None
+        duration: timedelta | None = None
+
+        for track in info.tracks:
+            if track.track_type in ["Video", "Image"]:
+                try:
+                    width = int(track.width)
+                    height = int(track.height)
+                except (ValueError, TypeError):
+                    log.warning(f"Failed to get file dimensions: {track}")
+
+            if track.track_type in ["Video", "Audio"]:
+                try:
+                    duration = timedelta(milliseconds=float(track.duration))
+                except (ValueError, TypeError):
+                    log.warning(f"Failed to get file duration: {track}")
+
+        return _MediaInfo(width=width, height=height, duration=duration)
 
     def __str__(self):
         if self.description:

@@ -56,7 +56,8 @@ FROM python AS core_django
 
 RUN apk add --no-cache \
     curl \
-    libwebp
+    libwebp \
+    py3-pymediainfo
 
 ARG PYTHON_VERSION
 COPY --from=builder_django /usr/local/lib/python${PYTHON_VERSION}/site-packages /usr/local/lib/python${PYTHON_VERSION}/site-packages

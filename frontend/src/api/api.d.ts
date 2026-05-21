@@ -258,6 +258,8 @@ export interface components {
             fit: components["schemas"]["ImageFit"] | null;
             /** Is Nsfw */
             is_nsfw: boolean;
+            /** Aspect Ratio */
+            aspect_ratio: number | null;
         };
         /** HCard */
         HCard: {

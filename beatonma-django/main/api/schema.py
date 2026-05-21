@@ -25,6 +25,7 @@ class File(Schema):
     description: PlainText | None
     fit: BaseUploadedFile.ImageFit | None
     is_nsfw: bool
+    aspect_ratio: float | None
 
 
 class Link(Schema):

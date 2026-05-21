@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { CSSProperties, useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/button";
 import { CheckBox } from "@/components/form";
 import { useFadeIn } from "@/components/hooks/animation";
@@ -13,6 +13,8 @@ import { onlyIf } from "@/util/optional";
 import { addClass, classes } from "@/util/transforms";
 import { MediaThumbnail, MediaView } from "./media-view";
 import type { MediaFile } from "./types";
+
+const AspectRatioNotSet = 10000;
 
 interface MediaCarouselProps {
   media: MediaFile[];
@@ -34,7 +36,7 @@ export const MediaCarousel = (
 };
 
 const ControlledCarousel = (props: DivPropsNoChildren<MediaCarouselProps>) => {
-  const { media, focusIndex: defaultFocusIndex, ...rest } = props;
+  const { media, focusIndex: defaultFocusIndex, style, ...rest } = props;
   const [focusIndex, setFocusIndex] = useState(defaultFocusIndex ?? 0);
   const [showNsfw, setShowNsfw] = useState(false);
 
@@ -44,6 +46,18 @@ const ControlledCarousel = (props: DivPropsNoChildren<MediaCarouselProps>) => {
     () => media.find((it) => it.is_nsfw) !== undefined,
     [media],
   );
+
+  // Prevent UI jumps when navigating between items of different dimensions by
+  // always using the minimum (i.e. tallest) aspect ratio present in the media set.
+  const aspectRatioStyle: CSSProperties = useMemo(() => {
+    const minAspectRatio = media.reduce((prev, curr) => {
+      if (curr.aspect_ratio == null) return prev;
+      if (prev == AspectRatioNotSet) return curr.aspect_ratio;
+      return Math.min(prev, curr.aspect_ratio);
+    }, AspectRatioNotSet);
+    if (minAspectRatio === AspectRatioNotSet) return {};
+    return { "--carousel-aspect-ratio": minAspectRatio } as CSSProperties;
+  }, [media]);
 
   const navigatePrevious = useCallback(() => {
     setFocusIndex((prev) => {
@@ -69,7 +83,10 @@ const ControlledCarousel = (props: DivPropsNoChildren<MediaCarouselProps>) => {
   });
 
   return (
-    <div {...addClass(rest, "grid grid-cols-1 grid-rows-[1fr_auto] gap-4")}>
+    <div
+      {...addClass(rest, "grid grid-cols-1 grid-rows-[1fr_auto_auto] gap-4")}
+      style={{ ...style, ...aspectRatioStyle }}
+    >
       <CarouselItem
         media={focussedMedia}
         navigatePrevious={mediaLength > 1 ? navigatePrevious : undefined}
@@ -107,7 +124,7 @@ const NoscriptCarousel = (props: DivPropsNoChildren<MediaCarouselProps>) => {
           "overflow-x-auto scrollbar",
         )}
       >
-        {media.map((item, index) => (
+        {media.map((item) => (
           <CarouselItem key={item.url} media={item} nsfwClass="nsfw-noscript" />
         ))}
       </div>
