@@ -6,7 +6,7 @@ x-common: &common
   tty: true
 
 x-volume-django: &volume-django
-  - type: bind
+    type: bind
     source: ./beatonma-django
     target: /django
     read_only: true

@@ -24,17 +24,17 @@ x-common: &common
 
 # Common volume bindings
 x-volume-beatonma: &volume-beatonma
-  - type: bind
+    type: bind
     source: /var/www/beatonma
     target: /var/www/beatonma
     read_only: true
 x-volume-media: &volume-static
-  - type: bind
+    type: bind
     source: /var/www/static
     target: /var/www/static
     read_only: true
 x-volume-static: &volume-media
-  - type: bind
+    type: bind
     source: /var/www/media
     target: /var/www/media
     read_only: true
