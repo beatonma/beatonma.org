@@ -2,7 +2,7 @@ import logging
 from uuid import UUID
 
 from django.http import HttpRequest
-from ninja import Router, Schema
+from ninja import Router, Schema, Status
 
 from bma_app.api.schemas import MediaSchema
 from common.util import http
@@ -31,4 +31,4 @@ def update_media(request: HttpRequest, uuid: UUID, changes: EditMediaSchema):
 @router.delete("/{uuid}/", response={204: None})
 def delete_media(request: HttpRequest, uuid: UUID):
     RelatedFile.objects.get(api_id=uuid).delete()
-    return http.STATUS_204_NO_CONTENT, None
+    return Status(http.STATUS_204_NO_CONTENT, None)

@@ -1,32 +1,32 @@
 # Dev tools
 black==26.5.1
 isort==8.0.1
-django-debug-toolbar==6.3.0
+django-debug-toolbar==7.1.1
 
 # Build
-wheel==0.47.0
+wheel==0.48.0
 
-Django==6.0.5
-Pygments==2.20.0
+Django==6.1
+Pygments==2.21.0
 Werkzeug==3.1.8
-beautifulsoup4==4.14.3
+beautifulsoup4==4.15.0
 celery[redis]==5.6.3
 django-admin-sortable2==2.3.1
 django-colorfield==0.14.0
 django-extensions==4.1
-django-ninja==1.6.2
-django-redis==6.0.0
+django-ninja==1.7.0
+django-redis==7.0.0
 django-taggit==6.1.0
 django-user-agents==0.4.0
 django-wm==4.2.0
-gunicorn==26.0.0
+gunicorn==26.2.0
 markdown2==2.5.5
 mf2py==2.0.1
 pymediainfo==7.0.1
 psycopg2-binary==2.9.12
 python-dateutil==2.9.0.post0
-requests==2.33.1
-sentry-sdk==2.59.0
+requests==2.34.2
+sentry-sdk==2.68.1
 
 pytest==9.0.3
 pytest-django==4.12.0

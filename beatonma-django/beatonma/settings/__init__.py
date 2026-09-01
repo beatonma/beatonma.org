@@ -4,17 +4,7 @@ from .auth import AUTH_PASSWORD_VALIDATORS
 from .caching import CACHES
 from .database import DATABASES
 from .defaults import *  # noqa
-from .email import (
-    EMAIL_HOST,
-    EMAIL_HOST_PASSWORD,
-    EMAIL_HOST_USER,
-    EMAIL_PORT,
-    EMAIL_TIMEOUT,
-    EMAIL_USE_SSL,
-    EMAIL_USE_TLS,
-    SERVER_EMAIL,
-    WEBMAIL_CONTACT_EMAIL,
-)
+from .email import MAILERS, WEBMAIL_CONTACT_EMAIL
 from .environment import (
     BMA_NOTIFICATIONS_ACCOUNT,
     DEBUG,
