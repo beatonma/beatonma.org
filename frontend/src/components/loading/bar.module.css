@@ -1,11 +1,10 @@
-@value indeterminate from "./common.module.css";
-
 ._loadingBar {
   min-height: 2px;
 }
 
 .loadingBarIndeterminate {
-  composes: _loadingBar indeterminate;
+  composes: _loadingBar;
+  composes: indeterminate from "./common.module.css";
 }
 
 .loadingBarDeterminate {
