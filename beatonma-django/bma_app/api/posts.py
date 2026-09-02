@@ -4,7 +4,7 @@ from typing import Annotated
 from uuid import UUID
 
 from django.http import HttpRequest, HttpResponse
-from ninja import File, Form, Router, Schema, UploadedFile
+from ninja import File, Form, Router, Schema, Status, UploadedFile
 from ninja.pagination import paginate
 from pydantic import AfterValidator
 
@@ -110,7 +110,7 @@ def update_post(request: HttpRequest, uuid: UUID, changes: EditPostSchema):
 @router.delete("/{uuid}/", response={204: None})
 def delete_post(request: HttpRequest, uuid: UUID):
     Post.objects.get(api_id=uuid).delete()
-    return 204, None
+    return Status(204, None)
 
 
 def _create_related_file(

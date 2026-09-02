@@ -42,7 +42,7 @@ def send_mail(request: HttpRequest, form: ContactForm):
             contact_info=form.contact_info,
             message=form.message,
         )
-        return 204, None
+        return Status(204, None)
     except UnverifiedRecaptcha as e:
         log.error(f"Recaptcha verification failed: {e}")
-        return 400, None
+        return Status(400, None)

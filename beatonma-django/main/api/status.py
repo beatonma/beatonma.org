@@ -2,7 +2,7 @@ from django.contrib.redirects.models import Redirect
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from django_user_agents.utils import get_user_agent
-from ninja import Router, Schema
+from ninja import Router, Schema, Status
 from pydantic import IPvAnyAddress
 
 from common.util.client import get_client_ip
@@ -12,12 +12,12 @@ router = Router(tags=["Network tools"])
 
 @router.get("/ping/")
 def ping(request: HttpRequest):
-    return 200, "OK"
+    return Status(200, "OK")
 
 
 @router.api_operation(["HEAD"], "/ping/", response={204: None})
 def ping(request: HttpRequest):
-    return 204, None
+    return Status(204, None)
 
 
 class WhoAmiISchema(Schema):
