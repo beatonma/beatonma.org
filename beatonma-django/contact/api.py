@@ -1,9 +1,10 @@
 import logging
 
 from django.http import HttpRequest
-from ninja import Field, Router, Schema
+from ninja import Field, Router, Schema, Status
 
 from common.util.tasks import dispatch_task
+from contact.models.webmailmessage import WebmailMessage
 from contact.tasks import send_webmail
 from contact.tasks.recaptcha import UnverifiedRecaptcha, verify_recaptcha
 
@@ -21,8 +22,20 @@ class ContactForm(Schema):
 
 @router.post("/", response={204: None, 400: None})
 def send_mail(request: HttpRequest, form: ContactForm):
+    # Always create local record in case email fails for any reason.
+    message = WebmailMessage.objects.create(
+        subject="send_mail",
+        name=form.name,
+        contact=form.contact_info,
+        message_body=form.message,
+    )
+
     try:
         verify_recaptcha(form.recaptcha_token)
+
+        message.recaptcha_verified = True
+        message.save(update_fields=["recaptcha_verified"])
+
         dispatch_task(
             send_webmail,
             name=form.name,

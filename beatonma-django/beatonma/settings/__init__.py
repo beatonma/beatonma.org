@@ -4,7 +4,7 @@ from .auth import AUTH_PASSWORD_VALIDATORS
 from .caching import CACHES
 from .database import DATABASES
 from .defaults import *  # noqa
-from .email import MAILERS, WEBMAIL_CONTACT_EMAIL
+from .email import DEFAULT_FROM_EMAIL, MAILERS, WEBMAIL_CONTACT_EMAIL
 from .environment import (
     BMA_NOTIFICATIONS_ACCOUNT,
     DEBUG,

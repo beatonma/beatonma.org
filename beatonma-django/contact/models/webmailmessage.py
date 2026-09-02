@@ -27,6 +27,7 @@ class WebmailMessage(BaseModel):
     subject = models.CharField(blank=True, max_length=256)
     message_body = models.TextField(blank=True)
 
+    recaptcha_verified = models.BooleanField(default=False)
     has_been_read = models.BooleanField(default=False)
 
     def mark_as_read(self):

@@ -1,6 +1,7 @@
 from beatonma.settings import environment
 
 WEBMAIL_CONTACT_EMAIL = environment.WEBMAIL_CONTACT_EMAIL
+DEFAULT_FROM_EMAIL = environment.EMAIL_HOST_USER
 
 
 MAILERS = {

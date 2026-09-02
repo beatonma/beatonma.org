@@ -6,7 +6,7 @@ from bmanotify_django.tasks.dispatch import NoRegisteredDevice
 from celery import shared_task
 from celery.utils.log import get_task_logger
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core import mail as django_mail
 
 from common.util.tasks import dispatch_task
 
@@ -71,10 +71,10 @@ def send_webmail(
 
     log(logging.INFO, f"Sending mail from: '{name}'")
 
-    send_mail(
+    django_mail.send_mail(
         subject,
         message,
-        settings.EMAIL_HOST_USER,
+        settings.DEFAULT_FROM_EMAIL,
         [settings.WEBMAIL_CONTACT_EMAIL],
     )
 
