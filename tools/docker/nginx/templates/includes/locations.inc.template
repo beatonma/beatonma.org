@@ -3,7 +3,6 @@ location /media {
     expires 1y;
     add_header Cache-Control "public";
 }
-
 location /static {
     alias /var/www/static;
     expires 1y;
@@ -26,16 +25,6 @@ location ~ ^/apps/.+?/live/.+$ {
     rewrite ^/apps/(.+?)/live/(.+) /media/apps/$1/$2 permanent;
 }
 
-location / {
-    proxy_pass http://next;
-    proxy_set_header Host $http_host;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_redirect off;
-    limit_req zone=by_uri burst=20 nodelay;
-}
-
 location ~ (/api|/feed|/${ADMIN_URL}|/${BMA_NOTIFICATIONS_URL}) {
     proxy_pass http://django;
     proxy_set_header Host $http_host;
@@ -43,6 +32,21 @@ location ~ (/api|/feed|/${ADMIN_URL}|/${BMA_NOTIFICATIONS_URL}) {
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_redirect off;
+}
+
+location / {
+    root /var/www/public-nextjs;
+    try_files $uri @nextjs;
+}
+
+location @nextjs {
+    proxy_pass http://next;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_redirect off;
+    limit_req zone=by_uri burst=20 nodelay;
 }
 
 include /etc/nginx/conf.d/includes/healthy.inc;
