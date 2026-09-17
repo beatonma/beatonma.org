@@ -1,12 +1,12 @@
 # Dev tools
 black==26.5.1
-isort==8.0.1
-django-debug-toolbar==7.1.1
+isort==9.0.1
+django-debug-toolbar==8.0.0
 
 # Build
 wheel==0.48.0
 
-Django==6.1
+Django==6.1.1
 Pygments==2.21.0
 Werkzeug==3.1.8
 beautifulsoup4==4.15.0
@@ -26,10 +26,10 @@ pymediainfo==7.0.1
 psycopg2-binary==2.9.12
 python-dateutil==2.9.0.post0
 requests==2.34.2
-sentry-sdk==2.68.1
+sentry-sdk==2.69.2
 
-pytest==9.0.3
-pytest-django==4.12.0
+pytest==9.1.1
+pytest-django==4.14.0
 
 # Handled by dockerfile
 #git+ssh://git@github.com/beatonma/bmanotify.git
