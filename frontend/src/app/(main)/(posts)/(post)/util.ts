@@ -1,15 +1,6 @@
 import { Metadata } from "next";
-import { getSlug } from "@/api";
-import type { PathWithSlug } from "@/api/client/types";
-import { DetailedPost } from "@/api/types";
+import { DetailedPost } from "@/repository/types";
 import { getPlaintextSummaryFromHtml } from "@/util/format/string";
-
-export type SlugParams = { params: Promise<{ slug: string }> };
-
-export const get = async <P extends PathWithSlug>(
-  path: P,
-  params: SlugParams,
-) => getSlug(path, (await params.params).slug);
 
 export const generatePostMetadata = async (
   post: DetailedPost,

@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { getOrNull } from "@/api";
+import Repository from "@/repository";
 import { MainLayout } from "./_components/main-layout";
 
 export const dynamic = "force-dynamic";
@@ -9,7 +9,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const globalState = await getOrNull("/api/state/");
+  const globalState = await Repository.getGlobalState();
 
   return <MainLayout state={globalState}>{children}</MainLayout>;
 }

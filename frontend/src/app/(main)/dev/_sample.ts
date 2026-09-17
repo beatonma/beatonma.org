@@ -3,7 +3,7 @@ import type {
   MediaFile,
   PostPreview,
   Webmention,
-} from "@/api/types";
+} from "@/repository/types";
 
 export const LoremIpsum =
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque mattis, orci vel congue vehicula, velit metus cursus nisl, sed condimentum elit libero id diam. Cras pharetra quam vel nisl gravida blandit. Aliquam lorem tellus, mattis at mi dictum, interdum dictum dolor. Ut tempus mauris ut vulputate efficitur. Sed est ligula, aliquam nec porta non, dictum id neque. Donec ornare, nunc ac hendrerit pretium, elit magna sagittis dolor, vel aliquam ipsum lorem ac lorem. Quisque dignissim, dui nec facilisis euismod, lectus leo posuere ligula, sed tempus eros ante ut mi.";

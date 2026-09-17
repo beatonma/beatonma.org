@@ -2,13 +2,12 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import type { PathWithPagination, Query } from "@/api/client/types";
 import { StateSetter } from "@/types/react";
 
-export const useUpdateLocationQuery = <P extends PathWithPagination>(
+export const useUpdateLocationQuery = <T>(
   updateBrowserLocation: boolean,
-  init: Query<P>,
-): StateSetter<Query<P>> => {
+  init: T,
+): StateSetter<T> => {
   const [query, setQuery] = useState(init);
   const router = useRouter();
   const path = usePathname();

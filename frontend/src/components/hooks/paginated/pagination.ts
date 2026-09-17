@@ -8,14 +8,9 @@ import {
   useRef,
   useState,
 } from "react";
-import { getPaginated } from "@/api";
-import type {
-  PageItemType,
-  PagedResponseOf,
-  PathWithPagination,
-  Query,
-} from "@/api/client/types";
 import { useUpdateLocationQuery } from "@/components/hooks/paginated/browser";
+import { NetworkResult, isSuccess } from "@/repository/result";
+import { Paginated as Paged, PaginationQuery } from "@/repository/types";
 import { StateSetter } from "@/types/react";
 
 interface AdjacentPages {
@@ -33,9 +28,9 @@ export interface Paginated<T> {
   href: AdjacentPages;
 }
 
-interface PaginationConfig<P extends PathWithPagination> {
+interface PaginationConfig<T, Q extends PaginationQuery> {
   /** Initial data - typically data that was preloaded during SSR.*/
-  init?: PagedResponseOf<P>;
+  init?: Paged<T>;
 
   /** By default, the first page of data will be loaded when usePagination is initialized.
    * Set `load: false` to prevent data loading until you are ready for it - updating
@@ -44,7 +39,7 @@ interface PaginationConfig<P extends PathWithPagination> {
 
   /** Query parameters passed to the data source when loading new data.
    * Changing this value will clear the existing data and trigger a fresh reload. */
-  query?: Query<P> | undefined;
+  query?: Q | undefined;
 
   /**
    * If true, update the browser URL to reflect changes in query parameters.
@@ -52,15 +47,16 @@ interface PaginationConfig<P extends PathWithPagination> {
   updateBrowserLocation?: boolean;
 }
 
-/** Used to track changes in usePagination inputs. */
-type PreviousParams<P extends PathWithPagination> = Pick<
-  PaginationConfig<P>,
+/** Used to track changes in usePagination inputs */
+type PreviousParams<T, Q extends PaginationQuery> = Pick<
+  PaginationConfig<T, Q>,
   "load" | "query"
-> & { path: P };
+>;
 
-export type PaginationLoader<P extends PathWithPagination> = (
-  ...params: Parameters<typeof getPaginated<P>>
-) => ReturnType<typeof getPaginated<P>>;
+export type PaginationLoader<T, Q> = (
+  query: Q,
+  signal: AbortSignal,
+) => Promise<NetworkResult<Paged<T>>>;
 
 interface PagedDataState<T> {
   items: T[];
@@ -68,9 +64,7 @@ interface PagedDataState<T> {
   available: number;
 }
 
-const initialState = <P extends PathWithPagination>(
-  initialData?: PagedResponseOf<P>,
-): PagedDataState<PageItemType<P>> => ({
+const initialState = <T>(initialData?: Paged<T>): PagedDataState<T> => ({
   items: initialData?.items ?? [],
   available: initialData?.count ?? -1,
   href: {
@@ -79,16 +73,14 @@ const initialState = <P extends PathWithPagination>(
   },
 });
 
-export const usePagination = <P extends PathWithPagination>(
-  path: P,
-  config?: PaginationConfig<P>,
-  loader: PaginationLoader<P> = getPaginated,
-): Paginated<PageItemType<P>> => {
+export const usePagination = <T, Q extends PaginationQuery>(
+  config: PaginationConfig<T, Q>,
+  loader: PaginationLoader<T, Q>,
+): Paginated<T> => {
   const isInitialized = useRef(false);
 
   // Remember inputs so we can detect granular changes and respond accordingly.
-  const previousParams = useRef<PreviousParams<P>>({
-    path,
+  const previousParams = useRef<PreviousParams<T, Q>>({
     load: config?.load,
     query: config?.query,
   });
@@ -103,7 +95,7 @@ export const usePagination = <P extends PathWithPagination>(
   const [isLoading, _setIsLoading] = useState<boolean>(false);
   const isLoadingRef = useRef<boolean>(isLoading);
 
-  type State = PagedDataState<PageItemType<P>>;
+  type State = PagedDataState<T>;
   const [state, _setState] = useState<State>(initialState(config?.init));
   const stateRef = useRef<State>(state);
 
@@ -138,20 +130,21 @@ export const usePagination = <P extends PathWithPagination>(
     abortController.current = new AbortController();
 
     try {
-      const query: Query<P> = {
-        ...(config?.query ?? {}),
+      const query: Q = {
+        ...((config?.query ?? {}) as Q),
         offset: stateRef.current.href.next ?? 0,
       };
-      const {
-        data,
-        error: err,
-        response,
-      } = await loader(path, { query }, abortController?.current?.signal);
 
-      if (err || !data) {
-        setError(`${response.status}: ${response.url}`);
+      const result = await loader(query, abortController?.current.signal);
+      if (!isSuccess(result)) {
+        const { request, response } = result;
+        setError(
+          `${response?.status ?? 500}: ${request?.url ?? "Failed to build request"}`,
+        );
         return;
       }
+      const { data } = result;
+
       setState({
         items: [...stateRef.current.items, ...data.items],
         available: data.count,
@@ -166,16 +159,7 @@ export const usePagination = <P extends PathWithPagination>(
     } finally {
       setIsLoading(false);
     }
-  }, [
-    path,
-    config?.query,
-    config?.load,
-    loader,
-    setError,
-    setIsLoading,
-    setState,
-    updateQueryInBrowser,
-  ]);
+  }, [config, loader, setError, setIsLoading, setState, updateQueryInBrowser]);
 
   useEffect(() => {
     /* Load first set of data on load, if config allows. */
@@ -193,17 +177,16 @@ export const usePagination = <P extends PathWithPagination>(
     if (!isInitialized.current) return;
 
     const previous = previousParams.current;
-    if (path !== previous.path || config?.query !== previous.query) {
+    if (config?.query !== previous.query) {
       void reset().then(loadNext);
     } else if (config?.load && config?.load !== previous.load) {
       void loadNext();
     }
     previousParams.current = {
-      path,
       query: config?.query,
       load: config?.load,
     };
-  }, [loadNext, config?.load, config?.query, path, reset]);
+  }, [loadNext, config?.load, config?.query, reset]);
 
   return useMemo(() => {
     const hasMore = state.available < 0 || state.available > state.items.length;

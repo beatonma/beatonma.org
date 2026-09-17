@@ -1,19 +1,15 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Script from "next/script";
-import { getSlug } from "@/api";
 import { DangerousHtml } from "@/components/html";
+import Repository from "@/repository";
 
 interface Params {
   slug: string;
 }
 
-const get = async (params: Promise<Params>) => {
-  return getSlug("/api/apps/{slug}/", params);
-};
-
 export default async function Page({ params }: { params: Promise<Params> }) {
-  const app = await get(params);
+  const app = await Repository.posts.getApp(params);
 
   if (!app.script) return notFound();
 
@@ -34,7 +30,7 @@ export async function generateMetadata({
 }: {
   params: Promise<Params>;
 }): Promise<Metadata> {
-  const app = await get(params);
+  const app = await Repository.posts.getApp(params);
 
   return {
     title: app.title,

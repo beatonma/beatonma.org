@@ -1,17 +1,16 @@
 import { Metadata } from "next";
 import { CSSProperties } from "react";
-import { AppDetail } from "@/api/types";
 import { Optional } from "@/components/optional";
 import { PostPage, PostPreview } from "@/features/posts";
+import Repository, { SlugParams } from "@/repository";
+import type { AppDetail } from "@/repository/types";
 import { Nullish } from "@/types";
 import { DivPropsNoChildren } from "@/types/react";
 import { classes, joinNonEmpty } from "@/util/transforms";
 import { AppLink, LocalIFrame } from "../../_components";
-import { SlugParams } from "../../util";
-import { getApp } from "./get";
 
 export default async function Page(params: SlugParams) {
-  const app = await getApp(params);
+  const app = await Repository.posts.getApp(params);
 
   return (
     <PostPage
@@ -53,7 +52,7 @@ export default async function Page(params: SlugParams) {
 }
 
 export async function generateMetadata(params: SlugParams): Promise<Metadata> {
-  const app = await getApp(params);
+  const app = await Repository.posts.getApp(params);
 
   return {
     title: app.title,
@@ -73,7 +72,13 @@ const Changelogs = (
 
       <div className="space-y-8">
         {app.changelog.map((entry) => (
-          <PostPreview key={entry.url} post={{ ...entry, is_preview: false }} />
+          <PostPreview
+            key={entry.url}
+            post={{
+              ...entry,
+              is_preview: false,
+            }}
+          />
         ))}
       </div>
     </div>

@@ -1,13 +1,13 @@
-import { getOrNull } from "@/api";
 import { InlineButton } from "@/components/button";
 import hoverUnderlineStyles from "@/components/css/hover-underline.module.css";
+import Repository from "@/repository";
 import { DivPropsNoChildren } from "@/types/react";
 import { formatUrl } from "@/util/format/url";
 import { addClass } from "@/util/transforms";
 import styles from "./points-of-interest.module.css";
 
 export const PointsOfInterest = async (props: DivPropsNoChildren) => {
-  const state = await getOrNull("/api/state/");
+  const state = await Repository.getGlobalState();
   const poi = state?.poi;
 
   if (!poi?.length) return null;

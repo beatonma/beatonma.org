@@ -8,8 +8,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { SearchablePath } from "@/api/client/types";
-import { PostPreview } from "@/api/types";
 import { Button } from "@/components/button";
 import { Date } from "@/components/datetime";
 import { ScrimBackground } from "@/components/dialog/scrim";
@@ -22,6 +20,8 @@ import { Optional } from "@/components/optional";
 import { MediaThumbnail } from "@/features/media";
 import { itemTheme } from "@/features/themed";
 import { navigationHref } from "@/navigation";
+import Repository from "@/repository";
+import { PaginationQuery, PostPreview } from "@/repository/types";
 import {
   DivProps,
   DivPropsNoChildren,
@@ -40,14 +40,17 @@ const TestTarget = {
 };
 const MinQueryLength = 3;
 
-interface SearchProps<P extends SearchablePath> {
-  path: P;
+interface SearchProps {
   containerClassName?: string;
   defaultQuery?: string;
 }
-type SearchDivProps<P extends SearchablePath> = DivProps<SearchProps<P>>;
+type SearchDivProps = DivProps<SearchProps>;
 
-export const Search = <P extends SearchablePath>(props: SearchDivProps<P>) => {
+interface SearchQuery extends PaginationQuery {
+  query: string | undefined;
+}
+
+export const Search = (props: SearchDivProps) => {
   const isClient = useClient();
 
   return isClient ? (
@@ -57,7 +60,7 @@ export const Search = <P extends SearchablePath>(props: SearchDivProps<P>) => {
   );
 };
 
-const NoscriptSearch = <P extends SearchablePath>(props: SearchDivProps<P>) => {
+const NoscriptSearch = (props: SearchDivProps) => {
   return (
     <noscript className={props.containerClassName}>
       <SearchForm className={props.className} />
@@ -65,22 +68,23 @@ const NoscriptSearch = <P extends SearchablePath>(props: SearchDivProps<P>) => {
   );
 };
 
-const ControlledSearch = <P extends SearchablePath>(
-  props: SearchDivProps<P>,
-) => {
-  const { path, defaultQuery, ...rest } = props;
+const ControlledSearch = (props: SearchDivProps) => {
+  const { defaultQuery, ...rest } = props;
   const [isActive, setIsActive] = useState(false);
   const [query, setQuery] = useState(defaultQuery ?? "");
   const paginationConfig = useMemo(
     () => ({
       load: isActive && isQueryValid(query),
-      query: { query: query },
+      query: { query },
       updateBrowserLocation: false,
     }),
     [isActive, query],
   );
 
-  const results = usePagination(path, paginationConfig);
+  const results = usePagination<PostPreview, SearchQuery>(
+    paginationConfig,
+    Repository.posts.getPaginatedPosts,
+  );
 
   return (
     <SearchUI
@@ -89,7 +93,7 @@ const ControlledSearch = <P extends SearchablePath>(
       query={query}
       setQuery={setQuery}
       isLoading={results.isLoading}
-      items={results.items as PostPreview[]}
+      items={results.items}
       {...rest}
     />
   );

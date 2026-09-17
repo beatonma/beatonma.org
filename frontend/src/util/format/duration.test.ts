@@ -1,4 +1,3 @@
-import { describe } from "@jest/globals";
 import { formatMediaDuration } from "@/util/format/duration";
 
 describe("duration formatting", () => {

@@ -1,6 +1,4 @@
-import { Query } from "@/api/types";
-
-type PostSearchParams = Query<"/api/posts/">;
+import { FeedQuery } from "@/repository/types";
 
 const Navigation = {
   home: () => "/",
@@ -10,8 +8,8 @@ const Navigation = {
   appLiveInstance: (slug: string) => `/apps/${slug}/live/`,
   changelog: (slug: string) => `/changelog/${slug}/`,
   post: (slug: string) => `/posts/${slug}/`,
-  posts: (params?: PostSearchParams) => `/${searchParams(params)}`,
-  feed: (params?: PostSearchParams) => `/feed/${searchParams(params)}`,
+  posts: (params?: FeedQuery) => `/${searchParams(params)}`,
+  feed: (params?: FeedQuery) => `/feed/${searchParams(params)}`,
   tag: (tag: string) => Navigation.posts({ tag }),
   webmentionsTest: () => `/webmentions_tester/`,
 };
@@ -28,9 +26,7 @@ export const navigationHref = <T extends Navigable>(
   return (Navigation[type] as P)(...args);
 };
 
-const searchParams = (
-  params: Record<string, string | number | null> | undefined,
-) => {
+const searchParams = (params: FeedQuery | undefined) => {
   if (!params) return "";
 
   const formatted = Object.entries(params)

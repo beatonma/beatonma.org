@@ -1,6 +1,6 @@
 "use client";
 
-import type { Path, Webmention, WebmentionTester } from "@/api/types";
+import { WebmentionsTesterEndpoint } from "@/api/types";
 import { TintedButton } from "@/components/button";
 import { Callout } from "@/components/callout";
 import { parseDate } from "@/components/datetime";
@@ -8,16 +8,16 @@ import { Row } from "@/components/layout";
 import { Prose } from "@/components/prose";
 import { ExternalLink } from "@/components/third-party";
 import { Webmentions } from "@/features/webmentions";
+import type { TemporaryWebmention, Webmention } from "@/repository/types";
 import { DivPropsNoChildren, PropsExcept } from "@/types/react";
 import { plural } from "@/util/format/plurals";
 import { onlyIf } from "@/util/optional";
 import { addClass } from "@/util/transforms";
 
-type TempMention = WebmentionTester["temporary_outgoing_mentions"][number];
-type TempMentionStatus = TempMention["status"];
+type TempMentionStatus = TemporaryWebmention["status"];
 
 interface TemporaryMentionsProps {
-  tempMentions: TempMention[];
+  tempMentions: TemporaryWebmention[];
 }
 interface WebmentionsTesterPage extends TemporaryMentionsProps {
   mentions: Webmention[];
@@ -74,7 +74,7 @@ export const WebmentionsTesterPage = (props: WebmentionsTesterPage) => {
 };
 
 const SubmitWebmentionForm = () => {
-  const actionPath: Path = "/api/webmentions_tester/";
+  const actionPath: WebmentionsTesterEndpoint = "/api/webmentions_tester/";
 
   return (
     <form action={actionPath} method="post">

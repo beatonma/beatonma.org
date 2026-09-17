@@ -1,9 +1,8 @@
-import { SlugParams } from "@/app/(main)/(posts)/(post)/util";
 import { opengraphImage } from "@/features/nextjs";
-import { getApp } from "./get";
+import Repository, { SlugParams } from "@/repository";
 
 export default async function Image(params: SlugParams) {
-  const post = await getApp(params);
+  const post = await Repository.posts.getApp(params);
 
   return opengraphImage({
     icon: post.icon ?? undefined,

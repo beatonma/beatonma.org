@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { AppPreview } from "@/api/types";
 import { RemoteIcon } from "@/components/icon";
 import { Optional } from "@/components/optional";
 import { itemTheme } from "@/features/themed";
+import { AppPreview } from "@/repository/types";
 import { Props } from "@/types/react";
 import { addClass } from "@/util/transforms";
 

@@ -1,9 +1,9 @@
-import { GlobalState } from "@/api/types";
 import { Date } from "@/components/datetime";
 import { Row } from "@/components/layout";
 import { ExternalLink } from "@/components/third-party";
 import { MediaView } from "@/features/media";
 import * as microformats from "@/microformats";
+import { GlobalState } from "@/repository/types";
 import { Nullish } from "@/types";
 import { DivPropsNoChildren } from "@/types/react";
 import { onlyIf } from "@/util/optional";

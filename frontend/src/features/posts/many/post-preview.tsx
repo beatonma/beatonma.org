@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { type PostPreview as PostPreviewType } from "@/api/types";
 import { ButtonProps, InlineButton } from "@/components/button";
 import { Date, formatDate } from "@/components/datetime";
 import { Row } from "@/components/layout";
@@ -8,6 +7,7 @@ import { ProseClassName } from "@/components/prose";
 import { RemoteIFrame } from "@/components/third-party";
 import { MediaGroupPreview } from "@/features/media";
 import { itemTheme } from "@/features/themed";
+import { type PostPreview as PostPreviewType } from "@/repository/types";
 import { DivPropsNoChildren } from "@/types/react";
 import { addClass, classes } from "@/util/transforms";
 import { HtmlContent, PostType, PublishingStatus } from "../components";

@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { permanentRedirect, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { client } from "@/api";
 import { LoadingSpinner } from "@/components/loading";
 import { Prose } from "@/components/prose";
 import { navigationHref } from "@/navigation";
+import Repository from "@/repository";
 import { Nullish } from "@/types";
 import { MainLayout } from "./(main)/_components/main-layout";
 
@@ -15,17 +15,8 @@ export default function NotFound() {
   const [redirectTo, setRedirectTo] = useState<string | Nullish>(undefined);
 
   useEffect(() => {
-    client
-      .GET("/api/redirect/", {
-        params: {
-          query: {
-            path,
-          },
-        },
-      })
-      .then((response) => {
-        setRedirectTo(response.data?.redirect || null);
-      })
+    Repository.redirect(path)
+      .then(setRedirectTo)
       .catch((e) => {
         setRedirectTo(null);
       });

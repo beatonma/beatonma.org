@@ -1,13 +1,13 @@
 import { Metadata } from "next";
-import { Query } from "@/api/types";
 import { Optional } from "@/components/optional";
 import { PaginatedPosts } from "@/features/posts";
 import { navigationHref } from "@/navigation";
+import { FeedQuery } from "@/repository/types";
 import { onlyIf } from "@/util/optional";
 import { Github, PointsOfInterest } from "./_components";
 import styles from "./page.module.css";
 
-type SearchParams = Promise<Query<"/api/posts/">>;
+type SearchParams = Promise<FeedQuery>;
 
 export async function generateMetadata({
   searchParams,

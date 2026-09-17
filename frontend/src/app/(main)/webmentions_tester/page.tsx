@@ -1,6 +1,6 @@
 import { Metadata } from "next";
-import { getOrThrow } from "@/api";
 import { navigationHref } from "@/navigation";
+import Repository from "@/repository";
 import { WebmentionsTesterPage } from "./webmentions-tester";
 
 export const metadata: Metadata = {
@@ -10,9 +10,7 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   const { mentions, temporary_outgoing_mentions: tempMentions } =
-    await getOrThrow("/api/webmentions_tester/", {
-      query: { url_path: navigationHref("webmentionsTest") },
-    });
+    await Repository.getWebmentionsTester(navigationHref("webmentionsTest"));
 
   return (
     <WebmentionsTesterPage mentions={mentions} tempMentions={tempMentions} />

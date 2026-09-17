@@ -1,8 +1,8 @@
 import { Metadata } from "next";
-import { getOrNull } from "@/api";
 import { InlineLink } from "@/components/button";
 import { Prose } from "@/components/prose";
 import { navigationHref } from "@/navigation";
+import Repository from "@/repository";
 
 export const metadata: Metadata = {
   title: "Tags",
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const tags = await getOrNull("/api/tags/");
+  const tags = await Repository.getTags();
   return (
     <main className="mb-24">
       <Prose className="mx-auto">

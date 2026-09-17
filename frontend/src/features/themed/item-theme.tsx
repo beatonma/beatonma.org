@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import { Theme } from "@/api/types";
+import { Theme } from "@/repository/types";
 import { Nullish } from "@/types";
 import { getForegroundColor } from "./color";
 

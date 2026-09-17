@@ -1,12 +1,12 @@
 "use client";
 
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
-import { client } from "@/api";
 import { TintedButton } from "@/components/button";
 import { FormField } from "@/components/form";
 import { Row } from "@/components/layout";
 import { Prose } from "@/components/prose";
 import { ExternalLink, RemoteContent } from "@/components/third-party";
+import Repository from "@/repository";
 import { testId } from "@/util";
 import { onlyIf } from "@/util/optional";
 import { Recaptcha, RecaptchaProps } from "./_components/recaptcha";
@@ -114,23 +114,13 @@ const ContactForm = (
       return;
     }
     setError(null);
-
-    client
-      .POST("/api/contact/", {
-        body: {
-          name,
-          message,
-          contact_info: contact,
-          recaptcha_token: captchaToken!,
-        },
-      })
-      .then((response) => {
-        if (response.response.ok) {
-          onMessageSent();
-        } else {
-          setError(`Failed to send message: ${response.error}`);
-        }
-      })
+    Repository.contact({
+      name,
+      message,
+      contact_info: contact,
+      recaptcha_token: captchaToken!,
+    })
+      .then(() => onMessageSent())
       .catch((e) => {
         setError(`Api error ${e}`);
       });

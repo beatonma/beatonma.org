@@ -1,10 +1,10 @@
 import { ReactNode } from "react";
-import { GlobalState } from "@/api/types";
 import { GlobalHCard } from "@/app/_components/h-card";
 import { Button } from "@/components/button";
 import { Row } from "@/components/layout";
 import { ThemeController } from "@/features/themed";
 import { navigationHref } from "@/navigation";
+import { GlobalState } from "@/repository/types";
 import { Nullish } from "@/types";
 import { classes } from "@/util/transforms";
 import styles from "./main-layout.module.css";

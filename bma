@@ -38,8 +38,8 @@ case "$context" in
     exit 0
     ;;
 
-  "openapi")
-    run_command npx openapi-typescript "http://localhost:${1:-80}/api/openapi.json" -o frontend/src/api/api.d.ts
+  "api")
+    run_command npx @hey-api/openapi-ts@next -f "./frontend/openapi-ts.config.ts"
     exit 0
     ;;
 

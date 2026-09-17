@@ -1,8 +1,8 @@
-import { type Webmention } from "@/api/types";
 import { InlineLink } from "@/components/button";
 import { Optional } from "@/components/optional";
 import { ExternalLink } from "@/components/third-party";
-import { ClassNameProps, DivPropsNoChildren } from "@/types/react";
+import type { Webmention } from "@/repository/types";
+import type { ClassNameProps, DivPropsNoChildren } from "@/types/react";
 import { formatUrl } from "@/util/format/url";
 import { onlyIf } from "@/util/optional";
 import { addClass } from "@/util/transforms";
@@ -20,7 +20,7 @@ export const Webmentions = (props: DivPropsNoChildren<WebmentionsProps>) => {
   return (
     <div {...rest}>
       {mentions.map((mention) => (
-        <Webmention key={mention.source_url} mention={mention} />
+        <WebmentionItem key={mention.source_url} mention={mention} />
       ))}
     </div>
   );
@@ -29,7 +29,7 @@ export const Webmentions = (props: DivPropsNoChildren<WebmentionsProps>) => {
 interface WebmentionProps {
   mention: Webmention;
 }
-const Webmention = (props: WebmentionProps & DivPropsNoChildren) => {
+const WebmentionItem = (props: WebmentionProps & DivPropsNoChildren) => {
   const { mention, ...rest } = addClass(
     props,
     "p-2 surface-alt md:rounded-md",

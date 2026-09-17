@@ -1,16 +1,16 @@
 import { Metadata } from "next";
 import { PostPage } from "@/features/posts";
-import { type SlugParams, generatePostMetadata } from "../../util";
-import { getPost } from "./get";
+import Repository, { SlugParams } from "@/repository";
+import { generatePostMetadata } from "../../util";
 
 export default async function Page(params: SlugParams) {
-  const app = await getPost(params);
+  const app = await Repository.posts.getPost(params);
 
   return <PostPage post={app} />;
 }
 
 export async function generateMetadata(params: SlugParams): Promise<Metadata> {
-  const post = await getPost(params);
+  const post = await Repository.posts.getPost(params);
 
   return generatePostMetadata(post);
 }

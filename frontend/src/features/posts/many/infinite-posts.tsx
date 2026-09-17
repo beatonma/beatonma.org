@@ -1,11 +1,6 @@
 "use client";
 
-import { ReactNode, useMemo, useState } from "react";
-import {
-  GlobalState,
-  Paged,
-  type PostPreview as PostPreviewType,
-} from "@/api/types";
+import React, { ReactNode, useMemo, useState } from "react";
 import { InlineButton, TintedButton } from "@/components/button";
 import { Callout } from "@/components/callout";
 import { GridSpan } from "@/components/grid";
@@ -17,6 +12,12 @@ import { Row } from "@/components/layout";
 import { LoadingSpinner } from "@/components/loading";
 import { Select } from "@/components/selector";
 import { navigationHref } from "@/navigation";
+import Repository from "@/repository";
+import {
+  GlobalState,
+  Paginated as Paged,
+  type PostPreview as PostPreviewType,
+} from "@/repository/types";
 import { DivPropsNoChildren, Props } from "@/types/react";
 import { onlyIf } from "@/util/optional";
 import { PaginatedPostsProps } from "./paginated-posts";
@@ -26,14 +27,18 @@ type Feeds = GlobalState["feeds"];
 type Feed = Feeds[number];
 
 interface InfinitePostsProps extends PaginatedPostsProps {
-  init: Paged<PostPreviewType>;
+  init?: Paged<PostPreviewType>;
   feeds?: Feeds;
 }
 
 export const InfinitePosts = (props: InfinitePostsProps) => {
   const { feeds, init, query: defaultFilters } = props;
   const [query, setQuery] = useState(defaultFilters);
-  const paged = usePagination("/api/posts/", { init, query });
+
+  const paged = usePagination(
+    { init, query },
+    Repository.posts.getPaginatedPosts,
+  );
 
   const currentFeed = query?.feed
     ? feeds?.find((it) => it.slug === query.feed)
@@ -120,7 +125,7 @@ const LoadNext = <T,>(props: {
     pagination.loadNext?.(),
   );
 
-  let content;
+  let content: ReactNode | null;
   if (pagination.error) {
     content = (
       <Callout level="warn">

@@ -1,8 +1,8 @@
 import { Property } from "csstype";
 import { ImageResponse } from "next/og";
 import { CSSProperties } from "react";
-import { MediaFile } from "@/api/types";
 import { absoluteUrl } from "@/navigation";
+import { MediaFile } from "@/repository/types";
 import { Nullish } from "@/types";
 import { DivProps, Props } from "@/types/react";
 import { getPlaintextSummaryFromHtml } from "@/util/format/string";

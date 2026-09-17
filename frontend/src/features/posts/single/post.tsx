@@ -1,7 +1,6 @@
 import parseHtml from "html-react-parser";
 import Link from "next/link";
 import { ReactNode } from "react";
-import type { DetailedPost, PostDetail } from "@/api/types";
 import { AutoHCard } from "@/app/_components/h-card";
 import { InlineLink } from "@/components/button";
 import { Date } from "@/components/datetime";
@@ -14,6 +13,7 @@ import { MediaCarousel, MediaView } from "@/features/media";
 import { itemTheme } from "@/features/themed";
 import { Webmentions } from "@/features/webmentions";
 import { navigationHref } from "@/navigation";
+import type { DetailedPost, PostDetail } from "@/repository/types";
 import { Nullish } from "@/types";
 import { ClassNameProps, DivPropsNoChildren } from "@/types/react";
 import { addClass, classes } from "@/util/transforms";

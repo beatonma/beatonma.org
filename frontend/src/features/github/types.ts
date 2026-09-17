@@ -7,7 +7,7 @@ import type {
   GithubRecentEvents,
   GithubReleasePayload,
   GithubWikiPayload,
-} from "@/api/types";
+} from "@/repository/types";
 
 export type GithubRecent = GithubRecentEvents;
 export type GithubEvent = GithubRecent["events"][number];

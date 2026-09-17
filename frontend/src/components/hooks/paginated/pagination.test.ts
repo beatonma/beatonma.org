@@ -1,16 +1,16 @@
-import { describe, test } from "@jest/globals";
+import { describe, expect, test } from "@jest/globals";
 import { act, renderHook, waitFor } from "@testing-library/react";
-import expect from "expect";
 import { generatePostPreviews } from "@/_dev/sampledata/posts";
 import {
   PaginationLoader,
   usePagination,
 } from "@/components/hooks/paginated/pagination";
+import { FeedQuery, PostPreview } from "@/repository/types";
 
 const PageSize = 5;
 const data = generatePostPreviews(11);
 
-jest.mock("./browser", () => {
+jest.mock("./browser.ts", () => {
   return {
     /* Prevent calls to useRouter from next/navigation during unit tests. */
     useUpdateLocationQuery: () => {
@@ -19,13 +19,12 @@ jest.mock("./browser", () => {
   };
 });
 
-const loader: PaginationLoader<"/api/posts/"> = async (
-  path,
+const loader: PaginationLoader<PostPreview, FeedQuery> = async (
   params,
   signal,
 ) => {
-  const offset = params.query?.offset ?? 0;
-  const limit = params.query?.limit ?? PageSize;
+  const offset = params?.offset ?? 0;
+  const limit = params?.limit ?? PageSize;
   const items = data.slice(offset, offset + limit);
   const response = {};
 
@@ -44,9 +43,7 @@ const loader: PaginationLoader<"/api/posts/"> = async (
 
 describe("usePagination", () => {
   test("loadNext", async () => {
-    const { result } = renderHook(() =>
-      usePagination("/api/posts/", undefined, loader),
-    );
+    const { result } = renderHook(() => usePagination({}, loader));
 
     await waitFor(
       () => {
@@ -76,7 +73,6 @@ describe("usePagination", () => {
   test("With preloaded data", async () => {
     const { result } = renderHook(() =>
       usePagination(
-        "/api/posts/",
         {
           init: {
             items: data.slice(0, PageSize),
@@ -103,9 +99,7 @@ describe("usePagination", () => {
   });
 
   test("With `config.load:false`", async () => {
-    const { result } = renderHook(() =>
-      usePagination("/api/posts/", { load: false }, loader),
-    );
+    const { result } = renderHook(() => usePagination({ load: false }, loader));
 
     // Allow useEffect initializer to run.
     await timeout(200);
@@ -113,9 +107,7 @@ describe("usePagination", () => {
     expect(result.current.items.length).toBe(0);
   });
   test("With `config.load:true`", async () => {
-    const { result } = renderHook(() =>
-      usePagination("/api/posts/", { load: true }, loader),
-    );
+    const { result } = renderHook(() => usePagination({ load: true }, loader));
 
     // Allow useEffect initializer to run.
     await act(async () => await timeout(200));

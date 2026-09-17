@@ -1,4 +1,4 @@
-import { PostPreview } from "@/api/types";
+import { PostPreview } from "@/repository/types";
 
 const choose = <T>(options: T[]): T =>
   options[Math.floor(options.length * Math.random())];

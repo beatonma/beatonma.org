@@ -1,18 +1,17 @@
 import { Metadata, ResolvingMetadata } from "next";
-import { getOr404 } from "@/api";
-import { resolveSlug } from "@/api/client";
-import { AboutDetail } from "@/api/types";
 import { InlineLink } from "@/components/button";
 import { Optional } from "@/components/optional";
 import { Prose } from "@/components/prose";
 import { PostPage } from "@/features/posts";
+import Repository, { SlugParams } from "@/repository";
+import { AboutDetail } from "@/repository/types";
 import { DivPropsNoChildren } from "@/types/react";
 import { generatePostMetadata } from "../../util";
 
-type Params = { params: Promise<{ slug: string[] | undefined }> };
+type Params = SlugParams;
 
 export default async function Page(params: Params) {
-  const about = await get(params);
+  const about = await getPage(params);
 
   return <AboutPage about={about} />;
 }
@@ -21,7 +20,7 @@ export const generateMetadata = async (
   params: Params,
   parent: ResolvingMetadata,
 ): Promise<Metadata> => {
-  const post = await get(params);
+  const post = await getPage(params);
   const parentMeta = await parent;
 
   const meta = await generatePostMetadata(post, {
@@ -105,11 +104,6 @@ const AboutNavigation = (props: DivPropsNoChildren<{ about: AboutDetail }>) => {
   );
 };
 
-const get = async ({ params }: Params) => {
-  const slug = await resolveSlug(params);
-
-  if (slug) {
-    return getOr404("/api/about/{path}", { path: { path: slug } });
-  }
-  return getOr404("/api/about/");
+const getPage = async ({ params }: Params) => {
+  return Repository.posts.getAboutPage(params);
 };
